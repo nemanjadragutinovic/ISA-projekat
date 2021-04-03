@@ -25,6 +25,8 @@ public class Drug {
 
     @Column(name="fabricCode", nullable=false, unique=true)
     private String fabricCode;
+    
+   
 
 
 
