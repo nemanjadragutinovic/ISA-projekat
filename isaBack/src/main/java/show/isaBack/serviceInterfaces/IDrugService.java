@@ -1,4 +1,4 @@
-package show.isaBack.interfaceService.drugInterfaceService;
+package show.isaBack.serviceInterfaces;
 
 import java.util.List;
 
