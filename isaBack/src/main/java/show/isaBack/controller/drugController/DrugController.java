@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 
 import show.isaBack.DTO.drugDTO.DrugDTO;
-import show.isaBack.interfaceService.drugInterfaceService.IDrugService;
+import show.isaBack.serviceInterfaces.IDrugService;
 import show.isaBack.unspecifiedDTO.UnspecifiedDTO;
 
 

@@ -8,8 +8,8 @@ import org.springframework.stereotype.Service;
 
 import show.isaBack.DTO.drugDTO.DrugDTO;
 import show.isaBack.interfaceRepository.drugInterfaceRepository.DrugRepository;
-import show.isaBack.interfaceService.drugInterfaceService.IDrugService;
 import show.isaBack.model.Drug;
+import show.isaBack.serviceInterfaces.IDrugService;
 import show.isaBack.unspecifiedDTO.UnspecifiedDTO;
 
 @Service
