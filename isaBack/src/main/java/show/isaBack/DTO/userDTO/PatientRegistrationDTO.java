@@ -24,6 +24,9 @@ public class PatientRegistrationDTO {
 		this.address = address;
 		this.phoneNumber = phoneNumber;
 	}
+	public PatientRegistrationDTO() {
+		super();
+	}
 
 	public String getEmail() {
 		return email;
