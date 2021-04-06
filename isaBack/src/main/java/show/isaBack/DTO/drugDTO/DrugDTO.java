@@ -1,8 +1,6 @@
 package show.isaBack.DTO.drugDTO;
 
-import java.util.UUID;
 
-import javax.persistence.Column;
 
 import show.isaBack.model.Drug;
 
