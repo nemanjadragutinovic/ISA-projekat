@@ -32,6 +32,7 @@ public class EmailService {
 			throws MailException, InterruptedException, MessagingException {
 		
 		
+		System.out.println("usao 1");
 		
 		String url = LOCAL_URL + "/reg/activeAccountForPatient/" + patient.getId();
 		
@@ -44,6 +45,7 @@ public class EmailService {
 		helper.setTo(patient.getEmail());
 		helper.setSubject("Activate account");
 		helper.setFrom(env.getProperty("spring.mail.username"));
+		System.out.println("usao 2");
 		javaMailSender.send(mimeMessage);
 		
 	}

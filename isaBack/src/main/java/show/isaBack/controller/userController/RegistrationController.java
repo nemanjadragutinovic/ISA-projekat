@@ -26,6 +26,8 @@ public class RegistrationController {
 	@PostMapping("/patsignup")
 	public ResponseEntity<UUID> addUser(@RequestBody PatientRegistrationDTO patientRegistrationDTO) {
 		try {
+			System.out.println("usao u /patsignup" + patientRegistrationDTO.getName());
+			System.out.println(patientRegistrationDTO.getEmail()+" AXAXAXAXA");
 			UUID userId = userService.createPatient(patientRegistrationDTO);
 			return new ResponseEntity<UUID>(userId, HttpStatus.CREATED);
 		}
