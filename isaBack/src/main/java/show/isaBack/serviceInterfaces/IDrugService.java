@@ -10,5 +10,6 @@ import show.isaBack.unspecifiedDTO.UnspecifiedDTO;
 public interface IDrugService {
 	
 	List<UnspecifiedDTO<DrugDTO>> getAllDrugs();
+	List<UnspecifiedDTO<DrugDTO>> getSearchedDrug(DrugDTO searchDrugsRequest); 
 
 }
