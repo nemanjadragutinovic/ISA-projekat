@@ -46,6 +46,7 @@ public class UserService implements IUserInterface{
 		
 		
 		Patient patient = PatientCreation(patientRegistrationDTO);
+		System.out.println("pacijent: " + patient.getName());
 		UnspecifiedDTO<AuthorityDTO> authority = authorityService.findByName("ROLE_PATIENT");
 		List<Authority> authorities = new ArrayList<Authority>();
 		authorities.add(new Authority(authority.Id,authority.EntityDTO.getName()));
