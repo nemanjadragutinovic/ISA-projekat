@@ -1,4 +1,4 @@
-package show.isaBack.interfaceRepository.drugInterfaceRepository;
+package show.isaBack.interfaceRepository.drugRepository;
 
 import java.util.List;
 import java.util.UUID;
