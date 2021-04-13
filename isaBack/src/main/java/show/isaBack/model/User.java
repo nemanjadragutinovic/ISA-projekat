@@ -67,44 +67,44 @@ public class User implements UserDetails {
 
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
-		// TODO Auto-generated method stub
-		return null;
+		
+		return this.authorities;
 	}
 
 	@Override
 	public String getPassword() {
-		// TODO Auto-generated method stub
-		return null;
+		
+		return this.password;
 	}
 
 	@Override
 	public String getUsername() {
 		// TODO Auto-generated method stub
-		return null;
+		return this.email;
 	}
-
+	@JsonIgnore
 	@Override
 	public boolean isAccountNonExpired() {
-		// TODO Auto-generated method stub
-		return false;
+		
+		return true;
 	}
-
+	@JsonIgnore
 	@Override
 	public boolean isAccountNonLocked() {
-		// TODO Auto-generated method stub
-		return false;
+		
+		return true;
 	}
-
+	@JsonIgnore
 	@Override
 	public boolean isCredentialsNonExpired() {
-		// TODO Auto-generated method stub
-		return false;
+		
+		return true;
 	}
 
 	@Override
 	public boolean isEnabled() {
-		// TODO Auto-generated method stub
-		return false;
+		
+		return this.active;
 	}
 
 	public UUID getId() {
@@ -185,6 +185,9 @@ public class User implements UserDetails {
 	
 	public void setUserAuthorities(List<Authority> authorities) {
         this.authorities = authorities;
+    }
+	public List<Authority> getUserAuthorities() {
+        return this.authorities;
     }
 
 	public User(UUID id, String email, String password, String name, String surname, String address,

@@ -16,6 +16,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 
 import show.isaBack.security.auth.RestAuthenticationEntryPoint;
+import show.isaBack.service.userService.CustomUserDetailsService;
 
 
 
@@ -42,10 +43,21 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	public AuthenticationManager authenticationManagerBean() throws Exception {
 		return super.authenticationManagerBean();
 	}
+	
+	// Servis koji se koristi za citanje podataka o korisnicima aplikacije
+		@Autowired
+		private CustomUserDetailsService jwtUserDetailsService;
 
 	// Handler za vracanje 401 kada klijent sa neodogovarajucim korisnickim imenom i lozinkom pokusa da pristupi resursu
 		@Autowired
 		private RestAuthenticationEntryPoint restAuthenticationEntryPoint;
+		
+		// Definisemo uputstvo za authentication managera koji servis da koristi da izvuce podatke o korisniku koji zeli da se autentifikuje,
+		//kao i kroz koji enkoder da provuce lozinku koju je dobio od klijenta u zahtevu da bi adekvatan hash koji dobije kao rezultat bcrypt algoritma uporedio sa onim koji se nalazi u bazi (posto se u bazi ne cuva plain lozinka)
+		@Autowired
+		public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
+			auth.userDetailsService(jwtUserDetailsService).passwordEncoder(passwordEncoder());
+		}
 	
 
 	// Definisemo prava pristupa odredjenim URL-ovima
@@ -71,6 +83,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 		web.ignoring().antMatchers(HttpMethod.POST, "/pharmacy/searchPharmacies");
 
 		web.ignoring().antMatchers(HttpMethod.POST, "/reg/patsignup");
+		web.ignoring().antMatchers(HttpMethod.POST, "/log/login");
 		web.ignoring().antMatchers(HttpMethod.GET, "/reg//activeAccountForPatient/**");
 
 
