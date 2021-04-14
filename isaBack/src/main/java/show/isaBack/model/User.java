@@ -53,7 +53,7 @@ public class User implements UserDetails {
     @Column(name = "active")
     private boolean active;
     
-    @Embedded
+    @Column(name = "address")
     private String address;
     
     @ManyToMany(fetch = FetchType.EAGER)
