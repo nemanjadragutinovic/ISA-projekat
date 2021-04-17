@@ -21,6 +21,7 @@ import show.isaBack.model.Patient;
 import show.isaBack.model.User;
 import show.isaBack.repository.userRepository.PatientRepository;
 import show.isaBack.repository.userRepository.UserRepository;
+import show.isaBack.security.auth.AuthRequest;
 import show.isaBack.serviceInterfaces.IUserInterface;
 import show.isaBack.unspecifiedDTO.UnspecifiedDTO;
 
@@ -113,6 +114,8 @@ public class UserService implements IUserInterface{
 		// TODO Auto-generated method stub
 		return false;
 	}
+	
+	
 	
 	
 
