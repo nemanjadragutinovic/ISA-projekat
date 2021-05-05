@@ -16,6 +16,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 
 import show.isaBack.security.auth.RestAuthenticationEntryPoint;
+import show.isaBack.security.auth.TokenAuthenticationFilter;
+import show.isaBack.secutiry.TokenUtils;
 import show.isaBack.service.userService.CustomUserDetailsService;
 
 
@@ -60,10 +62,33 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 		}
 	
 
+		// Injektujemo implementaciju iz TokenUtils klase kako bismo mogli da koristimo njene metode za rad sa JWT u TokenAuthenticationFilteru
+		@Autowired
+		private TokenUtils tokenUtils;
+		
 	// Definisemo prava pristupa odredjenim URL-ovima
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
+		http
+		// komunikacija izmedju klijenta i servera je stateless posto je u pitanju REST aplikacija
+		.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
+
+		// sve neautentifikovane zahteve obradi uniformno i posalji 401 gresku
+		.exceptionHandling().authenticationEntryPoint(restAuthenticationEntryPoint).and()
+
+		// svim korisnicima dopusti da pristupe putanjama /auth/**, (/h2-console/** ako se koristi H2 baza) i /api/foo
+		.authorizeRequests().antMatchers("/auth/**").permitAll().antMatchers("/h2-console/**").permitAll().antMatchers("/api/foo").permitAll()
 		
+		// za svaki drugi zahtev korisnik mora biti autentifikovan
+		.anyRequest().authenticated().and()
+		// za development svrhe ukljuci konfiguraciju za CORS iz WebConfig klase
+		.cors().and()
+
+		// umetni custom filter TokenAuthenticationFilter kako bi se vrsila provera JWT tokena umesto cistih korisnickog imena i lozinke (koje radi BasicAuthenticationFilter)
+		.addFilterBefore(new TokenAuthenticationFilter(tokenUtils, jwtUserDetailsService),
+				BasicAuthenticationFilter.class);
+// zbog jednostavnosti primera
+http.csrf().disable();
 	}
 
 	// Generalna bezbednost aplikacije
@@ -83,7 +108,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 		web.ignoring().antMatchers(HttpMethod.POST, "/pharmacy/searchPharmacies");
 
 		web.ignoring().antMatchers(HttpMethod.POST, "/reg/patsignup");
-		web.ignoring().antMatchers(HttpMethod.POST, "/log/login");
+		web.ignoring().antMatchers(HttpMethod.POST, "/auth/login");
 		web.ignoring().antMatchers(HttpMethod.GET, "/reg//activeAccountForPatient/**");
 
 
