@@ -28,7 +28,7 @@ import show.isaBack.secutiry.TokenUtils;
 import show.isaBack.service.userService.UserService;
 
 @RestController
-@RequestMapping(value = "/log")
+@RequestMapping(value = "/auth")
 public class LoginController {
 
 	@Autowired
