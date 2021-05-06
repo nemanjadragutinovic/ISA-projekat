@@ -8,11 +8,16 @@ import javax.mail.MessagingException;
 import javax.persistence.EntityNotFoundException;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.mail.MailException;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import show.isaBack.DTO.userDTO.AuthorityDTO;
+import show.isaBack.DTO.userDTO.PatientDTO;
 import show.isaBack.DTO.userDTO.PatientRegistrationDTO;
 import show.isaBack.DTO.userDTO.UserDTO;
 import show.isaBack.emailService.EmailService;
@@ -39,6 +44,12 @@ public class UserService implements IUserInterface{
 	private UserRepository userRepository;
 	@Autowired
 	private EmailService emailService;
+	
+	@Autowired
+	private Environment env;
+	
+	@Autowired
+	private AuthenticationManager authenticationManager;
 	
 	
 	
@@ -84,6 +95,55 @@ public class UserService implements IUserInterface{
 	private Patient PatientCreation(PatientRegistrationDTO patientDTO) {
 		return new Patient(patientDTO.getEmail(), passwordEncoder.encode(patientDTO.getPassword()), patientDTO.getName(), patientDTO.getSurname(), patientDTO.getAddress(), patientDTO.getPhoneNumber());
 	}
+	
+	
+	
+	@Override
+	public UnspecifiedDTO<PatientDTO> getLoggedPatient() {	
+		
+		System.out.println("Usao u servis za pacijenta");
+		
+		UUID patientId = getLoggedUserId();
+		Patient patient= patientRepository.getOne(patientId);
+		
+		if(patient==null) {
+			System.out.println("pacijent je null");
+		}
+		System.out.println(patient.getName().toString());
+		
+		return new UnspecifiedDTO<PatientDTO>(patientId , new PatientDTO(patient.getEmail(), patient.getName(), patient.getSurname(), patient.getAddress(),
+				patient.getPhoneNumber(), patient.isActive(), patient.getUserAuthorities()));
+	}
+	
+	
+	@Override
+	public UUID getLoggedUserId() {
+		
+		System.out.println("Usao logovanogDaNadjeID");
+		Authentication currentUser = SecurityContextHolder.getContext().getAuthentication();
+		
+		
+		
+		System.out.println("izvukao curentUSera");
+		System.out.println(currentUser);
+		
+		String email = "";
+						
+		if(currentUser!= null) {
+			email = currentUser.getName();
+			System.out.println("curewnt user nije jednak null");
+		}else {
+			System.out.println("current user je jednak null");
+		}
+		
+		
+		
+		User user = userRepository.findByEmail(email);
+		
+		return user.getId();
+	}
+	
+	
 
 	@Override
 	public List<UnspecifiedDTO<AuthorityDTO>> findAll() {

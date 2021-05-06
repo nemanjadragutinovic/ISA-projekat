@@ -61,6 +61,12 @@ public class LoginController {
 			System.out.println("prosao autentifikaciju");
 			SecurityContextHolder.getContext().setAuthentication(authentication);
 			User user = (User) authentication.getPrincipal();
+			
+			Authentication currentUser = SecurityContextHolder.getContext().getAuthentication();
+			
+			System.out.println("sokovii");
+			System.out.println(currentUser.getName());
+			
 			jwt = tokenUtils.generateToken(user.getUsername());
 			expiresIn = tokenUtils.getExpiredIn();
 			user.getUserAuthorities().forEach((a) -> roles.add(a.getName()));
