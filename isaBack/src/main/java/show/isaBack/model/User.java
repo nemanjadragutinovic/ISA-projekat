@@ -22,14 +22,15 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+
+
 @Entity
 @Table(name="USERS")
 @Inheritance(strategy = InheritanceType.JOINED)
 public class User implements UserDetails {
-	
+
 	private static final long serialVersionUID = 1L;
-	
-	
+
 	@Id
     @Column(name = "id")
 	private UUID id;
@@ -56,6 +57,7 @@ public class User implements UserDetails {
     @Column(name = "address")
     private String address;
     
+    
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "user_authority",
             joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
@@ -64,132 +66,14 @@ public class User implements UserDetails {
     	
     @Version
 	private Long version;
-
-	@Override
-	public Collection<? extends GrantedAuthority> getAuthorities() {
-		
-		return this.authorities;
-	}
-
-	@Override
-	public String getPassword() {
-		
-		return this.password;
-	}
-
-	@Override
-	public String getUsername() {
-		// TODO Auto-generated method stub
-		return this.email;
-	}
-	@JsonIgnore
-	@Override
-	public boolean isAccountNonExpired() {
-		
-		return true;
-	}
-	@JsonIgnore
-	@Override
-	public boolean isAccountNonLocked() {
-		
-		return true;
-	}
-	@JsonIgnore
-	@Override
-	public boolean isCredentialsNonExpired() {
-		
-		return true;
-	}
-
-	@Override
-	public boolean isEnabled() {
-		
-		return this.active;
-	}
-
-	public UUID getId() {
-		return id;
-	}
-
-	public void setId(UUID id) {
-		this.id = id;
-	}
-
-	public String getEmail() {
-		return email;
-	}
-
-	public void setEmail(String email) {
-		this.email = email;
-	}
-
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	public String getSurname() {
-		return surname;
-	}
-
-	public void setSurname(String surname) {
-		this.surname = surname;
-	}
-
-	public String getPhoneNumber() {
-		return phoneNumber;
-	}
-
-	public void setPhoneNumber(String phoneNumber) {
-		this.phoneNumber = phoneNumber;
-	}
-
-	public boolean isActive() {
-		return active;
-	}
-
-	public void setActive(boolean active) {
-		this.active = active;
-	}
-
-	public String getAddress() {
-		return address;
-	}
-
-	public void setAddress(String address) {
-		this.address = address;
-	}
-
-	public Long getVersion() {
-		return version;
-	}
-
-	public void setVersion(Long version) {
-		this.version = version;
-	}
-
-	public static long getSerialversionuid() {
-		return serialVersionUID;
-	}
-
-	public void setPassword(String password) {
-		this.password = password;
-	}
-
-	public void setAuthorities(List<Authority> authorities) {
-		this.authorities = authorities;
+    
+	public User() {}
+	
+	public User(String email, String password, String name, String surname, String address,
+			String phoneNumber, boolean active) {
+		this(UUID.randomUUID(), email, password, name, surname, address, phoneNumber, active);
 	}
 	
-	public void setUserAuthorities(List<Authority> authorities) {
-        this.authorities = authorities;
-    }
-	public List<Authority> getUserAuthorities() {
-        return this.authorities;
-    }
-
 	public User(UUID id, String email, String password, String name, String surname, String address,
 			String phoneNumber, boolean active) {
 		super();
@@ -203,11 +87,116 @@ public class User implements UserDetails {
 		this.active = active;
 	}
 	
-	public User() {}
+	public UUID getId() {
+		return id;
+	}
 	
-	public User(String email, String password, String name, String surname, String address,
-			String phoneNumber, boolean active) {
-		this(UUID.randomUUID(), email, password, name, surname, address, phoneNumber, active);
+	public String getEmail() {
+		return email;
+	}
+	
+	public String getPassword() {
+		return password;
+	}
+	
+	public String getName() {
+		return name;
+	}
+	
+	public String getSurname() {
+		return surname;
+	}
+	
+	public String getAddress() {
+		return address;
+	}
+	
+	public String getPhoneNumber() {
+		return phoneNumber;
 	}
 
+	public boolean isActive() {
+		return active;
+	}
+
+	public void setActive(boolean active) {
+		this.active = active;
+	}
+
+	@Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return this.authorities;
+    }
+	
+	
+    public List<Authority> getUserAuthorities() {
+        return this.authorities;
+    }
+
+    
+	
+    public void setUserAuthorities(List<Authority> authorities) {
+        this.authorities = authorities;
+    }
+    
+	@Override
+	public String getUsername() {
+		return this.email;
+	}
+
+	@JsonIgnore
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @JsonIgnore
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @JsonIgnore
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+	@Override
+    public boolean isEnabled() {
+        return this.active;
+    }
+
+	public static long getSerialversionuid() {
+		return serialVersionUID;
+	}
+
+
+	public void setPassword(String password) {
+		this.password = password;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public void setSurname(String surname) {
+		this.surname = surname;
+	}
+
+	public void setAddress(String address) {
+		this.address = address;
+	}
+
+	public void setPhoneNumber(String phoneNumber) {
+		this.phoneNumber = phoneNumber;
+	}
+		
+	public Long getVersion() {
+		return version;
+	}
+
+	public void setVersion(Long version) {
+		this.version = version;
+	}
 }
