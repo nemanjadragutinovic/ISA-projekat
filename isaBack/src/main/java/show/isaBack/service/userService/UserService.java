@@ -26,7 +26,6 @@ import show.isaBack.model.Patient;
 import show.isaBack.model.User;
 import show.isaBack.repository.userRepository.PatientRepository;
 import show.isaBack.repository.userRepository.UserRepository;
-import show.isaBack.security.auth.AuthRequest;
 import show.isaBack.serviceInterfaces.IUserInterface;
 import show.isaBack.unspecifiedDTO.UnspecifiedDTO;
 
@@ -101,7 +100,7 @@ public class UserService implements IUserInterface{
 	@Override
 	public UnspecifiedDTO<PatientDTO> getLoggedPatient() {	
 		
-		System.out.println("Usao u servis za pacijenta");
+		
 		
 		UUID patientId = getLoggedUserId();
 		Patient patient= patientRepository.getOne(patientId);
@@ -109,7 +108,7 @@ public class UserService implements IUserInterface{
 		if(patient==null) {
 			System.out.println("pacijent je null");
 		}
-		System.out.println(patient.getName().toString());
+		System.out.println(patient.getEmail().toString());
 		
 		return new UnspecifiedDTO<PatientDTO>(patientId , new PatientDTO(patient.getEmail(), patient.getName(), patient.getSurname(), patient.getAddress(),
 				patient.getPhoneNumber(), patient.isActive(), patient.getUserAuthorities()));
@@ -118,26 +117,10 @@ public class UserService implements IUserInterface{
 	
 	@Override
 	public UUID getLoggedUserId() {
-		
-		System.out.println("Usao logovanogDaNadjeID");
+				
 		Authentication currentUser = SecurityContextHolder.getContext().getAuthentication();
-		
-		
-		
-		System.out.println("izvukao curentUSera");
-		System.out.println(currentUser);
-		
-		String email = "";
-						
-		if(currentUser!= null) {
-			email = currentUser.getName();
-			System.out.println("curewnt user nije jednak null");
-		}else {
-			System.out.println("current user je jednak null");
-		}
-		
-		
-		
+		System.out.println(currentUser.getName() + " Pronadjem pacijent");
+		String email = currentUser.getName();
 		User user = userRepository.findByEmail(email);
 		
 		return user.getId();
