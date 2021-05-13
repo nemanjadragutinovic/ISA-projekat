@@ -78,5 +78,17 @@ public class RegistrationController {
 		
 		return new ResponseEntity<>(userId, HttpStatus.CREATED);
 	}
+	
+	@PostMapping("/signup-pharmacyadmin/{pharmacyId}")
+	public ResponseEntity<UUID> addPharmacyAdmin(@PathVariable UUID pharmacyId, @RequestBody UserRegistrationDTO userRequest, UriComponentsBuilder ucBuilder) {
+
+		if (this.userService.existByEmail(userRequest.getEmail())) {
+			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+		}
+		System.out.println(pharmacyId + "id");
+		UUID userId = userService.createPharmacyAdmin(userRequest,pharmacyId);
+		
+		return new ResponseEntity<>(userId, HttpStatus.CREATED);
+	}
 
 }

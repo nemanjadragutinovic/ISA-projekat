@@ -11,7 +11,7 @@ public class PharmacyDTO {
 	
 		
 	private String name;	
-	private Address address;		
+	private String address;		
 	private String description;
 	
 	
@@ -33,21 +33,16 @@ public class PharmacyDTO {
 	}
 	
 	
-	public PharmacyDTO(String name, String city, String street, String country, String postCode, String description) {
-		super();
-		this.name = name;
-		this.address = new Address(city,street,country,postCode);
-		this.description = description;
-	}
-	
-	
-	
-	public PharmacyDTO( String name, Address address, String description) {
+	public PharmacyDTO(String name, String address, String description) {
 		super();
 		this.name = name;
 		this.address = address;
 		this.description = description;
 	}
+	
+	
+	
+	
 
 	
 
@@ -61,12 +56,12 @@ public class PharmacyDTO {
 	}
 
 
-	public Address getAddress() {
+	public String getAddress() {
 		return address;
 	}
 
 
-	public void setAddress(Address address) {
+	public void setAddress(String address) {
 		this.address = address;
 	}
 

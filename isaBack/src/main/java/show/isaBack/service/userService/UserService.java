@@ -24,8 +24,11 @@ import show.isaBack.emailService.EmailService;
 import show.isaBack.model.Authority;
 import show.isaBack.model.Dermatologist;
 import show.isaBack.model.Patient;
+import show.isaBack.model.Pharmacy;
+import show.isaBack.model.PharmacyAdmin;
 import show.isaBack.model.SystemAdmin;
 import show.isaBack.model.User;
+import show.isaBack.repository.pharmacyRepository.PharmacyRepository;
 import show.isaBack.repository.userRepository.DermatologistRepository;
 import show.isaBack.repository.userRepository.PatientRepository;
 import show.isaBack.repository.userRepository.UserRepository;
@@ -46,6 +49,8 @@ public class UserService implements IUserInterface{
 	private UserRepository userRepository;
 	@Autowired
 	private DermatologistRepository dermatologistRepository;
+	@Autowired
+	private PharmacyRepository pharmacyRepository;
 	@Autowired
 	private EmailService emailService;
 	
@@ -172,7 +177,26 @@ public class UserService implements IUserInterface{
 	private SystemAdmin CreateAdminFromDTO(UserRegistrationDTO patientDTO) {
 		return new SystemAdmin(patientDTO.getEmail(), passwordEncoder.encode(patientDTO.getPassword()), patientDTO.getName(), patientDTO.getSurname(), patientDTO.getAddress(), patientDTO.getPhoneNumber());
 	}
+	
+	@Override
+	public UUID createPharmacyAdmin(UserRegistrationDTO entityDTO, UUID pharmacyId) {
+		Pharmacy pharmacy = pharmacyRepository.getOne(pharmacyId);
+		PharmacyAdmin pharmacyAdmin = CreatePharmacyAdminFromDTO(entityDTO, pharmacy);
+		pharmacyAdmin.setPassword(passwordEncoder.encode(pharmacyAdmin.getId().toString()));
+		UnspecifiedDTO<AuthorityDTO> authority = authorityService.findByName("ROLE_PHARMACYADMIN");
+		List<Authority> authorities = new ArrayList<Authority>();
+		authorities.add(new Authority(authority.Id,authority.EntityDTO.getName()));
+		pharmacyAdmin.setUserAuthorities(authorities);
+		
+		userRepository.save(pharmacyAdmin);
+		
+		return pharmacyAdmin.getId();
+	}
 
+	private PharmacyAdmin CreatePharmacyAdminFromDTO(UserRegistrationDTO staffDTO,Pharmacy pharmacy) {
+		return new PharmacyAdmin(staffDTO.getEmail(), passwordEncoder.encode(staffDTO.getPassword()), staffDTO.getName(), staffDTO.getSurname(), staffDTO.getAddress(), staffDTO.getPhoneNumber(),pharmacy);
+	}
+	
 	@Override
 	public List<UnspecifiedDTO<AuthorityDTO>> findAll() {
 		// TODO Auto-generated method stub

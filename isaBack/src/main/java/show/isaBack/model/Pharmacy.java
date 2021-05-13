@@ -20,8 +20,8 @@ public class Pharmacy {
 	@Column(name = "name", nullable = false)
 	private String name;
 	
-	@Embedded
-	private Address address;
+	@Column(name = "address", nullable = false)
+	private String address;
 	
 	
 	@Column(name = "description", nullable = false)
@@ -36,17 +36,11 @@ public class Pharmacy {
 	
 	
 	
-	public Pharmacy(UUID id, String name, String city, String street, String country, String postCode, String description) {
-		super();
-		this.id = id;
-		this.name = name;
-		this.address = new Address(city,street,country,postCode);
-		this.description = description;
-	}
 	
 	
 	
-	public Pharmacy(UUID id, String name, Address address, String description) {
+	
+	public Pharmacy(UUID id, String name, String address, String description) {
 		super();
 		this.id = id;
 		this.name = name;
@@ -75,12 +69,12 @@ public class Pharmacy {
 	}
 
 
-	public Address getAddress() {
+	public String getAddress() {
 		return address;
 	}
 
 
-	public void setAddress(Address address) {
+	public void setAddress(String address) {
 		this.address = address;
 	}
 
