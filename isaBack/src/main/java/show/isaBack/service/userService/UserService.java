@@ -16,9 +16,12 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+
 import show.isaBack.DTO.userDTO.AuthorityDTO;
 import show.isaBack.DTO.userDTO.ChangePasswordDTO;
 import show.isaBack.DTO.userDTO.PatientDTO;
+import show.isaBack.DTO.userDTO.PatientsAllergenDTO;
 import show.isaBack.DTO.userDTO.UserChangeInfoDTO;
 import show.isaBack.DTO.userDTO.UserDTO;
 import show.isaBack.DTO.userDTO.UserRegistrationDTO;
@@ -30,6 +33,8 @@ import show.isaBack.model.Pharmacy;
 import show.isaBack.model.PharmacyAdmin;
 import show.isaBack.model.SystemAdmin;
 import show.isaBack.model.User;
+import show.isaBack.model.drugs.Allergen;
+import show.isaBack.repository.drugsRepository.AllergenRepository;
 import show.isaBack.repository.pharmacyRepository.PharmacyRepository;
 import show.isaBack.repository.userRepository.DermatologistRepository;
 import show.isaBack.repository.userRepository.PatientRepository;
@@ -55,6 +60,9 @@ public class UserService implements IUserInterface{
 	private PharmacyRepository pharmacyRepository;
 	@Autowired
 	private EmailService emailService;
+	
+	@Autowired
+	private AllergenRepository allergenRepository;
 	
 	@Autowired
 	private Environment env;
@@ -225,6 +233,28 @@ public class UserService implements IUserInterface{
 		
 		user.setPassword(passwordEncoder.encode(changePasswordDTO.getNewPassword()));
 		userRepository.save(user);
+		
+	}
+	
+	
+	@Override
+	public void addAllergenForPatient(PatientsAllergenDTO patientsAllergenDTO) {
+		
+			Patient patient = patientRepository.getOne(patientsAllergenDTO.getPatientId());
+			
+			 		
+			if(patientsAllergenDTO.getAllergenName().isEmpty())
+				throw new IllegalArgumentException("Invalid allergen name");
+			
+			
+			Allergen newAllergen = new Allergen(patientsAllergenDTO.getAllergenName());	
+			allergenRepository.save(newAllergen);
+			
+			patient.addAllergen(newAllergen);		
+			patientRepository.save(patient);
+			
+			
+		
 		
 	}
 	

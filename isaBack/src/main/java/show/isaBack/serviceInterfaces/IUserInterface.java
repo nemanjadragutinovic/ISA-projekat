@@ -4,8 +4,7 @@ import java.util.UUID;
 
 import show.isaBack.DTO.userDTO.ChangePasswordDTO;
 import show.isaBack.DTO.userDTO.PatientDTO;
-
-
+import show.isaBack.DTO.userDTO.PatientsAllergenDTO;
 import show.isaBack.DTO.userDTO.UserChangeInfoDTO;
 
 import show.isaBack.DTO.userDTO.UserDTO;
@@ -26,6 +25,8 @@ public interface IUserInterface extends IService<UserDTO, UnspecifiedDTO<UserDTO
 
 	public void updatePatient(UserChangeInfoDTO patientInfoChangeDTO);
 	public void changePassword(ChangePasswordDTO changePasswordDTO);
+	
+	public void addAllergenForPatient(PatientsAllergenDTO patientsAllergenDTO);
 
 
 }

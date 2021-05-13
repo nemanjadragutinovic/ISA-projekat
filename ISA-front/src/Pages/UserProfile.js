@@ -366,24 +366,26 @@ class UserProfile extends Component {
 			errorAllergenHeader: "",
 			errorAllergenMessage: "",
 		});
+		console.log(allergenName);
 		let patientsAllergenDTO = { allergenName: allergenName, patientId: this.state.id };
 		console.log(patientsAllergenDTO);
-		Axios.post(API_URL + "/users/addPatientAllergen", patientsAllergenDTO, {
+		Axios.post(API_URL + "/users/addPatientsAllergen", patientsAllergenDTO, {
 			validateStatus: () => true,
 			headers: { Authorization: GetAuthorisation() },
 		})
 			.then((res) => {
 				if (res.status === 400) {
 					this.setState({
-						hiddenAllergenErrorAlertAlert: false,
+						hiddenAllergenErrorAlert: false,
 						errorAllergenHeader: "Bad request",
 						errorAllergenMessage: "Bad request when adding allergen.",
 					});
 				} else if (res.status === 500) {
 					this.setState({
-						hiddenAllergenErrorAlertAlert: false,
+						hiddenAllergenErrorAlert: false,
 						errorAllergenHeader: "Internal server error",
 						errorAllergenMessage: "Server error.",
+
 					});
 				} else if (res.status === 200) {
 					

@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import show.isaBack.DTO.userDTO.ChangePasswordDTO;
 import show.isaBack.DTO.userDTO.PatientDTO;
+import show.isaBack.DTO.userDTO.PatientsAllergenDTO;
 import show.isaBack.DTO.userDTO.UserChangeInfoDTO;
 import show.isaBack.security.TokenUtils;
 import show.isaBack.service.userService.UserService;
@@ -105,6 +106,22 @@ public class UserController {
 		}
 	}
 	
+	
+	@PostMapping("/addPatientsAllergen") 
+	@PreAuthorize("hasRole('ROLE_PATIENT')")
+	public ResponseEntity<?> addAllergenForPatient(@RequestBody PatientsAllergenDTO patientsAllergenDTO) {
+	  
+		try {
+			userService.addAllergenForPatient(patientsAllergenDTO);
+				
+			return new ResponseEntity<>(HttpStatus.OK); 
+							
+		}catch (IllegalArgumentException e) {
+				return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+		}catch (Exception e) {
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR); 
+		}
+	}
 	
 	
 	
