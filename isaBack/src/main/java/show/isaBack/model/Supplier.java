@@ -2,6 +2,9 @@ package show.isaBack.model;
 
 import java.util.UUID;
 
+import javax.persistence.Entity;
+
+@Entity
 public class Supplier extends User {
 	
 	private static final long serialVersionUID = 1L;

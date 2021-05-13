@@ -24,6 +24,7 @@ import show.isaBack.emailService.EmailService;
 import show.isaBack.model.Authority;
 import show.isaBack.model.Dermatologist;
 import show.isaBack.model.Patient;
+import show.isaBack.model.SystemAdmin;
 import show.isaBack.model.User;
 import show.isaBack.repository.userRepository.DermatologistRepository;
 import show.isaBack.repository.userRepository.PatientRepository;
@@ -140,18 +141,36 @@ public class UserService implements IUserInterface{
 	public UUID createDermatologist(UserRegistrationDTO entityDTO) {
 		Dermatologist dermatologist = CreateDermathologistFromDTO(entityDTO);
 		dermatologist.setPassword(passwordEncoder.encode(dermatologist.getId().toString()));
-		UnspecifiedDTO<AuthorityDTO> authority = authorityService.findByName("ROLE_DERMATOLOGIST");
+		UnspecifiedDTO<AuthorityDTO> authority = authorityService.findByName("ROLE_DERMATHOLOGIST");
 		List<Authority> authorities = new ArrayList<Authority>();
 		authorities.add(new Authority(authority.Id,authority.EntityDTO.getName()));
 		dermatologist.setUserAuthorities(authorities);
 		
-		dermatologistRepository.save(dermatologist);
+		userRepository.save(dermatologist);
 		
 		return dermatologist.getId();
 	}
 	
 	private Dermatologist CreateDermathologistFromDTO(UserRegistrationDTO patientDTO) {
 		return new Dermatologist(patientDTO.getEmail(), passwordEncoder.encode(patientDTO.getPassword()), patientDTO.getName(), patientDTO.getSurname(), patientDTO.getAddress(), patientDTO.getPhoneNumber());
+	}
+	
+	@Override
+	public UUID createAdmin(UserRegistrationDTO entityDTO) {
+		SystemAdmin systemAdmin = CreateAdminFromDTO(entityDTO);
+		systemAdmin.setPassword(passwordEncoder.encode(systemAdmin.getId().toString()));
+		UnspecifiedDTO<AuthorityDTO> authority = authorityService.findByName("ROLE_SYSADMIN");
+		List<Authority> authorities = new ArrayList<Authority>();
+		authorities.add(new Authority(authority.Id,authority.EntityDTO.getName()));
+		systemAdmin.setUserAuthorities(authorities);
+		
+		userRepository.save(systemAdmin);
+		
+		return systemAdmin.getId();
+	}
+	
+	private SystemAdmin CreateAdminFromDTO(UserRegistrationDTO patientDTO) {
+		return new SystemAdmin(patientDTO.getEmail(), passwordEncoder.encode(patientDTO.getPassword()), patientDTO.getName(), patientDTO.getSurname(), patientDTO.getAddress(), patientDTO.getPhoneNumber());
 	}
 
 	@Override

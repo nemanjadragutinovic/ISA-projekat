@@ -14,6 +14,7 @@ public interface IUserInterface extends IService<UserDTO, UnspecifiedDTO<UserDTO
 	public UnspecifiedDTO<PatientDTO> getLoggedPatient();
 	public UUID getLoggedUserId(); 
 	public UUID createDermatologist(UserRegistrationDTO entityDTO);
+	public UUID createAdmin(UserRegistrationDTO entityDTO);
 	
 
 }

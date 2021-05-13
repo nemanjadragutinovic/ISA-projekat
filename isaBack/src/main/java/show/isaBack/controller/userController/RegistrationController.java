@@ -66,5 +66,17 @@ public class RegistrationController {
 		
 		return new ResponseEntity<>(userId, HttpStatus.CREATED);
 	}
+	
+	@PostMapping("/signup-sysadmin")
+	public ResponseEntity<UUID> addSysadmin(@RequestBody UserRegistrationDTO userRequest, UriComponentsBuilder ucBuilder) {
+
+		if (this.userService.existByEmail(userRequest.getEmail())) {
+			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+		}
+
+		UUID userId = userService.createAdmin(userRequest);
+		
+		return new ResponseEntity<>(userId, HttpStatus.CREATED);
+	}
 
 }
