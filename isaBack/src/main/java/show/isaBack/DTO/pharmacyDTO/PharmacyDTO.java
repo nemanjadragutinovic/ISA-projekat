@@ -9,7 +9,7 @@ public class PharmacyDTO {
 
 	
 	
-		
+	
 	private String name;	
 	private Address address;		
 	private String description;

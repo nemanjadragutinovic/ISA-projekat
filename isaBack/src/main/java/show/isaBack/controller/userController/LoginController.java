@@ -28,7 +28,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import show.isaBack.DTO.userDTO.PatientRegistrationDTO;
+import show.isaBack.DTO.userDTO.UserRegistrationDTO;
 import show.isaBack.DTO.userDTO.UserTokenDTO;
 import show.isaBack.model.Authority;
 import show.isaBack.model.User;
@@ -117,7 +117,7 @@ public class LoginController {
 	
 	
 	@PostMapping("/patsignup")
-	public ResponseEntity<UUID> addUser(@RequestBody PatientRegistrationDTO patientRegistrationDTO) {
+	public ResponseEntity<UUID> addUser(@RequestBody UserRegistrationDTO patientRegistrationDTO) {
 		try {
 			System.out.println("usao u /patsignup" + patientRegistrationDTO.getName());
 			System.out.println(patientRegistrationDTO.getEmail()+" AXAXAXAXA");

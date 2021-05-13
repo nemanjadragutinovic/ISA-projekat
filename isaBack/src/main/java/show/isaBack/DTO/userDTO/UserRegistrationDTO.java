@@ -1,6 +1,6 @@
 package show.isaBack.DTO.userDTO;
 
-public class PatientRegistrationDTO {
+public class UserRegistrationDTO {
 
 	private String email;
 
@@ -14,7 +14,7 @@ public class PatientRegistrationDTO {
 
 	private String phoneNumber;
 
-	public PatientRegistrationDTO(String email, String password, String name, String surname, String address,
+	public UserRegistrationDTO(String email, String password, String name, String surname, String address,
 			String phoneNumber) {
 		super();
 		this.email = email;
@@ -24,7 +24,7 @@ public class PatientRegistrationDTO {
 		this.address = address;
 		this.phoneNumber = phoneNumber;
 	}
-	public PatientRegistrationDTO() {
+	public UserRegistrationDTO() {
 		super();
 	}
 

@@ -19,13 +19,19 @@ import org.springframework.stereotype.Service;
 import show.isaBack.DTO.userDTO.AuthorityDTO;
 import show.isaBack.DTO.userDTO.ChangePasswordDTO;
 import show.isaBack.DTO.userDTO.PatientDTO;
-import show.isaBack.DTO.userDTO.PatientRegistrationDTO;
 import show.isaBack.DTO.userDTO.UserChangeInfoDTO;
 import show.isaBack.DTO.userDTO.UserDTO;
+import show.isaBack.DTO.userDTO.UserRegistrationDTO;
 import show.isaBack.emailService.EmailService;
 import show.isaBack.model.Authority;
+import show.isaBack.model.Dermatologist;
 import show.isaBack.model.Patient;
+import show.isaBack.model.Pharmacy;
+import show.isaBack.model.PharmacyAdmin;
+import show.isaBack.model.SystemAdmin;
 import show.isaBack.model.User;
+import show.isaBack.repository.pharmacyRepository.PharmacyRepository;
+import show.isaBack.repository.userRepository.DermatologistRepository;
 import show.isaBack.repository.userRepository.PatientRepository;
 import show.isaBack.repository.userRepository.UserRepository;
 import show.isaBack.serviceInterfaces.IUserInterface;
@@ -44,6 +50,10 @@ public class UserService implements IUserInterface{
 	@Autowired
 	private UserRepository userRepository;
 	@Autowired
+	private DermatologistRepository dermatologistRepository;
+	@Autowired
+	private PharmacyRepository pharmacyRepository;
+	@Autowired
 	private EmailService emailService;
 	
 	@Autowired
@@ -54,7 +64,7 @@ public class UserService implements IUserInterface{
 	
 	
 	
-	public UUID createPatient(PatientRegistrationDTO patientRegistrationDTO) {
+	public UUID createPatient(UserRegistrationDTO patientRegistrationDTO) {
 		
 		
 		
@@ -93,7 +103,7 @@ public class UserService implements IUserInterface{
 	}
 	
 	
-	private Patient PatientCreation(PatientRegistrationDTO patientDTO) {
+	private Patient PatientCreation(UserRegistrationDTO patientDTO) {
 		return new Patient(patientDTO.getEmail(), passwordEncoder.encode(patientDTO.getPassword()), patientDTO.getName(), patientDTO.getSurname(), patientDTO.getAddress(), patientDTO.getPhoneNumber());
 	}
 	
@@ -128,7 +138,64 @@ public class UserService implements IUserInterface{
 		return user.getId();
 	}
 	
+	public boolean existByEmail(String email) {
+		if(userRepository.findByEmail(email)==null)
+			return false;
+		return true;
+	}
 	
+	@Override
+	public UUID createDermatologist(UserRegistrationDTO entityDTO) {
+		Dermatologist dermatologist = CreateDermathologistFromDTO(entityDTO);
+		dermatologist.setPassword(passwordEncoder.encode(dermatologist.getId().toString()));
+		UnspecifiedDTO<AuthorityDTO> authority = authorityService.findByName("ROLE_DERMATHOLOGIST");
+		List<Authority> authorities = new ArrayList<Authority>();
+		authorities.add(new Authority(authority.Id,authority.EntityDTO.getName()));
+		dermatologist.setUserAuthorities(authorities);
+		
+		userRepository.save(dermatologist);
+		
+		return dermatologist.getId();
+	}
+	
+	private Dermatologist CreateDermathologistFromDTO(UserRegistrationDTO patientDTO) {
+		return new Dermatologist(patientDTO.getEmail(), passwordEncoder.encode(patientDTO.getPassword()), patientDTO.getName(), patientDTO.getSurname(), patientDTO.getAddress(), patientDTO.getPhoneNumber());
+	}
+	
+
+	@Override
+	public UUID createAdmin(UserRegistrationDTO entityDTO) {
+		SystemAdmin systemAdmin = CreateAdminFromDTO(entityDTO);
+		systemAdmin.setPassword(passwordEncoder.encode(systemAdmin.getId().toString()));
+		UnspecifiedDTO<AuthorityDTO> authority = authorityService.findByName("ROLE_SYSADMIN");
+		List<Authority> authorities = new ArrayList<Authority>();
+		authorities.add(new Authority(authority.Id,authority.EntityDTO.getName()));
+		systemAdmin.setUserAuthorities(authorities);
+		
+		userRepository.save(systemAdmin);
+		
+		return systemAdmin.getId();
+	}
+	
+	private SystemAdmin CreateAdminFromDTO(UserRegistrationDTO patientDTO) {
+		return new SystemAdmin(patientDTO.getEmail(), passwordEncoder.encode(patientDTO.getPassword()), patientDTO.getName(), patientDTO.getSurname(), patientDTO.getAddress(), patientDTO.getPhoneNumber());
+	}
+	
+	@Override
+	public UUID createPharmacyAdmin(UserRegistrationDTO entityDTO, UUID pharmacyId) {
+		Pharmacy pharmacy = pharmacyRepository.getOne(pharmacyId);
+		PharmacyAdmin pharmacyAdmin = CreatePharmacyAdminFromDTO(entityDTO, pharmacy);
+		pharmacyAdmin.setPassword(passwordEncoder.encode(pharmacyAdmin.getId().toString()));
+		UnspecifiedDTO<AuthorityDTO> authority = authorityService.findByName("ROLE_PHARMACYADMIN");
+		List<Authority> authorities = new ArrayList<Authority>();
+		authorities.add(new Authority(authority.Id,authority.EntityDTO.getName()));
+		pharmacyAdmin.setUserAuthorities(authorities);
+		
+		userRepository.save(pharmacyAdmin);
+		
+		return pharmacyAdmin.getId();
+	}
+
 	
 	@Override
 	public void updatePatient(UserChangeInfoDTO patientInfoChangeDTO) {
@@ -163,6 +230,11 @@ public class UserService implements IUserInterface{
 	
 	
 
+
+	private PharmacyAdmin CreatePharmacyAdminFromDTO(UserRegistrationDTO staffDTO,Pharmacy pharmacy) {
+		return new PharmacyAdmin(staffDTO.getEmail(), passwordEncoder.encode(staffDTO.getPassword()), staffDTO.getName(), staffDTO.getSurname(), staffDTO.getAddress(), staffDTO.getPhoneNumber(),pharmacy);
+	}
+	
 	@Override
 	public List<UnspecifiedDTO<AuthorityDTO>> findAll() {
 		// TODO Auto-generated method stub
@@ -192,6 +264,8 @@ public class UserService implements IUserInterface{
 		// TODO Auto-generated method stub
 		return false;
 	}
+
+	
 	
 	
 	
