@@ -11,14 +11,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.mail.MailException;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
 import show.isaBack.DTO.userDTO.AuthorityDTO;
+import show.isaBack.DTO.userDTO.ChangePasswordDTO;
 import show.isaBack.DTO.userDTO.PatientDTO;
 import show.isaBack.DTO.userDTO.PatientRegistrationDTO;
+import show.isaBack.DTO.userDTO.UserChangeInfoDTO;
 import show.isaBack.DTO.userDTO.UserDTO;
 import show.isaBack.emailService.EmailService;
 import show.isaBack.model.Authority;
@@ -124,6 +126,39 @@ public class UserService implements IUserInterface{
 		User user = userRepository.findByEmail(email);
 		
 		return user.getId();
+	}
+	
+	
+	
+	@Override
+	public void updatePatient(UserChangeInfoDTO patientInfoChangeDTO) {
+		
+		UUID logedId= getLoggedUserId();
+		Patient patient = patientRepository.getOne(logedId);		
+		
+		patient.setName(patientInfoChangeDTO.getName());
+		patient.setSurname(patientInfoChangeDTO.getSurname());
+		patient.setAddress(patientInfoChangeDTO.getAddress());
+		patient.setPhoneNumber(patientInfoChangeDTO.getPhoneNumber());
+			
+		patientRepository.save(patient);
+	}
+	
+	
+	@Override
+	public void changePassword(ChangePasswordDTO changePasswordDTO) {
+		
+		UUID id = getLoggedUserId();
+		User user = userRepository.getOne(id);
+		
+		authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(user.getEmail(), changePasswordDTO.getOldPassword()));
+		
+		if(changePasswordDTO.getNewPassword().isEmpty())
+			throw new IllegalArgumentException("Invalid new password");
+		
+		user.setPassword(passwordEncoder.encode(changePasswordDTO.getNewPassword()));
+		userRepository.save(user);
+		
 	}
 	
 	
