@@ -6,6 +6,7 @@ insert into Drug (id, name,producer_Name,fabric_Code) values ('2fe1cd8e-5839-11e
 
 --AUTHORITY
 insert into authority (id, name) values ('7852aa5e-7040-4d99-8255-537a0b226c75','ROLE_PATIENT');
+insert into authority (id, name) values ('09af8857-2f78-4eec-970f-059d3ed4589f','ROLE_DERMATOLOGIST');
 
 --PHARMACY
 

@@ -18,12 +18,14 @@ import org.springframework.stereotype.Service;
 
 import show.isaBack.DTO.userDTO.AuthorityDTO;
 import show.isaBack.DTO.userDTO.PatientDTO;
-import show.isaBack.DTO.userDTO.PatientRegistrationDTO;
 import show.isaBack.DTO.userDTO.UserDTO;
+import show.isaBack.DTO.userDTO.UserRegistrationDTO;
 import show.isaBack.emailService.EmailService;
 import show.isaBack.model.Authority;
+import show.isaBack.model.Dermatologist;
 import show.isaBack.model.Patient;
 import show.isaBack.model.User;
+import show.isaBack.repository.userRepository.DermatologistRepository;
 import show.isaBack.repository.userRepository.PatientRepository;
 import show.isaBack.repository.userRepository.UserRepository;
 import show.isaBack.serviceInterfaces.IUserInterface;
@@ -42,6 +44,8 @@ public class UserService implements IUserInterface{
 	@Autowired
 	private UserRepository userRepository;
 	@Autowired
+	private DermatologistRepository dermatologistRepository;
+	@Autowired
 	private EmailService emailService;
 	
 	@Autowired
@@ -52,7 +56,7 @@ public class UserService implements IUserInterface{
 	
 	
 	
-	public UUID createPatient(PatientRegistrationDTO patientRegistrationDTO) {
+	public UUID createPatient(UserRegistrationDTO patientRegistrationDTO) {
 		
 		
 		
@@ -91,7 +95,7 @@ public class UserService implements IUserInterface{
 	}
 	
 	
-	private Patient PatientCreation(PatientRegistrationDTO patientDTO) {
+	private Patient PatientCreation(UserRegistrationDTO patientDTO) {
 		return new Patient(patientDTO.getEmail(), passwordEncoder.encode(patientDTO.getPassword()), patientDTO.getName(), patientDTO.getSurname(), patientDTO.getAddress(), patientDTO.getPhoneNumber());
 	}
 	
@@ -126,7 +130,29 @@ public class UserService implements IUserInterface{
 		return user.getId();
 	}
 	
+	public boolean existByEmail(String email) {
+		if(userRepository.findByEmail(email)==null)
+			return false;
+		return true;
+	}
 	
+	@Override
+	public UUID createDermatologist(UserRegistrationDTO entityDTO) {
+		Dermatologist dermatologist = CreateDermathologistFromDTO(entityDTO);
+		dermatologist.setPassword(passwordEncoder.encode(dermatologist.getId().toString()));
+		UnspecifiedDTO<AuthorityDTO> authority = authorityService.findByName("ROLE_DERMATOLOGIST");
+		List<Authority> authorities = new ArrayList<Authority>();
+		authorities.add(new Authority(authority.Id,authority.EntityDTO.getName()));
+		dermatologist.setUserAuthorities(authorities);
+		
+		dermatologistRepository.save(dermatologist);
+		
+		return dermatologist.getId();
+	}
+	
+	private Dermatologist CreateDermathologistFromDTO(UserRegistrationDTO patientDTO) {
+		return new Dermatologist(patientDTO.getEmail(), passwordEncoder.encode(patientDTO.getPassword()), patientDTO.getName(), patientDTO.getSurname(), patientDTO.getAddress(), patientDTO.getPhoneNumber());
+	}
 
 	@Override
 	public List<UnspecifiedDTO<AuthorityDTO>> findAll() {
@@ -157,6 +183,8 @@ public class UserService implements IUserInterface{
 		// TODO Auto-generated method stub
 		return false;
 	}
+
+	
 	
 	
 	
