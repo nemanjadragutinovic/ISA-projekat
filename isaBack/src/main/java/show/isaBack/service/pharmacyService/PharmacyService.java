@@ -2,6 +2,7 @@ package show.isaBack.service.pharmacyService;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -9,6 +10,7 @@ import org.springframework.stereotype.Service;
 import show.isaBack.DTO.drugDTO.DrugDTO;
 import show.isaBack.DTO.pharmacyDTO.PharmacyDTO;
 import show.isaBack.DTO.pharmacyDTO.PharmacySearchDTO;
+import show.isaBack.DTO.userDTO.AuthorityDTO;
 import show.isaBack.model.Drug;
 import show.isaBack.model.Pharmacy;
 import show.isaBack.repository.pharmacyRepository.PharmacyRepository;
@@ -75,6 +77,46 @@ public class PharmacyService implements IPharmacyService{
 		}
 		return false;
 		
+	}
+
+
+
+	@Override
+	public List<UnspecifiedDTO<AuthorityDTO>> findAll() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+
+
+	@Override
+	public UnspecifiedDTO<PharmacyDTO> findById(UUID id) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+
+
+	@Override
+	public UUID create(PharmacyDTO entityDTO) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+
+
+	@Override
+	public void update(PharmacyDTO entityDTO, UUID id) {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+
+	@Override
+	public boolean delete(UUID id) {
+		// TODO Auto-generated method stub
+		return false;
 	}
 	
 	
