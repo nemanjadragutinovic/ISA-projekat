@@ -2,13 +2,26 @@ package show.isaBack.service.drugService;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import show.isaBack.DTO.drugDTO.DrugDTO;
+import show.isaBack.DTO.drugDTO.DrugInstanceDTO;
+import show.isaBack.DTO.drugDTO.IngredientDTO;
+import show.isaBack.DTO.drugDTO.ManufacturerDTO;
+import show.isaBack.DTO.pharmacyDTO.PharmacyDTO;
+import show.isaBack.DTO.userDTO.AuthorityDTO;
+import show.isaBack.interfaceRepository.drugRepository.DrugInstanceRepository;
 import show.isaBack.interfaceRepository.drugRepository.DrugRepository;
+import show.isaBack.interfaceRepository.drugRepository.IngredientRepository;
+import show.isaBack.interfaceRepository.drugRepository.ManufacturerRepository;
 import show.isaBack.model.Drug;
+import show.isaBack.model.DrugInstance;
+import show.isaBack.model.Ingredient;
+import show.isaBack.model.Manufacturer;
+import show.isaBack.model.Pharmacy;
 import show.isaBack.serviceInterfaces.IDrugService;
 import show.isaBack.unspecifiedDTO.UnspecifiedDTO;
 
@@ -18,6 +31,15 @@ public class DrugService implements IDrugService{
 
 	@Autowired
 	private DrugRepository drugRepository;
+	
+	@Autowired
+	private DrugInstanceRepository drugInstanceRepository;
+	
+	@Autowired
+	private ManufacturerRepository manufacturerRepository;
+	
+	@Autowired
+	private IngredientRepository ingredientRepository;
 	
 	@Override
 	public List<UnspecifiedDTO<DrugDTO>> getAllDrugs() {
@@ -68,6 +90,97 @@ public class DrugService implements IDrugService{
 		}
 		return false;
 		
+	}
+	
+	@Override
+	public UUID addDrugReplacement(UUID id, UUID replacement_id) {
+		
+		DrugInstance drugInstance = drugInstanceRepository.getOne(id);
+		DrugInstance drugReplacementInstance = drugInstanceRepository.getOne(replacement_id);
+		
+		drugInstance.addReplaceDrug(drugReplacementInstance);
+		
+		drugInstanceRepository.save(drugInstance);
+		
+		return id;
+	}
+	
+	@Override
+	public List<UnspecifiedDTO<ManufacturerDTO>>  findDrugManufacturers() {
+			
+			List<UnspecifiedDTO<ManufacturerDTO>> manufacturers = new ArrayList<UnspecifiedDTO<ManufacturerDTO>>();
+			manufacturers = getAllManufacturer();
+			
+			return manufacturers;
+	}
+	
+	private List<UnspecifiedDTO<ManufacturerDTO>> getAllManufacturer() {
+			
+		List<Manufacturer> man = manufacturerRepository.findAll();
+		List<UnspecifiedDTO<ManufacturerDTO>> manDTO = new ArrayList<UnspecifiedDTO<ManufacturerDTO>>();
+				
+		
+		for (Manufacturer currentMan : man) 
+		{
+			ManufacturerDTO pharmacyDTO= new ManufacturerDTO(currentMan.getName());				
+			manDTO.add(new UnspecifiedDTO<ManufacturerDTO>(currentMan.getId(),pharmacyDTO));
+		}
+		
+		
+		return manDTO;
+	}
+	
+	@Override
+	public UUID addDrugManufacturer(UUID id, UUID manufacturerId) {
+		DrugInstance drugInstance = drugInstanceRepository.getOne(id);
+		Manufacturer manufacturer = manufacturerRepository.getOne(manufacturerId);
+		
+		drugInstance.setManufacturer(manufacturer);
+		
+		drugInstanceRepository.save(drugInstance);
+		
+		return id;
+	}
+	
+	@Override
+	public UUID addDrugIngredients(UUID id, IngredientDTO entityDTO) {
+		DrugInstance drugInstance = drugInstanceRepository.getOne(id);
+		Ingredient ingredient = ingredientRepository.findByName(entityDTO.getName());
+		drugInstance.addIngredient(ingredient);
+		
+		drugInstanceRepository.save(drugInstance);
+		
+		return id;
+	}
+
+	@Override
+	public List<UnspecifiedDTO<AuthorityDTO>> findAll() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public UnspecifiedDTO<DrugInstanceDTO> findById(UUID id) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public UUID create(DrugInstanceDTO entityDTO) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void update(DrugInstanceDTO entityDTO, UUID id) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public boolean delete(UUID id) {
+		// TODO Auto-generated method stub
+		return false;
 	}
 
 }

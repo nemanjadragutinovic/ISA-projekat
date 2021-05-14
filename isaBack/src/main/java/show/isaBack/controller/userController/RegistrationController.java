@@ -90,5 +90,18 @@ public class RegistrationController {
 		
 		return new ResponseEntity<>(userId, HttpStatus.CREATED);
 	}
+	
+	@PostMapping("/signup-supplier")
+	
+	public ResponseEntity<UUID> addSupplier(@RequestBody UserRegistrationDTO userRequest, UriComponentsBuilder ucBuilder) {
+
+		if (this.userService.existByEmail(userRequest.getEmail())) {
+			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+		}
+
+		UUID userId = userService.createSupplier(userRequest);
+		
+		return new ResponseEntity<>(userId, HttpStatus.CREATED);
+	}
 
 }
