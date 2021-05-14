@@ -44,6 +44,7 @@ class UserProfile extends Component {
 		emptyNewPasswordRepeatedError: "none",
 		newPasswordAndRepeatedNotSameError: "none",
 
+		
 		userAllergens: [],
 		hiddenAllergenSuccessfulAlert: true,
 		successfulAllergenHeader: "",
@@ -163,7 +164,8 @@ class UserProfile extends Component {
 
 						console.log(res.data.EntityDTO.email)
 						console.log(res.data.EntityDTO.name)
-
+						
+					
                         this.setState({
 							id: res.data.Id,
 							email: res.data.EntityDTO.email,
@@ -171,10 +173,16 @@ class UserProfile extends Component {
 							surname: res.data.EntityDTO.surname,
 							address: res.data.EntityDTO.address,
 							phoneNumber: res.data.EntityDTO.phoneNumber,
-							userAllergens: res.data.EntityDTO.userAllergens
+							userAllergens: res.data.EntityDTO.allergens,
+							
+
 							
 						});
-		
+						
+						
+
+						console.log(this.state.userAllergens)
+
 					}
 				})
 				.catch((err) => {
@@ -369,6 +377,7 @@ class UserProfile extends Component {
 		console.log(allergenName);
 		let patientsAllergenDTO = { allergenName: allergenName, patientId: this.state.id };
 		console.log(patientsAllergenDTO);
+		
 		Axios.post(API_URL + "/users/addPatientsAllergen", patientsAllergenDTO, {
 			validateStatus: () => true,
 			headers: { Authorization: GetAuthorisation() },
@@ -395,15 +404,69 @@ class UserProfile extends Component {
 						successfulAllergenHeader: "Successful",
 						successfulAllergenMessage: "Allergen added.",
 					});
+
+					this.componentDidMount()
+				}
+			})
+			.catch((err) => {
+				console.log(err);
+			});
+
+
+	};
+
+
+
+
+
+
+	handleRemoveAllergen = (allergenName) => {
+		this.setState({
+			hiddenAllergenSuccessfulAlert: true,
+			successfulAllergenHeader: "",
+			successfulAllergenMessage: "",
+			hiddenAllergenErrorAlert: true,
+			errorAllergenHeader: "",
+			errorAllergenMessage: "",
+		});
+		console.log(allergenName);
+		let patientsAllergenDTO = { allergenName: allergenName, patientId: this.state.id };
+		console.log(patientsAllergenDTO);
+
+		Axios.put(API_URL + "/users/removePatientsAllergen", patientsAllergenDTO, {
+			validateStatus: () => true,
+			headers: { Authorization: GetAuthorisation() },
+		})
+			.then((res) => {
+				if (res.status === 400) {
+					this.setState({
+						hiddenAllergenErrorAlert: false,
+						errorAllergenHeader: "Bad request",
+						errorAllergenMessage: "Bad request when removing allergen.",
+					});
+				} else if (res.status === 500) {
+					this.setState({
+						hiddenAllergenErrorAlert: false,
+						errorAllergenHeader: "Internal server error",
+						errorAllergenMessage: "Server error.",
+
+					});
+				} else if (res.status === 200) {
+					
+					this.setState({
+						
+						hiddenAllergenSuccessfulAlert: false,
+						successfulAllergenHeader: "Successful",
+						successfulAllergenMessage: "Allergen removed.",
+					});
+
+					this.componentDidMount()
 				}
 			})
 			.catch((err) => {
 				console.log(err);
 			});
 	};
-
-
-
 
 	render() {
 
@@ -615,7 +678,7 @@ class UserProfile extends Component {
 					handleCloseAlertPassword={this.handleCloseAlertPassword}
 				/>
 
-					<AllergensModal
+				<AllergensModal
 					hiddenAllergenSuccessfulAlert={this.state.hiddenAllergenSuccessfulAlert}
 					successfulAllergenHeader={this.state.successfulAllergenHeader}
 					successfulAllergenMessage={this.state.successfulAllergenMessage}
@@ -628,8 +691,8 @@ class UserProfile extends Component {
 
 					userAllergens={this.state.userAllergens}
 					show={this.state.openAllergenModal}
-					onAllergenRemove={this.handleAlergenRemove}
-					onAllergenAdd={this.handleAddAllergen}
+					RemoveAllergen={this.handleRemoveAllergen}
+					AddAllergen={this.handleAddAllergen}
 					onCloseModal={this.handleAllergensModalClose}
 					header="Patients allergens"
 					subheader="Remove patients allergens"

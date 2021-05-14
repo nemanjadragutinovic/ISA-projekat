@@ -29,6 +29,8 @@ public class Patient extends User {
     private List<Allergen> allergens;
 	
 	
+	
+
 	public Patient() {
 		super();
 	}
@@ -49,12 +51,35 @@ public class Patient extends User {
 		
 	}
 	
+	
+	public List<Allergen> getAllergens() {
+		return allergens;
+	}
+
+	public void setAllergens(List<Allergen> allergens) {
+		this.allergens = allergens;
+	}
+	
 	public void addAllergen(Allergen allergen) {
 		
 		if(allergens == null)
 			this.allergens = new ArrayList<Allergen>();
 		
 		this.allergens.add(allergen);
+	}
+	
+	public void removeAllergen(String allergenName) {
+		
+
+		if(allergens == null)
+			return;
+		
+		for (Allergen currentAllergen : this.allergens) {
+			if(currentAllergen.getName().equals(allergenName)) {
+				this.allergens.remove(currentAllergen);
+				break;
+			}
+		}
 	}
 
 }

@@ -17,7 +17,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-
+import show.isaBack.DTO.drugDTO.AllergenDTO;
 import show.isaBack.DTO.userDTO.AuthorityDTO;
 import show.isaBack.DTO.userDTO.ChangePasswordDTO;
 import show.isaBack.DTO.userDTO.PatientDTO;
@@ -88,10 +88,8 @@ public class UserService implements IUserInterface{
 		try {
 			emailService.sendSignUpNotificaitionAsync(patient);
 		} catch (MailException | InterruptedException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
-		} catch (MessagingException e) {
-			// TODO Auto-generated catch block
+		} catch (MessagingException e) {			
 			e.printStackTrace();
 		}
 		
@@ -128,11 +126,38 @@ public class UserService implements IUserInterface{
 		if(patient==null) {
 			System.out.println("pacijent je null");
 		}
-		System.out.println(patient.getEmail().toString());
-		
+
 		return new UnspecifiedDTO<PatientDTO>(patientId , new PatientDTO(patient.getEmail(), patient.getName(), patient.getSurname(), patient.getAddress(),
-				patient.getPhoneNumber(), patient.isActive(), patient.getUserAuthorities()));
+				patient.getPhoneNumber(), patient.isActive(), patient.getUserAuthorities(),MapAllergenToAllergenDTO(patient.getAllergens())));
 	}
+	
+	
+	public List<UnspecifiedDTO<AllergenDTO>> MapAllergenToAllergenDTO(List<Allergen> allergens){
+		
+		List<UnspecifiedDTO<AllergenDTO>> allergeListDTO = new ArrayList<UnspecifiedDTO<AllergenDTO>>();
+				
+		for (Allergen allergen : allergens) {
+			if(allergen == null) throw new IllegalArgumentException();
+			
+			allergeListDTO.add(new UnspecifiedDTO<AllergenDTO>(allergen.getId(), new AllergenDTO(allergen.getName())));
+						
+		}
+		
+		return allergeListDTO;
+	}
+	
+	
+	
+	@Override
+	public List<UnspecifiedDTO<AllergenDTO>> getAllPatientsAllergens() {
+		
+		UnspecifiedDTO<PatientDTO> patient = getLoggedPatient();
+				
+		return patient.EntityDTO.getAllergens();
+	}
+	
+	
+	
 	
 	
 	@Override
@@ -237,6 +262,12 @@ public class UserService implements IUserInterface{
 	}
 	
 	
+
+	private PharmacyAdmin CreatePharmacyAdminFromDTO(UserRegistrationDTO staffDTO,Pharmacy pharmacy) {
+		return new PharmacyAdmin(staffDTO.getEmail(), passwordEncoder.encode(staffDTO.getPassword()), staffDTO.getName(), staffDTO.getSurname(), staffDTO.getAddress(), staffDTO.getPhoneNumber(),pharmacy);
+	}
+	
+	
 	@Override
 	public void addAllergenForPatient(PatientsAllergenDTO patientsAllergenDTO) {
 		
@@ -259,11 +290,23 @@ public class UserService implements IUserInterface{
 	}
 	
 	
+	
+	@Override
+	public void removeAllergenForPatient(PatientsAllergenDTO patientsAllergenDTO) {
 
+			Patient patient = patientRepository.getOne(patientsAllergenDTO.getPatientId());
+				 		
+			if(patientsAllergenDTO.getAllergenName().isEmpty())
+				throw new IllegalArgumentException("Invalid allergen name");
 
-	private PharmacyAdmin CreatePharmacyAdminFromDTO(UserRegistrationDTO staffDTO,Pharmacy pharmacy) {
-		return new PharmacyAdmin(staffDTO.getEmail(), passwordEncoder.encode(staffDTO.getPassword()), staffDTO.getName(), staffDTO.getSurname(), staffDTO.getAddress(), staffDTO.getPhoneNumber(),pharmacy);
+			patient.removeAllergen(patientsAllergenDTO.getAllergenName());
+
+			patientRepository.save(patient);
+
+		
+		
 	}
+	
 	
 	@Override
 	public List<UnspecifiedDTO<AuthorityDTO>> findAll() {

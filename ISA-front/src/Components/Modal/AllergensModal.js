@@ -67,7 +67,7 @@ class AllergensModal extends Component {
                             </div>
                             
                             <div  className="mr-2">
-                            <Button onClick={() => this.props.onAllergenAdd(this.state.newAllergen)} style={{ width: "100%" }} variant="primary">
+                            <Button onClick={() => this.props.AddAllergen(this.state.newAllergen)} style={{ width: "100%" }} variant="primary">
 												Add allergen
 							</Button>
                             </div>
@@ -84,12 +84,12 @@ class AllergensModal extends Component {
 							<td className="col-md-1"></td>
 						</thead>
 						<tbody>
-							{this.state.allAllergens.map((allergen) => (
+							{this.props.userAllergens.map((allergen) => (
 								<tr id={allergen.Id} key={allergen.Id}>
 									<td>{allergen.EntityDTO.name}</td>
 									<td>
 										
-										<Button onClick={() => this.props.onAllergenRemove(allergen)} variant="danger" style={{ width: "100%" }}>
+										<Button onClick={() => this.props.RemoveAllergen(allergen.EntityDTO.name)} variant="danger" >
 											Remove
 										</Button>
 										
