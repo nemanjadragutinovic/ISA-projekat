@@ -26,6 +26,7 @@ public interface IUserInterface extends IService<UserDTO, UnspecifiedDTO<UserDTO
 
 	public void updatePatient(UserChangeInfoDTO patientInfoChangeDTO);
 	public void changePassword(ChangePasswordDTO changePasswordDTO);
+	public UUID createSupplier(UserRegistrationDTO entityDTO);
 
 
 }

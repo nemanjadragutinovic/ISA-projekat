@@ -28,6 +28,7 @@ import show.isaBack.model.Dermatologist;
 import show.isaBack.model.Patient;
 import show.isaBack.model.Pharmacy;
 import show.isaBack.model.PharmacyAdmin;
+import show.isaBack.model.Supplier;
 import show.isaBack.model.SystemAdmin;
 import show.isaBack.model.User;
 import show.isaBack.repository.pharmacyRepository.PharmacyRepository;
@@ -233,6 +234,24 @@ public class UserService implements IUserInterface{
 
 	private PharmacyAdmin CreatePharmacyAdminFromDTO(UserRegistrationDTO staffDTO,Pharmacy pharmacy) {
 		return new PharmacyAdmin(staffDTO.getEmail(), passwordEncoder.encode(staffDTO.getPassword()), staffDTO.getName(), staffDTO.getSurname(), staffDTO.getAddress(), staffDTO.getPhoneNumber(),pharmacy);
+	}
+	
+	@Override
+	public UUID createSupplier(UserRegistrationDTO entityDTO) {
+		Supplier supp = CreateSupplierFromDTO(entityDTO);
+		supp.setPassword(passwordEncoder.encode(supp.getId().toString()));
+		UnspecifiedDTO<AuthorityDTO> authority = authorityService.findByName("ROLE_SUPPLIER");
+		List<Authority> authorities = new ArrayList<Authority>();
+		authorities.add(new Authority(authority.Id,authority.EntityDTO.getName()));
+		supp.setUserAuthorities(authorities);
+		
+		userRepository.save(supp);
+		
+		return supp.getId();
+	}
+	
+	private Supplier CreateSupplierFromDTO(UserRegistrationDTO patientDTO) {
+		return new Supplier(patientDTO.getEmail(), passwordEncoder.encode(patientDTO.getPassword()), patientDTO.getName(), patientDTO.getSurname(), patientDTO.getAddress(), patientDTO.getPhoneNumber());
 	}
 	
 	@Override
