@@ -1,6 +1,7 @@
 package show.isaBack.controller.pharmacyController;
 
 import java.util.List;
+import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -51,6 +52,13 @@ public class PharmacyController {
 		catch (Exception e) {
 			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
+	}
+	
+	@PostMapping
+//	@PreAuthorize("hasRole('SYSADMIN')")
+	public ResponseEntity<UUID> addPharmacy(@RequestBody PharmacyDTO pharmacyDTO) {
+		
+		return new ResponseEntity<>(pharmacyService.create(pharmacyDTO) ,HttpStatus.CREATED);
 	}
 
 }

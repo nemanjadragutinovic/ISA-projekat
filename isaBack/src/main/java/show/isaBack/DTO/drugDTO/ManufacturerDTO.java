@@ -1,14 +1,12 @@
 package show.isaBack.DTO.drugDTO;
 
-public class AllergenDTO {
+public class ManufacturerDTO {
 
-
-	private String name;
+private String name;
 	
-	public AllergenDTO() { }
+	public ManufacturerDTO() { }
 	
-
-	public AllergenDTO(String name) {
+	public ManufacturerDTO(String name) {
 		super();
 		this.name = name;
 	}
@@ -20,5 +18,4 @@ public class AllergenDTO {
 	public void setName(String name) {
 		this.name = name;
 	}
-
 }
