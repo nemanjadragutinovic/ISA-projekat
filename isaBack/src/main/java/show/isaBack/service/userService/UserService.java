@@ -193,7 +193,8 @@ public class UserService implements IUserInterface{
 	}
 	
 	private Dermatologist CreateDermathologistFromDTO(UserRegistrationDTO patientDTO) {
-		return new Dermatologist(patientDTO.getEmail(), passwordEncoder.encode(patientDTO.getPassword()), patientDTO.getName(), patientDTO.getSurname(), patientDTO.getAddress(), patientDTO.getPhoneNumber());
+		List<Pharmacy> pharmacies= new ArrayList<Pharmacy>();
+		return new Dermatologist(patientDTO.getEmail(), passwordEncoder.encode(patientDTO.getPassword()), patientDTO.getName(), patientDTO.getSurname(), patientDTO.getAddress(), patientDTO.getPhoneNumber(),pharmacies);
 	}
 	
 
