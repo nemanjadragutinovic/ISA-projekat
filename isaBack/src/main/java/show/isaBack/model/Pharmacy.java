@@ -13,8 +13,7 @@ import javax.persistence.Version;
 @Entity
 public class Pharmacy {
 
-	@Version
-	private Long version;
+	
 	
 	@Id
 	private UUID id;
@@ -82,13 +81,7 @@ public class Pharmacy {
 		this.consultationPrice = consultationPrice;
 	}
 	
-	public Long getVersion() {
-		return version;
-	}
-
-	public void setVersion(Long version) {
-		this.version = version;
-	}
+	
 	
 	
 	

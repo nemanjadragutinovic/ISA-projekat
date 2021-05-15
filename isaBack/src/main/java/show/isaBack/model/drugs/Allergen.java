@@ -1,10 +1,16 @@
-package show.isaBack.model;
+package show.isaBack.model.drugs;
 
 import java.util.UUID;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
+import show.isaBack.model.Patient;
+import antlr.collections.List;
 
 @Entity
 public class Allergen {
@@ -14,6 +20,8 @@ public class Allergen {
 	
 	@Column(name = "name", nullable = false, unique = true)
 	private String name;
+	
+	
 	
 	public Allergen() {}
 	
@@ -39,4 +47,5 @@ public class Allergen {
 	public void setName(String name) {
 		this.name = name;
 	}
+	
 }

@@ -1,11 +1,12 @@
 package show.isaBack.serviceInterfaces;
 
+import java.util.List;
 import java.util.UUID;
 
+import show.isaBack.DTO.drugDTO.AllergenDTO;
 import show.isaBack.DTO.userDTO.ChangePasswordDTO;
 import show.isaBack.DTO.userDTO.PatientDTO;
-
-
+import show.isaBack.DTO.userDTO.PatientsAllergenDTO;
 import show.isaBack.DTO.userDTO.UserChangeInfoDTO;
 
 import show.isaBack.DTO.userDTO.UserDTO;
@@ -26,7 +27,15 @@ public interface IUserInterface extends IService<UserDTO, UnspecifiedDTO<UserDTO
 
 	public void updatePatient(UserChangeInfoDTO patientInfoChangeDTO);
 	public void changePassword(ChangePasswordDTO changePasswordDTO);
+
+	
+	public void addAllergenForPatient(PatientsAllergenDTO patientsAllergenDTO);
+	public void removeAllergenForPatient(PatientsAllergenDTO patientsAllergenDTO);
+	public List<UnspecifiedDTO<AllergenDTO>> getAllPatientsAllergens();
+	
+
 	public UUID createSupplier(UserRegistrationDTO entityDTO);
+
 
 
 }
