@@ -14,8 +14,8 @@ insert into authority (id, name) values ('ea16767c-2c1f-49fb-ac98-c7739c0036e8',
 
 --PHARMACY
 
-insert into pharmacy (id, name, city, street,country, post_code,description) values ('775d8e36-9859-11eb-a8b3-0242ac130003', 'apoteka Jankovic','Novi Sad','Futoski put 54','Serbia', '21000', 'Zdravlje je prioritet!');            
-insert into pharmacy (id, name, city, street,country, post_code,description) values ('775d9322-9859-11eb-a8b3-0242ac130003', 'Benu','Novi Sad','Vojvodjanske brigade 30','Serbia', '21000', 'U svemu najbolji!');  
+insert into pharmacy (id, name, city, street,consultation_price,country, post_code,description) values ('775d8e36-9859-11eb-a8b3-0242ac130003', 'apoteka Jankovic','Novi Sad','Futoski put 54',1200,'Serbia', '21000', 'Zdravlje je prioritet!');            
+insert into pharmacy (id, name, city, street,consultation_price,country, post_code,description) values ('775d9322-9859-11eb-a8b3-0242ac130003', 'Benu','Novi Sad','Vojvodjanske brigade 30',1500,'Serbia', '21000', 'U svemu najbolji!');  
 
 
 --USERS
