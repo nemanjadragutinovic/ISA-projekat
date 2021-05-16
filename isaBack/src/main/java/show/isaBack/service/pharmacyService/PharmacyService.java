@@ -2,6 +2,9 @@ package show.isaBack.service.pharmacyService;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import java.util.Optional;
+
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,17 +30,16 @@ public class PharmacyService implements IPharmacyService{
 	
 	@Override
 	public List<UnspecifiedDTO<PharmacyDTO>> getAllPharmacies() {
-		 				
+		 	
 		List<Pharmacy> pharmacies = pharmacyRepository.findAll();
+		
 		List<UnspecifiedDTO<PharmacyDTO>> pharmacyDTOList = new ArrayList<UnspecifiedDTO<PharmacyDTO>>();
 				
-		
 		for (Pharmacy currentPharmacy : pharmacies) 
 		{
-			PharmacyDTO pharmacyDTO= new PharmacyDTO(currentPharmacy);				
+			PharmacyDTO pharmacyDTO= new PharmacyDTO(currentPharmacy);	
 			pharmacyDTOList.add(new UnspecifiedDTO<PharmacyDTO>(currentPharmacy.getId(),pharmacyDTO));
 		}
-		
 		
 		return pharmacyDTOList;
 	}

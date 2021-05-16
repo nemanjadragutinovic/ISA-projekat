@@ -7,7 +7,12 @@ import RegisterPage from "./Components/RegistrationPage"
 import LoginPage from "./Components/LoginPage"
 import UserProfilePage from "./Pages/UserProfile"
 import registerStaff from "./Components/adminRegistration/registerStaff"
+
 import RegisterPharmacies from './Components/adminRegistration/RegisterPharmacies';
+
+import HomePageForDermatologistAppointments from "./Pages/HomePageForDermatologistAppointments"
+import DermatologistFreeAppointment from "./Pages/DermatologistFreeAppointment"
+
 
 
 import {
@@ -33,6 +38,8 @@ function App() {
         <Route  to ="/userProfile" path ="/userProfile"  component={UserProfilePage}/>
         <Route  to ="/registerStaff" path ="/registerStaff"  component={registerStaff}/>
         <Route  to ="/registerPharmacies" path ="/registerPharmacies"  component={RegisterPharmacies}/>
+        <Route  to ="/dermatologistAppointment" path ="/dermatologistAppointment"  component={HomePageForDermatologistAppointments}/>
+        <Route path="/dermatologistFreeAppointment/:id" children={<DermatologistFreeAppointment />} />
 
         </Switch>
     </Router>

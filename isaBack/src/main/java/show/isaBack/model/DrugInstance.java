@@ -16,6 +16,7 @@ import javax.persistence.JoinColumn;
 
 import show.isaBack.DTO.drugDTO.DrugKind;
 import show.isaBack.DTO.drugDTO.FormatDrug;
+import show.isaBack.model.drugs.Allergen;
 
 @Entity
 public class DrugInstance extends Drug {

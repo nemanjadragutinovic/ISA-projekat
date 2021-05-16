@@ -76,9 +76,9 @@ class Header extends React.Component{
                 </Link>
             
                 <ReactBootStrap.NavDropdown alignRight title="Apointment" id="collasible-nav-dropdown">
-                    <ReactBootStrap.NavDropdown.Item href="/pharmacistApointment">Pharmacist</ReactBootStrap.NavDropdown.Item>
+                    <ReactBootStrap.NavDropdown.Item href="/pharmacistAppointment">Pharmacist</ReactBootStrap.NavDropdown.Item>
                     <ReactBootStrap.NavDropdown.Divider />
-                    <ReactBootStrap.NavDropdown.Item href="/dermatologistApointment">Dermatologist</ReactBootStrap.NavDropdown.Item>
+                    <ReactBootStrap.NavDropdown.Item href="/dermatologistAppointment">Dermatologist</ReactBootStrap.NavDropdown.Item>
                     
                 </ReactBootStrap.NavDropdown>
 

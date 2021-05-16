@@ -6,6 +6,9 @@ import PharmacyLogoPicture from "../Images/pharmacyLogo.jpg" ;
 import UnsuccessfulAlert from "../Components/Alerts/UnsuccessfulAlert";
 import SuccessfulAlert from "../Components/Alerts/SuccessfulAlert";
 import ChangePasswordModal from "../Components/Modal/ChangePasswordModal";
+import AllergensModal from "../Components/Modal/AllergensModal";
+
+
 
 const API_URL="http://localhost:8080";
 
@@ -40,6 +43,16 @@ class UserProfile extends Component {
 		emptyNewPasswordError: "none",
 		emptyNewPasswordRepeatedError: "none",
 		newPasswordAndRepeatedNotSameError: "none",
+
+		
+		userAllergens: [],
+		hiddenAllergenSuccessfulAlert: true,
+		successfulAllergenHeader: "",
+		successfulAllergenMessage: "",
+		hiddenAllergenErrorAlert: true,
+		errorAllergenHeader: "",
+		errorAllergenMessage: "",
+		openAllergenModal: false,
 		
 	};
 
@@ -102,6 +115,34 @@ class UserProfile extends Component {
 		this.setState({ hiddenPasswordErrorAlert: true });
 	};
 
+	handleAllergenModal = () => {
+		this.setState({ hiddenEditInfo: true, openAllergenModal: true });
+	};
+
+
+	
+	handleAllergensModalClose = () => {
+		this.setState({
+			
+			hiddenAllergenSuccessfulAlert: true,
+			successfulAllergenHeader: "",
+			successfulAllergenMessage: "",
+			hiddenAllergenErrorAlert: true,
+			errorAllergenHeader: "",
+			errorAllergenMessage: "",
+			openAllergenModal: false,
+		});
+	};
+
+	handleCloseAllergenAlertError = () => {
+		this.setState({ hiddenAllergenErrorAlert: true });
+	};
+
+	handleCloseAllergenAlertSuccessful = () => {
+		this.setState({ hiddenAllergenSuccessfulAlert: true });
+	};
+
+
 	componentDidMount() {
 		if (!this.hasRole("ROLE_PATIENT")) {
 			this.setState({ redirect: true });
@@ -123,7 +164,8 @@ class UserProfile extends Component {
 
 						console.log(res.data.EntityDTO.email)
 						console.log(res.data.EntityDTO.name)
-
+						
+					
                         this.setState({
 							id: res.data.Id,
 							email: res.data.EntityDTO.email,
@@ -131,9 +173,16 @@ class UserProfile extends Component {
 							surname: res.data.EntityDTO.surname,
 							address: res.data.EntityDTO.address,
 							phoneNumber: res.data.EntityDTO.phoneNumber,
+							userAllergens: res.data.EntityDTO.allergens,
+							
+
 							
 						});
-		
+						
+						
+
+						console.log(this.state.userAllergens)
+
 					}
 				})
 				.catch((err) => {
@@ -316,6 +365,108 @@ class UserProfile extends Component {
 	};
 
 
+	handleAddAllergen = (allergenName) => {
+		this.setState({
+			hiddenAllergenSuccessfulAlert: true,
+			successfulAllergenHeader: "",
+			successfulAllergenMessage: "",
+			hiddenAllergenErrorAlert: true,
+			errorAllergenHeader: "",
+			errorAllergenMessage: "",
+		});
+		console.log(allergenName);
+		let patientsAllergenDTO = { allergenName: allergenName, patientId: this.state.id };
+		console.log(patientsAllergenDTO);
+		
+		Axios.post(API_URL + "/users/addPatientsAllergen", patientsAllergenDTO, {
+			validateStatus: () => true,
+			headers: { Authorization: GetAuthorisation() },
+		})
+			.then((res) => {
+				if (res.status === 400) {
+					this.setState({
+						hiddenAllergenErrorAlert: false,
+						errorAllergenHeader: "Bad request",
+						errorAllergenMessage: "Bad request when adding allergen.",
+					});
+				} else if (res.status === 500) {
+					this.setState({
+						hiddenAllergenErrorAlert: false,
+						errorAllergenHeader: "Internal server error",
+						errorAllergenMessage: "Server error.",
+
+					});
+				} else if (res.status === 200) {
+					
+					this.setState({
+						
+						hiddenAllergenSuccessfulAlert: false,
+						successfulAllergenHeader: "Successful",
+						successfulAllergenMessage: "Allergen added.",
+					});
+
+					this.componentDidMount()
+				}
+			})
+			.catch((err) => {
+				console.log(err);
+			});
+
+
+	};
+
+
+
+
+
+
+	handleRemoveAllergen = (allergenName) => {
+		this.setState({
+			hiddenAllergenSuccessfulAlert: true,
+			successfulAllergenHeader: "",
+			successfulAllergenMessage: "",
+			hiddenAllergenErrorAlert: true,
+			errorAllergenHeader: "",
+			errorAllergenMessage: "",
+		});
+		console.log(allergenName);
+		let patientsAllergenDTO = { allergenName: allergenName, patientId: this.state.id };
+		console.log(patientsAllergenDTO);
+
+		Axios.put(API_URL + "/users/removePatientsAllergen", patientsAllergenDTO, {
+			validateStatus: () => true,
+			headers: { Authorization: GetAuthorisation() },
+		})
+			.then((res) => {
+				if (res.status === 400) {
+					this.setState({
+						hiddenAllergenErrorAlert: false,
+						errorAllergenHeader: "Bad request",
+						errorAllergenMessage: "Bad request when removing allergen.",
+					});
+				} else if (res.status === 500) {
+					this.setState({
+						hiddenAllergenErrorAlert: false,
+						errorAllergenHeader: "Internal server error",
+						errorAllergenMessage: "Server error.",
+
+					});
+				} else if (res.status === 200) {
+					
+					this.setState({
+						
+						hiddenAllergenSuccessfulAlert: false,
+						successfulAllergenHeader: "Successful",
+						successfulAllergenMessage: "Allergen removed.",
+					});
+
+					this.componentDidMount()
+				}
+			})
+			.catch((err) => {
+				console.log(err);
+			});
+	};
 
 	render() {
 
@@ -466,7 +617,7 @@ class UserProfile extends Component {
 												</button>
 											</div>	
 
-												<div className="mr-2" hidden={!this.state.hiddenEditInfo}>
+											<div className="mr-2" hidden={!this.state.hiddenEditInfo}>
 												<button
 													onClick={this.handleChangePasswordModalOpen}
 													className="btn btn-outline-primary btn-xl"
@@ -475,7 +626,20 @@ class UserProfile extends Component {
 												>
 													Change password
 												</button>
-											</div>										
+											</div>
+											
+
+											<div className="mr-2" hidden={!this.state.hiddenEditInfo}>
+												<button
+													onClick={this.handleAllergenModal}
+													className="btn btn-outline-primary btn-xl"
+													id="sendMessageButton"
+													type="button"
+												>
+													Allergens
+												</button>
+											</div>
+																					
 										</div>
 									
 								</div>
@@ -514,6 +678,27 @@ class UserProfile extends Component {
 					handleCloseAlertPassword={this.handleCloseAlertPassword}
 				/>
 
+				<AllergensModal
+					hiddenAllergenSuccessfulAlert={this.state.hiddenAllergenSuccessfulAlert}
+					successfulAllergenHeader={this.state.successfulAllergenHeader}
+					successfulAllergenMessage={this.state.successfulAllergenMessage}
+					handleCloseAllergenAlertSuccessful={this.handleCloseAllergenAlertSuccessful}
+
+					hiddenAllergenErrorAlert={this.state.hiddenAllergenErrorAlert}
+					errorAllergenHeader={this.state.errorAllergenHeader}
+					errorAllergenMessage={this.state.errorAllergenMessage}
+					handleCloseAllergenAlertError={this.handleCloseAllergenAlertError}
+
+					userAllergens={this.state.userAllergens}
+					show={this.state.openAllergenModal}
+					RemoveAllergen={this.handleRemoveAllergen}
+					AddAllergen={this.handleAddAllergen}
+					onCloseModal={this.handleAllergensModalClose}
+					header="Patients allergens"
+					subheader="Remove patients allergens"
+
+
+				/>
 
 
             </React.Fragment>

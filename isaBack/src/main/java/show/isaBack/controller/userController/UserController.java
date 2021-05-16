@@ -1,5 +1,7 @@
 package show.isaBack.controller.userController;
 
+import java.util.List;
+
 import javax.persistence.EntityNotFoundException;
 import javax.servlet.http.HttpServletRequest;
 
@@ -17,9 +19,14 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+
+import show.isaBack.DTO.drugDTO.AllergenDTO;
 import show.isaBack.DTO.userDTO.ChangePasswordDTO;
 import show.isaBack.DTO.userDTO.PatientDTO;
+import show.isaBack.DTO.userDTO.PatientsAllergenDTO;
 import show.isaBack.DTO.userDTO.UserChangeInfoDTO;
+import show.isaBack.model.drugs.Allergen;
 import show.isaBack.security.TokenUtils;
 import show.isaBack.service.userService.UserService;
 import show.isaBack.unspecifiedDTO.UnspecifiedDTO;
@@ -60,6 +67,12 @@ public class UserController {
 		
 		try {
 			UnspecifiedDTO<PatientDTO> patient = userService.getLoggedPatient();
+			
+			for (UnspecifiedDTO<AllergenDTO> a : patient.EntityDTO.getAllergens()) {
+				System.out.println(a.EntityDTO.getName());
+				
+			}
+			
 			return new ResponseEntity<>(patient,HttpStatus.OK); 
 		} catch (EntityNotFoundException e) {
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND); 
@@ -105,6 +118,56 @@ public class UserController {
 		}
 	}
 	
+	
+	@PostMapping("/addPatientsAllergen") 
+	@PreAuthorize("hasRole('ROLE_PATIENT')")
+	public ResponseEntity<?> addAllergenForPatient(@RequestBody PatientsAllergenDTO patientsAllergenDTO) {
+	  
+		try {
+			userService.addAllergenForPatient(patientsAllergenDTO);
+				
+			return new ResponseEntity<>(HttpStatus.OK); 
+							
+		}catch (IllegalArgumentException e) {
+				return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+		}catch (Exception e) {
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR); 
+		}
+	}
+	
+	
+	@PutMapping("/removePatientsAllergen") 
+	@CrossOrigin
+	@PreAuthorize("hasRole('ROLE_PATIENT')")
+	public ResponseEntity<?> removeAllergenForPatient(@RequestBody PatientsAllergenDTO patientsAllergenDTO) {
+		
+		try {
+			userService.removeAllergenForPatient(patientsAllergenDTO);
+				
+			return new ResponseEntity<>(HttpStatus.OK); 
+							
+		}catch (IllegalArgumentException e) {
+				return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+		}catch (Exception e) {
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR); 
+		}
+	}
+	
+	
+	
+	@GetMapping("getAllPatientsAllergens") 
+	@PreAuthorize("hasRole('ROLE_PATIENT')")
+	public ResponseEntity<List<UnspecifiedDTO<AllergenDTO>>> getAllPatientsAllergens() {
+	  
+		try {
+			List<UnspecifiedDTO<AllergenDTO>> allergens = userService.getAllPatientsAllergens();
+			return new ResponseEntity<>(allergens,HttpStatus.OK); 
+		} catch (EntityNotFoundException e) {
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND); 
+		} catch (Exception e) {
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR); 
+		}
+	}
 	
 	
 	
