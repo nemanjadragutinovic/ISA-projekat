@@ -7,6 +7,7 @@ import RegisterPage from "./Components/RegistrationPage"
 import LoginPage from "./Components/LoginPage"
 import UserProfilePage from "./Pages/UserProfile"
 import registerStaff from "./Components/adminRegistration/registerStaff"
+import RegisterPharmacies from './Components/adminRegistration/RegisterPharmacies';
 
 
 import {
@@ -31,6 +32,7 @@ function App() {
         <Route  to ="/login" path ="/login"  component={LoginPage}/>
         <Route  to ="/userProfile" path ="/userProfile"  component={UserProfilePage}/>
         <Route  to ="/registerStaff" path ="/registerStaff"  component={registerStaff}/>
+        <Route  to ="/registerPharmacies" path ="/registerPharmacies"  component={RegisterPharmacies}/>
 
         </Switch>
     </Router>

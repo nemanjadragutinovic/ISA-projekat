@@ -20,8 +20,13 @@ insert into pharmacy (id, name, city, street,country, post_code,description) val
 
 --USERS
 insert into users (id, email, password, name, surname, phone_Number, active, address, version) values ('22793162-52d3-11eb-ae93-0242ac130002','patient1@gmail.com', '$2a$10$TyNl6ipLWyDE/TfFM3uRse0SVPP4Rz7.mdZdDK3zqjKZqtKtJ3pf2','Njeke','Zeke','0623333',true,'Kisacka 22', 1);
+insert into users (id, email, password, name, surname, phone_Number, active, address, version) values ('44444d47-1a8a-4ae1-b109-af7b56e94788','sysadmin@gmail.com','$2a$10$TyNl6ipLWyDE/TfFM3uRse0SVPP4Rz7.mdZdDK3zqjKZqtKtJ3pf2','Zec','Njekezovic','0612345',true,'Kosovska 22', 1);
 
 --PATIENTS
 insert into patient (id) values ('22793162-52d3-11eb-ae93-0242ac130002');
+--SYSTEM ADMIN
+insert into system_admin(id) values ('44444d47-1a8a-4ae1-b109-af7b56e94788');
 
 insert into user_authority (user_id, authority_id) values ('22793162-52d3-11eb-ae93-0242ac130002', '7852aa5e-7040-4d99-8255-537a0b226c75');
+
+insert into user_authority (user_id, authority_id) values ('44444d47-1a8a-4ae1-b109-af7b56e94788', '563e9925-cff6-42b7-99fa-6b1235f67655');
