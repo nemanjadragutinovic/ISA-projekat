@@ -1,6 +1,7 @@
 package show.isaBack.serviceInterfaces;
 
 import java.util.List;
+import java.util.UUID;
 
 import show.isaBack.DTO.pharmacyDTO.PharmacyDTO;
 import show.isaBack.DTO.pharmacyDTO.PharmacySearchDTO;
@@ -11,5 +12,6 @@ public interface IPharmacyService extends IService<PharmacyDTO, UnspecifiedDTO<P
 	public List<UnspecifiedDTO<PharmacyDTO>> getAllPharmacies();
 	
 	public List<UnspecifiedDTO<PharmacyDTO>> getSearchedPharmacies(PharmacySearchDTO searchPharmacyRequest);
+	public UUID createPharmacy(PharmacyDTO pharmacyDTO);
 	
 }

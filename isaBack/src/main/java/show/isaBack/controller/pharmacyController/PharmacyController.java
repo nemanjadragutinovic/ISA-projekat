@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import show.isaBack.DTO.drugDTO.DrugDTO;
 import show.isaBack.DTO.pharmacyDTO.PharmacyDTO;
 import show.isaBack.DTO.pharmacyDTO.PharmacySearchDTO;
+import show.isaBack.security.TokenUtils;
 import show.isaBack.serviceInterfaces.IPharmacyService;
 import show.isaBack.unspecifiedDTO.UnspecifiedDTO;
 
@@ -28,6 +29,9 @@ public class PharmacyController {
 	
 	@Autowired
 	private IPharmacyService pharmacyService;
+	
+	@Autowired
+	private TokenUtils tokenUtils;
 	
 	
 	@CrossOrigin
@@ -57,10 +61,19 @@ public class PharmacyController {
 	}
 	
 	@PostMapping
-//	@PreAuthorize("hasRole('SYSADMIN')")
+	@CrossOrigin
+	@PreAuthorize("hasRole('ROLE_SYSADMIN')")
 	public ResponseEntity<UUID> addPharmacy(@RequestBody PharmacyDTO pharmacyDTO) {
+	//public ResponseEntity<UUID> addPharmacy(@RequestBody String  token) {
+		System.out.println("usao u kontroler");
 		
-		return new ResponseEntity<>(pharmacyService.create(pharmacyDTO) ,HttpStatus.CREATED);
+		UUID pharmacyID = pharmacyService.createPharmacy(pharmacyDTO);
+		System.out.println(pharmacyID);
+		//String username = tokenUtils.getUsernameFromToken(token);
+		//System.out.println(username);
+		
+	
+		return new ResponseEntity<>(pharmacyID, HttpStatus.CREATED);
 	}
 
 }
