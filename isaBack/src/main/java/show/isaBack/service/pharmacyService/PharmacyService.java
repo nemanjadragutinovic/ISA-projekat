@@ -80,6 +80,20 @@ public class PharmacyService implements IPharmacyService{
 		return false;
 		
 	}
+	
+	public UUID createPharmacy(PharmacyDTO pharmacyDTO) {
+		
+		Pharmacy pharmacy = createPharmacyFromDTO(pharmacyDTO);
+		
+		pharmacyRepository.save(pharmacy);
+		
+		return pharmacy.getId();
+	}
+	
+	private Pharmacy createPharmacyFromDTO(PharmacyDTO pharmacyDTO) {
+		
+		return new Pharmacy(pharmacyDTO.getName(),pharmacyDTO.getAddress().getCity(),pharmacyDTO.getAddress().getStreet(),pharmacyDTO.getAddress().getCountry(),pharmacyDTO.getAddress().getPostCode(),pharmacyDTO.getDescription());
+	}
 
 
 
