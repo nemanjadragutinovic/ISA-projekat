@@ -1,5 +1,6 @@
 package show.isaBack.repository.AppointmentRepository;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -22,7 +23,9 @@ public interface AppointmentRepository extends PagingAndSortingRepository<Appoin
 	List<Appointment> findAllFreeAppointmentsForPharmacyAndForAppointmentType(UUID pharmacyId, AppointmentType appointmentType);          
 
 	
-	
+	@Query(value = "SELECT a FROM Appointment a WHERE NOT (a.startDateTime >= ?3 OR a.endDateTime <= ?2)"
+			+ " AND a.appointmentStatus = 'SCHEDULED' AND a.patient.id = ?1")
+	List<Appointment> findAllAppointmentsInGivenDateTimeForGivenTypeForPatient(UUID patientId, Date startDateTime, Date endDateTime);
 	
 	
 	
