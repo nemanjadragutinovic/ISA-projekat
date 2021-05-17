@@ -7,6 +7,8 @@ import show.isaBack.unspecifiedDTO.UnspecifiedDTO;
 public class DrugInstanceDTO {
 
 private String name;
+
+private String producerName;
 	
 	private String code;
 	
@@ -38,12 +40,13 @@ private String name;
 	
 	public DrugInstanceDTO() {}
 	
-	public DrugInstanceDTO(String name, String code, String drugInstanceName, UnspecifiedDTO<ManufacturerDTO> manufacturer,
+	public DrugInstanceDTO(String name,String producerName, String code, String drugInstanceName, UnspecifiedDTO<ManufacturerDTO> manufacturer,
 			FormatDrug drugFormat, double quiantity, String sideEffects, String recommendedAmount,
 			List<UnspecifiedDTO<ReplaceDrugDTO>> replacingDrugs, List<UnspecifiedDTO<AllergenDTO>> allergens,
 			List<UnspecifiedDTO<IngredientDTO>> ingredients, int loyalityPoints, boolean onReciept, DrugKind drugKind) {
 		super();
 		this.name = name;
+		this.producerName = producerName;
 		this.code = code;
 		this.drugInstanceName = drugInstanceName;
 		this.manufacturer = manufacturer;
@@ -59,12 +62,13 @@ private String name;
 		this.loyalityPoints = loyalityPoints;
 	}
 	
-	public DrugInstanceDTO(String name, String code, String drugInstanceName, UnspecifiedDTO<ManufacturerDTO> manufacturer,
+	public DrugInstanceDTO(String name, String producerName, String code, String drugInstanceName, UnspecifiedDTO<ManufacturerDTO> manufacturer,
 			FormatDrug drugFormat, double quiantity, String sideEffects, String recommendedAmount,
 			List<UnspecifiedDTO<ReplaceDrugDTO>> replacingDrugs, List<UnspecifiedDTO<AllergenDTO>> allergens,
 			List<UnspecifiedDTO<IngredientDTO>> ingredients, int loyalityPoints, boolean onReciept, DrugKind drugKind, double avg) {
 		super();
 		this.name = name;
+		this.producerName = producerName;
 		this.code = code;
 		this.drugInstanceName = drugInstanceName;
 		this.manufacturer = manufacturer;
@@ -81,11 +85,12 @@ private String name;
 		this.avgGrade = avg;
 	}
 	
-	public DrugInstanceDTO(String name, String code, String drugInstanceName,
+	public DrugInstanceDTO(String name, String producerName, String code, String drugInstanceName,
 			FormatDrug drugFormat, double quiantity, String sideEffects, String recommendedAmount,
 			int loyalityPoints, boolean onReciept, DrugKind drugKind) {
 		super();
 		this.name = name;
+		this.producerName = producerName;
 		this.code = code;
 		this.drugInstanceName = drugInstanceName;
 		this.drugFormat = drugFormat;
@@ -95,6 +100,14 @@ private String name;
 		this.onReciept = onReciept;
 		this.drugKind = drugKind;
 		this.loyalityPoints = loyalityPoints;
+	}
+
+	public String getProducerName() {
+		return producerName;
+	}
+
+	public void setProducerName(String producerName) {
+		this.producerName = producerName;
 	}
 
 	public String getName() {

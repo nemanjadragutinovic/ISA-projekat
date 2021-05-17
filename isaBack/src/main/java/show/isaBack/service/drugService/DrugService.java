@@ -93,6 +93,18 @@ public class DrugService implements IDrugService{
 	}
 	
 	@Override
+	public UUID create(DrugInstanceDTO entityDTO) {
+		DrugInstance drugInstance = CreateDrugInstanceFromDTO(entityDTO);
+		drugInstanceRepository.save(drugInstance);
+		return drugInstance.getId();
+	}
+	
+	private DrugInstance CreateDrugInstanceFromDTO(DrugInstanceDTO drugInstanceDTO) {
+		return new DrugInstance(drugInstanceDTO.getName(), drugInstanceDTO.getProducerName(), drugInstanceDTO.getCode(), drugInstanceDTO.getDrugInstanceName(), drugInstanceDTO.getDrugFormat(), drugInstanceDTO.getQuantity(),  drugInstanceDTO.getSideEffects(), drugInstanceDTO.getRecommendedAmount(),
+				drugInstanceDTO.getLoyalityPoints(), drugInstanceDTO.isOnReciept(), drugInstanceDTO.getDrugKind());
+	}
+	
+	@Override
 	public UUID addDrugReplacement(UUID id, UUID replacement_id) {
 		
 		DrugInstance drugInstance = drugInstanceRepository.getOne(id);
@@ -165,11 +177,7 @@ public class DrugService implements IDrugService{
 		return null;
 	}
 
-	@Override
-	public UUID create(DrugInstanceDTO entityDTO) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+	
 
 	@Override
 	public void update(DrugInstanceDTO entityDTO, UUID id) {
