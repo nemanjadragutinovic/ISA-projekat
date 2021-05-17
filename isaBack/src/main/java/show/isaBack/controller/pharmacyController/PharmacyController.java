@@ -45,7 +45,8 @@ public class PharmacyController {
 		}
 	}
 	
-	
+
+		
 	@CrossOrigin
 	@PostMapping("/searchPharmacies" ) 
 	public ResponseEntity<List<UnspecifiedDTO<PharmacyDTO>>> getSearchedPharmacies (@RequestBody PharmacySearchDTO userRequest) {

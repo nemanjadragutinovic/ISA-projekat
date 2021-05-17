@@ -240,6 +240,9 @@ class UserProfile extends Component {
 				})
 				.catch((err) => {
 					console.log(err);
+					this.setState({ hiddenUnsuccessfulAlert: false,
+						UnsuccessfulHeader: "Error", 
+						UnsuccessfulMessage: "Something was wrong" });
 				
 				});
 
@@ -359,6 +362,9 @@ class UserProfile extends Component {
 				})
 				.catch((err) => {
 					console.log(err);
+					this.setState({ hiddenUnsuccessfulAlert: false,
+						UnsuccessfulHeader: "Error", 
+						UnsuccessfulMessage: "Something was wrong" });
 									
 				});
 		}
@@ -410,6 +416,9 @@ class UserProfile extends Component {
 			})
 			.catch((err) => {
 				console.log(err);
+				this.setState({ hiddenUnsuccessfulAlert: false,
+					UnsuccessfulHeader: "Error", 
+					UnsuccessfulMessage: "Something was wrong" });
 			});
 
 
@@ -465,6 +474,9 @@ class UserProfile extends Component {
 			})
 			.catch((err) => {
 				console.log(err);
+				this.setState({ hiddenUnsuccessfulAlert: false,
+					UnsuccessfulHeader: "Error", 
+					UnsuccessfulMessage: "Something was wrong" });
 			});
 	};
 

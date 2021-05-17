@@ -3,7 +3,7 @@ import Axios from "axios";
 import Header from '../Components/Header';
 import PharmacyLogoPicture from "../Images/pharmacyLogo.jpg" ;
 import { Redirect } from "react-router-dom";
-
+import GetAuthorisation from "../Funciton/GetAuthorisation";
 
 const API_URL="http://localhost:8080";
 
@@ -33,20 +33,42 @@ class HomePageForDermatologistAppointments extends Component {
 
   componentDidMount() {
 		
+    if (!this.hasRole("ROLE_PATIENT")) {
+			this.props.history.push('/login');
+    }
 
 		Axios.get(API_URL + "/pharmacy/allPharmacies")
 
 			.then((res) => {
-				this.setState({ allPharmacies: res.data });
+
+        if (res.status === 401) {
+          this.props.history.push('/login');
+				} else {
+          this.setState({ allPharmacies: res.data });
+				}
+
 			})
 			.catch((err) => {
 				console.log(err);
+       
 			});
 
 
   
          
 	}
+
+  hasRole = (requestRole) => {
+    let currentRoles = JSON.parse(localStorage.getItem("keyRole"));
+
+    if (currentRoles === null) return false;
+
+
+    for (let currentRole of currentRoles) {
+      if (currentRole === requestRole) return true;
+    }
+    return false;
+  };
 
 
    handleSearchForm = () => {    
