@@ -1,6 +1,7 @@
 package show.isaBack.service.AppointmentService;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
@@ -55,9 +56,7 @@ public class AppointmentService implements IAppointmentService{
 	public List<UnspecifiedDTO<DermatologistAppointmentDTO>> findAllFreeAppointmentsForPharmacyAndForAppointmentType(UUID pharmacyId,
 			AppointmentType appointmentType) {
 		
-		System.out.println("2");
 		List<Appointment> appointments = appointmentRepository.findAllFreeAppointmentsForPharmacyAndForAppointmentType(pharmacyId, appointmentType); 
-		System.out.println("3");
 		System.out.println(appointments);
 		List<Dermatologist> allDermatologist= dermatologistRepository.findAll();		
 		
@@ -110,13 +109,69 @@ public class AppointmentService implements IAppointmentService{
 	}
 	
 	
+	public List<UnspecifiedDTO<DermatologistAppointmentDTO>> sortByPriceAscendingAllFreeDermatologistAppointments(UUID pharmacyId,AppointmentType appointmentType){
+		
+		List<Appointment> appointments = appointmentRepository.sortByPriceDescendingAllFreeDermatologistAppointments(pharmacyId, appointmentType); 
+		List<Dermatologist> allDermatologist= dermatologistRepository.findAll();		
+		
+		List<UnspecifiedDTO<EmployeeGradeDTO>> dermatologistEmployees= new ArrayList<UnspecifiedDTO<EmployeeGradeDTO>>();
+		
+		allDermatologist.forEach((dermatologist) -> dermatologistEmployees.add(appointmentsMapper.MapDermatologistToEmployeeDTO(dermatologist)));
+		
+		List<UnspecifiedDTO<DermatologistAppointmentDTO>> freeAppointments=  appointmentsMapper.MapAppointmentsToListAppointmentsDTO(appointments,dermatologistEmployees);             
+		
+		
+		return freeAppointments;
+		
+		
+	}
 	
 	
 	
+	public List<UnspecifiedDTO<DermatologistAppointmentDTO>> sortByPriceDescendingAllFreeDermatologistAppointments(UUID pharmacyId,AppointmentType appointmentType){
+		
+		List<Appointment> appointments = appointmentRepository.sortByPriceAscendingAllFreeDermatologistAppointments(pharmacyId, appointmentType); 
+		List<Dermatologist> allDermatologist= dermatologistRepository.findAll();		
+		
+		List<UnspecifiedDTO<EmployeeGradeDTO>> dermatologistEmployees= new ArrayList<UnspecifiedDTO<EmployeeGradeDTO>>();
+		
+		allDermatologist.forEach((dermatologist) -> dermatologistEmployees.add(appointmentsMapper.MapDermatologistToEmployeeDTO(dermatologist)));
+		
+		List<UnspecifiedDTO<DermatologistAppointmentDTO>> freeAppointments=  appointmentsMapper.MapAppointmentsToListAppointmentsDTO(appointments,dermatologistEmployees);             
+		
+		
+		return freeAppointments;
+		
+		
+	}
 	
 	
 	
+	public List<UnspecifiedDTO<DermatologistAppointmentDTO>> sortByDermatologistGradeAscendingAllFreeDermatologistAppointments(UUID pharmacyId,AppointmentType appointmentType){
+		
+		List<UnspecifiedDTO<DermatologistAppointmentDTO>> employeeWithGradeInDermatologistAppointment= new ArrayList<UnspecifiedDTO<DermatologistAppointmentDTO>>();
+		employeeWithGradeInDermatologistAppointment= findAllFreeAppointmentsForPharmacyAndForAppointmentType(pharmacyId,appointmentType);
+		
+		Collections.sort(employeeWithGradeInDermatologistAppointment, (appointment1, appointment2) -> Double.compare(appointment1.EntityDTO.getEmployee().EntityDTO.getGrade(), appointment2.EntityDTO.getEmployee().EntityDTO.getGrade()));
+		
+		return employeeWithGradeInDermatologistAppointment;
+		
+		
+	}
 	
+	
+	public List<UnspecifiedDTO<DermatologistAppointmentDTO>> sortByDermatologistGradeDescendingAllFreeDermatologistAppointments(UUID pharmacyId,AppointmentType appointmentType){
+		
+		List<UnspecifiedDTO<DermatologistAppointmentDTO>> employeeWithGradeInDermatologistAppointment= new ArrayList<UnspecifiedDTO<DermatologistAppointmentDTO>>();
+		employeeWithGradeInDermatologistAppointment= findAllFreeAppointmentsForPharmacyAndForAppointmentType(pharmacyId,appointmentType);
+		
+		Collections.sort(employeeWithGradeInDermatologistAppointment, (appointment1, appointment2) -> Double.compare(appointment1.EntityDTO.getEmployee().EntityDTO.getGrade(), appointment2.EntityDTO.getEmployee().EntityDTO.getGrade()));
+		Collections.reverse(employeeWithGradeInDermatologistAppointment);
+		
+		return employeeWithGradeInDermatologistAppointment;
+		
+		
+	}
 	
 	
 	

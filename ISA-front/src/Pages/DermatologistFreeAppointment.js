@@ -145,7 +145,7 @@ class DermatologistFreeAppointment extends Component {
 
   }
 
-  refreshAppointments(appointmentId){
+  refreshAppointments (appointmentId) {
 
     let newAppointmentsList= [];
     for (let appointment of this.state.appointments) {
@@ -158,6 +158,81 @@ class DermatologistFreeAppointment extends Component {
     });
 
   }
+
+
+  
+
+  handleSortByPriceAscending = () => {
+    Axios.get(API_URL + "/appointment/dermatologist/sortByPriceAscending/" + this.state.pharmacyId, {
+      validateStatus: () => true,	
+      headers: { Authorization: GetAuthorisation() },
+		})
+			.then((res) => {
+            this.setState({ appointments: res.data});
+            console.log(res.data);
+        
+			})
+			.catch((err) => {
+				console.log(err);
+			});
+	};
+
+
+
+
+  handleSortByPriceDescending = () => {
+
+    Axios.get(API_URL + "/appointment/dermatologist/sortByPriceDescending/" + this.state.pharmacyId, {
+      validateStatus: () => true,	
+      headers: { Authorization: GetAuthorisation() },
+		})
+			.then((res) => {
+            this.setState({ appointments: res.data});
+            console.log(res.data);
+        
+			})
+			.catch((err) => {
+				console.log(err);
+			});
+
+  };
+
+
+  handleSortByDermatologistGradeAscending = () =>{
+
+    Axios.get(API_URL + "/appointment/dermatologist/sortByDermatologistGradeAscending/" + this.state.pharmacyId, {
+      validateStatus: () => true,	
+      headers: { Authorization: GetAuthorisation() },
+		})
+			.then((res) => {
+            this.setState({ appointments: res.data});
+            console.log(res.data);
+        
+			})
+			.catch((err) => {
+				console.log(err);
+			});
+
+  };
+
+
+  handleSortByDermatologistGradeDescending = () => {
+
+    Axios.get(API_URL + "/appointment/dermatologist/sortByDermatologistGradeDescending/" + this.state.pharmacyId, {
+      validateStatus: () => true,	
+      headers: { Authorization: GetAuthorisation() },
+		})
+			.then((res) => {
+            this.setState({ appointments: res.data});
+            console.log(res.data);
+        
+			})
+			.catch((err) => {
+				console.log(err);
+			});
+
+  };
+
 
 
 	render() {
@@ -189,6 +264,27 @@ class DermatologistFreeAppointment extends Component {
 						message={this.state.UnsuccessfulMessage}
 						handleCloseAlert={this.handleCloseUnsuccessfulAlert}
 					/>
+
+        
+
+          <div className="dropdown">
+            <button className="btn btn-primary btn-lg dropdown-toggle"
+             type="button" id="dropdownMenu2"
+              data-toggle="dropdown" 
+              aria-haspopup="true" 
+              aria-expanded="false">
+              Sort
+            </button>
+            <div className="dropdown-menu" aria-labelledby="dropdownMenu2">
+              <button className="dropdown-item" type="button" onClick={this.handleSortByPriceAscending} >Sort by price ascending</button>
+              <button className="dropdown-item" type="button" onClick={this.handleSortByPriceDescending} >Sort by price descending</button>
+              <button className="dropdown-item" type="button" onClick={this.handleSortByDermatologistGradeAscending} >Sort by dermatologist grade ascending</button>
+              <button className="dropdown-item" type="button"onClick={this.handleSortByDermatologistGradeDescending} >Sort by dermatologist grade descending</button>
+            </div>
+          </div>
+
+          
+
 
 
 
@@ -242,6 +338,12 @@ class DermatologistFreeAppointment extends Component {
 										<div>
 											<b>Dermatologist: </b>{" "}
 											{appointment.EntityDTO.employee.EntityDTO.name + " " + appointment.EntityDTO.employee.EntityDTO.surname}
+										</div>
+
+                    <div>
+											<b>Dermatologist grade: </b> {appointment.EntityDTO.employee.EntityDTO.grade} {" "} 
+											<i className="icon-star" style={{ color: "yellow"}}></i>
+                      
 										</div>
 										
 									</td>
