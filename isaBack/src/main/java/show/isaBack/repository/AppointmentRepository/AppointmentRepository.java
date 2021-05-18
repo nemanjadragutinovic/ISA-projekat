@@ -19,13 +19,23 @@ import show.isaBack.model.appointment.AppointmentType;
 public interface AppointmentRepository extends PagingAndSortingRepository<Appointment, UUID> {
 
 	@Query(value = "SELECT a FROM Appointment a WHERE a.pharmacy.id = ?1 AND a.startDateTime > CURRENT_TIMESTAMP"
-			+ " AND a.appointmentStatus = 'FREE' AND a.appointmentType = ?2")
+			+ "  AND a.appointmentType = ?2 AND a.appointmentStatus = 'FREE' ")
 	List<Appointment> findAllFreeAppointmentsForPharmacyAndForAppointmentType(UUID pharmacyId, AppointmentType appointmentType);          
 
 	
 	@Query(value = "SELECT a FROM Appointment a WHERE NOT (a.startDateTime >= ?3 OR a.endDateTime <= ?2)"
 			+ " AND a.appointmentStatus = 'SCHEDULED' AND a.patient.id = ?1")
 	List<Appointment> findAllAppointmentsInGivenDateTimeForGivenTypeForPatient(UUID patientId, Date startDateTime, Date endDateTime);
+	
+	
+	@Query(value = "SELECT a FROM Appointment a WHERE a.pharmacy.id = ?1 AND a.startDateTime > CURRENT_TIMESTAMP"
+			+ " AND a.appointmentStatus = 'FREE'  AND a.appointmentType = ?2 ORDER BY a.price ASC")
+	List<Appointment> sortByPriceAscendingAllFreeDermatologistAppointments(UUID pharmacyId, AppointmentType appointmentType);
+	
+	
+	@Query(value = "SELECT a FROM Appointment a WHERE a.pharmacy.id = ?1 AND a.startDateTime > CURRENT_TIMESTAMP"
+			+ " AND a.appointmentStatus = 'FREE'  AND a.appointmentType = ?2 ORDER BY a.price DESC")
+	List<Appointment> sortByPriceDescendingAllFreeDermatologistAppointments(UUID pharmacyId, AppointmentType appointmentType);
 	
 	
 	

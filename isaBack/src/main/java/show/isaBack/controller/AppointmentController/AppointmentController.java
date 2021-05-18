@@ -44,8 +44,6 @@ public class AppointmentController {
 	@GetMapping("/dermatologist/allAppointmentsForchosenPharmacy/{pharmacyId}")
 	public ResponseEntity<List<UnspecifiedDTO<DermatologistAppointmentDTO>>> findAllFreeAppointmentsByPharmacyAndAppointmentType(@PathVariable UUID pharmacyId) {
 		
-		System.out.println("1");
-		System.out.println(pharmacyId);
 		
 		try {
 			return new ResponseEntity<>(appointmentService.findAllFreeAppointmentsForPharmacyAndForAppointmentType(pharmacyId, AppointmentType.EXAMINATION) ,HttpStatus.OK);
@@ -78,6 +76,63 @@ public class AppointmentController {
 	}
 	
 	
+	@PreAuthorize("hasRole('ROLE_PATIENT')")
+	@CrossOrigin
+	@GetMapping("/dermatologist/sortByPriceAscending/{pharmacyId}")
+	public ResponseEntity<List<UnspecifiedDTO<DermatologistAppointmentDTO>>> sortByPriceAscendingAllFreeDermatologistAppointments(@PathVariable UUID pharmacyId) {
+		
+		try {
+			return new ResponseEntity<>(appointmentService.sortByPriceAscendingAllFreeDermatologistAppointments(pharmacyId, AppointmentType.EXAMINATION) ,HttpStatus.OK);
+		} catch (Exception e) {
+				return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+		
+	}
+	
+	@PreAuthorize("hasRole('ROLE_PATIENT')")
+	@CrossOrigin
+	@GetMapping("/dermatologist/sortByPriceDescending/{pharmacyId}")
+	public ResponseEntity<List<UnspecifiedDTO<DermatologistAppointmentDTO>>> sortByPriceDescendingAllFreeDermatologistAppointments(@PathVariable UUID pharmacyId) {
+		
+		try {
+			return new ResponseEntity<>(appointmentService.sortByPriceDescendingAllFreeDermatologistAppointments(pharmacyId, AppointmentType.EXAMINATION) ,HttpStatus.OK);
+		} catch (Exception e) {
+				return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+		
+	}
+	
+	
+	
+	@PreAuthorize("hasRole('ROLE_PATIENT')")
+	@CrossOrigin
+	@GetMapping("/dermatologist/sortByDermatologistGradeAscending/{pharmacyId}")
+	public ResponseEntity<List<UnspecifiedDTO<DermatologistAppointmentDTO>>> sortByDermatologistGradeAscendingAllFreeDermatologistAppointments(@PathVariable UUID pharmacyId) {
+		
+		try {
+			return new ResponseEntity<>(appointmentService.sortByDermatologistGradeAscendingAllFreeDermatologistAppointments(pharmacyId, AppointmentType.EXAMINATION) ,HttpStatus.OK);
+		} catch (Exception e) {
+				return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+		
+	}
+	
+	
+	
+	
+	
+	@PreAuthorize("hasRole('ROLE_PATIENT')")
+	@CrossOrigin
+	@GetMapping("/dermatologist/sortByDermatologistGradeDescending/{pharmacyId}")
+	public ResponseEntity<List<UnspecifiedDTO<DermatologistAppointmentDTO>>> sortByDermatologistGradeDescendingAllFreeDermatologistAppointments(@PathVariable UUID pharmacyId) {
+		
+		try {
+			return new ResponseEntity<>(appointmentService.sortByDermatologistGradeDescendingAllFreeDermatologistAppointments(pharmacyId, AppointmentType.EXAMINATION) ,HttpStatus.OK);
+		} catch (Exception e) {
+				return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+		
+	}
 	
 	
 }
