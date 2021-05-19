@@ -19,5 +19,6 @@ public interface IDrugService extends IService<DrugInstanceDTO, UnspecifiedDTO<D
 	public List<UnspecifiedDTO<ManufacturerDTO>>  findDrugManufacturers();
 	public UUID addDrugManufacturer(UUID id, UUID manufacturerId);
 	public UUID addDrugIngredients(UUID id, IngredientDTO entityDTO);
+	public List<UnspecifiedDTO<DrugInstanceDTO>> findAllDrugKinds();
 
 }

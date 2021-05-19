@@ -19,11 +19,15 @@ import org.springframework.web.bind.annotation.RestController;
 
 
 import show.isaBack.DTO.drugDTO.DrugDTO;
+import show.isaBack.DTO.drugDTO.DrugFormatIdDTO;
 import show.isaBack.DTO.drugDTO.DrugInstanceDTO;
+import show.isaBack.DTO.drugDTO.DrugKindIdDTO;
 import show.isaBack.DTO.drugDTO.DrugManufacturerDTO;
 import show.isaBack.DTO.drugDTO.IngredientDTO;
 import show.isaBack.DTO.drugDTO.ManufacturerDTO;
 import show.isaBack.DTO.drugDTO.ReplaceDrugIdDTO;
+import show.isaBack.serviceInterfaces.IDrugFormatService;
+import show.isaBack.serviceInterfaces.IDrugKindIdService;
 import show.isaBack.serviceInterfaces.IDrugService;
 import show.isaBack.unspecifiedDTO.UnspecifiedDTO;
 
@@ -36,6 +40,11 @@ public class DrugController {
 
 	@Autowired
 	private IDrugService drugService;
+	
+	@Autowired
+	private IDrugKindIdService drugKindIdService;
+	@Autowired
+	private IDrugFormatService drugFormatService;
 	
 	
 	@CrossOrigin
@@ -73,9 +82,11 @@ public class DrugController {
 		return new ResponseEntity<>(drugInstanceId ,HttpStatus.CREATED);
 	}
 	
+	
+	
 	@PutMapping("/replacement") 
 	@CrossOrigin
-	@PreAuthorize("hasRole('SYSADMIN')")
+//	@PreAuthorize("hasRole('SYSADMIN')")
 	public ResponseEntity<UUID> addDrugReplacement(@RequestBody ReplaceDrugIdDTO replaceDrugIdDTO) {
 		
 		
@@ -102,13 +113,38 @@ public class DrugController {
 	
 	@PutMapping("/ingredient") 
 	@CrossOrigin
-	@PreAuthorize("hasRole('SYSADMIN')")
+	//@PreAuthorize("hasRole('SYSADMIN')")
 	public ResponseEntity<UUID> addDrugIngredient(@RequestBody IngredientDTO ingredientDTO) {
 		
 		UUID drugInstanceId = drugService.addDrugIngredients(ingredientDTO.getId(), ingredientDTO);
 		
 		return new ResponseEntity<>(drugInstanceId ,HttpStatus.CREATED);
 	}
+	
+	@CrossOrigin
+	@GetMapping("/drugkind")
+	public ResponseEntity<List<UnspecifiedDTO<DrugKindIdDTO>>> findAllDrugKinds() {
+		
+		System.out.println("usao u drug kind");
+		
+		return new ResponseEntity<>(drugKindIdService.findAllDrugKinds() ,HttpStatus.OK);
+	}
+	
+	@CrossOrigin
+	@GetMapping("/drugformat")
+	public ResponseEntity<List<UnspecifiedDTO<DrugFormatIdDTO>>> findAllDrugFormats() {
+		
+		return new ResponseEntity<>(drugFormatService.findAllDrugKinds() ,HttpStatus.OK);
+	}
+	
+	@CrossOrigin
+	@GetMapping
+	public ResponseEntity<List<UnspecifiedDTO<DrugInstanceDTO>>> findAll() {
+		System.out.println("usao u get drug");
+		return new ResponseEntity<>(drugService.findAllDrugKinds(),HttpStatus.OK);
+	}
+	
+	
 	
 	
 	
