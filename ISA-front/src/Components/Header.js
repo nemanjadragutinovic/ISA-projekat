@@ -75,6 +75,18 @@ class Header extends React.Component{
                 <ReactBootStrap.Nav.Link href="#deets">Pharmacies</ReactBootStrap.Nav.Link>
                 </Link>
             
+
+                
+                <ReactBootStrap.NavDropdown alignRight title="My reports" id="collasible-nav-dropdown">
+                    <ReactBootStrap.NavDropdown.Item href="/futureDermatologistAppointmentsForPatient">Dermatologist</ReactBootStrap.NavDropdown.Item>
+                    <ReactBootStrap.NavDropdown.Divider />
+                    <ReactBootStrap.NavDropdown.Item href="/futurePharmaciesConsultationsForPatient">Pharmacies</ReactBootStrap.NavDropdown.Item>
+                    
+                </ReactBootStrap.NavDropdown>
+
+
+
+
                 <ReactBootStrap.NavDropdown alignRight title="Apointment" id="collasible-nav-dropdown">
                     <ReactBootStrap.NavDropdown.Item href="/pharmacistAppointment">Pharmacist</ReactBootStrap.NavDropdown.Item>
                     <ReactBootStrap.NavDropdown.Divider />

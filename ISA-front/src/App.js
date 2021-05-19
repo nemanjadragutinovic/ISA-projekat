@@ -13,7 +13,7 @@ import RegisterPharmacies from './Components/adminRegistration/RegisterPharmacie
 import HomePageForDermatologistAppointments from "./Pages/HomePageForDermatologistAppointments"
 import DermatologistFreeAppointment from "./Pages/DermatologistFreeAppointment"
 
-
+import FutureDermatologistAppointmentsForPatient from "./Pages/FutureDermatologistAppointmentsForPatient"
 
 import {
   BrowserRouter as Router,
@@ -40,6 +40,9 @@ function App() {
         <Route  to ="/registerPharmacies" path ="/registerPharmacies"  component={RegisterPharmacies}/>
         <Route  to ="/dermatologistAppointment" path ="/dermatologistAppointment"  component={HomePageForDermatologistAppointments}/>
         <Route path="/dermatologistFreeAppointment/:id" children={<DermatologistFreeAppointment />} />
+        <Route  to ="/futureDermatologistAppointmentsForPatient" path ="/futureDermatologistAppointmentsForPatient"  component={FutureDermatologistAppointmentsForPatient}/>
+
+
 
         </Switch>
     </Router>

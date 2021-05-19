@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.UUID;
 
 import javax.mail.MessagingException;
+import javax.persistence.EntityNotFoundException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -172,6 +173,52 @@ public class AppointmentService implements IAppointmentService{
 		
 		
 	}
+	
+	
+	
+	
+	@Override
+	public List<UnspecifiedDTO<DermatologistAppointmentDTO>> findAllFuturePatientsAppointmets(AppointmentType appointmentType) {
+		
+		UUID logedPatiendID= userService.getLoggedUserId();
+		List<Appointment> appointments = appointmentRepository.findAllFuturePatientsAppointmets(logedPatiendID, appointmentType); 
+		System.out.println(appointments);
+		List<Dermatologist> allDermatologist= dermatologistRepository.findAll();		
+		
+		List<UnspecifiedDTO<EmployeeGradeDTO>> dermatologistEmployees= new ArrayList<UnspecifiedDTO<EmployeeGradeDTO>>();
+		
+		allDermatologist.forEach((dermatologist) -> dermatologistEmployees.add(appointmentsMapper.MapDermatologistToEmployeeDTO(dermatologist)));
+		
+		List<UnspecifiedDTO<DermatologistAppointmentDTO>> freeAppointments=  appointmentsMapper.MapAppointmentsToListAppointmentsDTO(appointments,dermatologistEmployees);             
+		
+		
+		return freeAppointments;
+		
+	}
+	
+	
+	
+	
+	@Override
+	public void cancelDermatologistAppointment(UUID appointmentId) {
+		
+		Appointment appointment = appointmentRepository.findById(appointmentId).get();
+		
+
+		if (appointment==null)
+			throw new EntityNotFoundException("Appointment doesn't exist");
+		
+		if (appointment.getPatient()==null)
+			throw new IllegalArgumentException("Appointment doesn't have patient");
+		
+		appointment.setAppointmentStatus(AppointmentStatus.FREE);
+		appointment.setPatient(null);
+		
+		appointmentRepository.save(appointment);
+		
+		
+	}
+	
 	
 	
 	

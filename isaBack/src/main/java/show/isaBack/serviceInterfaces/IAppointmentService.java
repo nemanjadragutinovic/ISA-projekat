@@ -22,8 +22,9 @@ public interface IAppointmentService extends IService<DermatologistAppointmentDT
 	
 	public List<UnspecifiedDTO<DermatologistAppointmentDTO>> sortByDermatologistGradeDescendingAllFreeDermatologistAppointments(UUID pharmacyId,AppointmentType appointmentType);
 	
+	public List<UnspecifiedDTO<DermatologistAppointmentDTO>> findAllFuturePatientsAppointmets(AppointmentType appointmentType);
 	
-	
+	public void cancelDermatologistAppointment(UUID appointmentId);
 	
 	
 }

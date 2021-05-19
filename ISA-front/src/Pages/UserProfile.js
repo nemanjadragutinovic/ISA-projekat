@@ -520,7 +520,7 @@ class UserProfile extends Component {
 						<form id="contactForm" name="sentMessage">
 								<div className="control-group">
 									<div className="form-group controls mb-0 pb-2" >
-										<label>Email address:</label>
+										<b>Email address:</b>
 										<input
 											readOnly
 											placeholder="Email address"
@@ -534,7 +534,7 @@ class UserProfile extends Component {
 								</div>
 								<div className="control-group">
 									<div className="form-group controls mb-0 pb-2" >
-										<label>Name:</label>
+										<b>Name:</b>
 										<input
 											readOnly={this.state.hiddenEditInfo}
 											className={!this.state.hiddenEditInfo === false ? "form-control-plaintext" : "form-control"}
@@ -550,7 +550,7 @@ class UserProfile extends Component {
 								</div>
 								<div className="control-group">
 									<div className="form-group controls mb-0 pb-2">
-										<label>Surname:</label>
+										<b>Surname:</b>
 										<input
 											readOnly={this.state.hiddenEditInfo}
 											className={!this.state.hiddenEditInfo === false ? "form-control-plaintext" : "form-control"}
@@ -567,7 +567,7 @@ class UserProfile extends Component {
 								<div className="control-group">
 									
 									<div className="form-group controls mb-0 pb-2" >
-											<label>Adress:</label>
+											<b>Adress:</b>
 											<input
 												readOnly={this.state.hiddenEditInfo}
 												className={!this.state.hiddenEditInfo === false ? "form-control-plaintext" : "form-control"}
@@ -585,7 +585,7 @@ class UserProfile extends Component {
 								</div>
 								<div className="control-group">
 									<div className="form-group controls mb-0 pb-2" >
-										<label>Phone number:</label>
+										<b>Phone number:</b>
 										<input
 											placeholder="Phone number"
 											readOnly={this.state.hiddenEditInfo}
