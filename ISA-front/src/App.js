@@ -44,11 +44,8 @@ function App() {
         <Route  to ="/registerPharmacies" path ="/registerPharmacies"  component={RegisterPharmacies}/>
         <Route  to ="/dermatologistAppointment" path ="/dermatologistAppointment"  component={HomePageForDermatologistAppointments}/>
         <Route path="/dermatologistFreeAppointment/:id" children={<DermatologistFreeAppointment />} />
-
         <Route  to ="/futureDermatologistAppointmentsForPatient" path ="/futureDermatologistAppointmentsForPatient"  component={FutureDermatologistAppointmentsForPatient}/>
         <Route  to ="/historyDermatologistAppointmentsForPatient" path ="/historyDermatologistAppointmentsForPatient"  component={HistoryDermatologistAppointmentsForPatient}/>
-
-
         <Route  to ="/registerDrug" path ="/registerDrug"  component={RegisterDrug}/>
 
 
