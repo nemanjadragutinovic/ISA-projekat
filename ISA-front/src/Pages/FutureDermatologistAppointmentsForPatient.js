@@ -5,6 +5,7 @@ import GetAuthorisation from "../Funciton/GetAuthorisation";
 import DermatologistAppointmentPicture from "../Images/appointment.png" ;
 import UnsuccessfulAlert from "../Components/Alerts/UnsuccessfulAlert";
 import SuccessfulAlert from "../Components/Alerts/SuccessfulAlert";
+import {NavLink, Redirect } from "react-router-dom";
 
 const API_URL="http://localhost:8080";
 
@@ -27,7 +28,9 @@ class FutureDermatologistAppointmentsForPatient extends Component {
 
     };
 
-  
+    constructor(props) {
+        super(props);
+    }
   
 
 
@@ -37,9 +40,7 @@ class FutureDermatologistAppointmentsForPatient extends Component {
 			this.props.history.push('/login');
     }
 
-
-
-      
+    
     Axios.get(API_URL + "/appointment/dermatologist/findAllFuturePatientsAppointmets", {
 			validateStatus: () => true,
 			headers: { Authorization: GetAuthorisation() },
@@ -150,11 +151,7 @@ class FutureDermatologistAppointmentsForPatient extends Component {
 
 
   
-  addDays = (date, days) => {
-    var result = new Date(date);
-    result.setDate(result.getDate() + days);
-    return result;
-};
+  
 
     isAvailableToCanceled =(date) => {
 
@@ -168,7 +165,10 @@ class FutureDermatologistAppointmentsForPatient extends Component {
         return false;
     }
  
+    moveToExaminationHistory =() => {
 
+       this.props.history.push("/historyDermatologistAppointmentsForPatient");
+    }
 
 	render() {
 	
@@ -181,6 +181,13 @@ class FutureDermatologistAppointmentsForPatient extends Component {
       
          <div className="container">
 
+
+         <button type="button" class="btn btn-outline-primary btn-lg"
+         onClick={() => this.moveToExaminationHistory()}
+         style={{  marginTop: "2em", marginLeft: "auto",marginRight: "auto" }}
+          >
+         Examination history
+         </button>
 
          <h1 hidden={this.state.appointments.length === 0} className="text-center  mt-3  " >Your future appointments!</h1>
          <h1 hidden={this.state.appointments.length !== 0} className="text-center  mt-3 text-danger"  >You don't have future appointments!</h1>
@@ -201,8 +208,7 @@ class FutureDermatologistAppointmentsForPatient extends Component {
 		/>
 
         
-
-
+    
         <div className="container">
                     
           <table className="table table-hover" style={{ width: "70%", marginTop: "5em", marginLeft: "auto",marginRight: "auto" }}>

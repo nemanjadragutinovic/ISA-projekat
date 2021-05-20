@@ -26,5 +26,6 @@ public interface IAppointmentService extends IService<DermatologistAppointmentDT
 	
 	public void cancelDermatologistAppointment(UUID appointmentId);
 	
+	public List<UnspecifiedDTO<DermatologistAppointmentDTO>> findAllHistoryPatientsAppointmets(AppointmentType appointmentType);
 	
 }

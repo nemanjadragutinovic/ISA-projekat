@@ -14,6 +14,9 @@ import HomePageForDermatologistAppointments from "./Pages/HomePageForDermatologi
 import DermatologistFreeAppointment from "./Pages/DermatologistFreeAppointment"
 
 import FutureDermatologistAppointmentsForPatient from "./Pages/FutureDermatologistAppointmentsForPatient"
+import HistoryDermatologistAppointmentsForPatient from "./Pages/HistoryDermatologistAppointmentsForPatient"
+
+
 
 import {
   BrowserRouter as Router,
@@ -41,7 +44,7 @@ function App() {
         <Route  to ="/dermatologistAppointment" path ="/dermatologistAppointment"  component={HomePageForDermatologistAppointments}/>
         <Route path="/dermatologistFreeAppointment/:id" children={<DermatologistFreeAppointment />} />
         <Route  to ="/futureDermatologistAppointmentsForPatient" path ="/futureDermatologistAppointmentsForPatient"  component={FutureDermatologistAppointmentsForPatient}/>
-
+        <Route  to ="/historyDermatologistAppointmentsForPatient" path ="/historyDermatologistAppointmentsForPatient"  component={HistoryDermatologistAppointmentsForPatient}/>
 
 
         </Switch>

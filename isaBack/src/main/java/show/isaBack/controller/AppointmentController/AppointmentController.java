@@ -171,5 +171,19 @@ public class AppointmentController {
 	}
 	
 	
+	@PreAuthorize("hasRole('ROLE_PATIENT')")
+	@CrossOrigin
+	@GetMapping("/dermatologist/findAllHistoryPatientsAppointmets")
+	public ResponseEntity<List<UnspecifiedDTO<DermatologistAppointmentDTO>>> findAllHistoryPatientsAppointmets() {
+		System.out.println("njee");
+		try {
+			return new ResponseEntity<>(appointmentService.findAllHistoryPatientsAppointmets(AppointmentType.EXAMINATION) ,HttpStatus.OK);
+		} catch (Exception e) {
+				return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+		
+	}
+	
+	
 	
 }

@@ -220,6 +220,26 @@ public class AppointmentService implements IAppointmentService{
 	}
 	
 	
+	@Override
+	public List<UnspecifiedDTO<DermatologistAppointmentDTO>> findAllHistoryPatientsAppointmets(AppointmentType appointmentType) {
+		
+		UUID logedPatiendID= userService.getLoggedUserId();
+		List<Appointment> appointments = appointmentRepository.findAllHistoryPatientsAppointmets(logedPatiendID, appointmentType); 
+		System.out.println(appointments);
+		List<Dermatologist> allDermatologist= dermatologistRepository.findAll();		
+		
+		List<UnspecifiedDTO<EmployeeGradeDTO>> dermatologistEmployees= new ArrayList<UnspecifiedDTO<EmployeeGradeDTO>>();
+		
+		allDermatologist.forEach((dermatologist) -> dermatologistEmployees.add(appointmentsMapper.MapDermatologistToEmployeeDTO(dermatologist)));
+		
+		List<UnspecifiedDTO<DermatologistAppointmentDTO>> freeAppointments=  appointmentsMapper.MapAppointmentsToListAppointmentsDTO(appointments,dermatologistEmployees);             
+		
+		
+		return freeAppointments;
+		
+	}
+	
+	
 	
 	
 	@Override
