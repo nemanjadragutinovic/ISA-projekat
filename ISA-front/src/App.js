@@ -9,6 +9,7 @@ import UserProfilePage from "./Pages/UserProfile"
 import registerStaff from "./Components/adminRegistration/registerStaff"
 
 import RegisterPharmacies from './Components/adminRegistration/RegisterPharmacies';
+import RegisterDrug from './Components/adminRegistration/RegisterDrug';
 
 import HomePageForDermatologistAppointments from "./Pages/HomePageForDermatologistAppointments"
 import DermatologistFreeAppointment from "./Pages/DermatologistFreeAppointment"
@@ -43,8 +44,12 @@ function App() {
         <Route  to ="/registerPharmacies" path ="/registerPharmacies"  component={RegisterPharmacies}/>
         <Route  to ="/dermatologistAppointment" path ="/dermatologistAppointment"  component={HomePageForDermatologistAppointments}/>
         <Route path="/dermatologistFreeAppointment/:id" children={<DermatologistFreeAppointment />} />
+
         <Route  to ="/futureDermatologistAppointmentsForPatient" path ="/futureDermatologistAppointmentsForPatient"  component={FutureDermatologistAppointmentsForPatient}/>
         <Route  to ="/historyDermatologistAppointmentsForPatient" path ="/historyDermatologistAppointmentsForPatient"  component={HistoryDermatologistAppointmentsForPatient}/>
+
+
+        <Route  to ="/registerDrug" path ="/registerDrug"  component={RegisterDrug}/>
 
 
         </Switch>
