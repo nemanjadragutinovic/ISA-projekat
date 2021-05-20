@@ -181,7 +181,7 @@ public class UserService implements IUserInterface{
 	@Override
 	public UUID createDermatologist(UserRegistrationDTO entityDTO) {
 		Dermatologist dermatologist = CreateDermathologistFromDTO(entityDTO);
-		dermatologist.setPassword(passwordEncoder.encode(dermatologist.getId().toString()));
+		
 		UnspecifiedDTO<AuthorityDTO> authority = authorityService.findByName("ROLE_DERMATHOLOGIST");
 		List<Authority> authorities = new ArrayList<Authority>();
 		authorities.add(new Authority(authority.Id,authority.EntityDTO.getName()));
@@ -201,7 +201,7 @@ public class UserService implements IUserInterface{
 	@Override
 	public UUID createAdmin(UserRegistrationDTO entityDTO) {
 		SystemAdmin systemAdmin = CreateAdminFromDTO(entityDTO);
-		systemAdmin.setPassword(passwordEncoder.encode(systemAdmin.getId().toString()));
+		
 		UnspecifiedDTO<AuthorityDTO> authority = authorityService.findByName("ROLE_SYSADMIN");
 		List<Authority> authorities = new ArrayList<Authority>();
 		authorities.add(new Authority(authority.Id,authority.EntityDTO.getName()));
@@ -220,7 +220,7 @@ public class UserService implements IUserInterface{
 	public UUID createPharmacyAdmin(UserRegistrationDTO entityDTO, UUID pharmacyId) {
 		Pharmacy pharmacy = pharmacyRepository.getOne(pharmacyId);
 		PharmacyAdmin pharmacyAdmin = CreatePharmacyAdminFromDTO(entityDTO, pharmacy);
-		pharmacyAdmin.setPassword(passwordEncoder.encode(pharmacyAdmin.getId().toString()));
+		
 		UnspecifiedDTO<AuthorityDTO> authority = authorityService.findByName("ROLE_PHARMACYADMIN");
 		List<Authority> authorities = new ArrayList<Authority>();
 		authorities.add(new Authority(authority.Id,authority.EntityDTO.getName()));
@@ -313,7 +313,7 @@ public class UserService implements IUserInterface{
 	@Override
 	public UUID createSupplier(UserRegistrationDTO entityDTO) {
 		Supplier supp = CreateSupplierFromDTO(entityDTO);
-		supp.setPassword(passwordEncoder.encode(supp.getId().toString()));
+		
 		UnspecifiedDTO<AuthorityDTO> authority = authorityService.findByName("ROLE_SUPPLIER");
 		List<Authority> authorities = new ArrayList<Authority>();
 		authorities.add(new Authority(authority.Id,authority.EntityDTO.getName()));
