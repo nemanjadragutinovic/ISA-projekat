@@ -181,7 +181,8 @@ public class UserService implements IUserInterface{
 	@Override
 	public UUID createDermatologist(UserRegistrationDTO entityDTO) {
 		Dermatologist dermatologist = CreateDermathologistFromDTO(entityDTO);
-		
+		dermatologist.setPassword(passwordEncoder.encode(dermatologist.getId().toString()));
+		dermatologist.setFirstLogin(true);
 		UnspecifiedDTO<AuthorityDTO> authority = authorityService.findByName("ROLE_DERMATHOLOGIST");
 		List<Authority> authorities = new ArrayList<Authority>();
 		authorities.add(new Authority(authority.Id,authority.EntityDTO.getName()));
@@ -201,7 +202,9 @@ public class UserService implements IUserInterface{
 	@Override
 	public UUID createAdmin(UserRegistrationDTO entityDTO) {
 		SystemAdmin systemAdmin = CreateAdminFromDTO(entityDTO);
-		
+		systemAdmin.setPassword(passwordEncoder.encode(systemAdmin.getId().toString()));
+		systemAdmin.setFirstLogin(true);
+		System.out.println("prvi login = " + systemAdmin.isFirstLogin());
 		UnspecifiedDTO<AuthorityDTO> authority = authorityService.findByName("ROLE_SYSADMIN");
 		List<Authority> authorities = new ArrayList<Authority>();
 		authorities.add(new Authority(authority.Id,authority.EntityDTO.getName()));
@@ -220,6 +223,8 @@ public class UserService implements IUserInterface{
 	public UUID createPharmacyAdmin(UserRegistrationDTO entityDTO, UUID pharmacyId) {
 		Pharmacy pharmacy = pharmacyRepository.getOne(pharmacyId);
 		PharmacyAdmin pharmacyAdmin = CreatePharmacyAdminFromDTO(entityDTO, pharmacy);
+		pharmacyAdmin.setPassword(passwordEncoder.encode(pharmacyAdmin.getId().toString()));
+		pharmacyAdmin.setFirstLogin(true);
 		
 		UnspecifiedDTO<AuthorityDTO> authority = authorityService.findByName("ROLE_PHARMACYADMIN");
 		List<Authority> authorities = new ArrayList<Authority>();
@@ -259,6 +264,21 @@ public class UserService implements IUserInterface{
 			throw new IllegalArgumentException("Invalid new password");
 		
 		user.setPassword(passwordEncoder.encode(changePasswordDTO.getNewPassword()));
+		userRepository.save(user);
+		
+	}
+	
+	public void changeFirstPassword(String oldPassword, String newPassword) {
+		
+		User user = userRepository.findById(UUID.fromString(oldPassword)).get();
+		
+		authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(user.getEmail(), oldPassword));
+		
+		if(newPassword.isEmpty())
+			throw new IllegalArgumentException("Invalid new password");
+		
+		user.setPassword(passwordEncoder.encode(newPassword));
+		user.setFirstLogin(false);
 		userRepository.save(user);
 		
 	}
@@ -313,6 +333,8 @@ public class UserService implements IUserInterface{
 	@Override
 	public UUID createSupplier(UserRegistrationDTO entityDTO) {
 		Supplier supp = CreateSupplierFromDTO(entityDTO);
+		supp.setPassword(passwordEncoder.encode(supp.getId().toString()));
+		supp.setFirstLogin(true);
 		
 		UnspecifiedDTO<AuthorityDTO> authority = authorityService.findByName("ROLE_SUPPLIER");
 		List<Authority> authorities = new ArrayList<Authority>();
