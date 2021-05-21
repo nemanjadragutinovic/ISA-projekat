@@ -57,8 +57,19 @@ public class User implements UserDetails {
     @Column(name = "address")
     private String address;
     
+    @Column(name = "firstLogin")
+    private boolean firstLogin;
     
-    @ManyToMany(fetch = FetchType.EAGER)
+    
+    public boolean isFirstLogin() {
+		return firstLogin;
+	}
+
+	public void setFirstLogin(boolean firstLogin) {
+		this.firstLogin = firstLogin;
+	}
+
+	@ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "user_authority",
             joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
             inverseJoinColumns = @JoinColumn(name = "authority_id", referencedColumnName = "id"))

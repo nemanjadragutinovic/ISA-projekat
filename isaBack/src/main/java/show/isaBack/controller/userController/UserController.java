@@ -118,6 +118,27 @@ public class UserController {
 		}
 	}
 	
+	@PostMapping("/changeFirstPassword")
+	public ResponseEntity<?> changeFirstPassword(@RequestBody PasswordChanger passwordChanger) {
+		
+		try {
+			userService.changeFirstPassword(passwordChanger.oldPassword, passwordChanger.newPassword);
+			return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+		} catch (BadCredentialsException e){
+			return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+		} catch (IllegalArgumentException e) {
+			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+		}
+		catch (Exception e) {
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+
+	static class PasswordChanger {
+		public String oldPassword;
+		public String newPassword;
+	}
+	
 	
 	@PostMapping("/addPatientsAllergen") 
 	@PreAuthorize("hasRole('ROLE_PATIENT')")
