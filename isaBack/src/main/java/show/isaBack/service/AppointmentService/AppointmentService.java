@@ -21,12 +21,15 @@ import show.isaBack.Mappers.Appointmets.AppointmentsMapper;
 import show.isaBack.emailService.EmailService;
 import show.isaBack.model.Dermatologist;
 import show.isaBack.model.Patient;
+import show.isaBack.model.Pharmacy;
+import show.isaBack.model.UserCharacteristics.WorkTime;
 import show.isaBack.model.appointment.Appointment;
 import show.isaBack.model.appointment.AppointmentStatus;
 import show.isaBack.model.appointment.AppointmentType;
 import show.isaBack.repository.AppointmentRepository.AppointmentRepository;
 import show.isaBack.repository.userRepository.DermatologistRepository;
 import show.isaBack.repository.userRepository.PatientRepository;
+import show.isaBack.repository.userRepository.WorkTimeRepository;
 import show.isaBack.serviceInterfaces.IAppointmentService;
 import show.isaBack.serviceInterfaces.IService;
 import show.isaBack.serviceInterfaces.IUserInterface;
@@ -52,6 +55,9 @@ public class AppointmentService implements IAppointmentService{
 	
 	@Autowired
 	private EmailService emailService;
+	
+	@Autowired
+	private WorkTimeRepository workTimeRepository;
 	
 	@Override
 	public List<UnspecifiedDTO<DermatologistAppointmentDTO>> findAllFreeAppointmentsForPharmacyAndForAppointmentType(UUID pharmacyId,
@@ -239,6 +245,76 @@ public class AppointmentService implements IAppointmentService{
 		
 	}
 	
+	
+	@Override	
+	public List<Pharmacy> findAllPharmaciesForAppointmentTypeAndForDateRange(Date startDate, Date endDate) {
+
+		List<WorkTime> WorkTimesInDateRange= new ArrayList<WorkTime>();
+		WorkTimesInDateRange= workTimeRepository.findAllWorkTimesInDateRange(startDate,endDate, startDate.getHours(), endDate.getHours());
+		
+		
+		List<Appointment> busyConsultationsInDataRange= appointmentRepository.findAllBusyConsultationsInDataRange(startDate,endDate);
+					
+		List<Pharmacy> pharmacyWithFreeConsulations= findPharmacyWithFreeConsultatins(WorkTimesInDateRange,busyConsultationsInDataRange);
+		
+				
+		return pharmacyWithFreeConsulations;
+	}
+	
+	
+	
+	public List<Pharmacy> findPharmacyWithFreeConsultatins(List<WorkTime> WorkTimesInDateRange, List<Appointment> busyConsultationsInDataRange){
+		
+		List<Pharmacy> pharmacyWithFreeConsulations= new ArrayList<Pharmacy>();
+		
+		for (WorkTime currentWorkTime : WorkTimesInDateRange) {
+				
+				boolean scheduled= false;			
+				
+				for (Appointment currentAppointment : busyConsultationsInDataRange) {
+					if(currentWorkTime.getEmployee().getId().equals(currentAppointment.getEmployee().getId())) {
+						scheduled = true;
+						break;
+					}
+					
+				}
+				
+				if(scheduled==false)
+					pharmacyWithFreeConsulations.add(currentWorkTime.getPharmacy());
+			
+		}
+		
+		
+		
+		return throwOutDuplicatesPharmacies(pharmacyWithFreeConsulations);
+		
+		
+	}
+	
+	public List<Pharmacy> throwOutDuplicatesPharmacies(List<Pharmacy> pharmacyWithFreeConsulations){
+		
+		List<Pharmacy> filteredPharmacies= new ArrayList<Pharmacy>();
+		
+		for (Pharmacy pharmacy : pharmacyWithFreeConsulations) {
+			
+				boolean alreadyAdded= false;
+				for(Pharmacy rePharmacy : filteredPharmacies) {
+					if(pharmacy.getId().equals(rePharmacy.getId())) {
+						alreadyAdded = true;
+						break;
+					}
+				}
+				
+				if(alreadyAdded==false)
+					filteredPharmacies.add(pharmacy);
+					
+		}
+		
+		
+		return filteredPharmacies;
+		
+		
+	}
 	
 	
 	

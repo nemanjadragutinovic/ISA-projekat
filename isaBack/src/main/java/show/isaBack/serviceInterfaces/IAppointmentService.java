@@ -1,10 +1,12 @@
 package show.isaBack.serviceInterfaces;
 
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
 import show.isaBack.DTO.AppointmentDTO.DermatologistAppointmentDTO;
 import show.isaBack.DTO.AppointmentDTO.IdDTO;
+import show.isaBack.model.Pharmacy;
 import show.isaBack.model.appointment.AppointmentType;
 import show.isaBack.unspecifiedDTO.UnspecifiedDTO;
 
@@ -27,5 +29,7 @@ public interface IAppointmentService extends IService<DermatologistAppointmentDT
 	public void cancelDermatologistAppointment(UUID appointmentId);
 	
 	public List<UnspecifiedDTO<DermatologistAppointmentDTO>> findAllHistoryPatientsAppointmets(AppointmentType appointmentType);
+	
+	public List<Pharmacy> findAllPharmaciesForAppointmentTypeAndForDateRange(Date startDate, Date endDate);
 	
 }

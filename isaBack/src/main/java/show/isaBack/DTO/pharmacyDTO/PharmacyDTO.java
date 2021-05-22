@@ -13,7 +13,7 @@ public class PharmacyDTO {
 	private String name;	
 	private Address address;		
 	private String description;
-	
+	private double consultationPrice;
 	
 	
 	
@@ -29,24 +29,26 @@ public class PharmacyDTO {
 		this.name = pharmacy.getName();
 		this.address = pharmacy.getAddress();
 		this.description = pharmacy.getDescription();
-		
+		this.consultationPrice= pharmacy.getConsultationPrice();
 	}
 	
 	
-	public PharmacyDTO(String name, String city, String street, String country, String postCode, String description) {
+	public PharmacyDTO(String name, String city, String street, String country, String postCode, String description,double consultationPrice) {
 		super();
 		this.name = name;
 		this.address = new Address(city,street,country,postCode);
 		this.description = description;
+		this.consultationPrice= consultationPrice;
 	}
 	
 	
 	
-	public PharmacyDTO( String name, Address address, String description) {
+	public PharmacyDTO( String name, Address address, String description,double consultationPrice) {
 		super();
 		this.name = name;
 		this.address = address;
 		this.description = description;
+		this.consultationPrice= consultationPrice;
 	}
 
 	
@@ -79,6 +81,17 @@ public class PharmacyDTO {
 	public void setDescription(String description) {
 		this.description = description;
 	}
+
+
+	public double getConsultationPrice() {
+		return consultationPrice;
+	}
+
+
+	public void setConsultationPrice(double consultationPrice) {
+		this.consultationPrice = consultationPrice;
+	}
+	
 	
 
 	

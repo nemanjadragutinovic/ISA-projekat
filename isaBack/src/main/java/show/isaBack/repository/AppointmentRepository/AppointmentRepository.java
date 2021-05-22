@@ -47,7 +47,9 @@ public interface AppointmentRepository extends PagingAndSortingRepository<Appoin
 	List<Appointment> findAllHistoryPatientsAppointmets(UUID userId, AppointmentType appointmentType); 
 	
 	
-	
+	@Query(value = "SELECT a FROM Appointment a WHERE a.appointmentType = 'CONSULTATION' AND a.appointmentStatus = 'SCHEDULED' "
+			+ " AND NOT (a.startDateTime >= ?2 OR a.endDateTime <= ?1) ")
+	List<Appointment> findAllBusyConsultationsInDataRange(Date startDate, Date endDate);
 	
 	
 	

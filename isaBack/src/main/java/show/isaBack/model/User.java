@@ -5,8 +5,9 @@ import java.util.List;
 import java.util.UUID;
 
 import javax.persistence.Column;
-import javax.persistence.Embedded;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.Inheritance;
@@ -21,6 +22,12 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import show.isaBack.model.UserCharacteristics.UserType;
+
+
+
+
 
 
 
@@ -57,6 +64,10 @@ public class User implements UserDetails {
     @Column(name = "address")
     private String address;
     
+    @Enumerated(EnumType.STRING)
+   	@Column(name="userType")
+   	private UserType userType;
+    
     
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "user_authority",
@@ -64,15 +75,36 @@ public class User implements UserDetails {
             inverseJoinColumns = @JoinColumn(name = "authority_id", referencedColumnName = "id"))
     private List<Authority> authorities;
     	
-    @Version
-	private Long version;
+    
     
 	public User() {}
+	
 	
 	public User(String email, String password, String name, String surname, String address,
 			String phoneNumber, boolean active) {
 		this(UUID.randomUUID(), email, password, name, surname, address, phoneNumber, active);
 	}
+	
+	
+	public User(String email, String password, String name, String surname, String address,
+			String phoneNumber, boolean active, UserType userType) {
+		this(UUID.randomUUID(), email, password, name, surname, address, phoneNumber, active, userType);
+	}
+	
+	public User(UUID id, String email, String password, String name, String surname, String address,
+			String phoneNumber, boolean active,UserType userType) {
+		super();
+		this.id = id;
+		this.email = email;
+		this.password = password;
+		this.name = name;
+		this.surname = surname;
+		this.address = address;
+		this.phoneNumber = phoneNumber;
+		this.active = active;
+		this.userType=userType;
+	}
+	
 	
 	public User(UUID id, String email, String password, String name, String surname, String address,
 			String phoneNumber, boolean active) {
@@ -85,6 +117,7 @@ public class User implements UserDetails {
 		this.address = address;
 		this.phoneNumber = phoneNumber;
 		this.active = active;
+		
 	}
 	
 	public UUID getId() {
@@ -121,6 +154,16 @@ public class User implements UserDetails {
 
 	public void setActive(boolean active) {
 		this.active = active;
+	}
+	
+	
+
+	public UserType getUserType() {
+		return userType;
+	}
+
+	public void setUserType(UserType userType) {
+		this.userType = userType;
 	}
 
 	@Override
@@ -192,11 +235,5 @@ public class User implements UserDetails {
 		this.phoneNumber = phoneNumber;
 	}
 		
-	public Long getVersion() {
-		return version;
-	}
-
-	public void setVersion(Long version) {
-		this.version = version;
-	}
+	
 }
