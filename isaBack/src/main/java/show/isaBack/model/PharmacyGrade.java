@@ -24,7 +24,6 @@ public class PharmacyGrade {
 	private UUID id;
 	
 	
-	
 	@ManyToOne(optional = false)
 	private Pharmacy pharmacy;
 	

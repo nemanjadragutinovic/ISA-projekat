@@ -1,11 +1,31 @@
 import React, { Component } from "react";
 import PharmacyLogoPicture from "../../Images/pharmacyLogo.jpg" ;
+import Axios from "axios";
+import GetAuthorisation from "../../Funciton/GetAuthorisation";
+
+
+
+
+const API_URL="http://localhost:8080";
 
 class FoundPharmaciesForDateRange extends Component {
-	render() {
+	
+    
+    
+    render() {
 		return (
 			<div hidden={this.props.hiddenPharmacies}>
+
+
+                <button  type="button" class="btn btn-link btn-lg"
+                        onClick={this.props.backToSelectedDateRange} 
+                         style={{ width: "100px" , marginTop: "40px", marginLeft: "5em"}}>        
+                          Back
+                </button>
+
+
 				<div className="container">
+                    
                     
                     <table className="table table-hover" style={{ width: "90%", marginTop: "5em", marginLeft: "auto",marginRight: "auto" }}>
                                   <tbody>
@@ -50,7 +70,8 @@ class FoundPharmaciesForDateRange extends Component {
                                                 <button
                                                         type="button"
                                                         className="btn btn-outline-primary"
-                                                        onClick={() => this.showPharmacistForPharmacy(pharmacy.Id)}
+                                                        style={{  marginTop: "25px" }}
+                                                        onClick={() => this.props.showPharmacistForPharmacy(pharmacy)}
                                                 >
                                                         Show pharmacists
                                                 </button>

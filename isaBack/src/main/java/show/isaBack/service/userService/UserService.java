@@ -1,6 +1,7 @@
 package show.isaBack.service.userService;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
@@ -9,6 +10,8 @@ import javax.persistence.EntityNotFoundException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.mail.MailException;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -16,12 +19,15 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.PathVariable;
 
 import show.isaBack.DTO.drugDTO.AllergenDTO;
+import show.isaBack.DTO.pharmacyDTO.PharmacyWithGradeAndPriceDTO;
 import show.isaBack.DTO.userDTO.AuthorityDTO;
 import show.isaBack.DTO.userDTO.ChangePasswordDTO;
 import show.isaBack.DTO.userDTO.PatientDTO;
 import show.isaBack.DTO.userDTO.PatientsAllergenDTO;
+import show.isaBack.DTO.userDTO.PharmacistForAppointmentPharmacyGadeDTO;
 import show.isaBack.DTO.userDTO.UserChangeInfoDTO;
 import show.isaBack.DTO.userDTO.UserDTO;
 import show.isaBack.DTO.userDTO.UserRegistrationDTO;
@@ -40,6 +46,8 @@ import show.isaBack.repository.pharmacyRepository.PharmacyRepository;
 import show.isaBack.repository.userRepository.DermatologistRepository;
 import show.isaBack.repository.userRepository.PatientRepository;
 import show.isaBack.repository.userRepository.UserRepository;
+import show.isaBack.serviceInterfaces.IAppointmentService;
+import show.isaBack.serviceInterfaces.IEmployeeGradeService;
 import show.isaBack.serviceInterfaces.IUserInterface;
 import show.isaBack.unspecifiedDTO.UnspecifiedDTO;
 
@@ -55,8 +63,7 @@ public class UserService implements IUserInterface{
 	private PatientRepository patientRepository;
 	@Autowired
 	private UserRepository userRepository;
-	@Autowired
-	private DermatologistRepository dermatologistRepository;
+	
 	@Autowired
 	private PharmacyRepository pharmacyRepository;
 	@Autowired
@@ -65,13 +72,15 @@ public class UserService implements IUserInterface{
 	@Autowired
 	private AllergenRepository allergenRepository;
 	
-	@Autowired
-	private Environment env;
 	
 	@Autowired
 	private AuthenticationManager authenticationManager;
 	
+	@Autowired
+	private IAppointmentService appointmentService;
 	
+	@Autowired
+	private IEmployeeGradeService employeeGradeService;
 	
 	public UUID createPatient(UserRegistrationDTO patientRegistrationDTO) {
 		
@@ -327,6 +336,47 @@ public class UserService implements IUserInterface{
 	private Supplier CreateSupplierFromDTO(UserRegistrationDTO patientDTO) {
 		return new Supplier(patientDTO.getEmail(), passwordEncoder.encode(patientDTO.getPassword()), patientDTO.getName(), patientDTO.getSurname(), patientDTO.getAddress(), patientDTO.getPhoneNumber());
 	}
+	
+	
+	
+	@Override
+	public List<UnspecifiedDTO<PharmacistForAppointmentPharmacyGadeDTO>> fidnAllFreePharmacistsForSelectedPharmacyInDataRange(Date startDate, UUID pharmacyId){
+		
+		long startTime = startDate.getTime();
+		Date endDate= new Date(startTime + 7200000);
+		
+		System.out.println( "startno vreme " + startDate + "   " +  " Krajnje vremee " + endDate);
+		
+		List<UnspecifiedDTO<PharmacistForAppointmentPharmacyGadeDTO>> pharmacistDTO= new ArrayList<UnspecifiedDTO<PharmacistForAppointmentPharmacyGadeDTO>>();  
+		List<User>  pharmaciest= new ArrayList<User>();
+		pharmaciest= appointmentService.fidnAllFreePharmacistsForSelectedPharmacyInDataRange(startDate,endDate,pharmacyId);
+		
+		for (User user : pharmaciest) {
+			pharmacistDTO.add(convertPharmacistToPharmacistWithGradeDTO(user));
+		}
+		
+	
+		return pharmacistDTO;
+		
+		
+	}
+	
+	
+	
+	public UnspecifiedDTO<PharmacistForAppointmentPharmacyGadeDTO> convertPharmacistToPharmacistWithGradeDTO(User pharmacist){
+		
+		double avgGrade = employeeGradeService.getAvgGradeForEmployee(pharmacist.getId());
+		
+		
+		return new UnspecifiedDTO<PharmacistForAppointmentPharmacyGadeDTO>(pharmacist.getId() ,
+				new PharmacistForAppointmentPharmacyGadeDTO(pharmacist.getName(),pharmacist.getSurname(),avgGrade));
+		
+		
+	}
+	
+	
+	
+	
 	
 	@Override
 	public List<UnspecifiedDTO<AuthorityDTO>> findAll() {

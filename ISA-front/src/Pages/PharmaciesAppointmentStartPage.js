@@ -9,6 +9,8 @@ import {NavLink, Redirect } from "react-router-dom";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import FoundPharmaciesForDateRange from "../Components/Pharmacies/FoundPharmaciesForDateRange"
+import FoundPharmacistForPharmacyForDateRange from "../Components/Pharmacies/FoundPharmacistForPharmacyForDateRange"
+
 
 
 const API_URL="http://localhost:8080";
@@ -24,11 +26,11 @@ class PharmaciesAppointmentStartPage extends Component {
 		minutes: new Date().getMinutes(),
         pharmacies: [],
 		hiddenPharmacies: true,
-
+		pharmacists : [],
+		hiddenPharmacists: true,
         hiddenUnsuccessfulAlert: true,
         UnsuccessfulHeader: "",
         UnsuccessfulMessage: "",
-
 		isPharmaciesEmpty : false
 
     };
@@ -138,6 +140,7 @@ class PharmaciesAppointmentStartPage extends Component {
 						console.log(res.data);
 					}
 					 if(res.status === 401){
+						 this.props.history.push("/login");
                         this.setState({ hiddenUnsuccessfulAlert: false, 
                             UnsuccessfulHeader: "Internal server error", 
                             UnsuccessfulMessage: res.data });
@@ -156,6 +159,84 @@ class PharmaciesAppointmentStartPage extends Component {
 
    
 
+	showPharmacistForPharmacy = (pharmacy) => {
+		this.setState({
+			
+			consultationDate: new Date(
+				this.state.selectedDate.getFullYear(),
+				this.state.selectedDate.getMonth(),
+				this.state.selectedDate.getDate(),
+				this.state.hours,
+				this.state.minutes,
+				0,
+				0
+			).getTime(),
+		});
+
+		let consultationDateSelected= new Date(
+			this.state.selectedDate.getFullYear(),
+			this.state.selectedDate.getMonth(),
+			this.state.selectedDate.getDate(),
+			this.state.hours,
+			this.state.minutes,
+			0,
+			0
+		).getTime(); 
+
+			console.log("idemooo")
+		Axios.get(
+			API_URL +
+				"/users/freePharmacistsForSelectedPharmacyInDataRange/" + pharmacy.Id + "/"+ consultationDateSelected,
+			{ validateStatus: () => true, headers: { Authorization: GetAuthorisation() } }
+		)
+			.then((res) => {
+				if (res.status === 401) {
+					this.props.history.push("/login");
+                        this.setState({ hiddenUnsuccessfulAlert: false, 
+                            UnsuccessfulHeader: "Internal server error", 
+                            UnsuccessfulMessage: res.data });
+
+				} else if (res.status === 200) {
+					
+					console.log(res.data);
+
+					this.setState({ pharmacists: res.data });
+						
+					if(this.state.pharmacists.length!==0){
+							this.setState({hiddenPharmacies: true, 
+								isPharmaciesEmpty: false,
+								 hiddenPharmacists: false,
+								 isPharmacistsEmpty: false });
+					}else{
+							this.setState({isPharmacistsEmpty: true,hiddenPharmacists: true, hiddenPharmacies: false });
+					}
+					
+					
+
+
+				}
+			})
+			.catch((err) => {
+				console.log(err);
+				this.setState({ hiddenUnsuccessfulAlert: false, 
+					UnsuccessfulHeader: "Error", 
+					UnsuccessfulMessage: "Some error" });
+			});
+	};
+
+
+
+	
+	handleClosePharmacistPage = () => {
+		this.setState({ hiddenPharmacists: true, hiddenPharmacies: false});
+	};
+
+
+	handleClosePharmaciesPage = () => {
+		this.setState({ hiddenPharmacists: true, hiddenPharmacies: true});
+	};
+
+
 	render() {
 	
 
@@ -165,7 +246,7 @@ class PharmaciesAppointmentStartPage extends Component {
 
          <Header/>
       
-         <div className="container" hidden={!this.state.hiddenPharmacies} >
+         <div className="container" hidden={!this.state.hiddenPharmacies || !this.state.hiddenPharmacists} >
 
 
          <UnsuccessfulAlert
@@ -256,11 +337,18 @@ class PharmaciesAppointmentStartPage extends Component {
 
 				hiddenPharmacies= {this.state.hiddenPharmacies}
 				pharmacies={this.state.pharmacies}
-
+				showPharmacistForPharmacy={this.showPharmacistForPharmacy}
+				backToSelectedDateRange= {this.handleClosePharmaciesPage}
 
 		/>
 
-			
+	   <FoundPharmacistForPharmacyForDateRange
+
+		hiddenPharmacist= {this.state.hiddenPharmacists}
+		pharmacists= {this.state.pharmacists}
+		reserveAppointmentForPharmacist={this.handleClickOnPharmacist}	
+		backToPharmacies= {this.handleClosePharmacistPage}
+	   />
 
 
 
