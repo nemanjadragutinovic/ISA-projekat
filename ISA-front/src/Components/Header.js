@@ -102,6 +102,10 @@ class Header extends React.Component{
                     
                 </ReactBootStrap.NavDropdown>
 
+                <Link to="/loyalityProgram">
+                <ReactBootStrap.Nav.Link href="#deets">Loyality Program</ReactBootStrap.Nav.Link>
+                </Link>
+
                   
                 <ReactBootStrap.NavDropdown alignRight title="User" id="collasible-nav-dropdown">
                     <ReactBootStrap.NavDropdown.Item href="/login" hidden={this.IsLogedIn()}>Login</ReactBootStrap.NavDropdown.Item>

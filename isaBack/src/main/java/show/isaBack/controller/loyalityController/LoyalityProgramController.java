@@ -32,9 +32,12 @@ public class LoyalityProgramController {
 	@GetMapping("/{loyaltyProgramId}")
 	public ResponseEntity<UnspecifiedDTO<LoyaltyProgramDTO>> getLoyaltyProgramById(@PathVariable UUID loyaltyProgramId) {
 		
+		System.out.println("usao u lojaliti get");
+		
 		try {
 				
-			UnspecifiedDTO<LoyaltyProgramDTO> loyaltyProgram = loyaltyProgramService.findById(loyaltyProgramId);
+			UnspecifiedDTO<LoyaltyProgramDTO> loyaltyProgram = loyaltyProgramService.findAllLoyalityPrograms(loyaltyProgramId);
+			System.out.println(loyaltyProgram.EntityDTO.getPointsToEnterLoyalCathegory() + "HONDA NSX");
 			return new ResponseEntity<>(loyaltyProgram,HttpStatus.OK); 
 		} catch (EntityNotFoundException e) {
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND); 
@@ -47,6 +50,8 @@ public class LoyalityProgramController {
 	@PutMapping("/update")
 	@PreAuthorize("hasRole('SYSADMIN')")
 	public ResponseEntity<?> updateLoyaltyProgramInformation(@RequestBody LoyaltyProgramDTO loyaltyProgramDTO ) {
+		
+		System.out.println("usao u update");
 	  
 		try {
 			loyaltyProgramService.update(loyaltyProgramDTO);

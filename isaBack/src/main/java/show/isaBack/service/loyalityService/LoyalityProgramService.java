@@ -23,7 +23,7 @@ public class LoyalityProgramService implements ILoyaltyService {
 	@Autowired
 	private LoyalityProgramRepository loyaltyProgramRepository;
 	
-	private final UUID LOYALITY_PROGRAM_ID = UUID.fromString("68053ea6-bb28-11eb-8529-0242ac130003");
+	private final UUID LOYALITY_PROGRAM_ID = UUID.fromString("8c834328-9b5a-42c2-9e04-a1acc75f881d");
 	
 	
 	@Override
@@ -44,7 +44,10 @@ public class LoyalityProgramService implements ILoyaltyService {
 
 		try {
 			
+			System.out.println(entityDTO.getDrugDiscountVip());
+			
 			LoyalityProgram loyaltyProgram = loyaltyProgramRepository.getOne(LOYALITY_PROGRAM_ID);
+			System.out.println(loyaltyProgram.getDrugDiscountVip());
 			loyaltyProgram.setPointsForAppointment(entityDTO.getPointsForAppointment());
 			loyaltyProgram.setPointsForConsulting(entityDTO.getPointsForConsulting());
 			loyaltyProgram.setPointsToEnterRegularCathegory(entityDTO.getPointsToEnterRegularCathegory());
@@ -63,6 +66,9 @@ public class LoyalityProgramService implements ILoyaltyService {
 			loyaltyProgram.setAppointmentDiscountVip(entityDTO.getAppointmentDiscountVip());
 			loyaltyProgram.setDrugDiscountVip(entityDTO.getDrugDiscountVip());
 			loyaltyProgram.setConsultationDiscountVip(entityDTO.getConsultationDiscountVip());
+			
+			System.out.println(loyaltyProgram.getDrugDiscountVip()+"nemanjaaa");
+		//	System.out.println();
 			
 			loyaltyProgramRepository.save(loyaltyProgram);
 			
