@@ -103,7 +103,7 @@ class Header extends React.Component{
                 </ReactBootStrap.NavDropdown>
 
                 <Link to="/loyalityProgram">
-                <ReactBootStrap.Nav.Link href="#deets">Loyality Program</ReactBootStrap.Nav.Link>
+                <ReactBootStrap.Nav.Link href="#deets" hidden={!this.hasRole("ROLE_SYSADMIN")} >Loyality Program</ReactBootStrap.Nav.Link>
                 </Link>
 
                   
