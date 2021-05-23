@@ -33,10 +33,10 @@ class FoundPharmacistForPharmacyForDateRange extends Component {
 
                     <table className="table table-hover" style={{ width: "90%", marginTop: "5em", marginLeft: "auto",marginRight: "auto" }}>
                                   <tbody>
-                                      {this.props.pharmacists.map((pharmacy) => (
+                                      {this.props.pharmacists.map((pharmacist) => (
                                           <tr
-                                              id={pharmacy.Id}
-                                              key={pharmacy.Id}
+                                              id={pharmacist.Id}
+                                              key={pharmacist.Id}
                                               style={{ cursor: "pointer" }}
                                           >
           
@@ -48,16 +48,16 @@ class FoundPharmacistForPharmacyForDateRange extends Component {
                                               <td>
                                                             
                                                     <div>
-                                                        <b>Name: </b> {pharmacy.EntityDTO.name}
+                                                        <b>Name: </b> {pharmacist.EntityDTO.name}
                                                     </div>
                                                     <div>
-                                                        <b>Surname: </b>{pharmacy.EntityDTO.surname}
+                                                        <b>Surname: </b>{pharmacist.EntityDTO.surname}
                                                     </div>
 
                                                     
 
                                                     <div>
-                                                        <b>Grade: </b> {pharmacy.EntityDTO.grade}
+                                                        <b>Grade: </b> {pharmacist.EntityDTO.grade}
                                                         <i className="icon-star" style={{ color: "yellow"}}></i>
                                                     </div>
                                             
@@ -69,7 +69,7 @@ class FoundPharmacistForPharmacyForDateRange extends Component {
                                                         type="button"
                                                         className="btn btn-outline-primary"
                                                         style={{  marginTop: "25px" }}
-                                                        onClick={() => this.props.reserveAppointmentForPharmacist(pharmacy)}
+                                                        onClick={() => this.props.reserveAppointmentForPharmacist(pharmacist)}
                                                 >
                                                         Reserve consultation
                                                 </button>

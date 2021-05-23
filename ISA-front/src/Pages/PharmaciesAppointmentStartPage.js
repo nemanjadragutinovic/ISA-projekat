@@ -10,6 +10,7 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import FoundPharmaciesForDateRange from "../Components/Pharmacies/FoundPharmaciesForDateRange"
 import FoundPharmacistForPharmacyForDateRange from "../Components/Pharmacies/FoundPharmacistForPharmacyForDateRange"
+import ReservedConsultationModal from "../Components/Modal/ReservedConsultationModal"
 
 
 
@@ -31,7 +32,8 @@ class PharmaciesAppointmentStartPage extends Component {
         hiddenUnsuccessfulAlert: true,
         UnsuccessfulHeader: "",
         UnsuccessfulMessage: "",
-		isPharmaciesEmpty : false
+		isPharmaciesEmpty : false,
+		showReservedConsultationModal: false
 
     };
 
@@ -192,9 +194,6 @@ class PharmaciesAppointmentStartPage extends Component {
 			.then((res) => {
 				if (res.status === 401) {
 					this.props.history.push("/login");
-                        this.setState({ hiddenUnsuccessfulAlert: false, 
-                            UnsuccessfulHeader: "Internal server error", 
-                            UnsuccessfulMessage: res.data });
 
 				} else if (res.status === 200) {
 					
@@ -236,6 +235,63 @@ class PharmaciesAppointmentStartPage extends Component {
 		this.setState({ hiddenPharmacists: true, hiddenPharmacies: true});
 	};
 
+
+
+	reserveAppointmentForPharmacist = (pharmacist) => {
+		
+		this.setState({
+			
+		
+			hiddenUnsuccessfulAlert: true,
+			UnsuccessfulHeader: "",
+			UnsuccessfulMessage: "",
+		});
+
+
+
+		Axios.get(
+			API_URL + "/pharmacy/reserveConsulationBySelectedPharmacist", 
+			{ validateStatus: () => true, headers: { Authorization: GetAuthorisation() } }
+		)
+			.then((res) => {
+				if (res.status === 401) {
+					this.props.history.push("/login");
+			
+				} else if (res.status === 500) {
+					this.setState({ hiddenUnsuccessfulAlert: false, 
+						UnsuccessfulHeader: "Error", 
+						UnsuccessfulMessage: "Internal server error" });
+				 } else if (res.status === 400) {
+					this.setState({ hiddenUnsuccessfulAlert: false, 
+						UnsuccessfulHeader: "Bad request", 
+						UnsuccessfulMessage: res.data });
+				 } else if (res.status === 200 ){
+						console.log("uspesno zakao termin");
+					
+						this.setState({ showReservedConsultationModal: true });
+				  }	
+		
+			})
+			.catch((err) => {
+				console.log(err);
+				this.setState({ hiddenUnsuccessfulAlert: false, 
+					UnsuccessfulHeader: "Error", 
+					UnsuccessfulMessage: "Some error" });
+			});
+
+
+
+
+
+	};
+
+	closeReservedConsultationModal = () => {
+		this.setState({ showReservedConsultationModal: false });
+		this.props.history.push("/");
+	};
+
+
+	
 
 	render() {
 	
@@ -346,12 +402,16 @@ class PharmaciesAppointmentStartPage extends Component {
 
 		hiddenPharmacist= {this.state.hiddenPharmacists}
 		pharmacists= {this.state.pharmacists}
-		reserveAppointmentForPharmacist={this.handleClickOnPharmacist}	
+		reserveAppointmentForPharmacist={this.reserveAppointmentForPharmacist}	
 		backToPharmacies= {this.handleClosePharmacistPage}
 	   />
 
 
+		<ReservedConsultationModal	
+				show= {this.state.showReservedConsultationModal}
+				closeModal= {this.closeReservedConsultationModal}
 
+		/>	
 
 		
 
