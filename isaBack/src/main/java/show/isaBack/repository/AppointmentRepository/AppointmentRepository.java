@@ -53,10 +53,17 @@ public interface AppointmentRepository extends PagingAndSortingRepository<Appoin
 	
 	@Query(value = "SELECT a FROM Appointment a WHERE a.appointmentType = 'CONSULTATION' AND a.appointmentStatus = 'SCHEDULED' "
 			+ " AND a.pharmacy.id = ?3 AND NOT (a.startDateTime >= ?2 OR a.endDateTime <= ?1) ")
-	List<Appointment> findAllBusyConsultationsInDataRange(Date startDate, Date endDate,UUID pharmacyId);
+	List<Appointment> findAllBusyConsultationsInDataRangeForPharmacy(Date startDate, Date endDate,UUID pharmacyId);
 	
 	
+	@Query(value = "SELECT a FROM Appointment a WHERE a.appointmentType = 'CONSULTATION' AND a.appointmentStatus = 'SCHEDULED' "
+			+ " AND a.employee.id = ?3 AND NOT (a.startDateTime >= ?2 OR a.endDateTime <= ?1) ")
+	List<Appointment> findAllBusyConsultationsInDataRangeForPharmacist(Date startDate, Date endDate,UUID pharmacistId);
 	
+	
+	@Query(value = "SELECT a FROM Appointment a WHERE a.appointmentStatus = 'SCHEDULED' "
+			+ " AND a.patient.id = ?3 AND NOT (a.startDateTime >= ?2 OR a.endDateTime <= ?1) ")
+	List<Appointment> findAllSheduledAppointmentsForPatientsInDataRange(Date startDate, Date endDate,UUID patientId);
 	
 	
 }

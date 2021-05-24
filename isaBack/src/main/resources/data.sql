@@ -37,6 +37,11 @@ insert into users (id, email, password, name, surname, phone_Number, active, add
 
 --PATIENTS
 insert into patient (id) values ('22793162-52d3-11eb-ae93-0242ac130002');
+
+--PHARMACISTS
+insert into pharmacist (id, pharmacy_id) values ('80c86094-ba60-11eb-8529-0242ac130003','775d8e36-9859-11eb-a8b3-0242ac130003');
+insert into pharmacist (id, pharmacy_id) values ('80c862c4-ba60-11eb-8529-0242ac130003','775d9322-9859-11eb-a8b3-0242ac130003');
+
 --SYSTEM ADMIN
 insert into system_admin(id) values ('44444d47-1a8a-4ae1-b109-af7b56e94788');
 

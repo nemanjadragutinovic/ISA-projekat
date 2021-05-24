@@ -22,7 +22,8 @@ class PharmaciesAppointmentStartPage extends Component {
     
     state = {
         
-        selectedDate: new Date(),
+        consultationDate: new Date(),
+		selectedDate: new Date(),
 		hours: new Date().getHours(),
 		minutes: new Date().getMinutes(),
         pharmacies: [],
@@ -33,7 +34,11 @@ class PharmaciesAppointmentStartPage extends Component {
         UnsuccessfulHeader: "",
         UnsuccessfulMessage: "",
 		isPharmaciesEmpty : false,
-		showReservedConsultationModal: false
+		showReservedConsultationModal: false,
+		errorMessageForReservation : "",
+		hideSuccessfulModalText : true,
+		hideSuccessfulModalButton: true,
+		modalTitle: ""
 
     };
 
@@ -245,12 +250,19 @@ class PharmaciesAppointmentStartPage extends Component {
 			hiddenUnsuccessfulAlert: true,
 			UnsuccessfulHeader: "",
 			UnsuccessfulMessage: "",
+			errorMessageForReservation: ""
 		});
 
+		console.log(this.state.selectedDate);
 
 
-		Axios.get(
-			API_URL + "/pharmacy/reserveConsulationBySelectedPharmacist", 
+		let reservationDTO = {
+			pharmacistId: pharmacist.Id,
+			startDate: this.state.consultationDate,
+		};
+
+		Axios.post(
+			API_URL + "/appointment/reserveConsulationBySelectedPharmacist", reservationDTO ,
 			{ validateStatus: () => true, headers: { Authorization: GetAuthorisation() } }
 		)
 			.then((res) => {
@@ -258,25 +270,28 @@ class PharmaciesAppointmentStartPage extends Component {
 					this.props.history.push("/login");
 			
 				} else if (res.status === 500) {
-					this.setState({ hiddenUnsuccessfulAlert: false, 
-						UnsuccessfulHeader: "Error", 
-						UnsuccessfulMessage: "Internal server error" });
+					this.setState({ errorMessageForReservation : res.data,
+						 showReservedConsultationModal: true,
+						  modalTitle : "Error" });
 				 } else if (res.status === 400) {
-					this.setState({ hiddenUnsuccessfulAlert: false, 
-						UnsuccessfulHeader: "Bad request", 
-						UnsuccessfulMessage: res.data });
-				 } else if (res.status === 200 ){
+					this.setState({ errorMessageForReservation : res.data, 
+						showReservedConsultationModal: true,
+						modalTitle : "Bad request"});
+				 } else if (res.status === 201 ){
 						console.log("uspesno zakao termin");
 					
-						this.setState({ showReservedConsultationModal: true });
+						this.setState({ showReservedConsultationModal: true,
+									 errorMessageForReservation : "",
+									 hideSuccessfulModalText : false,
+									 hideSuccessfulModalButton: false,
+									 modalTitle : "Successful reservation"
+							  });
 				  }	
 		
 			})
 			.catch((err) => {
 				console.log(err);
-				this.setState({ hiddenUnsuccessfulAlert: false, 
-					UnsuccessfulHeader: "Error", 
-					UnsuccessfulMessage: "Some error" });
+				this.setState({ errorMessageForReservation : "Some error happened", modalTitle : "Error" });
 			});
 
 
@@ -286,11 +301,24 @@ class PharmaciesAppointmentStartPage extends Component {
 	};
 
 	closeReservedConsultationModal = () => {
-		this.setState({ showReservedConsultationModal: false });
+		this.setState({ showReservedConsultationModal: false,
+						 errorMessageForReservation : "",
+						 hideSuccessfulModalText : true,
+						 hideSuccessfulModalButton: true,
+						 modalTitle : ""
+				  });
 		this.props.history.push("/");
 	};
 
-
+	closeModal= () => {
+		this.setState({ showReservedConsultationModal: false,
+					 errorMessageForReservation : "",
+					 hideSuccessfulModalText : true,
+					 hideSuccessfulModalButton: true,
+					 modalTitle : ""
+			 });
+		
+	};
 	
 
 	render() {
@@ -410,6 +438,11 @@ class PharmaciesAppointmentStartPage extends Component {
 		<ReservedConsultationModal	
 				show= {this.state.showReservedConsultationModal}
 				closeModal= {this.closeReservedConsultationModal}
+				onCloseModal={this.closeModal}
+				errorMessageForReservation= {this.state.errorMessageForReservation}
+				hideSuccessfulModalText = {this.state.hideSuccessfulModalText}
+				hideSuccessfulModalButton= {this.state.hideSuccessfulModalButton}
+				modalTitle= {this.state.modalTitle}
 
 		/>	
 

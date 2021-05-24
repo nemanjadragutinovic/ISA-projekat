@@ -12,9 +12,9 @@ import javax.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-
 import show.isaBack.DTO.AppointmentDTO.DermatologistAppointmentDTO;
 import show.isaBack.DTO.AppointmentDTO.IdDTO;
+import show.isaBack.DTO.AppointmentDTO.ReservationConsultationDTO;
 import show.isaBack.DTO.userDTO.AuthorityDTO;
 import show.isaBack.DTO.userDTO.EmployeeGradeDTO;
 import show.isaBack.Mappers.Appointmets.AppointmentsMapper;
@@ -30,6 +30,8 @@ import show.isaBack.model.appointment.AppointmentType;
 import show.isaBack.repository.AppointmentRepository.AppointmentRepository;
 import show.isaBack.repository.userRepository.DermatologistRepository;
 import show.isaBack.repository.userRepository.PatientRepository;
+import show.isaBack.repository.userRepository.PharmacistRepository;
+import show.isaBack.repository.userRepository.UserRepository;
 import show.isaBack.repository.userRepository.WorkTimeRepository;
 import show.isaBack.serviceInterfaces.IAppointmentService;
 import show.isaBack.serviceInterfaces.IService;
@@ -54,6 +56,12 @@ public class AppointmentService implements IAppointmentService{
 
 	@Autowired
 	private PatientRepository patientRepository;
+	
+	@Autowired
+	private UserRepository userRepository;
+	
+	@Autowired
+	private PharmacistRepository pharmacistRepository;
 	
 	@Autowired
 	private EmailService emailService;
@@ -327,7 +335,7 @@ public class AppointmentService implements IAppointmentService{
 		
 		WorkTimesInDateRange= workTimeRepository.findAllWorkTimesInDateRangeForPharmacy(startDate,endDate, startDate.getHours(), endDate.getHours(), pharmacyId);
 			
-		List<Appointment> busyConsultationsInDataRange= appointmentRepository.findAllBusyConsultationsInDataRange(startDate,endDate,pharmacyId);
+		List<Appointment> busyConsultationsInDataRange= appointmentRepository.findAllBusyConsultationsInDataRangeForPharmacy(startDate,endDate,pharmacyId);
 					
 		List<User> pharmacist= findPharmacistWithFreeConsultatinsForPharmacy(WorkTimesInDateRange,busyConsultationsInDataRange);
 		
@@ -391,8 +399,67 @@ public class AppointmentService implements IAppointmentService{
 		
 	}
 	
+	@Override
+	public void reserveConsulationBySelectedPharmacist(ReservationConsultationDTO reservationRequestDTO){
+		
+		Date startDate= new Date(reservationRequestDTO.getStartDate());
+		Date endDate= new Date(reservationRequestDTO.getStartDate() + 7200000);
+		
+		System.out.println( "startno vreme " + startDate + "   " +  " Krajnje vremee " + endDate);
+		
+	
+		anyBusyConsultationsAndFreeWorkTimeInDataRange(reservationRequestDTO,startDate,endDate);
+		
+		Appointment appointment= createAppointment(reservationRequestDTO,startDate,endDate);
+		
+		appointmentRepository.save(appointment);
+		
+		
+		try {
+			emailService.sendConsultationAppointmentReservationNotification(appointment);
+		} catch (MessagingException e) {}
+		
+		
+	}
 	
 	
+	
+	public void anyBusyConsultationsAndFreeWorkTimeInDataRange(ReservationConsultationDTO reservationRequestDTO,Date startDate, Date endDate  ){
+		
+		if(appointmentRepository.findAllBusyConsultationsInDataRangeForPharmacist(startDate,endDate,reservationRequestDTO.getPharmacistId()).size()>0)
+			throw new IllegalArgumentException("Pharmacist has alredy appointment time in selected data range");
+		
+		if(!( workTimeRepository.findAllWorkTimesInDateRangeForPharmacist(startDate,endDate, startDate.getHours(), endDate.getHours(), reservationRequestDTO.getPharmacistId()).size() > 0))
+			throw new IllegalArgumentException("Pharmacist doesn't work in selected data range");
+		
+	}
+	
+	
+
+	public Appointment createAppointment(ReservationConsultationDTO reservationRequestDTO,Date startDate, Date endDate  ){
+		
+		UUID patientId = userService.getLoggedUserId();
+		Patient patient = patientRepository.findById(patientId).get();	
+		User eployee = userRepository.findById(reservationRequestDTO.getPharmacistId()).get();
+		Pharmacy pharmacy = pharmacistRepository.findPharmacyWhereWorksPharmacist(reservationRequestDTO.getPharmacistId());
+		
+		
+		Appointment appointment= new Appointment( eployee,pharmacy, startDate, endDate, pharmacy.getConsultationPrice(),patient, AppointmentType.CONSULTATION, AppointmentStatus.SCHEDULED);
+		
+		isAppointmentValid(appointment);
+		
+		return appointment;
+		
+	}
+	
+	public void isAppointmentValid(Appointment appointment ){
+		
+		if (!(appointment.getStartDateTime().after(new Date())))
+			throw new IllegalArgumentException("Start date time can't be before current date time");
+		
+		if(appointmentRepository.findAllSheduledAppointmentsForPatientsInDataRange(appointment.getStartDateTime(), appointment.getEndDateTime(), appointment.getPatient().getId()).size() > 0)
+				throw new IllegalArgumentException("Patient has alredy sheduled appointment in selected data range");
+	}
 	
 	
 	@Override
