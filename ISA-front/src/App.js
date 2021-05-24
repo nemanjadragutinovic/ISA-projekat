@@ -10,6 +10,7 @@ import registerStaff from "./Components/adminRegistration/registerStaff"
 import LoyalityProgram from "./Components/LoyalityProgram/LoyalityProgram"
 import RegisterPharmacies from './Components/adminRegistration/RegisterPharmacies';
 import RegisterDrug from './Components/adminRegistration/RegisterDrug';
+import OrdersPage from './Components/SupplierPages/OrdersPage';
 
 import HomePageForDermatologistAppointments from "./Pages/HomePageForDermatologistAppointments"
 import DermatologistFreeAppointment from "./Pages/DermatologistFreeAppointment"
@@ -48,6 +49,7 @@ function App() {
         <Route  to ="/historyDermatologistAppointmentsForPatient" path ="/historyDermatologistAppointmentsForPatient"  component={HistoryDermatologistAppointmentsForPatient}/>
         <Route  to ="/registerDrug" path ="/registerDrug"  component={RegisterDrug}/>
         <Route  to ="/loyalityProgram" path ="/loyalityProgram"  component={LoyalityProgram}/>
+        <Route  to ="/orders" path ="/orders"  component={OrdersPage}/>
 
 
         </Switch>
