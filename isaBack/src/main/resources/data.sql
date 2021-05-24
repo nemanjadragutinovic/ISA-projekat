@@ -25,6 +25,7 @@ insert into users (id, email, password, name, surname, phone_Number, first_Login
 --USERS
 insert into users (id, email, password, name, surname, phone_Number,first_Login, active, address, version) values ('22793162-52d3-11eb-ae93-0242ac130002','patient1@gmail.com', '$2a$10$TyNl6ipLWyDE/TfFM3uRse0SVPP4Rz7.mdZdDK3zqjKZqtKtJ3pf2','Njeke','Zeke','0623333',false,true,'Kisacka 22', 1);
 insert into users (id, email, password, name, surname, phone_Number,first_Login, active, address, version) values ('44444d47-1a8a-4ae1-b109-af7b56e94788','sysadmin@gmail.com','$2a$10$TyNl6ipLWyDE/TfFM3uRse0SVPP4Rz7.mdZdDK3zqjKZqtKtJ3pf2','Zec','Njekezovic','0612345',false,true,'Kosovska 22', 1);
+insert into users (id, email, password, name, surname, phone_Number,first_Login, active, address, version) values ('17a2c302-b584-11eb-8529-0242ac130003','pharmacyadmin@gmail.com', '$2a$10$TyNl6ipLWyDE/TfFM3uRse0SVPP4Rz7.mdZdDK3zqjKZqtKtJ3pf2','Marija','Jovanovic','064555787',false ,true,'Partizanska 11', 1);    
 
 --PATIENTS
 insert into patient (id) values ('22793162-52d3-11eb-ae93-0242ac130002');
@@ -36,9 +37,13 @@ insert into user_authority (user_id, authority_id) values ('22793162-52d3-11eb-a
 
 insert into user_authority (user_id, authority_id) values ('44444d47-1a8a-4ae1-b109-af7b56e94788', '563e9925-cff6-42b7-99fa-6b1235f67655');
 
+insert into user_authority (user_id, authority_id) values ('17a2c302-b584-11eb-8529-0242ac130003', 'ea16767c-2c1f-49fb-ac98-c7739c0036e8');
+
 --DERMATOLOGIST
 insert into dermatologist (id) values ('07a2c302-b584-11eb-8529-0242ac130003');
 insert into dermatologist (id) values ('aef9fa80-b584-11eb-8529-0242ac130003');
+--PHARMACY ADMIN
+insert into pharmacy_admin(id, pharmacy_id) values ('17a2c302-b584-11eb-8529-0242ac130003', '775d8e36-9859-11eb-a8b3-0242ac130003');
 
 
 --USERS-AUTHORITY
@@ -93,3 +98,5 @@ insert into drug_format_id (id, type) values ('50645278-52d3-13eb-ae93-0242ac130
 insert into drug_format_id (id, type) values ('60645278-52d3-13eb-ae93-0242ac130002','CREME');
 
 insert into loyaltyprogram (id, points_for_appointment, points_for_consulting, points_to_enter_regular_cathegory, points_to_enter_loyal_cathegory, points_to_enter_vip_cathegory, appointment_discount_regular, drug_discount_regular, consultation_discount_regular, appointment_discount_loyal,drug_discount_loyal, consultation_discount_loyal, appointment_discount_vip,  drug_discount_vip, consultation_discount_vip, version) values ('8c834328-9b5a-42c2-9e04-a1acc75f881d', 1, 1, 0, 10, 20, 0, 0, 0, 5, 10, 15, 15, 20, 25, 1);
+
+insert into orders (id, date, type, pharmacy_id, pharmacy_admin_id) values ('11111111-67ac-11eb-ae93-0242ac130022', '2021-05-05' , 'CREATED' , '775d8e36-9859-11eb-a8b3-0242ac130003' , '17a2c302-b584-11eb-8529-0242ac130003');
