@@ -1,5 +1,6 @@
 package show.isaBack.controller.AppointmentController;
 
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
@@ -22,6 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import show.isaBack.DTO.AppointmentDTO.DermatologistAppointmentDTO;
 import show.isaBack.DTO.AppointmentDTO.IdDTO;
+import show.isaBack.DTO.AppointmentDTO.ReservationConsultationDTO;
 import show.isaBack.model.appointment.AppointmentType;
 import show.isaBack.serviceInterfaces.IAppointmentService;
 import show.isaBack.unspecifiedDTO.UnspecifiedDTO;
@@ -184,6 +186,26 @@ public class AppointmentController {
 		
 	}
 	
+	
+	@PreAuthorize("hasRole('ROLE_PATIENT')")
+	@CrossOrigin
+	@PostMapping("/reserveConsulationBySelectedPharmacist")
+	public ResponseEntity<?> reserveConsulationBySelectedPharmacist(@RequestBody ReservationConsultationDTO reservationRequestDTO) {
+			Date neki= new Date(reservationRequestDTO.getStartDate());
+			System.out.println(reservationRequestDTO.getPharmacistId() + "    "+  neki);
+		try {
+			appointmentService.reserveConsulationBySelectedPharmacist(reservationRequestDTO);
+			return new ResponseEntity<>(HttpStatus.CREATED);
+		} catch (EntityNotFoundException e) {
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND); 
+		} catch (IllegalArgumentException e) {
+			return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+		} catch (Exception e) {
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}	
+			
+		
+	}
 	
 	
 }

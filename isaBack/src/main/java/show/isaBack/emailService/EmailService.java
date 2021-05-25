@@ -45,7 +45,7 @@ public class EmailService {
 		MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, "utf-8");
 		String htmlMsg = "<p>Hello " + patient.getName() + ",</p>" +
 					"<p>You registered an account on Health Clinic, before being able to use your account you need to verify that this is your email address by clicking here:</p>"
-					+ "<a href=\"" + url + "\">Verify your account</a>.</p>" + "<p>Jon Madison, Health Clinic</p>"; 
+					+ "<a href=\"" + url + "\">Verify your account</a>.</p>" + "<p>Health Clinic</p>"; 
 		helper.setText(htmlMsg, true);
 		helper.setTo(patient.getEmail());
 		helper.setSubject("Activate account");
@@ -66,8 +66,9 @@ public class EmailService {
 		MimeMessage mimeMessage = javaMailSender.createMimeMessage();
 		MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, "utf-8");
 		String htmlMsg = "<p>Hello " + appointment.getPatient().getName() + ",</p>" + "<p>You successfully reserved appointment by dermatologist: " + appointment.getEmployee().getName() + " "
-						+ appointment.getEmployee().getSurname() + ", for date " + mainFormatter.format(appointment.getStartDateTime()) + ", at " + formatterForTime.format(appointment.getStartDateTime()) + " o'clock."+
-						"</p> <p>Jon Madison, Health Clinic</p>";
+						+ appointment.getEmployee().getSurname() + 
+						", on date " + mainFormatter.format(appointment.getStartDateTime()) + ", at " + formatterForTime.format(appointment.getStartDateTime()) + " o'clock."+
+						"</p> <p>Health Clinic</p>";
 
 		helper.setText(htmlMsg, true);
 		helper.setTo(appointment.getPatient().getEmail());
@@ -77,6 +78,29 @@ public class EmailService {
 		
 	}
 	
+	
+	@Async
+	public void sendConsultationAppointmentReservationNotification(Appointment appointment) throws MessagingException {
+		
+		DateFormat formatterForTime = new SimpleDateFormat("HH:mm");
+		DateFormat mainFormatter = new SimpleDateFormat("yyyy-MM-dd");
+		
+		
+		MimeMessage mimeMessage = javaMailSender.createMimeMessage();
+		MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, "utf-8");
+		String htmlMsg = "<p>Hello " + appointment.getPatient().getName() + ",</p>" + "<p>You successfully reserved appointment by pharmacist: " + appointment.getEmployee().getName() + " "
+						+ appointment.getEmployee().getSurname() + 
+						", on date " + mainFormatter.format(appointment.getStartDateTime()) + ", at " + formatterForTime.format(appointment.getStartDateTime()) + " o'clock."+
+						"</p> <p>Health Clinic</p>";
+
+		helper.setText(htmlMsg, true);
+		//helper.setTo(appointment.getPatient().getEmail());
+		helper.setTo("stefanzec@hotmail.rs");
+		helper.setSubject("Appointment reservation");
+		helper.setFrom(env.getProperty("spring.mail.username"));
+		javaMailSender.send(mimeMessage);
+		
+	}
 	
 
 }

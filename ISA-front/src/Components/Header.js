@@ -77,7 +77,7 @@ class Header extends React.Component{
             
 
                 
-                <ReactBootStrap.NavDropdown alignRight title="My reports" id="collasible-nav-dropdown">
+                <ReactBootStrap.NavDropdown alignRight title="My reports" id="collasible-nav-dropdown" hidden={!this.hasRole("ROLE_PATIENT")} >
                     <ReactBootStrap.NavDropdown.Item href="/futureDermatologistAppointmentsForPatient">Dermatologist</ReactBootStrap.NavDropdown.Item>
                     <ReactBootStrap.NavDropdown.Divider />
                     <ReactBootStrap.NavDropdown.Item href="/futurePharmaciesConsultationsForPatient">Pharmacies</ReactBootStrap.NavDropdown.Item>
@@ -87,7 +87,7 @@ class Header extends React.Component{
 
 
 
-                <ReactBootStrap.NavDropdown alignRight title="Apointment" id="collasible-nav-dropdown">
+                <ReactBootStrap.NavDropdown alignRight title="Apointment" id="collasible-nav-dropdown" hidden={!this.hasRole("ROLE_PATIENT")} >
                     <ReactBootStrap.NavDropdown.Item href="/pharmacistAppointment">Pharmacist</ReactBootStrap.NavDropdown.Item>
                     <ReactBootStrap.NavDropdown.Divider />
                     <ReactBootStrap.NavDropdown.Item href="/dermatologistAppointment">Dermatologist</ReactBootStrap.NavDropdown.Item>

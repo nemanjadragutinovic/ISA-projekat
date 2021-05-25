@@ -1,6 +1,7 @@
 package show.isaBack.service.pharmacyService;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import java.util.Optional;
@@ -8,15 +9,20 @@ import java.util.Optional;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+
 
 import show.isaBack.DTO.drugDTO.DrugDTO;
 import show.isaBack.DTO.pharmacyDTO.PharmacyDTO;
 import show.isaBack.DTO.pharmacyDTO.PharmacySearchDTO;
+import show.isaBack.DTO.pharmacyDTO.PharmacyWithGradeAndPriceDTO;
 import show.isaBack.DTO.userDTO.AuthorityDTO;
 import show.isaBack.model.Drug;
 import show.isaBack.model.Pharmacy;
 import show.isaBack.repository.pharmacyRepository.PharmacyRepository;
+import show.isaBack.serviceInterfaces.IAppointmentService;
+import show.isaBack.serviceInterfaces.IPharmacyGradeService;
 import show.isaBack.serviceInterfaces.IPharmacyService;
 import show.isaBack.unspecifiedDTO.UnspecifiedDTO;
 
@@ -26,6 +32,12 @@ public class PharmacyService implements IPharmacyService{
 	
 	@Autowired
 	private PharmacyRepository pharmacyRepository;
+	
+	@Autowired
+	private IAppointmentService appointmentService;
+	
+	@Autowired
+	private IPharmacyGradeService pharmacyGradeService;
 	
 	
 	@Override
@@ -92,10 +104,44 @@ public class PharmacyService implements IPharmacyService{
 	
 	private Pharmacy createPharmacyFromDTO(PharmacyDTO pharmacyDTO) {
 		
-		return new Pharmacy(pharmacyDTO.getName(),pharmacyDTO.getAddress().getCity(),pharmacyDTO.getAddress().getStreet(),pharmacyDTO.getAddress().getCountry(),pharmacyDTO.getAddress().getPostCode(),pharmacyDTO.getDescription());
+		return new Pharmacy(pharmacyDTO.getName(),pharmacyDTO.getAddress().getCity(),pharmacyDTO.getAddress().getStreet(),pharmacyDTO.getAddress().getCountry(),pharmacyDTO.getAddress().getPostCode(),pharmacyDTO.getDescription(), pharmacyDTO.getConsultationPrice());
 	}
 
 
+	
+	@Override
+	public List<UnspecifiedDTO<PharmacyWithGradeAndPriceDTO>> findAllPharmaciesWhoHaveFreeAppointmentsForPeriodWithGradesAndPrice(Date startDate){
+		
+		long startTime = startDate.getTime();
+		Date endDate= new Date(startTime + 7200000);
+		
+		System.out.println( "startno vreme " + startDate + "   " +  " Krajnje vremee " + endDate);
+		
+		List<UnspecifiedDTO<PharmacyWithGradeAndPriceDTO>> pharmaciesDTO= new ArrayList<UnspecifiedDTO<PharmacyWithGradeAndPriceDTO>>();
+		List<Pharmacy>  pharmacies= new ArrayList<Pharmacy>();
+		
+		pharmacies= appointmentService.findAllPharmaciesForAppointmentTypeAndForDateRange(startDate, endDate);
+		
+		
+		for (Pharmacy pharmacy : pharmacies) {
+			pharmaciesDTO.add(convertPharmacyToPharmacyWithGradeAndPriceDTO(pharmacy));
+		}
+		
+				
+		return pharmaciesDTO;
+		
+	}
+	
+	public UnspecifiedDTO<PharmacyWithGradeAndPriceDTO> convertPharmacyToPharmacyWithGradeAndPriceDTO (Pharmacy pharmacy ){
+		
+		double pharmacyGrade= pharmacyGradeService.getAvgGradeForPharmacy(pharmacy.getId());
+		
+		return new UnspecifiedDTO<PharmacyWithGradeAndPriceDTO>(pharmacy.getId() , new  PharmacyWithGradeAndPriceDTO(pharmacy.getName(), pharmacy.getAddress(),pharmacyGrade, pharmacy.getConsultationPrice()));
+	}
+	
+	
+	
+	
 
 	@Override
 	public List<UnspecifiedDTO<AuthorityDTO>> findAll() {
