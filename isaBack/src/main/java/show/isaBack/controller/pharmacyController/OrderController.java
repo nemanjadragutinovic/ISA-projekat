@@ -25,7 +25,7 @@ public class OrderController {
 	
 	@CrossOrigin
 	@GetMapping("/getAllOrders")
-	//@PreAuthorize("hasRole('SUPPLIER')") 
+	@PreAuthorize("hasRole('SUPPLIER')") 
 	public ResponseEntity<List<UnspecifiedDTO<OrderForProviderDTO>>> findAllForProvider() {
 		return new ResponseEntity<>(orderService.findAllOrdersForSupplier(),HttpStatus.OK);
 	}
