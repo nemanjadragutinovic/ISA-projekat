@@ -39,7 +39,7 @@ class LoginPage extends Component {
                 localStorage.setItem("expireTime", new Date(new Date().getTime() + res.data.expiresIn).getTime());
 
                 console.log(res.data.roles);
-
+              
                 this.setState({ redirect: true });
             }
         })

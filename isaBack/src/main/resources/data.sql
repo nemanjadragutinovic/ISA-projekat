@@ -21,6 +21,9 @@ insert into pharmacy (id,name, city, street,country, post_code,description) valu
 insert into users (id, email, password, name, surname, phone_Number, active, address, version) values ('07a2c302-b584-11eb-8529-0242ac130003','dermatolog1@gmail.com', '$2a$10$TyNl6ipLWyDE/TfFM3uRse0SVPP4Rz7.mdZdDK3zqjKZqtKtJ3pf2','Marija','Jovanovic','064555787',true,'Partizanska 11', 1);                                
 insert into users (id, email, password, name, surname, phone_Number, active, address, version) values ('aef9fa80-b584-11eb-8529-0242ac130003','dermatolog2@gmail.com', '$2a$10$TyNl6ipLWyDE/TfFM3uRse0SVPP4Rz7.mdZdDK3zqjKZqtKtJ3pf2','Milica','Peric','06388929',true,'Nikolajevska 12', 1);  
 
+--PHADMIN
+
+insert into users (id, email, password, name, surname, phone_Number, active, address, version) values ('62ee0102-ba54-11eb-8529-0242ac130003','phadmin@gmail.com', '$2a$10$TyNl6ipLWyDE/TfFM3uRse0SVPP4Rz7.mdZdDK3zqjKZqtKtJ3pf2','Petar','Petrovic','062850007',true,'Temerinska 110', 1);
 
 --USERS
 insert into users (id, email, password, name, surname, phone_Number, active, address, version) values ('22793162-52d3-11eb-ae93-0242ac130002','patient1@gmail.com', '$2a$10$TyNl6ipLWyDE/TfFM3uRse0SVPP4Rz7.mdZdDK3zqjKZqtKtJ3pf2','Njeke','Zeke','0623333',true,'Kisacka 22', 1);
@@ -31,6 +34,7 @@ insert into patient (id) values ('22793162-52d3-11eb-ae93-0242ac130002');
 --SYSTEM ADMIN
 insert into system_admin(id) values ('44444d47-1a8a-4ae1-b109-af7b56e94788');
 
+insert into pharmacy_admin(id,pharmacy_id) values ('62ee0102-ba54-11eb-8529-0242ac130003','775d8e36-9859-11eb-a8b3-0242ac130003');
 
 insert into user_authority (user_id, authority_id) values ('22793162-52d3-11eb-ae93-0242ac130002', '7852aa5e-7040-4d99-8255-537a0b226c75');
 
@@ -49,6 +53,12 @@ insert into user_authority (user_id, authority_id) values ('22793162-52d3-11eb-a
 --roleDermatologist
 insert into user_authority (user_id, authority_id) values ('07a2c302-b584-11eb-8529-0242ac130003', '09af8857-2f78-4eec-970f-059d3ed4589f');
 insert into user_authority (user_id, authority_id) values ('aef9fa80-b584-11eb-8529-0242ac130003', '09af8857-2f78-4eec-970f-059d3ed4589f');
+
+
+--role-Phadmin
+
+insert into user_authority (user_id, authority_id) values ('62ee0102-ba54-11eb-8529-0242ac130003', 'ea16767c-2c1f-49fb-ac98-c7739c0036e8');
+
 
 ---DERMATOLOGIST-PHARMACIES
 

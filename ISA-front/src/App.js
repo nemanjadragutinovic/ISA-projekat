@@ -10,7 +10,7 @@ import registerStaff from "./Components/adminRegistration/registerStaff"
 
 import RegisterPharmacies from './Components/adminRegistration/RegisterPharmacies';
 import RegisterDrug from './Components/adminRegistration/RegisterDrug';
-
+import PhAdminProfilePage from './Pages/PharmacyAdminProfile'
 import HomePageForDermatologistAppointments from "./Pages/HomePageForDermatologistAppointments"
 import DermatologistFreeAppointment from "./Pages/DermatologistFreeAppointment"
 
@@ -40,6 +40,7 @@ function App() {
         <Route  to ="/registration" path ="/registration"  component={RegisterPage}/>
         <Route  to ="/login" path ="/login"  component={LoginPage}/>
         <Route  to ="/userProfile" path ="/userProfile"  component={UserProfilePage}/>
+        <Route  to ="/phadminProfile" path ="/phadminProfile"  component={PhAdminProfilePage}/>
         <Route  to ="/registerStaff" path ="/registerStaff"  component={registerStaff}/>
         <Route  to ="/registerPharmacies" path ="/registerPharmacies"  component={RegisterPharmacies}/>
         <Route  to ="/dermatologistAppointment" path ="/dermatologistAppointment"  component={HomePageForDermatologistAppointments}/>
@@ -47,6 +48,8 @@ function App() {
         <Route  to ="/futureDermatologistAppointmentsForPatient" path ="/futureDermatologistAppointmentsForPatient"  component={FutureDermatologistAppointmentsForPatient}/>
         <Route  to ="/historyDermatologistAppointmentsForPatient" path ="/historyDermatologistAppointmentsForPatient"  component={HistoryDermatologistAppointmentsForPatient}/>
         <Route  to ="/registerDrug" path ="/registerDrug"  component={RegisterDrug}/>
+        
+      
 
 
         </Switch>

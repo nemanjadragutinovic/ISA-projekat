@@ -22,6 +22,7 @@ import show.isaBack.DTO.userDTO.AuthorityDTO;
 import show.isaBack.DTO.userDTO.ChangePasswordDTO;
 import show.isaBack.DTO.userDTO.PatientDTO;
 import show.isaBack.DTO.userDTO.PatientsAllergenDTO;
+import show.isaBack.DTO.userDTO.PhAdminDTO;
 import show.isaBack.DTO.userDTO.UserChangeInfoDTO;
 import show.isaBack.DTO.userDTO.UserDTO;
 import show.isaBack.DTO.userDTO.UserRegistrationDTO;
@@ -39,6 +40,7 @@ import show.isaBack.repository.drugsRepository.AllergenRepository;
 import show.isaBack.repository.pharmacyRepository.PharmacyRepository;
 import show.isaBack.repository.userRepository.DermatologistRepository;
 import show.isaBack.repository.userRepository.PatientRepository;
+import show.isaBack.repository.userRepository.PharmacyAdminRepository;
 import show.isaBack.repository.userRepository.UserRepository;
 import show.isaBack.serviceInterfaces.IUserInterface;
 import show.isaBack.unspecifiedDTO.UnspecifiedDTO;
@@ -61,6 +63,8 @@ public class UserService implements IUserInterface{
 	private PharmacyRepository pharmacyRepository;
 	@Autowired
 	private EmailService emailService;
+	@Autowired
+    private PharmacyAdminRepository phAdminRepository;	
 	
 	@Autowired
 	private AllergenRepository allergenRepository;
@@ -356,6 +360,23 @@ public class UserService implements IUserInterface{
 	public boolean delete(UUID id) {
 		// TODO Auto-generated method stub
 		return false;
+	}
+
+	@Override
+	public UnspecifiedDTO<PhAdminDTO> getLoggedPhAdmin() {
+
+		
+		
+		UUID phAdminId = getLoggedUserId();
+		PharmacyAdmin phAdmin= phAdminRepository.getOne(phAdminId);
+		
+		
+		if(phAdmin==null) {
+			System.out.println("Admin apoteke je null");
+		}
+
+		return new UnspecifiedDTO<PhAdminDTO>(phAdminId , new PhAdminDTO(phAdmin.getEmail(), phAdmin.getName(), phAdmin.getSurname(), phAdmin.getAddress(),
+				phAdmin.getPhoneNumber(), phAdmin.isActive(), phAdmin.getUserAuthorities()));
 	}
 
 	

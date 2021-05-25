@@ -25,6 +25,7 @@ import show.isaBack.DTO.drugDTO.AllergenDTO;
 import show.isaBack.DTO.userDTO.ChangePasswordDTO;
 import show.isaBack.DTO.userDTO.PatientDTO;
 import show.isaBack.DTO.userDTO.PatientsAllergenDTO;
+import show.isaBack.DTO.userDTO.PhAdminDTO;
 import show.isaBack.DTO.userDTO.UserChangeInfoDTO;
 import show.isaBack.model.drugs.Allergen;
 import show.isaBack.security.TokenUtils;
@@ -84,6 +85,22 @@ public class UserController {
 		
 	}
 	
+	@GetMapping("/phadmin")
+	@PreAuthorize("hasRole('ROLE_PHARMACYADMIN')")
+	public ResponseEntity<UnspecifiedDTO<PhAdminDTO>> getLogedPhAdimn(HttpServletRequest request) {
+		try {
+			UnspecifiedDTO<PhAdminDTO> phAdmin = userService.getLoggedPhAdmin();
+			
+			return new ResponseEntity<>(phAdmin,HttpStatus.OK);  
+		} catch (EntityNotFoundException e) {
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND); 
+		} 
+		catch (Exception e) {
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR); 
+		}
+		
+		
+	}
 	
 	@PutMapping("/patient") 
 	@CrossOrigin
