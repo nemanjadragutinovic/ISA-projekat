@@ -24,8 +24,32 @@ class FoundPharmaciesForDateRange extends Component {
                 </button>
 
 
+               
+
+
+
+
+
 				<div className="container">
                     
+
+                <div className="dropdown" style={{  marginTop: "3em" }}>
+                        <button className="btn btn-primary btn-lg dropdown-toggle"
+                            type="button" id="dropdownMenu2"
+                            data-toggle="dropdown" 
+                            aria-haspopup="true" 
+                            aria-expanded="false">
+                            Sort
+                        </button>
+                    <div className="dropdown-menu" aria-labelledby="dropdownMenu2">
+                        <button className="dropdown-item" type="button" onClick={this.props.handleSortByPriceAscending} >Sort by price ascending</button>
+                        <button className="dropdown-item" type="button" onClick={this.props.handleSortByPriceDescending} >Sort by price descending</button>
+                        <button className="dropdown-item" type="button" onClick={this.props.handleSortByPharmacyGradeAscending} >Sort by pharmacy grade ascending</button>
+                        <button className="dropdown-item" type="button"onClick={this.props.handleSortByPharmacyGradeDescending} >Sort by pharmacy grade descending</button>
+                    </div>
+                </div>
+
+
                     
                     <table className="table table-hover" style={{ width: "90%", marginTop: "5em", marginLeft: "auto",marginRight: "auto" }}>
                                   <tbody>

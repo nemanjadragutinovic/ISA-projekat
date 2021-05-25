@@ -321,6 +321,270 @@ class PharmaciesAppointmentStartPage extends Component {
 	};
 	
 
+
+	handleSortByPriceAscending = () => {
+        
+
+		this.setState({
+			
+			consultationDate: new Date(
+				this.state.selectedDate.getFullYear(),
+				this.state.selectedDate.getMonth(),
+				this.state.selectedDate.getDate(),
+				this.state.hours,
+				this.state.minutes,
+				0,
+				0
+			).getTime(),
+
+			hiddenUnsuccessfulAlert: true,
+			UnsuccessfulHeader: "",
+			UnsuccessfulMessage: "",
+		});
+
+		
+	
+		let consultationDateSelected= new Date(
+			this.state.selectedDate.getFullYear(),
+			this.state.selectedDate.getMonth(),
+			this.state.selectedDate.getDate(),
+			this.state.hours,
+			this.state.minutes,
+			0,
+			0
+		).getTime();
+
+		
+	    
+             console.log("sok");
+			Axios.get( API_URL + "/pharmacy/getAllFreePharmacyAppointmetsForSelectedDate/SortByPriceAscending" + consultationDateSelected  , {
+			validateStatus: () => true,
+			headers: { Authorization: GetAuthorisation() }},
+			)
+				.then((res) => {
+					 if (res.status === 200) {
+						this.setState({ pharmacies: res.data });
+						if(this.state.pharmacies.length!==0){
+							this.setState({hiddenPharmacies: false, isPharmaciesEmpty: false });
+						}else{
+							this.setState({isPharmaciesEmpty: true });
+						}
+						console.log(res.data);
+					}
+					 if(res.status === 401){
+						 this.props.history.push("/login");
+                        
+                    }
+				})
+				.catch((err) => {
+					console.log(err);
+                    this.setState({ hiddenUnsuccessfulAlert: false, 
+                        UnsuccessfulHeader: "Error", 
+                        UnsuccessfulMessage: "Some error" });
+                    
+				});
+		
+	};
+
+
+
+	handleSortByPriceDescending = () => {
+        
+
+		this.setState({
+			
+			consultationDate: new Date(
+				this.state.selectedDate.getFullYear(),
+				this.state.selectedDate.getMonth(),
+				this.state.selectedDate.getDate(),
+				this.state.hours,
+				this.state.minutes,
+				0,
+				0
+			).getTime(),
+
+			hiddenUnsuccessfulAlert: true,
+			UnsuccessfulHeader: "",
+			UnsuccessfulMessage: "",
+		});
+
+		
+	
+		let consultationDateSelected= new Date(
+			this.state.selectedDate.getFullYear(),
+			this.state.selectedDate.getMonth(),
+			this.state.selectedDate.getDate(),
+			this.state.hours,
+			this.state.minutes,
+			0,
+			0
+		).getTime();
+
+		
+	    
+             console.log("sok");
+			Axios.get( API_URL + "/pharmacy/getAllFreePharmacyAppointmetsForSelectedDate/SortByPriceDescending" + consultationDateSelected  , {
+			validateStatus: () => true,
+			headers: { Authorization: GetAuthorisation() }},
+			)
+				.then((res) => {
+					 if (res.status === 200) {
+						this.setState({ pharmacies: res.data });
+						if(this.state.pharmacies.length!==0){
+							this.setState({hiddenPharmacies: false, isPharmaciesEmpty: false });
+						}else{
+							this.setState({isPharmaciesEmpty: true });
+						}
+						console.log(res.data);
+					}
+					 if(res.status === 401){
+						 this.props.history.push("/login");
+                        
+                    }
+				})
+				.catch((err) => {
+					console.log(err);
+                    this.setState({ hiddenUnsuccessfulAlert: false, 
+                        UnsuccessfulHeader: "Error", 
+                        UnsuccessfulMessage: "Some error" });
+                    
+				});
+		
+	};
+
+
+
+	handleSortByPharmacyGradeAscending = () => {
+        
+
+		this.setState({
+			
+			consultationDate: new Date(
+				this.state.selectedDate.getFullYear(),
+				this.state.selectedDate.getMonth(),
+				this.state.selectedDate.getDate(),
+				this.state.hours,
+				this.state.minutes,
+				0,
+				0
+			).getTime(),
+
+			hiddenUnsuccessfulAlert: true,
+			UnsuccessfulHeader: "",
+			UnsuccessfulMessage: "",
+		});
+
+		
+	
+		let consultationDateSelected= new Date(
+			this.state.selectedDate.getFullYear(),
+			this.state.selectedDate.getMonth(),
+			this.state.selectedDate.getDate(),
+			this.state.hours,
+			this.state.minutes,
+			0,
+			0
+		).getTime();
+
+		
+	    
+             console.log("sok");
+			Axios.get( API_URL + "/pharmacy/getAllFreePharmacyAppointmetsForSelectedDate/SortByPharmacyGradeAscending" + consultationDateSelected  , {
+			validateStatus: () => true,
+			headers: { Authorization: GetAuthorisation() }},
+			)
+				.then((res) => {
+					 if (res.status === 200) {
+						this.setState({ pharmacies: res.data });
+						if(this.state.pharmacies.length!==0){
+							this.setState({hiddenPharmacies: false, isPharmaciesEmpty: false });
+						}else{
+							this.setState({isPharmaciesEmpty: true });
+						}
+						console.log(res.data);
+					}
+					 if(res.status === 401){
+						 this.props.history.push("/login");
+                        
+                    }
+				})
+				.catch((err) => {
+					console.log(err);
+                    this.setState({ hiddenUnsuccessfulAlert: false, 
+                        UnsuccessfulHeader: "Error", 
+                        UnsuccessfulMessage: "Some error" });
+                    
+				});
+		
+	};
+
+
+	handleSortByPharmacyGradeDescending = () => {
+        
+
+		this.setState({
+			
+			consultationDate: new Date(
+				this.state.selectedDate.getFullYear(),
+				this.state.selectedDate.getMonth(),
+				this.state.selectedDate.getDate(),
+				this.state.hours,
+				this.state.minutes,
+				0,
+				0
+			).getTime(),
+
+			hiddenUnsuccessfulAlert: true,
+			UnsuccessfulHeader: "",
+			UnsuccessfulMessage: "",
+		});
+
+		
+	
+		let consultationDateSelected= new Date(
+			this.state.selectedDate.getFullYear(),
+			this.state.selectedDate.getMonth(),
+			this.state.selectedDate.getDate(),
+			this.state.hours,
+			this.state.minutes,
+			0,
+			0
+		).getTime();
+
+		
+	    
+             console.log("sok");
+			Axios.get( API_URL + "/pharmacy/getAllFreePharmacyAppointmetsForSelectedDate/SortByPharmacyGradeDescending" + consultationDateSelected  , {
+			validateStatus: () => true,
+			headers: { Authorization: GetAuthorisation() }},
+			)
+				.then((res) => {
+					 if (res.status === 200) {
+						this.setState({ pharmacies: res.data });
+						if(this.state.pharmacies.length!==0){
+							this.setState({hiddenPharmacies: false, isPharmaciesEmpty: false });
+						}else{
+							this.setState({isPharmaciesEmpty: true });
+						}
+						console.log(res.data);
+					}
+					 if(res.status === 401){
+						 this.props.history.push("/login");
+                        
+                    }
+				})
+				.catch((err) => {
+					console.log(err);
+                    this.setState({ hiddenUnsuccessfulAlert: false, 
+                        UnsuccessfulHeader: "Error", 
+                        UnsuccessfulMessage: "Some error" });
+                    
+				});
+		
+	};
+
+
+
 	render() {
 	
 
@@ -423,6 +687,11 @@ class PharmaciesAppointmentStartPage extends Component {
 				pharmacies={this.state.pharmacies}
 				showPharmacistForPharmacy={this.showPharmacistForPharmacy}
 				backToSelectedDateRange= {this.handleClosePharmaciesPage}
+
+				handleSortByPriceAscending= {this.handleSortByPriceAscending}
+				handleSortByPriceDescending= {this.handleSortByPriceDescending}
+				handleSortByPharmacyGradeAscending= {this.handleSortByPharmacyGradeAscending}
+				handleSortByPharmacyGradeDescending= {this.handleSortByPharmacyGradeDescending}
 
 		/>
 
