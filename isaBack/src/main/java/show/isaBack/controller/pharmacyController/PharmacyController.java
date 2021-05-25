@@ -79,7 +79,7 @@ public class PharmacyController {
 	public ResponseEntity<List<UnspecifiedDTO<PharmacyWithGradeAndPriceDTO>>> findAllPharmaciesWhoHaveFreeAppointmentsForPeriodWithGradesAndPrice(@PathVariable long DateTime){
 		
 		Date startDate= new Date(DateTime);
-		System.out.println(startDate +  "sokoviiiii njeeee");
+		
 		
 		try {		
 			return new ResponseEntity<>(pharmacyService.findAllPharmaciesWhoHaveFreeAppointmentsForPeriodWithGradesAndPrice(startDate),HttpStatus.OK);
@@ -91,6 +91,76 @@ public class PharmacyController {
 		}
 	}
 	
+	
+	
+	@GetMapping("/getAllFreePharmacyAppointmetsForSelectedDate/SortByPriceAscending/{DateTime}")
+	@PreAuthorize("hasRole('ROLE_PATIENT')")
+	public ResponseEntity<List<UnspecifiedDTO<PharmacyWithGradeAndPriceDTO>>> findAllPharmaciesWhoHaveFreeAppointmentsForPeriodWithGradesAndPriceSortByPriceAscending(@PathVariable long DateTime){
+		
+		Date startDate= new Date(DateTime);
+			
+		try {		
+			return new ResponseEntity<>(pharmacyService.findAllPharmaciesWhoHaveFreeAppointmentsForPeriodWithGradesAndPriceSortByPriceAscending(startDate),HttpStatus.OK);
+		} catch (IllegalArgumentException e) {
+			e.printStackTrace();
+			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+		} catch (Exception e) {
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+	
+	
+	@GetMapping("/getAllFreePharmacyAppointmetsForSelectedDate/SortByPriceDescending/{DateTime}")
+	@PreAuthorize("hasRole('ROLE_PATIENT')")
+	public ResponseEntity<List<UnspecifiedDTO<PharmacyWithGradeAndPriceDTO>>> findAllPharmaciesWhoHaveFreeAppointmentsForPeriodWithGradesAndPriceSortByPriceDescending(@PathVariable long DateTime){
+		
+		Date startDate= new Date(DateTime);
+			
+		try {		
+			return new ResponseEntity<>(pharmacyService.findAllPharmaciesWhoHaveFreeAppointmentsForPeriodWithGradesAndPriceSortByPriceDescending(startDate),HttpStatus.OK);
+		} catch (IllegalArgumentException e) {
+			e.printStackTrace();
+			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+		} catch (Exception e) {
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+	
+	
+	@GetMapping("/getAllFreePharmacyAppointmetsForSelectedDate/SortByPharmacyGradeAscending/{DateTime}")
+	@PreAuthorize("hasRole('ROLE_PATIENT')")
+	public ResponseEntity<List<UnspecifiedDTO<PharmacyWithGradeAndPriceDTO>>> findAllPharmaciesWhoHaveFreeAppointmentsForPeriodWithGradesAndPriceSortByPharmacyGradeAscending(@PathVariable long DateTime){
+		
+		Date startDate= new Date(DateTime);
+			
+		try {		
+			return new ResponseEntity<>(pharmacyService.findAllPharmaciesWhoHaveFreeAppointmentsForPeriodWithGradesAndPriceSortByPharmacyGradeAscending(startDate),HttpStatus.OK);
+		} catch (IllegalArgumentException e) {
+			e.printStackTrace();
+			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+		} catch (Exception e) {
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+	
+	
+
+	
+	@GetMapping("/getAllFreePharmacyAppointmetsForSelectedDate/SortByPharmacyGradeDescending/{DateTime}")
+	@PreAuthorize("hasRole('ROLE_PATIENT')")
+	public ResponseEntity<List<UnspecifiedDTO<PharmacyWithGradeAndPriceDTO>>> findAllPharmaciesWhoHaveFreeAppointmentsForPeriodWithGradesAndPriceSortByPharmacyGradeDescending(@PathVariable long DateTime){
+		
+		Date startDate= new Date(DateTime);
+				
+		try {		
+			return new ResponseEntity<>(pharmacyService.findAllPharmaciesWhoHaveFreeAppointmentsForPeriodWithGradesAndPriceSortByPharmacyGradeDescending(startDate),HttpStatus.OK);
+		} catch (IllegalArgumentException e) {
+			e.printStackTrace();
+			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+		} catch (Exception e) {
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
 	
 
 }

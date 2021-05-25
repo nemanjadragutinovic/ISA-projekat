@@ -45,7 +45,7 @@ class FoundPharmaciesForDateRange extends Component {
                         <button className="dropdown-item" type="button" onClick={this.props.handleSortByPriceAscending} >Sort by price ascending</button>
                         <button className="dropdown-item" type="button" onClick={this.props.handleSortByPriceDescending} >Sort by price descending</button>
                         <button className="dropdown-item" type="button" onClick={this.props.handleSortByPharmacyGradeAscending} >Sort by pharmacy grade ascending</button>
-                        <button className="dropdown-item" type="button"onClick={this.props.handleSortByPharmacyGradeDescending} >Sort by pharmacy grade descending</button>
+                        <button className="dropdown-item" type="button" onClick={this.props.handleSortByPharmacyGradeDescending} >Sort by pharmacy grade descending</button>
                     </div>
                 </div>
 

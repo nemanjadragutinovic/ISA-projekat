@@ -1,6 +1,7 @@
 package show.isaBack.service.userService;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
@@ -397,6 +398,34 @@ public class UserService implements IUserInterface{
 	}
 	
 	
+	
+	
+	
+	@Override
+	public List<UnspecifiedDTO<PharmacistForAppointmentPharmacyGadeDTO>> fidnAllFreePharmacistsForSelectedPharmacyInDataRangeSortByGradeAscending(Date startDate, UUID pharmacyId){
+		
+		List<UnspecifiedDTO<PharmacistForAppointmentPharmacyGadeDTO>> pharmacistDTOSorterByGradeAscending=fidnAllFreePharmacistsForSelectedPharmacyInDataRange(startDate,pharmacyId);
+		Collections.sort(pharmacistDTOSorterByGradeAscending, (pharmacist1, pharmacist2) -> Double.compare(pharmacist1.EntityDTO.getGrade(), pharmacist2.EntityDTO.getGrade()));
+		
+		
+	
+		return pharmacistDTOSorterByGradeAscending;
+		
+		
+	}
+	
+	@Override
+	public List<UnspecifiedDTO<PharmacistForAppointmentPharmacyGadeDTO>> fidnAllFreePharmacistsForSelectedPharmacyInDataRangeSortByGradeDescending(Date startDate, UUID pharmacyId){
+		
+		List<UnspecifiedDTO<PharmacistForAppointmentPharmacyGadeDTO>> pharmacistDTOSorterByGradeDescending=fidnAllFreePharmacistsForSelectedPharmacyInDataRange(startDate,pharmacyId);
+		Collections.sort(pharmacistDTOSorterByGradeDescending, (pharmacist1, pharmacist2) -> Double.compare(pharmacist1.EntityDTO.getGrade(), pharmacist2.EntityDTO.getGrade()));
+		Collections.reverse(pharmacistDTOSorterByGradeDescending);
+		
+	
+		return pharmacistDTOSorterByGradeDescending;
+		
+		
+	}
 	
 	
 	
