@@ -7,8 +7,10 @@ import RegisterPage from "./Components/RegistrationPage"
 import LoginPage from "./Components/LoginPage"
 import UserProfilePage from "./Pages/UserProfile"
 import registerStaff from "./Components/adminRegistration/registerStaff"
-import RegisterPharmacies from './Components/adminRegistration/RegisterPharmacies';
 import RegisterDrug from './Components/adminRegistration/RegisterDrug';
+import LoyalityProgram from "./Components/LoyalityProgram/LoyalityProgram"
+import RegisterPharmacies from './Components/adminRegistration/RegisterPharmacies';
+import OrdersPage from './Components/SupplierPages/OrdersPage';
 import HomePageForDermatologistAppointments from "./Pages/HomePageForDermatologistAppointments"
 import DermatologistFreeAppointment from "./Pages/DermatologistFreeAppointment"
 import FutureDermatologistAppointmentsForPatient from "./Pages/FutureDermatologistAppointmentsForPatient"
@@ -44,8 +46,11 @@ function App() {
         <Route  to ="/futureDermatologistAppointmentsForPatient" path ="/futureDermatologistAppointmentsForPatient"  component={FutureDermatologistAppointmentsForPatient}/>
         <Route  to ="/historyDermatologistAppointmentsForPatient" path ="/historyDermatologistAppointmentsForPatient"  component={HistoryDermatologistAppointmentsForPatient}/>
         <Route  to ="/registerDrug" path ="/registerDrug"  component={RegisterDrug}/>
+
         <Route  to ="/pharmacistAppointment" path ="/pharmacistAppointment"  component={PharmaciesAppointmentStartPage}/>
 
+        <Route  to ="/loyalityProgram" path ="/loyalityProgram"  component={LoyalityProgram}/>
+        <Route  to ="/orders" path ="/orders"  component={OrdersPage}/>
 
 
 

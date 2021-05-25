@@ -17,22 +17,29 @@ insert into authority (id, name) values ('ea16767c-2c1f-49fb-ac98-c7739c0036e8',
 insert into pharmacy (id,name, city, street,country, post_code,description,consultation_price) values ('775d8e36-9859-11eb-a8b3-0242ac130003','apoteka Jankovic','Novi Sad','Futoski put 54','Serbia', '21000', 'Zdravlje je prioritet!',1250);            
 insert into pharmacy (id,name, city, street,country, post_code,description,consultation_price) values ('775d9322-9859-11eb-a8b3-0242ac130003','Benu','Novi Sad','Vojvodjanske brigade 30','Serbia', '21000', 'U svemu najbolji!',1400);  
 
- 
 
 
 --USERS
+
 --patients-users
-insert into users (id, email, password, name, surname, phone_Number, active, address,user_type) values ('22793162-52d3-11eb-ae93-0242ac130002','patient1@gmail.com', '$2a$10$TyNl6ipLWyDE/TfFM3uRse0SVPP4Rz7.mdZdDK3zqjKZqtKtJ3pf2','Njeke','Zeke','0623333',true,'Kisacka 22','PATIENT');
+insert into users (id, email, password, name, surname, phone_Number,first_Login, active, address,user_type) values ('22793162-52d3-11eb-ae93-0242ac130002','patient1@gmail.com', '$2a$10$TyNl6ipLWyDE/TfFM3uRse0SVPP4Rz7.mdZdDK3zqjKZqtKtJ3pf2','Njeke','Zeke','0623333',false,true,'Kisacka 22','PATIENT');
+
 --sysadmins-users
-insert into users (id, email, password, name, surname, phone_Number, active, address,user_type) values ('44444d47-1a8a-4ae1-b109-af7b56e94788','sysadmin@gmail.com','$2a$10$TyNl6ipLWyDE/TfFM3uRse0SVPP4Rz7.mdZdDK3zqjKZqtKtJ3pf2','Zec','Njekezovic','0612345',true,'Kosovska 22','SYSADMIN');
+insert into users (id, email, password, name, surname, phone_Number,first_Login, active, address,user_type) values ('44444d47-1a8a-4ae1-b109-af7b56e94788','sysadmin@gmail.com','$2a$10$TyNl6ipLWyDE/TfFM3uRse0SVPP4Rz7.mdZdDK3zqjKZqtKtJ3pf2','Zec','Njekezovic','0612345',false,true,'Kosovska 22','SYSADMIN');
+
 --dermatologist-users
-insert into users (id, email, password, name, surname, phone_Number, active, address,user_type) values ('07a2c302-b584-11eb-8529-0242ac130003','dermatolog1@gmail.com', '$2a$10$TyNl6ipLWyDE/TfFM3uRse0SVPP4Rz7.mdZdDK3zqjKZqtKtJ3pf2','Marija','Jovanovic','064555787',true,'Partizanska 11','DERMATOLOGIST');                                
-insert into users (id, email, password, name, surname, phone_Number, active, address,user_type) values ('aef9fa80-b584-11eb-8529-0242ac130003','dermatolog2@gmail.com', '$2a$10$TyNl6ipLWyDE/TfFM3uRse0SVPP4Rz7.mdZdDK3zqjKZqtKtJ3pf2','Milica','Peric','06388929',true,'Nikolajevska 12','DERMATOLOGIST'); 
+insert into users (id, email, password, name, surname, phone_Number,first_Login, active, address,user_type) values ('07a2c302-b584-11eb-8529-0242ac130003','dermatolog1@gmail.com', '$2a$10$TyNl6ipLWyDE/TfFM3uRse0SVPP4Rz7.mdZdDK3zqjKZqtKtJ3pf2','Marija','Jovanovic','064555787',false,true,'Partizanska 11','DERMATOLOGIST');                                
+insert into users (id, email, password, name, surname, phone_Number,first_Login, active, address,user_type) values ('aef9fa80-b584-11eb-8529-0242ac130003','dermatolog2@gmail.com', '$2a$10$TyNl6ipLWyDE/TfFM3uRse0SVPP4Rz7.mdZdDK3zqjKZqtKtJ3pf2','Milica','Peric','06388929',false,true,'Nikolajevska 12','DERMATOLOGIST'); 
 
 --pharmacist-users
-insert into users (id, email, password, name, surname, phone_Number, active, address,user_type) values ('80c86094-ba60-11eb-8529-0242ac130003','pharmacist1@gmail.com', '$2a$10$TyNl6ipLWyDE/TfFM3uRse0SVPP4Rz7.mdZdDK3zqjKZqtKtJ3pf2','Nikola','Jovic','064555787',true,'Skolska 12','PHARMACIST');                                
-insert into users (id, email, password, name, surname, phone_Number, active, address,user_type) values ('80c862c4-ba60-11eb-8529-0242ac130003','pharmacist2@gmail.com', '$2a$10$TyNl6ipLWyDE/TfFM3uRse0SVPP4Rz7.mdZdDK3zqjKZqtKtJ3pf2','Marko','Skepic','06388929',true,'Novosadskog Sajma 13','PHARMACIST');
+insert into users (id, email, password, name, surname, phone_Number,first_Login, active, address,user_type) values ('80c86094-ba60-11eb-8529-0242ac130003','pharmacist1@gmail.com', '$2a$10$TyNl6ipLWyDE/TfFM3uRse0SVPP4Rz7.mdZdDK3zqjKZqtKtJ3pf2','Nikola','Jovic','064555787',false,true,'Skolska 12','PHARMACIST');                                
+insert into users (id, email, password, name, surname, phone_Number,first_Login, active, address,user_type) values ('80c862c4-ba60-11eb-8529-0242ac130003','pharmacist2@gmail.com', '$2a$10$TyNl6ipLWyDE/TfFM3uRse0SVPP4Rz7.mdZdDK3zqjKZqtKtJ3pf2','Marko','Skepic','06388929',false,true,'Novosadskog Sajma 13','PHARMACIST');
 
+--pharmacyAdmin-users
+insert into users (id, email, password, name, surname, phone_Number,first_Login, active, address,user_type) values ('17a2c302-b584-11eb-8529-0242ac130003','pharmacyadmin@gmail.com', '$2a$10$TyNl6ipLWyDE/TfFM3uRse0SVPP4Rz7.mdZdDK3zqjKZqtKtJ3pf2','Marija','Jovanovic','064555787',false ,true,'Partizanska 11','PHARMACYADMIN');
+
+--supplier-users
+insert into users (id, email, password, name, surname, phone_Number,first_Login, active, address,user_type) values ('54444d47-1a8a-4ae1-b109-af7b56e94788','supp@gmail.com', '$2a$10$TyNl6ipLWyDE/TfFM3uRse0SVPP4Rz7.mdZdDK3zqjKZqtKtJ3pf2','Njekez','Pekez','064555787',false ,true,'Partizanska 221','SUPPLIER');      
 
 
 --PATIENTS
@@ -45,14 +52,20 @@ insert into pharmacist (id, pharmacy_id) values ('80c862c4-ba60-11eb-8529-0242ac
 --SYSTEM ADMIN
 insert into system_admin(id) values ('44444d47-1a8a-4ae1-b109-af7b56e94788');
 
-
+--USER-AUTHORITY
 insert into user_authority (user_id, authority_id) values ('22793162-52d3-11eb-ae93-0242ac130002', '7852aa5e-7040-4d99-8255-537a0b226c75');
-
 insert into user_authority (user_id, authority_id) values ('44444d47-1a8a-4ae1-b109-af7b56e94788', '563e9925-cff6-42b7-99fa-6b1235f67655');
+insert into user_authority (user_id, authority_id) values ('17a2c302-b584-11eb-8529-0242ac130003', 'ea16767c-2c1f-49fb-ac98-c7739c0036e8');
+insert into user_authority (user_id, authority_id) values ('54444d47-1a8a-4ae1-b109-af7b56e94788', 'ef9a3723-a72e-44ec-83ac-9d748fd0240f');
+
+--SUPLIER
+insert into supplier(id) values ('54444d47-1a8a-4ae1-b109-af7b56e94788');
 
 --DERMATOLOGIST
 insert into dermatologist (id) values ('07a2c302-b584-11eb-8529-0242ac130003');
 insert into dermatologist (id) values ('aef9fa80-b584-11eb-8529-0242ac130003');
+--PHARMACY ADMIN
+insert into pharmacy_admin(id, pharmacy_id) values ('17a2c302-b584-11eb-8529-0242ac130003', '775d8e36-9859-11eb-a8b3-0242ac130003');
 
 
 --USERS-AUTHORITY
@@ -92,7 +105,7 @@ insert into drug_instance(drug_format, drug_instance_name, loyality_points, on_r
 insert into drug_instance(drug_format, drug_instance_name, loyality_points, on_reciept, quantity, recommended_amount, side_effects, manufacturer_id, id, drug_kind) values('CAPSULE', 'IBALGIN',1, false, 400, '2x1 na dan', 'Nema nezeljenih dejstava', '574c3c20-5838-11eb-ae93-0242ac130002','2c797174-5839-11eb-ae93-0242ac130002', 'HUMAN');
 insert into drug_instance(drug_format, drug_instance_name, loyality_points, on_reciept, quantity, recommended_amount, side_effects, manufacturer_id, id, drug_kind) values('CAPSULE', 'Blokmax',1, false, 500, '2x1 na dan', 'Nema nezeljenih dejstava', '5c49beb4-5838-11eb-ae93-0242ac130002','dac2b818-5838-11eb-ae93-0242ac130002', 'BIOLOGICAL');
 
-
+--INGREDIENTS
 insert into ingredient(id, name) values ('4b852c00-b7bd-11eb-8529-0242ac130003', 'Sastojak1');
 insert into ingredient(id, name) values ('4b852fe8-b7bd-11eb-8529-0242ac130003', 'Sastojak2');
 
@@ -113,6 +126,7 @@ insert into drug_format_id (id, type) values ('40645278-52d3-13eb-ae93-0242ac130
 insert into drug_format_id (id, type) values ('50645278-52d3-13eb-ae93-0242ac130002','GEL');
 insert into drug_format_id (id, type) values ('60645278-52d3-13eb-ae93-0242ac130002','CREME');
 
+
 --WORKTIMES
 
 insert into work_time (id, start_date,end_date, start_time,end_time, employee_id, pharmacy_id) values ('2fb41318-60d4-11eb-ae93-0242ac130002', '2021-06-20','2021-09-20', 8, 17, '80c86094-ba60-11eb-8529-0242ac130003','775d8e36-9859-11eb-a8b3-0242ac130003');
@@ -129,4 +143,24 @@ insert into pharmacy_grade (id,patient_id, pharmacy_id, grade, date) values ('48
 insert into employee_grade (id,patient_id, employee_id, grade, date) values ('ce880dac-bb46-11eb-8529-0242ac130003','22793162-52d3-11eb-ae93-0242ac130002', '80c86094-ba60-11eb-8529-0242ac130003',4, '2021-05-022');
 insert into employee_grade (id,patient_id, employee_id, grade, date) values ('ce880eba-bb46-11eb-8529-0242ac130003','22793162-52d3-11eb-ae93-0242ac130002', '80c862c4-ba60-11eb-8529-0242ac130003',3, '2021-05-022');
 
+--LOYALITYPROGRAM
+insert into loyaltyprogram (id, points_for_appointment, points_for_consulting, points_to_enter_regular_cathegory, points_to_enter_loyal_cathegory, points_to_enter_vip_cathegory, appointment_discount_regular, drug_discount_regular, consultation_discount_regular, appointment_discount_loyal,drug_discount_loyal, consultation_discount_loyal, appointment_discount_vip,  drug_discount_vip, consultation_discount_vip, version) values ('8c834328-9b5a-42c2-9e04-a1acc75f881d', 1, 1, 0, 10, 20, 0, 0, 0, 5, 10, 15, 15, 20, 25, 1);
 
+--ORDERS
+insert into orders (id, date, type, pharmacy_id, pharmacy_admin_id) values ('11111111-67ac-11eb-ae93-0242ac130022', '2021-05-05' , 'CREATED' , '775d8e36-9859-11eb-a8b3-0242ac130003' , '17a2c302-b584-11eb-8529-0242ac130003');
+
+--drug--orders
+insert into drug_order (id, amount, drug_instance_id) values ('99e26092-67ad-11eb-ae93-0242ac130002', 2, '2fe1cd8e-5839-11eb-ae93-0242ac130002' );
+insert into drug_order (id, amount, drug_instance_id) values ('44e26092-67ad-11eb-ae93-0242ac130002', 1, '2c797174-5839-11eb-ae93-0242ac130002' );
+insert into drug_order (id, amount, drug_instance_id) values ('55e26092-67ad-11eb-ae93-0242ac130002', 2, 'dac2b818-5838-11eb-ae93-0242ac130002' );
+
+--order-drug-for-order
+insert into order_drug_for_order (order_id, drug_order_id) values ('11111111-67ac-11eb-ae93-0242ac130022', '99e26092-67ad-11eb-ae93-0242ac130002');
+insert into order_drug_for_order (order_id, drug_order_id) values ('11111111-67ac-11eb-ae93-0242ac130022', '44e26092-67ad-11eb-ae93-0242ac130002');
+insert into order_drug_for_order (order_id, drug_order_id) values ('11111111-67ac-11eb-ae93-0242ac130022', '55e26092-67ad-11eb-ae93-0242ac130002');
+
+
+--suplier drug storage
+insert into supplier_drug_storage(drug_instance_id, supplier_id, count, version) values ('dac2b818-5838-11eb-ae93-0242ac130002', '54444d47-1a8a-4ae1-b109-af7b56e94788', 20, 1);
+insert into supplier_drug_storage(drug_instance_id, supplier_id, count, version) values ('2c797174-5839-11eb-ae93-0242ac130002', '54444d47-1a8a-4ae1-b109-af7b56e94788', 40, 1);
+insert into supplier_drug_storage(drug_instance_id, supplier_id, count, version) values ('2fe1cd8e-5839-11eb-ae93-0242ac130002', '54444d47-1a8a-4ae1-b109-af7b56e94788', 60, 1);

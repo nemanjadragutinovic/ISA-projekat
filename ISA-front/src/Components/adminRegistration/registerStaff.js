@@ -195,7 +195,7 @@ class registerStaff extends Component {
 					surname: this.state.surname,
 					address: this.state.address,
 					phoneNumber: this.state.phoneNumber,
-					password: "test",
+					password: this.state.password,
 				};
 				if (this.validateForm(userDTO)) {
 					
@@ -357,6 +357,25 @@ render() {
 									</div>
 									<div className="text-danger" style={{ display: this.state.emailError }}>
 										Email address must be entered.
+									</div>
+									<div className="text-danger" style={{ display: this.state.emailNotValid }}>
+										Email address is not valid.
+									</div>
+								</div>
+								<div className="control-group">
+									<div className="form-group controls mb-0 pb-2" style={{ color: "#6c757d", opacity: 1 }}>
+										<label>Password:</label>
+										<input
+											placeholder="Password"
+											className="form-control"
+											id="password"
+											type="text"
+											onChange={this.handlePasswordChange}
+											value={this.state.password}
+										/>
+									</div>
+									<div className="text-danger" style={{ display: this.state.passwordError }}>
+										Password must be entered.
 									</div>
 									<div className="text-danger" style={{ display: this.state.emailNotValid }}>
 										Email address is not valid.
