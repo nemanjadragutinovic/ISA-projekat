@@ -357,7 +357,7 @@ class PharmaciesAppointmentStartPage extends Component {
 		
 	    
              console.log("sok");
-			Axios.get( API_URL + "/pharmacy/getAllFreePharmacyAppointmetsForSelectedDate/SortByPriceAscending" + consultationDateSelected  , {
+			Axios.get( API_URL + "/pharmacy/getAllFreePharmacyAppointmetsForSelectedDate/SortByPriceAscending/" + consultationDateSelected  , {
 			validateStatus: () => true,
 			headers: { Authorization: GetAuthorisation() }},
 			)
@@ -423,7 +423,7 @@ class PharmaciesAppointmentStartPage extends Component {
 		
 	    
              console.log("sok");
-			Axios.get( API_URL + "/pharmacy/getAllFreePharmacyAppointmetsForSelectedDate/SortByPriceDescending" + consultationDateSelected  , {
+			Axios.get( API_URL + "/pharmacy/getAllFreePharmacyAppointmetsForSelectedDate/SortByPriceDescending/" + consultationDateSelected  , {
 			validateStatus: () => true,
 			headers: { Authorization: GetAuthorisation() }},
 			)
@@ -489,7 +489,7 @@ class PharmaciesAppointmentStartPage extends Component {
 		
 	    
              console.log("sok");
-			Axios.get( API_URL + "/pharmacy/getAllFreePharmacyAppointmetsForSelectedDate/SortByPharmacyGradeAscending" + consultationDateSelected  , {
+			Axios.get( API_URL + "/pharmacy/getAllFreePharmacyAppointmetsForSelectedDate/SortByPharmacyGradeAscending/" + consultationDateSelected  , {
 			validateStatus: () => true,
 			headers: { Authorization: GetAuthorisation() }},
 			)
@@ -554,7 +554,7 @@ class PharmaciesAppointmentStartPage extends Component {
 		
 	    
              console.log("sok");
-			Axios.get( API_URL + "/pharmacy/getAllFreePharmacyAppointmetsForSelectedDate/SortByPharmacyGradeDescending" + consultationDateSelected  , {
+			Axios.get( API_URL + "/pharmacy/getAllFreePharmacyAppointmetsForSelectedDate/SortByPharmacyGradeDescending/" + consultationDateSelected  , {
 			validateStatus: () => true,
 			headers: { Authorization: GetAuthorisation() }},
 			)
