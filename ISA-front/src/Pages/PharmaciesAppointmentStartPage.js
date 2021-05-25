@@ -38,7 +38,8 @@ class PharmaciesAppointmentStartPage extends Component {
 		errorMessageForReservation : "",
 		hideSuccessfulModalText : true,
 		hideSuccessfulModalButton: true,
-		modalTitle: ""
+		modalTitle: "",
+		selectedPharmacyId : ""
 
     };
 
@@ -168,7 +169,7 @@ class PharmaciesAppointmentStartPage extends Component {
 
 	showPharmacistForPharmacy = (pharmacy) => {
 		this.setState({
-			
+
 			consultationDate: new Date(
 				this.state.selectedDate.getFullYear(),
 				this.state.selectedDate.getMonth(),
@@ -178,6 +179,8 @@ class PharmaciesAppointmentStartPage extends Component {
 				0,
 				0
 			).getTime(),
+
+			selectedPharmacyId: pharmacy.Id,
 		});
 
 		let consultationDateSelected= new Date(
@@ -585,6 +588,139 @@ class PharmaciesAppointmentStartPage extends Component {
 
 
 
+
+	handleSortByPharmacistGradeAscending = () => {
+		this.setState({
+			
+			consultationDate: new Date(
+				this.state.selectedDate.getFullYear(),
+				this.state.selectedDate.getMonth(),
+				this.state.selectedDate.getDate(),
+				this.state.hours,
+				this.state.minutes,
+				0,
+				0
+			).getTime(),
+		});
+
+		let consultationDateSelected= new Date(
+			this.state.selectedDate.getFullYear(),
+			this.state.selectedDate.getMonth(),
+			this.state.selectedDate.getDate(),
+			this.state.hours,
+			this.state.minutes,
+			0,
+			0
+		).getTime(); 
+
+			console.log("idemooo")
+		Axios.get(
+			API_URL +
+				"/users/freePharmacistsForSelectedPharmacyInDataRange/sortByGradeAscending/" + this.state.selectedPharmacyId + "/"+ consultationDateSelected,
+			{ validateStatus: () => true, headers: { Authorization: GetAuthorisation() } }
+		)
+			.then((res) => {
+				if (res.status === 401) {
+					this.props.history.push("/login");
+
+				} else if (res.status === 200) {
+					
+					console.log(res.data);
+
+					this.setState({ pharmacists: res.data });
+						
+					if(this.state.pharmacists.length!==0){
+							this.setState({hiddenPharmacies: true, 
+								isPharmaciesEmpty: false,
+								 hiddenPharmacists: false,
+								 isPharmacistsEmpty: false });
+					}else{
+							this.setState({isPharmacistsEmpty: true,hiddenPharmacists: true, hiddenPharmacies: false });
+					}
+					
+					
+
+
+				}
+			})
+			.catch((err) => {
+				console.log(err);
+				this.setState({ hiddenUnsuccessfulAlert: false, 
+					UnsuccessfulHeader: "Error", 
+					UnsuccessfulMessage: "Some error" });
+			});
+	};
+
+
+	handleSortByPharmacistGradeDescending = () => {
+		this.setState({
+			
+			consultationDate: new Date(
+				this.state.selectedDate.getFullYear(),
+				this.state.selectedDate.getMonth(),
+				this.state.selectedDate.getDate(),
+				this.state.hours,
+				this.state.minutes,
+				0,
+				0
+			).getTime(),
+		});
+
+		let consultationDateSelected= new Date(
+			this.state.selectedDate.getFullYear(),
+			this.state.selectedDate.getMonth(),
+			this.state.selectedDate.getDate(),
+			this.state.hours,
+			this.state.minutes,
+			0,
+			0
+		).getTime(); 
+
+			console.log("idemooo")
+		Axios.get(
+			API_URL +
+				"/users/freePharmacistsForSelectedPharmacyInDataRange/sortByGradeDescending/" + this.state.selectedPharmacyId + "/"+ consultationDateSelected,
+			{ validateStatus: () => true, headers: { Authorization: GetAuthorisation() } }
+		)
+			.then((res) => {
+				if (res.status === 401) {
+					this.props.history.push("/login");
+
+				} else if (res.status === 200) {
+					
+					console.log(res.data);
+
+					this.setState({ pharmacists: res.data });
+						
+					if(this.state.pharmacists.length!==0){
+							this.setState({hiddenPharmacies: true, 
+								isPharmaciesEmpty: false,
+								 hiddenPharmacists: false,
+								 isPharmacistsEmpty: false });
+					}else{
+							this.setState({isPharmacistsEmpty: true,hiddenPharmacists: true, hiddenPharmacies: false });
+					}
+					
+					
+
+
+				}
+			})
+			.catch((err) => {
+				console.log(err);
+				this.setState({ hiddenUnsuccessfulAlert: false, 
+					UnsuccessfulHeader: "Error", 
+					UnsuccessfulMessage: "Some error" });
+			});
+	};
+
+
+
+
+
+
+
+
 	render() {
 	
 
@@ -701,6 +837,9 @@ class PharmaciesAppointmentStartPage extends Component {
 		pharmacists= {this.state.pharmacists}
 		reserveAppointmentForPharmacist={this.reserveAppointmentForPharmacist}	
 		backToPharmacies= {this.handleClosePharmacistPage}
+		handleSortByPharmacistGradeAscending= {this.handleSortByPharmacistGradeAscending}
+		handleSortByPharmacistGradeDescending= {this.handleSortByPharmacistGradeDescending}	
+
 	   />
 
 

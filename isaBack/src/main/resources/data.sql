@@ -34,6 +34,8 @@ insert into users (id, email, password, name, surname, phone_Number,first_Login,
 --pharmacist-users
 insert into users (id, email, password, name, surname, phone_Number,first_Login, active, address,user_type) values ('80c86094-ba60-11eb-8529-0242ac130003','pharmacist1@gmail.com', '$2a$10$TyNl6ipLWyDE/TfFM3uRse0SVPP4Rz7.mdZdDK3zqjKZqtKtJ3pf2','Nikola','Jovic','064555787',false,true,'Skolska 12','PHARMACIST');                                
 insert into users (id, email, password, name, surname, phone_Number,first_Login, active, address,user_type) values ('80c862c4-ba60-11eb-8529-0242ac130003','pharmacist2@gmail.com', '$2a$10$TyNl6ipLWyDE/TfFM3uRse0SVPP4Rz7.mdZdDK3zqjKZqtKtJ3pf2','Marko','Skepic','06388929',false,true,'Novosadskog Sajma 13','PHARMACIST');
+insert into users (id, email, password, name, surname, phone_Number,first_Login, active, address,user_type) values ('56a92e1c-bd9c-11eb-8529-0242ac130003','pharmacist3@gmail.com', '$2a$10$TyNl6ipLWyDE/TfFM3uRse0SVPP4Rz7.mdZdDK3zqjKZqtKtJ3pf2','jelena','Jovanovic','0649879878',false,true,'Toplice Milana 12','PHARMACIST');
+
 
 --pharmacyAdmin-users
 insert into users (id, email, password, name, surname, phone_Number,first_Login, active, address,user_type) values ('17a2c302-b584-11eb-8529-0242ac130003','pharmacyadmin@gmail.com', '$2a$10$TyNl6ipLWyDE/TfFM3uRse0SVPP4Rz7.mdZdDK3zqjKZqtKtJ3pf2','Marija','Jovanovic','064555787',false ,true,'Partizanska 11','PHARMACYADMIN');
@@ -47,7 +49,9 @@ insert into patient (id) values ('22793162-52d3-11eb-ae93-0242ac130002');
 
 --PHARMACISTS
 insert into pharmacist (id, pharmacy_id) values ('80c86094-ba60-11eb-8529-0242ac130003','775d8e36-9859-11eb-a8b3-0242ac130003');
-insert into pharmacist (id, pharmacy_id) values ('80c862c4-ba60-11eb-8529-0242ac130003','775d9322-9859-11eb-a8b3-0242ac130003');
+insert into pharmacist (id, pharmacy_id) values ('80c862c4-ba60-11eb-8529-0242ac130003','775d8e36-9859-11eb-a8b3-0242ac130003'); 
+insert into pharmacist (id, pharmacy_id) values ('56a92e1c-bd9c-11eb-8529-0242ac130003','775d9322-9859-11eb-a8b3-0242ac130003'); 
+
 
 --SYSTEM ADMIN
 insert into system_admin(id) values ('44444d47-1a8a-4ae1-b109-af7b56e94788');
@@ -92,8 +96,11 @@ insert into appointment (id, appointment_status, appointment_type, start_date_ti
 
 insert into appointment (id, appointment_status, appointment_type, start_date_time, end_date_time, price,pharmacy_id, employee_id) values ('09a10e8e-ba61-11eb-8529-0242ac130003','FREE','CONSULTATION', '2021-06-28 11:30:00', '2021-06-28 12:00:00', 1200, '775d8e36-9859-11eb-a8b3-0242ac130003', '80c86094-ba60-11eb-8529-0242ac130003');         
 insert into appointment (id, appointment_status, appointment_type, start_date_time, end_date_time, price,pharmacy_id, employee_id) values ('09a110d2-ba61-11eb-8529-0242ac130003','FREE','CONSULTATION', '2021-06-28 14:30:00', '2021-06-28 15:30:00', 1300, '775d8e36-9859-11eb-a8b3-0242ac130003','80c86094-ba60-11eb-8529-0242ac130003');
-insert into appointment (id, appointment_status, appointment_type, start_date_time, end_date_time, price,pharmacy_id, employee_id) values ('09a111c2-ba61-11eb-8529-0242ac130003','FREE','CONSULTATION', '2021-06-28 11:30:00', '2021-06-28 12:00:00', 1200, '775d9322-9859-11eb-a8b3-0242ac130003', '80c862c4-ba60-11eb-8529-0242ac130003');         
-insert into appointment (id, appointment_status, appointment_type, start_date_time, end_date_time, price,pharmacy_id, employee_id) values ('09a11460-ba61-11eb-8529-0242ac130003','FREE','CONSULTATION', '2021-06-28 14:30:00', '2021-06-28 15:30:00', 1300, '775d9322-9859-11eb-a8b3-0242ac130003','80c862c4-ba60-11eb-8529-0242ac130003');
+insert into appointment (id, appointment_status, appointment_type, start_date_time, end_date_time, price,pharmacy_id, employee_id) values ('09a111c2-ba61-11eb-8529-0242ac130003','FREE','CONSULTATION', '2021-06-28 11:30:00', '2021-06-28 12:00:00', 1200, '775d8e36-9859-11eb-a8b3-0242ac130003', '80c862c4-ba60-11eb-8529-0242ac130003');       
+insert into appointment (id, appointment_status, appointment_type, start_date_time, end_date_time, price,pharmacy_id, employee_id) values ('09a11460-ba61-11eb-8529-0242ac130003','FREE','CONSULTATION', '2021-06-28 14:30:00', '2021-06-28 15:30:00', 1300, '775d8e36-9859-11eb-a8b3-0242ac130003','80c862c4-ba60-11eb-8529-0242ac130003');
+
+insert into appointment (id, appointment_status, appointment_type, start_date_time, end_date_time, price,pharmacy_id, employee_id) values ('56a93182-bd9c-11eb-8529-0242ac130003','FREE','CONSULTATION', '2021-06-28 11:30:00', '2021-06-28 12:00:00', 1200, '775d9322-9859-11eb-a8b3-0242ac130003', '56a92e1c-bd9c-11eb-8529-0242ac130003');       
+insert into appointment (id, appointment_status, appointment_type, start_date_time, end_date_time, price,pharmacy_id, employee_id) values ('56a93312-bd9c-11eb-8529-0242ac130003','FREE','CONSULTATION', '2021-06-28 14:30:00', '2021-06-28 15:30:00', 1300, '775d9322-9859-11eb-a8b3-0242ac130003','56a92e1c-bd9c-11eb-8529-0242ac130003');
 
 --MANUFACTURER
 insert into manufacturer (id, name) values ('20ddef44-5838-11eb-ae93-0242ac130002', 'Hemofarm');
@@ -129,9 +136,10 @@ insert into drug_format_id (id, type) values ('60645278-52d3-13eb-ae93-0242ac130
 
 --WORKTIMES
 
+--pharmacist-work-times
 insert into work_time (id, start_date,end_date, start_time,end_time, employee_id, pharmacy_id) values ('2fb41318-60d4-11eb-ae93-0242ac130002', '2021-06-20','2021-09-20', 8, 17, '80c86094-ba60-11eb-8529-0242ac130003','775d8e36-9859-11eb-a8b3-0242ac130003');
-insert into work_time (id, start_date,end_date, start_time,end_time, employee_id, pharmacy_id) values ('9750255c-ba62-11eb-8529-0242ac130003', '2021-06-20','2021-09-20', 8, 17, '80c862c4-ba60-11eb-8529-0242ac130003','775d9322-9859-11eb-a8b3-0242ac130003');
-
+insert into work_time (id, start_date,end_date, start_time,end_time, employee_id, pharmacy_id) values ('9750255c-ba62-11eb-8529-0242ac130003', '2021-06-20','2021-09-20', 8, 17, '80c862c4-ba60-11eb-8529-0242ac130003','775d8e36-9859-11eb-a8b3-0242ac130003'); 
+insert into work_time (id, start_date,end_date, start_time,end_time, employee_id, pharmacy_id) values ('56a934e8-bd9c-11eb-8529-0242ac130003', '2021-06-20','2021-09-20', 8, 17, '56a92e1c-bd9c-11eb-8529-0242ac130003','775d9322-9859-11eb-a8b3-0242ac130003'); 
 
 --PHARMACIES-GRADES
 insert into pharmacy_grade (id,patient_id, pharmacy_id, grade, date) values ('489fd674-bb0b-11eb-8529-0242ac130003','22793162-52d3-11eb-ae93-0242ac130002', '775d8e36-9859-11eb-a8b3-0242ac130003',4, '2021-05-022');
@@ -140,8 +148,12 @@ insert into pharmacy_grade (id,patient_id, pharmacy_id, grade, date) values ('48
 
 
 --EMPLOYEES-GRADES
+
+--pharmacist--grades
 insert into employee_grade (id,patient_id, employee_id, grade, date) values ('ce880dac-bb46-11eb-8529-0242ac130003','22793162-52d3-11eb-ae93-0242ac130002', '80c86094-ba60-11eb-8529-0242ac130003',4, '2021-05-022');
 insert into employee_grade (id,patient_id, employee_id, grade, date) values ('ce880eba-bb46-11eb-8529-0242ac130003','22793162-52d3-11eb-ae93-0242ac130002', '80c862c4-ba60-11eb-8529-0242ac130003',3, '2021-05-022');
+insert into employee_grade (id,patient_id, employee_id, grade, date) values ('56a93678-bd9c-11eb-8529-0242ac130003','22793162-52d3-11eb-ae93-0242ac130002', '56a92e1c-bd9c-11eb-8529-0242ac130003',3, '2021-05-022');
+
 
 --LOYALITYPROGRAM
 insert into loyaltyprogram (id, points_for_appointment, points_for_consulting, points_to_enter_regular_cathegory, points_to_enter_loyal_cathegory, points_to_enter_vip_cathegory, appointment_discount_regular, drug_discount_regular, consultation_discount_regular, appointment_discount_loyal,drug_discount_loyal, consultation_discount_loyal, appointment_discount_vip,  drug_discount_vip, consultation_discount_vip, version) values ('8c834328-9b5a-42c2-9e04-a1acc75f881d', 1, 1, 0, 10, 20, 0, 0, 0, 5, 10, 15, 15, 20, 25, 1);
