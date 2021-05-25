@@ -250,6 +250,19 @@ public class UserService implements IUserInterface{
 		patientRepository.save(patient);
 	}
 	
+	@Override
+	public void updatePhAdmin(UserChangeInfoDTO phadminInfoChangeDTO) {
+		
+		UUID logedId= getLoggedUserId();
+		PharmacyAdmin phadmin = phAdminRepository.getOne(logedId);		
+		
+		phadmin.setName(phadminInfoChangeDTO.getName());
+		phadmin.setSurname(phadminInfoChangeDTO.getSurname());
+		phadmin.setAddress(phadminInfoChangeDTO.getAddress());
+		phadmin.setPhoneNumber(phadminInfoChangeDTO.getPhoneNumber());
+			
+		phAdminRepository.save(phadmin);
+	}
 	
 	@Override
 	public void changePassword(ChangePasswordDTO changePasswordDTO) {

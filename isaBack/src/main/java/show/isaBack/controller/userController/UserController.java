@@ -102,6 +102,22 @@ public class UserController {
 		
 	}
 	
+	@PutMapping("/phadmin") 
+	@CrossOrigin
+	@PreAuthorize("hasRole('ROLE_PHARMACYADMIN')")
+	public ResponseEntity<?> updatePhAdminInfo(@RequestBody UserChangeInfoDTO userInfoChangeDTO ) {
+	  
+		try {
+			userService.updatePhAdmin(userInfoChangeDTO);
+			return new ResponseEntity<>(HttpStatus.NO_CONTENT); 
+		} catch (IllegalArgumentException e) {
+			return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+		} catch (Exception e) {
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR); 
+		}
+	}
+	
+	
 	@PutMapping("/patient") 
 	@CrossOrigin
 	@PreAuthorize("hasRole('ROLE_PATIENT')")

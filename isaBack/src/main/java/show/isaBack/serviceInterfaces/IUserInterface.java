@@ -29,7 +29,7 @@ public interface IUserInterface extends IService<UserDTO, UnspecifiedDTO<UserDTO
 
 	public void updatePatient(UserChangeInfoDTO patientInfoChangeDTO);
 	public void changePassword(ChangePasswordDTO changePasswordDTO);
-
+	public void updatePhAdmin(UserChangeInfoDTO phadminInfoChangeDTO);
 	
 	public void addAllergenForPatient(PatientsAllergenDTO patientsAllergenDTO);
 	public void removeAllergenForPatient(PatientsAllergenDTO patientsAllergenDTO);
