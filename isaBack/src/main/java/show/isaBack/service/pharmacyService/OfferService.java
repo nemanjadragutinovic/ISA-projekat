@@ -1,5 +1,6 @@
 package show.isaBack.service.pharmacyService;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -7,7 +8,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import show.isaBack.DTO.drugDTO.OfferDTO;
+import show.isaBack.DTO.pharmacyDTO.PharmacyDTO;
 import show.isaBack.DTO.userDTO.AuthorityDTO;
+import show.isaBack.model.Pharmacy;
 import show.isaBack.model.drugs.DrugOrder;
 import show.isaBack.model.drugs.OfferStatus;
 import show.isaBack.model.drugs.Offers;
@@ -78,6 +81,33 @@ public class OfferService implements IOfferService{
 	public List<UnspecifiedDTO<AuthorityDTO>> findAll() {
 		// TODO Auto-generated method stub
 		return null;
+	}
+	
+	@Override
+	public List<UnspecifiedDTO<OfferDTO>> findAllOffers() {
+		
+		List<UnspecifiedDTO<OfferDTO>> offers = new ArrayList<UnspecifiedDTO<OfferDTO>>();
+		
+		List<Offers> offersForSupplier = new ArrayList<Offers>();
+		
+		
+		
+		for (Offers offs : offerRepository.findAll()) {
+			System.out.println(offs.getId()+"-----1");
+			if(userService.getLoggedUserId().equals(offs.getSupplier().getId())) {
+				offersForSupplier.add(offs);
+				System.out.println(offs.getId() + "-----2");
+			}
+		}
+		
+		for (Offers offs : offersForSupplier) 
+		{
+			OfferDTO offDTO= new OfferDTO(offs.getDateToDelivery(),offs.getPrice(),offs.getOfferStatus(),offs.getId());	
+			offers.add(new UnspecifiedDTO<OfferDTO>(offs.getId(),offDTO));
+		}
+		
+		
+		return offers;
 	}
 
 	@Override
