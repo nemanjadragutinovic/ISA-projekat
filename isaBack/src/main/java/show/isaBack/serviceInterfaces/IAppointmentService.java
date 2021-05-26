@@ -43,15 +43,20 @@ public interface IAppointmentService extends IService<DermatologistAppointmentDT
 	public List<UnspecifiedDTO<DermatologistAppointmentDTO>> findAllFuturePatientsConsultations(AppointmentType appointmentType);
 	
 	
-	public List<UnspecifiedDTO<DermatologistAppointmentDTO>> findAllHistoryPatientsAppointmetsSortByPriceAscending(AppointmentType appointmentType);
-	public List<UnspecifiedDTO<DermatologistAppointmentDTO>> findAllHistoryPatientsAppointmetsSortByPriceDescending(AppointmentType appointmentType);
-	public List<UnspecifiedDTO<DermatologistAppointmentDTO>> findAllHistoryPatientsAppointmetsSortByDateAscending(AppointmentType appointmentType); 
-	public List<UnspecifiedDTO<DermatologistAppointmentDTO>> findAllHistoryPatientsAppointmetsSortByDateDescending(AppointmentType appointmentType);
-	public List<UnspecifiedDTO<DermatologistAppointmentDTO>> findAllHistoryPatientsAppointmetsSortByDurationAscending(AppointmentType appointmentType);
-	public List<UnspecifiedDTO<DermatologistAppointmentDTO>> findAllHistoryPatientsAppointmetsSortByDurationDescending(AppointmentType appointmentType);
+	public List<UnspecifiedDTO<DermatologistAppointmentDTO>> findAllHistoryPatientsAppointmetsSortByPriceAscending(AppointmentType appointmentType) throws Exception;
+	public List<UnspecifiedDTO<DermatologistAppointmentDTO>> findAllHistoryPatientsAppointmetsSortByPriceDescending(AppointmentType appointmentType) throws Exception;
+	public List<UnspecifiedDTO<DermatologistAppointmentDTO>> findAllHistoryPatientsAppointmetsSortByDateAscending(AppointmentType appointmentType) throws Exception; 
+	public List<UnspecifiedDTO<DermatologistAppointmentDTO>> findAllHistoryPatientsAppointmetsSortByDateDescending(AppointmentType appointmentType) throws Exception;
+	public List<UnspecifiedDTO<DermatologistAppointmentDTO>> findAllHistoryPatientsAppointmetsSortByDurationAscending(AppointmentType appointmentType) throws Exception;
+	public List<UnspecifiedDTO<DermatologistAppointmentDTO>> findAllHistoryPatientsAppointmetsSortByDurationDescending(AppointmentType appointmentType) throws Exception;
 	
 	
-	
+	public List<UnspecifiedDTO<DermatologistAppointmentDTO>> findAllHistoryPatientsConsultationsSortByPriceAscending(AppointmentType appointmentType) throws Exception;
+	public List<UnspecifiedDTO<DermatologistAppointmentDTO>> findAllHistoryPatientsConsultationsSortByPriceDescending(AppointmentType appointmentType) throws Exception;
+	public List<UnspecifiedDTO<DermatologistAppointmentDTO>> findAllHistoryPatientsConsultationsSortByDateAscending(AppointmentType appointmentType) throws Exception;
+	public List<UnspecifiedDTO<DermatologistAppointmentDTO>> findAllHistoryPatientsConsultationsSortByDateDescending(AppointmentType appointmentType) throws Exception;
+	public List<UnspecifiedDTO<DermatologistAppointmentDTO>> findAllHistoryPatientsConsultationsSortByDurationAscending(AppointmentType appointmentType) throws Exception;
+	public List<UnspecifiedDTO<DermatologistAppointmentDTO>> findAllHistoryPatientsConsultationsSortByDurationDescending(AppointmentType appointmentType) throws Exception;
 	
 	
 	

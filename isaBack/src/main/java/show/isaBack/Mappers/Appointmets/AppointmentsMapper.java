@@ -25,12 +25,12 @@ public class AppointmentsMapper {
 	
 	
 	
-	public UnspecifiedDTO<EmployeeGradeDTO> MapDermatologistToEmployeeDTO(Dermatologist dermatologist){
+	public UnspecifiedDTO<EmployeeGradeDTO> MapDermatologistToEmployeeDTO(Dermatologist dermatologist,double avgGrade){
 		if(dermatologist == null) 
 			throw new IllegalArgumentException();
 		
 		return new UnspecifiedDTO<EmployeeGradeDTO> (dermatologist.getId(), new EmployeeGradeDTO( dermatologist.getName(), dermatologist.getSurname(),
-				dermatologist.getEmail(),dermatologist.getAddress(), dermatologist.getPhoneNumber()));
+				dermatologist.getEmail(),dermatologist.getAddress(), dermatologist.getPhoneNumber(),avgGrade));
 	}
 	
 	

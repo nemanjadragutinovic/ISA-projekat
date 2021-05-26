@@ -399,7 +399,7 @@ public class UserService implements IUserInterface{
 	
 	@Override
 	public double getAvgGradeForEmployee(UUID employeeID){
-		System.out.println("alaa sokova2");
+		
 		return employeeGradeService.getAvgGradeForEmployee(employeeID);
 		
 		}

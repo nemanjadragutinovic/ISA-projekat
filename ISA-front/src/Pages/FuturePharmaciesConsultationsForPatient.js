@@ -215,36 +215,146 @@ class FuturePharmaciesConsultationsForPatient extends Component {
     }
 
 
+	
 	handleSortByPriceAscending =() => {
 
+		console.log("sortiranjeee");
+
+		var appointmentType= "CONSULTATION";
+
+		Axios.get(API_URL + "/appointment/pharmacist/findAllHistoryPatientsAppointmets/sortByPriceAscending/" + appointmentType , {
+			validateStatus: () => true,
+			headers: { Authorization: GetAuthorisation() },
+		})
+			.then((res) => {
+				if (res.status === 401) {
+                    this.props.history.push('/login');
+				} else {
+					this.setState({ historyConsultations: res.data });
+					console.log(res.data);
+				}
+			})
+			.catch((err) => {
+				console.log(err);
+			});
         
     }
 
 
 	handleSortByPriceDescending =() => {
 
+		var appointmentType= "CONSULTATION";
+
+		Axios.get(API_URL + "/appointment/pharmacist/findAllHistoryPatientsAppointmets/sortByPriceDescending/" + appointmentType , {
+			validateStatus: () => true,
+			headers: { Authorization: GetAuthorisation() },
+		})
+			.then((res) => {
+				if (res.status === 401) {
+                    this.props.history.push('/login');
+				} else {
+					this.setState({ historyConsultations: res.data });
+					console.log(res.data);
+				}
+			})
+			.catch((err) => {
+				console.log(err);
+			});
         
     }
 
 	handleSortByDateAscending =() => {
 
+
+		console.log("sortiranjeee");
+		var appointmentType= "CONSULTATION";
+
+		Axios.get(API_URL + "/appointment/pharmacist/findAllHistoryPatientsAppointmets/sortByDateAscending/" + appointmentType , {
+			validateStatus: () => true,
+			headers: { Authorization: GetAuthorisation() },
+		})
+			.then((res) => {
+				if (res.status === 401) {
+                    this.props.history.push('/login');
+				} else {
+					this.setState({ historyConsultations: res.data });
+					console.log(res.data);
+				}
+			})
+			.catch((err) => {
+				console.log(err);
+			});
         
     }
 
 
 	handleSortByDateDescending =() => {
 
+		
+		var appointmentType= "CONSULTATION";
+
+		Axios.get(API_URL + "/appointment/pharmacist/findAllHistoryPatientsAppointmets/sortByDateDescending/" + appointmentType , {
+			validateStatus: () => true,
+			headers: { Authorization: GetAuthorisation() },
+		})
+			.then((res) => {
+				if (res.status === 401) {
+                    this.props.history.push('/login');
+				} else {
+					this.setState({ historyConsultations: res.data });
+					console.log(res.data);
+				}
+			})
+			.catch((err) => {
+				console.log(err);
+			});
         
     }
 
 
 	handleSortByDurationAppointmentAscending =() => {
 
+		var appointmentType= "CONSULTATION";
+
+		Axios.get(API_URL + "/appointment/pharmacist/findAllHistoryPatientsAppointmets/sortByDurationAscending/" + appointmentType , {
+			validateStatus: () => true,
+			headers: { Authorization: GetAuthorisation() },
+		})
+			.then((res) => {
+				if (res.status === 401) {
+                    this.props.history.push('/login');
+				} else {
+					this.setState({ historyConsultations: res.data });
+					console.log(res.data);
+				}
+			})
+			.catch((err) => {
+				console.log(err);
+			});
+
         
     }
 
 	
 	handleSortByDurationAppointmentDescending =() => {
+
+		var appointmentType= "CONSULTATION";
+
+		Axios.get(API_URL + "/appointment/pharmacist/findAllHistoryPatientsAppointmets/sortByDurationDescending/" + appointmentType , {
+			validateStatus: () => true,
+			headers: { Authorization: GetAuthorisation() },
+		})
+			.then((res) => {
+				if (res.status === 401) {
+                    this.props.history.push('/login');
+				} else {
+					this.setState({ historyConsultations: res.data });
+					console.log(res.data);
+				}
+			})
+			.catch((err) => {
+				console.log(err);
+			});
 
         
     }
