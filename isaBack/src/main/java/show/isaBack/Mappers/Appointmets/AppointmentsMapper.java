@@ -5,22 +5,43 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
 import show.isaBack.DTO.AppointmentDTO.DermatologistAppointmentDTO;
 import show.isaBack.DTO.userDTO.EmployeeGradeDTO;
 import show.isaBack.model.Dermatologist;
+import show.isaBack.model.Pharmacist;
 import show.isaBack.model.appointment.Appointment;
+import show.isaBack.repository.Pharmacy.PharmacyGradeRepository;
+import show.isaBack.repository.userRepository.EmployeeGradeRepository;
+import show.isaBack.serviceInterfaces.IEmployeeGradeService;
+import show.isaBack.serviceInterfaces.IUserInterface;
 import show.isaBack.unspecifiedDTO.UnspecifiedDTO;
 
+@Service
 public class AppointmentsMapper {
 
 	
+	
+	
 	public UnspecifiedDTO<EmployeeGradeDTO> MapDermatologistToEmployeeDTO(Dermatologist dermatologist){
-		if(dermatologist == null) throw new IllegalArgumentException();
+		if(dermatologist == null) 
+			throw new IllegalArgumentException();
 		
 		return new UnspecifiedDTO<EmployeeGradeDTO> (dermatologist.getId(), new EmployeeGradeDTO( dermatologist.getName(), dermatologist.getSurname(),
 				dermatologist.getEmail(),dermatologist.getAddress(), dermatologist.getPhoneNumber()));
 	}
 	
+	
+	public UnspecifiedDTO<EmployeeGradeDTO> MapPharmacistsToEmployeeDTO(Pharmacist pharmacist, double avgGrade){
+		if(pharmacist == null) 
+			throw new IllegalArgumentException();
+
+		
+		return new UnspecifiedDTO<EmployeeGradeDTO> (pharmacist.getId(), new EmployeeGradeDTO( pharmacist.getName(), pharmacist.getSurname(),
+				pharmacist.getEmail(),pharmacist.getAddress(), pharmacist.getPhoneNumber(), avgGrade));
+	}
 	
 	
 	public UnspecifiedDTO<EmployeeGradeDTO> findMatchingEmployee(UUID pharmacyEmployeId,List<UnspecifiedDTO<EmployeeGradeDTO>> employeesDTO){

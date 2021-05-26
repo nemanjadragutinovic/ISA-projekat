@@ -16,7 +16,7 @@ import DermatologistFreeAppointment from "./Pages/DermatologistFreeAppointment"
 import FutureDermatologistAppointmentsForPatient from "./Pages/FutureDermatologistAppointmentsForPatient"
 import HistoryDermatologistAppointmentsForPatient from "./Pages/HistoryDermatologistAppointmentsForPatient"
 import PharmaciesAppointmentStartPage from "./Pages/PharmaciesAppointmentStartPage"
-
+import FuturePharmaciesConsultationsForPatient from "./Pages/FuturePharmaciesConsultationsForPatient"
 
 import {
   BrowserRouter as Router,
@@ -51,8 +51,8 @@ function App() {
 
         <Route  to ="/loyalityProgram" path ="/loyalityProgram"  component={LoyalityProgram}/>
         <Route  to ="/orders" path ="/orders"  component={OrdersPage}/>
-
-
+        <Route  to ="/futurePharmaciesConsultationsForPatient" path ="/futurePharmaciesConsultationsForPatient"  component={FuturePharmaciesConsultationsForPatient}/>
+       
 
         </Switch>
     </Router>

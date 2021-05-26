@@ -34,7 +34,7 @@ insert into users (id, email, password, name, surname, phone_Number,first_Login,
 --pharmacist-users
 insert into users (id, email, password, name, surname, phone_Number,first_Login, active, address,user_type) values ('80c86094-ba60-11eb-8529-0242ac130003','pharmacist1@gmail.com', '$2a$10$TyNl6ipLWyDE/TfFM3uRse0SVPP4Rz7.mdZdDK3zqjKZqtKtJ3pf2','Nikola','Jovic','064555787',false,true,'Skolska 12','PHARMACIST');                                
 insert into users (id, email, password, name, surname, phone_Number,first_Login, active, address,user_type) values ('80c862c4-ba60-11eb-8529-0242ac130003','pharmacist2@gmail.com', '$2a$10$TyNl6ipLWyDE/TfFM3uRse0SVPP4Rz7.mdZdDK3zqjKZqtKtJ3pf2','Marko','Skepic','06388929',false,true,'Novosadskog Sajma 13','PHARMACIST');
-insert into users (id, email, password, name, surname, phone_Number,first_Login, active, address,user_type) values ('56a92e1c-bd9c-11eb-8529-0242ac130003','pharmacist3@gmail.com', '$2a$10$TyNl6ipLWyDE/TfFM3uRse0SVPP4Rz7.mdZdDK3zqjKZqtKtJ3pf2','jelena','Jovanovic','0649879878',false,true,'Toplice Milana 12','PHARMACIST');
+insert into users (id, email, password, name, surname, phone_Number,first_Login, active, address,user_type) values ('56a92e1c-bd9c-11eb-8529-0242ac130003','pharmacist3@gmail.com', '$2a$10$TyNl6ipLWyDE/TfFM3uRse0SVPP4Rz7.mdZdDK3zqjKZqtKtJ3pf2','Jelena','Jovanovic','0649879878',false,true,'Toplice Milana 12','PHARMACIST');
 
 
 --pharmacyAdmin-users
@@ -101,6 +101,10 @@ insert into appointment (id, appointment_status, appointment_type, start_date_ti
 
 insert into appointment (id, appointment_status, appointment_type, start_date_time, end_date_time, price,pharmacy_id, employee_id) values ('56a93182-bd9c-11eb-8529-0242ac130003','FREE','CONSULTATION', '2021-06-28 11:30:00', '2021-06-28 12:00:00', 1200, '775d9322-9859-11eb-a8b3-0242ac130003', '56a92e1c-bd9c-11eb-8529-0242ac130003');       
 insert into appointment (id, appointment_status, appointment_type, start_date_time, end_date_time, price,pharmacy_id, employee_id) values ('56a93312-bd9c-11eb-8529-0242ac130003','FREE','CONSULTATION', '2021-06-28 14:30:00', '2021-06-28 15:30:00', 1300, '775d9322-9859-11eb-a8b3-0242ac130003','56a92e1c-bd9c-11eb-8529-0242ac130003');
+
+
+insert into appointment (id, appointment_status, appointment_type, start_date_time, end_date_time, price,pharmacy_id, employee_id, patient_id) values ('802a3992-be1a-11eb-8529-0242ac130003','FINISHED','CONSULTATION', '2021-04-28 11:30:00', '2021-04-28 12:00:00', 1200, '775d9322-9859-11eb-a8b3-0242ac130003', '56a92e1c-bd9c-11eb-8529-0242ac130003', '22793162-52d3-11eb-ae93-0242ac130002');       
+insert into appointment (id, appointment_status, appointment_type, start_date_time, end_date_time, price,pharmacy_id, employee_id, patient_id) values ('802a3be0-be1a-11eb-8529-0242ac130003','FINISHED','CONSULTATION', '2021-04-28 14:30:00', '2021-04-28 15:30:00', 1300, '775d9322-9859-11eb-a8b3-0242ac130003','56a92e1c-bd9c-11eb-8529-0242ac130003', '22793162-52d3-11eb-ae93-0242ac130002');
 
 --MANUFACTURER
 insert into manufacturer (id, name) values ('20ddef44-5838-11eb-ae93-0242ac130002', 'Hemofarm');

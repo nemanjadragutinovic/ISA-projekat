@@ -21,6 +21,7 @@ import show.isaBack.Mappers.Appointmets.AppointmentsMapper;
 import show.isaBack.emailService.EmailService;
 import show.isaBack.model.Dermatologist;
 import show.isaBack.model.Patient;
+import show.isaBack.model.Pharmacist;
 import show.isaBack.model.Pharmacy;
 import show.isaBack.model.User;
 import show.isaBack.model.UserCharacteristics.WorkTime;
@@ -48,6 +49,7 @@ public class AppointmentService implements IAppointmentService{
 	@Autowired
 	private DermatologistRepository dermatologistRepository;
 	
+	
 	private AppointmentsMapper appointmentsMapper= new AppointmentsMapper();
 	
 	@Autowired
@@ -68,6 +70,8 @@ public class AppointmentService implements IAppointmentService{
 	
 	@Autowired
 	private WorkTimeRepository workTimeRepository;
+	
+	
 	
 	@Override
 	public List<UnspecifiedDTO<DermatologistAppointmentDTO>> findAllFreeAppointmentsForPharmacyAndForAppointmentType(UUID pharmacyId,
@@ -216,7 +220,7 @@ public class AppointmentService implements IAppointmentService{
 	
 	
 	@Override
-	public void cancelDermatologistAppointment(UUID appointmentId) {
+	public void cancelAppointment(UUID appointmentId) {
 		
 		Appointment appointment = appointmentRepository.findById(appointmentId).get();
 		
@@ -254,6 +258,58 @@ public class AppointmentService implements IAppointmentService{
 		return freeAppointments;
 		
 	}
+	
+	
+	@Override
+	public List<UnspecifiedDTO<DermatologistAppointmentDTO>> findAllFuturePatientsConsultations(AppointmentType appointmentType) {
+		
+		UUID logedPatiendID= userService.getLoggedUserId();
+		List<Appointment> appointments = appointmentRepository.findAllFuturePatientsAppointmets(logedPatiendID, appointmentType); 
+		System.out.println(appointments);
+		List<Pharmacist> allPharmacists= pharmacistRepository.findAll();		
+		
+		List<UnspecifiedDTO<EmployeeGradeDTO>> pharmacistEmployees= new ArrayList<UnspecifiedDTO<EmployeeGradeDTO>>();
+		
+		for (Pharmacist pharmacist : allPharmacists) {
+			double avgGrade = userService.getAvgGradeForEmployee(pharmacist.getId());
+			pharmacistEmployees.add(appointmentsMapper.MapPharmacistsToEmployeeDTO(pharmacist,avgGrade));
+		}
+		
+		
+		
+		List<UnspecifiedDTO<DermatologistAppointmentDTO>> freeAppointments=  appointmentsMapper.MapAppointmentsToListAppointmentsDTO(appointments,pharmacistEmployees);             
+		
+		
+		return freeAppointments;
+		
+	}
+	
+	
+	
+	@Override
+	public List<UnspecifiedDTO<DermatologistAppointmentDTO>> findAllHistoryPatientsConsultations(AppointmentType appointmentType) {
+		
+		UUID logedPatiendID= userService.getLoggedUserId();
+		List<Appointment> appointments = appointmentRepository.findAllHistoryPatientsAppointmets(logedPatiendID, appointmentType); 
+		System.out.println(appointments);
+		List<Pharmacist> allPharmacists= pharmacistRepository.findAll();		
+		
+		List<UnspecifiedDTO<EmployeeGradeDTO>> pharmacistEmployees= new ArrayList<UnspecifiedDTO<EmployeeGradeDTO>>();
+		
+		for (Pharmacist pharmacist : allPharmacists) {
+			double avgGrade = userService.getAvgGradeForEmployee(pharmacist.getId());
+			pharmacistEmployees.add(appointmentsMapper.MapPharmacistsToEmployeeDTO(pharmacist,avgGrade));
+		}
+		
+		
+		
+		List<UnspecifiedDTO<DermatologistAppointmentDTO>> freeAppointments=  appointmentsMapper.MapAppointmentsToListAppointmentsDTO(appointments,pharmacistEmployees);             
+		
+		
+		return freeAppointments;
+		
+	}
+	
 	
 	
 	@Override	

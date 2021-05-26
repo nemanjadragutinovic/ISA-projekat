@@ -28,7 +28,7 @@ public interface IAppointmentService extends IService<DermatologistAppointmentDT
 	
 	public List<UnspecifiedDTO<DermatologistAppointmentDTO>> findAllFuturePatientsAppointmets(AppointmentType appointmentType);
 	
-	public void cancelDermatologistAppointment(UUID appointmentId);
+	public void cancelAppointment(UUID appointmentId);
 	
 	public List<UnspecifiedDTO<DermatologistAppointmentDTO>> findAllHistoryPatientsAppointmets(AppointmentType appointmentType);
 	
@@ -38,4 +38,7 @@ public interface IAppointmentService extends IService<DermatologistAppointmentDT
 	
 	public void reserveConsulationBySelectedPharmacist(ReservationConsultationDTO reservationRequestDTO);
 	
+	public List<UnspecifiedDTO<DermatologistAppointmentDTO>> findAllHistoryPatientsConsultations(AppointmentType appointmentType);
+	
+	public List<UnspecifiedDTO<DermatologistAppointmentDTO>> findAllFuturePatientsConsultations(AppointmentType appointmentType);
 }

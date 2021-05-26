@@ -158,7 +158,28 @@ public class AppointmentController {
 	public ResponseEntity<?>  cancelDermatologistAppointment(@RequestBody IdDTO appointmentId) {
 		
 		try {
-			appointmentService.cancelDermatologistAppointment(appointmentId.getId());
+			appointmentService.cancelAppointment(appointmentId.getId());
+			return new ResponseEntity<>(appointmentId,HttpStatus.OK);
+		
+		} catch (EntityNotFoundException e) {
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND); 
+		} catch (IllegalArgumentException e) {
+			return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+		} catch (Exception e) {
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}	
+			
+		
+	}
+	
+	
+	@PreAuthorize("hasRole('ROLE_PATIENT')")
+	@CrossOrigin
+	@PostMapping("/pharmacist/cancelAppointment")
+	public ResponseEntity<?>  cancelPharmacistAppointment(@RequestBody IdDTO appointmentId) {
+		
+		try {
+			appointmentService.cancelAppointment(appointmentId.getId());
 			return new ResponseEntity<>(appointmentId,HttpStatus.OK);
 		
 		} catch (EntityNotFoundException e) {
@@ -204,6 +225,34 @@ public class AppointmentController {
 			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}	
 			
+		
+	}
+	
+	
+	@PreAuthorize("hasRole('ROLE_PATIENT')")
+	@CrossOrigin
+	@GetMapping("/pharmacist/findAllFuturePatientsAppointmets")
+	public ResponseEntity<List<UnspecifiedDTO<DermatologistAppointmentDTO>>> findAllFuturePatientsConsultations() {
+		System.out.println("njee");
+		try {
+			return new ResponseEntity<>(appointmentService.findAllFuturePatientsConsultations(AppointmentType.CONSULTATION) ,HttpStatus.OK);
+		} catch (Exception e) {
+				return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+		
+	}
+	
+	
+	@PreAuthorize("hasRole('ROLE_PATIENT')")
+	@CrossOrigin
+	@GetMapping("/pharmacist/findAllHistoryPatientsAppointmets")
+	public ResponseEntity<List<UnspecifiedDTO<DermatologistAppointmentDTO>>> findAllHistoryPatientsConsultations() {
+		System.out.println("njee");
+		try {
+			return new ResponseEntity<>(appointmentService.findAllHistoryPatientsConsultations(AppointmentType.CONSULTATION) ,HttpStatus.OK);
+		} catch (Exception e) {
+				return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
 		
 	}
 	
