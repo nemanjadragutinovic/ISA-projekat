@@ -42,6 +42,10 @@ public interface IUserInterface extends IService<UserDTO, UnspecifiedDTO<UserDTO
 
 	public List<UnspecifiedDTO<PharmacistForAppointmentPharmacyGadeDTO>> fidnAllFreePharmacistsForSelectedPharmacyInDataRangeSortByGradeAscending(Date startDate, UUID pharmacyId);
 	public List<UnspecifiedDTO<PharmacistForAppointmentPharmacyGadeDTO>> fidnAllFreePharmacistsForSelectedPharmacyInDataRangeSortByGradeDescending(Date startDate, UUID pharmacyId);
+	public UserDTO getLoggedSupplier();
+	public void updateSupplier(UserChangeInfoDTO supplierInfoChangeDTO);
+	public boolean subscribeToPharmacy(String pharmacyIdDTO) ;
+	public boolean unsubscribeFromPharmacy(String pharmacyId) ;
 	
 	public double getAvgGradeForEmployee(UUID employeeID);
 	

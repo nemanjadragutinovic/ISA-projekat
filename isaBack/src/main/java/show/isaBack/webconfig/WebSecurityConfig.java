@@ -113,6 +113,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 		
 		
 		
+		
+		
 		web.ignoring().antMatchers(HttpMethod.GET, "/pharmacy");
 		web.ignoring().antMatchers(HttpMethod.PUT, "/drug");
 		web.ignoring().antMatchers(HttpMethod.GET, "/drug");
@@ -126,6 +128,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 		web.ignoring().antMatchers(HttpMethod.POST, "/ingredients");
 		
 		web.ignoring().antMatchers(HttpMethod.GET, "/drug/loyaltyProgram/**");
+		
+	
 		
 		//web.ignoring().antMatchers(HttpMethod.GET, "/order/getAllOrders");
 		
