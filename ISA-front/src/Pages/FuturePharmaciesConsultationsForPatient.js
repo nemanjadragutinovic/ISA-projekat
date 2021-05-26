@@ -214,6 +214,44 @@ class FuturePharmaciesConsultationsForPatient extends Component {
         return false;
     }
 
+
+	handleSortByPriceAscending =() => {
+
+        
+    }
+
+
+	handleSortByPriceDescending =() => {
+
+        
+    }
+
+	handleSortByDateAscending =() => {
+
+        
+    }
+
+
+	handleSortByDateDescending =() => {
+
+        
+    }
+
+
+	handleSortByDurationAppointmentAscending =() => {
+
+        
+    }
+
+	
+	handleSortByDurationAppointmentDescending =() => {
+
+        
+    }
+
+
+
+
 	render() {
 	
 
@@ -357,7 +395,13 @@ class FuturePharmaciesConsultationsForPatient extends Component {
 
 			hideHistoryConsultations={this.state.hideHistoryConsultations}
 			appointments= {this.state.historyConsultations}
-											
+
+			handleSortByPriceAscending={this.handleSortByPriceAscending}
+			handleSortByPriceDescending={this.handleSortByPriceDescending}
+			handleSortByDateAscending={this.handleSortByDateAscending}
+			handleSortByDateDescending={this.handleSortByDateDescending}
+			handleSortByDurationAppointmentAscending={this.handleSortByDurationAppointmentAscending}
+			handleSortByDurationAppointmentDescending={this.handleSortByDurationAppointmentDescending}								
 		/>
 
 								

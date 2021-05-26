@@ -210,6 +210,95 @@ public class AppointmentController {
 	
 	@PreAuthorize("hasRole('ROLE_PATIENT')")
 	@CrossOrigin
+	@GetMapping("/dermatologist/findAllHistoryPatientsAppointmets/sortByPriceAscending/{appointmentType}")
+	public ResponseEntity<List<UnspecifiedDTO<DermatologistAppointmentDTO>>> findAllHistoryPatientsAppointmetsSortByPriceAscending(@PathVariable AppointmentType appointmentType) {
+		
+		try {
+			return new ResponseEntity<>(appointmentService.findAllHistoryPatientsAppointmetsSortByPriceAscending(appointmentType) ,HttpStatus.OK);
+			
+		} catch (Exception e) {
+				return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+		
+	}
+	
+	
+	@PreAuthorize("hasRole('ROLE_PATIENT')")
+	@CrossOrigin
+	@GetMapping("/dermatologist/findAllHistoryPatientsAppointmets/sortByPriceDescending/{appointmentType}")
+	public ResponseEntity<List<UnspecifiedDTO<DermatologistAppointmentDTO>>> findAllHistoryPatientsAppointmetsSortByPriceDescending(@PathVariable AppointmentType appointmentType) {
+		
+		try {
+			return new ResponseEntity<>(appointmentService.findAllHistoryPatientsAppointmetsSortByPriceDescending(appointmentType) ,HttpStatus.OK);
+			
+		} catch (Exception e) {
+				return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+		
+	}
+	
+	
+	@PreAuthorize("hasRole('ROLE_PATIENT')")
+	@CrossOrigin
+	@GetMapping("/dermatologist/findAllHistoryPatientsAppointmets/sortByDateAscending/{appointmentType}")
+	public ResponseEntity<List<UnspecifiedDTO<DermatologistAppointmentDTO>>> findAllHistoryPatientsAppointmetsSortByDateAscending(@PathVariable AppointmentType appointmentType) {
+		
+		try {
+			return new ResponseEntity<>(appointmentService.findAllHistoryPatientsAppointmetsSortByDateAscending(appointmentType) ,HttpStatus.OK);
+			
+		} catch (Exception e) {
+				return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+		
+	}
+	
+	
+	@PreAuthorize("hasRole('ROLE_PATIENT')")
+	@CrossOrigin
+	@GetMapping("/dermatologist/findAllHistoryPatientsAppointmets/sortByDateDescending/{appointmentType}")
+	public ResponseEntity<List<UnspecifiedDTO<DermatologistAppointmentDTO>>> findAllHistoryPatientsAppointmetsSortByDateDescending(@PathVariable AppointmentType appointmentType) {
+		
+		try {
+			return new ResponseEntity<>(appointmentService.findAllHistoryPatientsAppointmetsSortByDateDescending(appointmentType) ,HttpStatus.OK);
+			
+		} catch (Exception e) {
+				return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+		
+	}
+	
+	@PreAuthorize("hasRole('ROLE_PATIENT')")
+	@CrossOrigin
+	@GetMapping("/dermatologist/findAllHistoryPatientsAppointmets/sortByDurationAscending/{appointmentType}")
+	public ResponseEntity<List<UnspecifiedDTO<DermatologistAppointmentDTO>>> findAllHistoryPatientsAppointmetsSortByDurationAscending(@PathVariable AppointmentType appointmentType) {
+		
+		try {
+			return new ResponseEntity<>(appointmentService.findAllHistoryPatientsAppointmetsSortByDurationAscending(appointmentType) ,HttpStatus.OK);
+			
+		} catch (Exception e) {
+				return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+		
+	}
+	
+	
+	@PreAuthorize("hasRole('ROLE_PATIENT')")
+	@CrossOrigin
+	@GetMapping("/dermatologist/findAllHistoryPatientsAppointmets/sortByDurationDescending/{appointmentType}")
+	public ResponseEntity<List<UnspecifiedDTO<DermatologistAppointmentDTO>>> findAllHistoryPatientsAppointmetsSortByDurationDescending(@PathVariable AppointmentType appointmentType) {
+		
+		try {
+			return new ResponseEntity<>(appointmentService.findAllHistoryPatientsAppointmetsSortByDurationDescending(appointmentType) ,HttpStatus.OK);
+			
+		} catch (Exception e) {
+				return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+		
+	}
+	
+	
+	@PreAuthorize("hasRole('ROLE_PATIENT')")
+	@CrossOrigin
 	@PostMapping("/reserveConsulationBySelectedPharmacist")
 	public ResponseEntity<?> reserveConsulationBySelectedPharmacist(@RequestBody ReservationConsultationDTO reservationRequestDTO) {
 			Date neki= new Date(reservationRequestDTO.getStartDate());

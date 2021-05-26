@@ -311,6 +311,84 @@ public class AppointmentService implements IAppointmentService{
 	}
 	
 	
+	@Override
+	public List<UnspecifiedDTO<DermatologistAppointmentDTO>> findAllHistoryPatientsAppointmetsSortByPriceAscending(AppointmentType appointmentType) {
+				
+		List<UnspecifiedDTO<DermatologistAppointmentDTO>> sorterdAppointments=  findAllHistoryPatientsAppointmets(appointmentType);             
+		
+		Collections.sort(sorterdAppointments, (appointment1, appointment2) -> Double.compare(appointment1.EntityDTO.getPrice(), appointment2.EntityDTO.getPrice()));
+		
+		
+		return sorterdAppointments;
+		
+	}
+	
+	
+	@Override
+	public List<UnspecifiedDTO<DermatologistAppointmentDTO>> findAllHistoryPatientsAppointmetsSortByPriceDescending(AppointmentType appointmentType) {
+				
+		List<UnspecifiedDTO<DermatologistAppointmentDTO>> sorterdAppointments=  findAllHistoryPatientsAppointmets(appointmentType);             
+		
+		Collections.sort(sorterdAppointments, (appointment1, appointment2) -> Double.compare(appointment1.EntityDTO.getPrice(), appointment2.EntityDTO.getPrice()));
+		Collections.reverse(sorterdAppointments);
+		
+		return sorterdAppointments;
+		
+	}
+	
+	@Override
+	public List<UnspecifiedDTO<DermatologistAppointmentDTO>> findAllHistoryPatientsAppointmetsSortByDateAscending(AppointmentType appointmentType) {
+				
+		List<UnspecifiedDTO<DermatologistAppointmentDTO>> sorterdAppointments=  findAllHistoryPatientsAppointmets(appointmentType);             
+		
+		Collections.sort(sorterdAppointments, (appointment1, appointment2) -> Double.compare(appointment1.EntityDTO.getStartDateTime().getTime(), appointment2.EntityDTO.getStartDateTime().getTime()));
+		
+		
+		return sorterdAppointments;
+		
+	}
+	
+	@Override
+	public List<UnspecifiedDTO<DermatologistAppointmentDTO>> findAllHistoryPatientsAppointmetsSortByDateDescending(AppointmentType appointmentType) {
+				
+		List<UnspecifiedDTO<DermatologistAppointmentDTO>> sorterdAppointments=  findAllHistoryPatientsAppointmets(appointmentType);             
+		
+		Collections.sort(sorterdAppointments, (appointment1, appointment2) -> Double.compare(appointment1.EntityDTO.getStartDateTime().getTime(), appointment2.EntityDTO.getStartDateTime().getTime()));
+		Collections.reverse(sorterdAppointments);
+		
+		return sorterdAppointments;
+		
+	}
+	
+	
+	
+	@Override
+	public List<UnspecifiedDTO<DermatologistAppointmentDTO>> findAllHistoryPatientsAppointmetsSortByDurationAscending(AppointmentType appointmentType) {
+				
+		List<UnspecifiedDTO<DermatologistAppointmentDTO>> sorterdAppointments=  findAllHistoryPatientsAppointmets(appointmentType);             
+		
+		Collections.sort(sorterdAppointments, (appointment1, appointment2) -> Double.compare(appointment1.EntityDTO.getEndDateTime().getTime() - appointment1.EntityDTO.getStartDateTime().getTime(),       
+					appointment2.EntityDTO.getEndDateTime().getTime() - appointment2.EntityDTO.getStartDateTime().getTime()));
+		
+		return sorterdAppointments;
+		
+	}
+	
+	
+	@Override
+	public List<UnspecifiedDTO<DermatologistAppointmentDTO>> findAllHistoryPatientsAppointmetsSortByDurationDescending(AppointmentType appointmentType) {
+				
+		List<UnspecifiedDTO<DermatologistAppointmentDTO>> sorterdAppointments=  findAllHistoryPatientsAppointmets(appointmentType);             
+		
+		Collections.sort(sorterdAppointments, (appointment1, appointment2) -> Double.compare(appointment1.EntityDTO.getEndDateTime().getTime() - appointment1.EntityDTO.getStartDateTime().getTime(),       
+					appointment2.EntityDTO.getEndDateTime().getTime() - appointment2.EntityDTO.getStartDateTime().getTime()));
+		
+		Collections.reverse(sorterdAppointments);
+		
+		return sorterdAppointments;
+		
+	}
+	
 	
 	@Override	
 	public List<Pharmacy> findAllPharmaciesForAppointmentTypeAndForDateRange(Date startDate, Date endDate) {

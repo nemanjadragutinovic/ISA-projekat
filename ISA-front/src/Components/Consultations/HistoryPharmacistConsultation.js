@@ -16,6 +16,29 @@ class HistoryPharmacistConsultation extends Component {
 		return (
 		<div className="container" hidden={this.props.hideHistoryConsultations }>
                     
+			<div className="container" style={{  marginTop: "2em" }}>
+
+			<div className="dropdown">
+            <button className="btn btn-primary btn-lg dropdown-toggle"
+             type="button" id="dropdownMenu2"
+              data-toggle="dropdown" 
+              aria-haspopup="true" 
+              aria-expanded="false">
+              Sort
+            </button>
+            <div className="dropdown-menu" aria-labelledby="dropdownMenu2">
+              <button className="dropdown-item" type="button" onClick={this.props.handleSortByPriceAscending} >Sort by price ascending</button>
+              <button className="dropdown-item" type="button" onClick={this.props.handleSortByPriceDescending} >Sort by price descending</button>
+              <button className="dropdown-item" type="button" onClick={this.props.handleSortByDateAscending} >Sort by date ascending</button>
+              <button className="dropdown-item" type="button" onClick={this.props.handleSortByDateDescending} >Sort by date descending</button>
+			  <button className="dropdown-item" type="button" onClick={this.props.handleSortByDurationAppointmentAscending} >Sort by duration appointment ascending</button>
+              <button className="dropdown-item" type="button" onClick={this.props.handleSortByDurationAppointmentDescending} >Sort by duration appointment descending</button>
+            </div>
+          </div>
+
+		  </div>
+
+
 
 			<h1 hidden={this.props.appointments.length === 0 || this.props.hideHistoryConsultations } className="text-center  mt-3  " >Your history pharmacist consultations!</h1>
 			<h1 hidden={this.props.appointments.length !== 0 || this.props.hideHistoryConsultations} className="text-center  mt-3 text-danger"  >You don't have history pharmacist consultations!</h1>

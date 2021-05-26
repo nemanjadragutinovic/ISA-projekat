@@ -82,12 +82,157 @@ class HistoryDermatologistAppointmentsForPatient extends Component {
 
 
 
-    
- 
     moveToFutureExamination =() => {
 
        this.props.history.push("/futureDermatologistAppointmentsForPatient");
     }
+
+
+
+	handleSortByPriceAscending =() => {
+
+		console.log("sortiranjeee");
+		var appointmentType= "EXAMINATION";
+
+		Axios.get(API_URL + "/appointment/dermatologist/findAllHistoryPatientsAppointmets/sortByPriceAscending/" + appointmentType , {
+			validateStatus: () => true,
+			headers: { Authorization: GetAuthorisation() },
+		})
+			.then((res) => {
+				if (res.status === 401) {
+                    this.props.history.push('/login');
+				} else {
+					this.setState({ appointments: res.data });
+					console.log(res.data);
+				}
+			})
+			.catch((err) => {
+				console.log(err);
+			});
+        
+    }
+
+
+	handleSortByPriceDescending =() => {
+
+		var appointmentType= "EXAMINATION";
+
+		Axios.get(API_URL + "/appointment/dermatologist/findAllHistoryPatientsAppointmets/sortByPriceDescending/" + appointmentType , {
+			validateStatus: () => true,
+			headers: { Authorization: GetAuthorisation() },
+		})
+			.then((res) => {
+				if (res.status === 401) {
+                    this.props.history.push('/login');
+				} else {
+					this.setState({ appointments: res.data });
+					console.log(res.data);
+				}
+			})
+			.catch((err) => {
+				console.log(err);
+			});
+        
+    }
+
+	handleSortByDateAscending =() => {
+
+
+		console.log("sortiranjeee");
+		var appointmentType= "EXAMINATION";
+
+		Axios.get(API_URL + "/appointment/dermatologist/findAllHistoryPatientsAppointmets/sortByDateAscending/" + appointmentType , {
+			validateStatus: () => true,
+			headers: { Authorization: GetAuthorisation() },
+		})
+			.then((res) => {
+				if (res.status === 401) {
+                    this.props.history.push('/login');
+				} else {
+					this.setState({ appointments: res.data });
+					console.log(res.data);
+				}
+			})
+			.catch((err) => {
+				console.log(err);
+			});
+        
+    }
+
+
+	handleSortByDateDescending =() => {
+
+		
+		var appointmentType= "EXAMINATION";
+
+		Axios.get(API_URL + "/appointment/dermatologist/findAllHistoryPatientsAppointmets/sortByDateDescending/" + appointmentType , {
+			validateStatus: () => true,
+			headers: { Authorization: GetAuthorisation() },
+		})
+			.then((res) => {
+				if (res.status === 401) {
+                    this.props.history.push('/login');
+				} else {
+					this.setState({ appointments: res.data });
+					console.log(res.data);
+				}
+			})
+			.catch((err) => {
+				console.log(err);
+			});
+        
+    }
+
+
+	handleSortByDurationAppointmentAscending =() => {
+
+		var appointmentType= "EXAMINATION";
+
+		Axios.get(API_URL + "/appointment/dermatologist/findAllHistoryPatientsAppointmets/sortByDurationAscending/" + appointmentType , {
+			validateStatus: () => true,
+			headers: { Authorization: GetAuthorisation() },
+		})
+			.then((res) => {
+				if (res.status === 401) {
+                    this.props.history.push('/login');
+				} else {
+					this.setState({ appointments: res.data });
+					console.log(res.data);
+				}
+			})
+			.catch((err) => {
+				console.log(err);
+			});
+
+        
+    }
+
+	
+	handleSortByDurationAppointmentDescending =() => {
+
+		var appointmentType= "EXAMINATION";
+
+		Axios.get(API_URL + "/appointment/dermatologist/findAllHistoryPatientsAppointmets/sortByDurationDescending/" + appointmentType , {
+			validateStatus: () => true,
+			headers: { Authorization: GetAuthorisation() },
+		})
+			.then((res) => {
+				if (res.status === 401) {
+                    this.props.history.push('/login');
+				} else {
+					this.setState({ appointments: res.data });
+					console.log(res.data);
+				}
+			})
+			.catch((err) => {
+				console.log(err);
+			});
+
+        
+    }
+
+
+
 
 	render() {
 	
@@ -108,6 +253,29 @@ class HistoryDermatologistAppointmentsForPatient extends Component {
          >
          Future Examination
         </button>
+
+
+		<div className="container" style={{  marginTop: "2em" }}>
+
+		<div className="dropdown">
+			<button className="btn btn-primary btn-lg dropdown-toggle"
+				type="button" id="dropdownMenu2"
+				data-toggle="dropdown" 
+				aria-haspopup="true" 
+				aria-expanded="false">
+				Sort
+			</button>
+			<div className="dropdown-menu" aria-labelledby="dropdownMenu2">
+					<button className="dropdown-item" type="button" onClick={this.handleSortByPriceAscending} >Sort by price ascending</button>
+					<button className="dropdown-item" type="button" onClick={this.handleSortByPriceDescending} >Sort by price descending</button>
+					<button className="dropdown-item" type="button" onClick={this.handleSortByDateAscending} >Sort by date ascending</button>
+					<button className="dropdown-item" type="button" onClick={this.handleSortByDateDescending} >Sort by date descending</button>
+					<button className="dropdown-item" type="button" onClick={this.handleSortByDurationAppointmentAscending} >Sort by duration appointment ascending</button>
+					<button className="dropdown-item" type="button" onClick={this.handleSortByDurationAppointmentDescending} >Sort by duration appointment descending</button>
+			</div>
+			</div>
+
+		</div>	
 
 
          <h1 hidden={this.state.appointments.length === 0} className="text-center  mt-3  " >Your history appointments!</h1>
