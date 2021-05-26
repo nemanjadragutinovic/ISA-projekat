@@ -28,6 +28,10 @@ public class Patient extends User {
             inverseJoinColumns = @JoinColumn(name = "allergen_id", referencedColumnName = "id"))
     private List<Allergen> allergens;
 	
+	@ManyToMany
+	@JoinTable(name = "patient_pharmacy_subscribe")
+    private List<Pharmacy> pharmacies;
+	
 	
 	
 
@@ -80,6 +84,45 @@ public class Patient extends User {
 				break;
 			}
 		}
+	}
+	
+public void addSubscribeToPharmacy(Pharmacy pharmacy) {
+		
+		if(pharmacies == null)
+			this.pharmacies = new ArrayList<Pharmacy>();
+		
+		this.pharmacies.add(pharmacy);
+	}
+
+	public void removeSubscribeFromPharmacy(UUID pharmacyId) {
+		
+		if(pharmacies == null)
+			return;
+		
+		for (Pharmacy pharmacy : this.pharmacies) {
+			System.out.println(pharmacy.getId());
+			if(pharmacy.getId().equals(pharmacyId)) {
+				System.out.println("brisem" + pharmacy.getId());
+				this.pharmacies.remove(pharmacy);
+				break;
+			}
+		}
+	}
+	
+	public boolean isPatientSubscribedToPharmacy(UUID pharmacyId) {
+		if(pharmacies == null)
+			return false;
+		
+		for (Pharmacy pharmacy : this.pharmacies) {
+			if(pharmacy.getId().equals(pharmacyId)) 
+				return true;
+		}
+		
+		return false;
+	}
+
+	public List<Pharmacy> getPharmacies() {
+		return pharmacies;
 	}
 
 }

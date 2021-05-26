@@ -460,6 +460,38 @@ public class UserService implements IUserInterface{
 		
 	}
 	
+	@Override
+	public boolean subscribeToPharmacy(String pharmacyId) {
+		try {
+			UUID loggedUser= this.getLoggedUserId();
+
+			Patient patient = patientRepository.getOne(loggedUser);
+			Pharmacy pharmacy = pharmacyRepository.getOne(UUID.fromString(pharmacyId));
+			patient.addSubscribeToPharmacy(pharmacy);
+			
+			patientRepository.save(patient);
+			return true;
+		} 
+		catch (EntityNotFoundException e) { return false; } 
+		catch (IllegalArgumentException e) { return false; }		
+	}
+	
+	@Override
+	public boolean unsubscribeFromPharmacy(String pharmacyId) {
+		// TODO Auto-generated method stub
+		try {
+			UUID loggedUser= this.getLoggedUserId();
+
+			Patient patient = patientRepository.getOne(loggedUser);
+			patient.removeSubscribeFromPharmacy(UUID.fromString(pharmacyId));
+			
+			patientRepository.save(patient);
+			return true;
+		} 
+		catch (EntityNotFoundException e) { return false; } 
+		catch (IllegalArgumentException e) { return false; }	
+	}
+	
 	
 	
 	@Override

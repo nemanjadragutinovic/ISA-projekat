@@ -303,5 +303,36 @@ public class UserController {
 		
 	}
 	
+	@PutMapping("/subscribeToPharmacy") 
+	@CrossOrigin
+	@PreAuthorize("hasRole('PATIENT')")
+	public ResponseEntity<?> subscribeToPharmacy(@RequestBody String pharmacyId ) {
+		System.out.println("usao");
+	  
+		try {
+			userService.subscribeToPharmacy(pharmacyId);
+			return new ResponseEntity<>(HttpStatus.NO_CONTENT); 
+		} catch (IllegalArgumentException e) {
+			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+		} catch (Exception e) {
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR); 
+		}
+	}
+	
+	@PutMapping("/unsubscribeFromPharmacy") 
+	@CrossOrigin
+	@PreAuthorize("hasRole('PATIENT')")
+	public ResponseEntity<?> unsubscribeToPharmacy(@RequestBody String pharmacyId ) {
+		System.out.println("usao22");
+		try {
+			userService.unsubscribeFromPharmacy(pharmacyId);
+			return new ResponseEntity<>(HttpStatus.NO_CONTENT); 
+		} catch (IllegalArgumentException e) {
+			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+		} catch (Exception e) {
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR); 
+		}
+	}
+	
 
 }
