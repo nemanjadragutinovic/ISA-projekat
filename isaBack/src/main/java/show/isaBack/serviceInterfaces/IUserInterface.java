@@ -47,6 +47,6 @@ public interface IUserInterface extends IService<UserDTO, UnspecifiedDTO<UserDTO
 	public boolean subscribeToPharmacy(String pharmacyIdDTO) ;
 	public boolean unsubscribeFromPharmacy(String pharmacyId) ;
 	
-	
+	public double getAvgGradeForEmployee(UUID employeeID);
 	
 }

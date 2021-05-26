@@ -430,7 +430,12 @@ public class UserService implements IUserInterface{
 		
 	}
 	
-	
+	@Override
+	public double getAvgGradeForEmployee(UUID employeeID){
+		
+		return employeeGradeService.getAvgGradeForEmployee(employeeID);
+		
+		}
 	
 	
 	

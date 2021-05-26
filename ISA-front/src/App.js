@@ -16,8 +16,12 @@ import DermatologistFreeAppointment from "./Pages/DermatologistFreeAppointment"
 import FutureDermatologistAppointmentsForPatient from "./Pages/FutureDermatologistAppointmentsForPatient"
 import HistoryDermatologistAppointmentsForPatient from "./Pages/HistoryDermatologistAppointmentsForPatient"
 import PharmaciesAppointmentStartPage from "./Pages/PharmaciesAppointmentStartPage"
+<<<<<<< HEAD
+import FuturePharmaciesConsultationsForPatient from "./Pages/FuturePharmaciesConsultationsForPatient"
+=======
 import OfferPage from './Components/SupplierPages/OfferPage';
 
+>>>>>>> b35f771c3f515948aa395e22a10b0ab8f0e2f6f4
 
 import {
   BrowserRouter as Router,
@@ -52,9 +56,14 @@ function App() {
 
         <Route  to ="/loyalityProgram" path ="/loyalityProgram"  component={LoyalityProgram}/>
         <Route  to ="/orders" path ="/orders"  component={OrdersPage}/>
+<<<<<<< HEAD
+        <Route  to ="/futurePharmaciesConsultationsForPatient" path ="/futurePharmaciesConsultationsForPatient"  component={FuturePharmaciesConsultationsForPatient}/>
+       
+=======
         <Route  to ="/offers" path ="/offers"  component={OfferPage}/>
 
 
+>>>>>>> b35f771c3f515948aa395e22a10b0ab8f0e2f6f4
 
         </Switch>
     </Router>
