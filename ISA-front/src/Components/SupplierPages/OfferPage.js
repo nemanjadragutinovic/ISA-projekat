@@ -43,6 +43,62 @@ class Offers extends Component {
     }
 
 
+    handleSortByAccepted = () => {
+        console.log("usao u accept");
+
+		Axios.get("http://localhost:8080/offer/accepted", { headers: { Authorization: GetAuthorisation() } })
+					.then((res) => {
+						console.log(res.data);
+						this.setState({
+							offers: res.data,
+						});
+					})
+					.catch((err) => {
+						console.log(err);
+					});
+	};
+
+	handleSortByRejected = () => {
+		
+		Axios.get("http://localhost:8080/offer/rejected", { headers: { Authorization: GetAuthorisation() } })
+					.then((res) => {
+						console.log(res.data);
+						this.setState({
+							offers: res.data,
+						});
+					})
+					.catch((err) => {
+						console.log(err);
+					});
+	};
+
+	handleSortByWaiting = () => {
+		
+		Axios.get("http://localhost:8080/offer/waiting", { headers: { Authorization: GetAuthorisation() } })
+					.then((res) => {
+						console.log(res.data);
+						this.setState({
+							offers: res.data,
+						});
+					})
+					.catch((err) => {
+						console.log(err);
+					});
+	};
+
+	handleReset = () => {
+		
+        Axios.get("http://localhost:8080/offer", { headers: { Authorization: GetAuthorisation() } })
+        .then((res) => {
+            console.log(res.data);
+            this.setState({
+                offers: res.data,
+            });
+        })
+        .catch((err) => {
+            console.log(err);
+        });
+	};
    
 
 

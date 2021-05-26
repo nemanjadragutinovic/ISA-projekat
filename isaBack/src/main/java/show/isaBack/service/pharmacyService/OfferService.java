@@ -143,5 +143,47 @@ public class OfferService implements IOfferService{
 		// TODO Auto-generated method stub
 		return false;
 	}
+	
+	@Override
+	public List<UnspecifiedDTO<OfferDTO>> findAllAccepted() {
+		List<UnspecifiedDTO<OfferDTO>> offers = new ArrayList<UnspecifiedDTO<OfferDTO>>();
+		
+		for (UnspecifiedDTO<OfferDTO> offerDTO : findAllOffers()) {
+			if(offerDTO.EntityDTO.getOfferStatus().equals(OfferStatus.ACCEPTED)) {
+				offers.add(offerDTO);
+			}
+		}
+		
+		
+		return offers;
+	}
+
+	@Override
+	public List<UnspecifiedDTO<OfferDTO>> findAllRejected() {
+		List<UnspecifiedDTO<OfferDTO>> offers = new ArrayList<UnspecifiedDTO<OfferDTO>>();
+		
+		for (UnspecifiedDTO<OfferDTO> offerDTO : findAllOffers()) {
+			if(offerDTO.EntityDTO.getOfferStatus().equals(OfferStatus.REJECTED)) {
+				offers.add(offerDTO);
+			}
+		}
+		
+		
+		return offers;	
+	}
+
+	@Override
+	public List<UnspecifiedDTO<OfferDTO>> findAllWaiting() {
+		List<UnspecifiedDTO<OfferDTO>> offers = new ArrayList<UnspecifiedDTO<OfferDTO>>();
+		
+		for (UnspecifiedDTO<OfferDTO> offerDTO : findAllOffers()) {
+			if(offerDTO.EntityDTO.getOfferStatus().equals(OfferStatus.WAITING)) {
+				offers.add(offerDTO);
+			}
+		}
+		
+		
+		return offers;
+	}
 
 }

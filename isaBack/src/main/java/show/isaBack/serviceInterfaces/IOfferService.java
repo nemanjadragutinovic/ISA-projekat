@@ -10,5 +10,10 @@ public interface IOfferService extends IService<OfferDTO, UnspecifiedDTO<OfferDT
 	
 	public boolean checkIfHasDrugs(UUID id) ;
 	public List<UnspecifiedDTO<OfferDTO>> findAllOffers() ;
+	public List<UnspecifiedDTO<OfferDTO>> findAllAccepted();
+	public List<UnspecifiedDTO<OfferDTO>> findAllRejected();
+	public List<UnspecifiedDTO<OfferDTO>> findAllWaiting();
+		
+	
 
 }

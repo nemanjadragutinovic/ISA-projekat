@@ -50,6 +50,26 @@ public class OfferController {
 		return new ResponseEntity<>(offerService.findAllOffers(),HttpStatus.OK);
 	}
 	
+	@CrossOrigin
+	@GetMapping("/accepted")
+	@PreAuthorize("hasRole('SUPPLIER')") 
+	public ResponseEntity<List<UnspecifiedDTO<OfferDTO>>> findAllAccepted() {
+		System.out.println("usao u accepted");
+		return new ResponseEntity<>(offerService.findAllAccepted(),HttpStatus.OK);
+	}
 	
+	@CrossOrigin
+	@GetMapping("/rejected")
+	@PreAuthorize("hasRole('SUPPLIER')") 
+	public ResponseEntity<List<UnspecifiedDTO<OfferDTO>>> findAllRejected() {
+		return new ResponseEntity<>(offerService.findAllRejected(),HttpStatus.OK);
+	}
+	
+	@CrossOrigin
+	@GetMapping("/waiting")
+	@PreAuthorize("hasRole('SUPPLIER')") 
+	public ResponseEntity<List<UnspecifiedDTO<OfferDTO>>> findAllWaiting() {
+		return new ResponseEntity<>(offerService.findAllWaiting(),HttpStatus.OK);
+	}
 
 }

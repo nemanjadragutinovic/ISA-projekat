@@ -167,6 +167,6 @@ insert into supplier_drug_storage(drug_instance_id, supplier_id, count, version)
 
 --offers
 
-insert into offers (id, date_to_delivery, status, price, supplier_id) values ('33331111-67ac-11eb-ae93-0242ac130002', '2021-04-04', 'WAITING', 9000, '54444d47-1a8a-4ae1-b109-af7b56e94788' );
-insert into offers (id, date_to_delivery, status, price, supplier_id) values ('44441111-67ac-11eb-ae93-0242ac130002', '2021-04-05', 'WAITING', 7500, '54444d47-1a8a-4ae1-b109-af7b56e94788' );
-insert into offers (id, date_to_delivery, status, price, supplier_id) values ('55551111-67ac-11eb-ae93-0242ac130002', '2021-05-02', 'WAITING', 8300 ,'54444d47-1a8a-4ae1-b109-af7b56e94788');
+insert into offers (id, date_to_delivery, status, price, supplier_id) values ('33331111-67ac-11eb-ae93-0242ac130002', '2021-06-06', 'WAITING', 5555, '54444d47-1a8a-4ae1-b109-af7b56e94788' );
+insert into offers (id, date_to_delivery, status, price, supplier_id) values ('44441111-67ac-11eb-ae93-0242ac130002', '2021-07-07', 'WAITING', 7520, '54444d47-1a8a-4ae1-b109-af7b56e94788' );
+insert into offers (id, date_to_delivery, status, price, supplier_id) values ('55551111-67ac-11eb-ae93-0242ac130002', '2021-08-08', 'WAITING', 6633 ,'54444d47-1a8a-4ae1-b109-af7b56e94788');
