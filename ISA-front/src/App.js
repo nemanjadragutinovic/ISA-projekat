@@ -16,6 +16,7 @@ import DermatologistFreeAppointment from "./Pages/DermatologistFreeAppointment"
 import FutureDermatologistAppointmentsForPatient from "./Pages/FutureDermatologistAppointmentsForPatient"
 import HistoryDermatologistAppointmentsForPatient from "./Pages/HistoryDermatologistAppointmentsForPatient"
 import PharmaciesAppointmentStartPage from "./Pages/PharmaciesAppointmentStartPage"
+import OfferPage from './Components/SupplierPages/OfferPage';
 
 
 import {
@@ -51,6 +52,7 @@ function App() {
 
         <Route  to ="/loyalityProgram" path ="/loyalityProgram"  component={LoyalityProgram}/>
         <Route  to ="/orders" path ="/orders"  component={OrdersPage}/>
+        <Route  to ="/offers" path ="/offers"  component={OfferPage}/>
 
 
 
