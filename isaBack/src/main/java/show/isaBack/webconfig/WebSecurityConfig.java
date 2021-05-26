@@ -108,8 +108,32 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 		
 		web.ignoring().antMatchers(HttpMethod.POST, "/reg/patsignup");
 		web.ignoring().antMatchers(HttpMethod.POST, "/auth/login");
-		web.ignoring().antMatchers(HttpMethod.POST, "/reg/signup-dermathologist");
-		web.ignoring().antMatchers(HttpMethod.POST, "/reg/signup-sysadmin");
+		
+		web.ignoring().antMatchers(HttpMethod.POST, "/users/changeFirstPassword");
+		
+		
+		
+		
+		
+		web.ignoring().antMatchers(HttpMethod.GET, "/pharmacy");
+		web.ignoring().antMatchers(HttpMethod.PUT, "/drug");
+		web.ignoring().antMatchers(HttpMethod.GET, "/drug");
+		web.ignoring().antMatchers(HttpMethod.PUT, "/drug/manufacturer");
+		web.ignoring().antMatchers(HttpMethod.PUT, "/drug/replacement");
+		web.ignoring().antMatchers(HttpMethod.PUT, "/drug/ingredient");
+		web.ignoring().antMatchers(HttpMethod.GET, "/drug/drugkind");
+		web.ignoring().antMatchers(HttpMethod.GET, "/drug/drugformat");
+		web.ignoring().antMatchers(HttpMethod.GET, "/drug/manufacturers");
+		
+		web.ignoring().antMatchers(HttpMethod.POST, "/ingredients");
+		
+		web.ignoring().antMatchers(HttpMethod.GET, "/drug/loyaltyProgram/**");
+		
+	
+		
+		//web.ignoring().antMatchers(HttpMethod.GET, "/order/getAllOrders");
+		
+	//	web.ignoring().antMatchers(HttpMethod.PUT, "/offer/drugsCheck");
 		
 		
 		

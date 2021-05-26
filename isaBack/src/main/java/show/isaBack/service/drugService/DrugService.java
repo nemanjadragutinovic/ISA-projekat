@@ -8,7 +8,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import show.isaBack.DTO.drugDTO.DrugDTO;
+import show.isaBack.DTO.drugDTO.DrugFormatIdDTO;
 import show.isaBack.DTO.drugDTO.DrugInstanceDTO;
+import show.isaBack.DTO.drugDTO.DrugKindIdDTO;
 import show.isaBack.DTO.drugDTO.IngredientDTO;
 import show.isaBack.DTO.drugDTO.ManufacturerDTO;
 import show.isaBack.DTO.pharmacyDTO.PharmacyDTO;
@@ -22,6 +24,8 @@ import show.isaBack.model.DrugInstance;
 import show.isaBack.model.Ingredient;
 import show.isaBack.model.Manufacturer;
 import show.isaBack.model.Pharmacy;
+import show.isaBack.model.drugs.DrugFormatId;
+import show.isaBack.model.drugs.DrugKindId;
 import show.isaBack.serviceInterfaces.IDrugService;
 import show.isaBack.unspecifiedDTO.UnspecifiedDTO;
 
@@ -93,6 +97,18 @@ public class DrugService implements IDrugService{
 	}
 	
 	@Override
+	public UUID create(DrugInstanceDTO entityDTO) {
+		DrugInstance drugInstance = CreateDrugInstanceFromDTO(entityDTO);
+		drugInstanceRepository.save(drugInstance);
+		return drugInstance.getId();
+	}
+	
+	private DrugInstance CreateDrugInstanceFromDTO(DrugInstanceDTO drugInstanceDTO) {
+		return new DrugInstance(drugInstanceDTO.getName(), drugInstanceDTO.getProducerName(), drugInstanceDTO.getCode(), drugInstanceDTO.getDrugInstanceName(), drugInstanceDTO.getDrugFormat(), drugInstanceDTO.getQuantity(),  drugInstanceDTO.getSideEffects(), drugInstanceDTO.getRecommendedAmount(),
+				drugInstanceDTO.getLoyalityPoints(), drugInstanceDTO.isOnReciept(), drugInstanceDTO.getDrugKind());
+	}
+	
+	@Override
 	public UUID addDrugReplacement(UUID id, UUID replacement_id) {
 		
 		DrugInstance drugInstance = drugInstanceRepository.getOne(id);
@@ -152,6 +168,31 @@ public class DrugService implements IDrugService{
 		
 		return id;
 	}
+	
+	@Override
+	public List<UnspecifiedDTO<DrugInstanceDTO>> findAllDrugKinds() {
+		
+		List<UnspecifiedDTO<DrugInstanceDTO>> dkDTO = new ArrayList<UnspecifiedDTO<DrugInstanceDTO>>();
+		dkDTO = getAllDrugInstancesDTO();
+		
+		return dkDTO;
+	}
+	
+	private List<UnspecifiedDTO<DrugInstanceDTO>> getAllDrugInstancesDTO() {
+		
+		List<DrugInstance> drugkinds = drugInstanceRepository.findAll();
+		List<UnspecifiedDTO<DrugInstanceDTO>> drugKindDTO = new ArrayList<UnspecifiedDTO<DrugInstanceDTO>>();
+				
+		
+		for (DrugInstance currentDrugKind : drugkinds) 
+		{
+			DrugInstanceDTO dkDTO= new DrugInstanceDTO(currentDrugKind.getName(),currentDrugKind.getProducerName(),currentDrugKind.getFabricCode(),currentDrugKind.getDrugInstanceName(),currentDrugKind.getDrugFormat(),currentDrugKind.getQuantity(),currentDrugKind.getSideEffects(),currentDrugKind.getRecommendedAmount(),currentDrugKind.getLoyalityPoints(),currentDrugKind.isOnReciept(),currentDrugKind.getDrugKind());				
+			drugKindDTO.add(new UnspecifiedDTO<DrugInstanceDTO>(currentDrugKind.getId(),dkDTO));
+		}
+		
+		
+		return drugKindDTO;
+	}
 
 	@Override
 	public List<UnspecifiedDTO<AuthorityDTO>> findAll() {
@@ -165,11 +206,7 @@ public class DrugService implements IDrugService{
 		return null;
 	}
 
-	@Override
-	public UUID create(DrugInstanceDTO entityDTO) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+	
 
 	@Override
 	public void update(DrugInstanceDTO entityDTO, UUID id) {

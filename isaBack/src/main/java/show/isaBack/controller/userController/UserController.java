@@ -1,6 +1,8 @@
 package show.isaBack.controller.userController;
 
+import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 
 import javax.persistence.EntityNotFoundException;
 import javax.servlet.http.HttpServletRequest;
@@ -14,10 +16,12 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 
@@ -25,7 +29,9 @@ import show.isaBack.DTO.drugDTO.AllergenDTO;
 import show.isaBack.DTO.userDTO.ChangePasswordDTO;
 import show.isaBack.DTO.userDTO.PatientDTO;
 import show.isaBack.DTO.userDTO.PatientsAllergenDTO;
+import show.isaBack.DTO.userDTO.PharmacistForAppointmentPharmacyGadeDTO;
 import show.isaBack.DTO.userDTO.UserChangeInfoDTO;
+import show.isaBack.DTO.userDTO.UserDTO;
 import show.isaBack.model.drugs.Allergen;
 import show.isaBack.security.TokenUtils;
 import show.isaBack.service.userService.UserService;
@@ -84,6 +90,29 @@ public class UserController {
 		
 	}
 	
+	@GetMapping("/supplier")
+	@PreAuthorize("hasRole('ROLE_SUPPLIER')")
+	public ResponseEntity<UserDTO> getLoggedSupplier(HttpServletRequest request) {
+		
+	
+		System.out.println("usao u suppliera");
+		
+		try {
+			UserDTO supp = userService.getLoggedSupplier();
+			
+			
+			System.out.println(supp.getName());
+			return new ResponseEntity<>(supp,HttpStatus.OK); 
+		} catch (EntityNotFoundException e) {
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND); 
+		} 
+		catch (Exception e) {
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR); 
+		}
+		
+		
+	}
+	
 	
 	@PutMapping("/patient") 
 	@CrossOrigin
@@ -100,9 +129,24 @@ public class UserController {
 		}
 	}
 	
+	@PutMapping("/supplier") 
+	@CrossOrigin
+	@PreAuthorize("hasRole('ROLE_SUPPLIER')")
+	public ResponseEntity<?> updateSupplierInformation(@RequestBody UserChangeInfoDTO userInfoChangeDTO ) {
+	  
+		try {
+			userService.updateSupplier(userInfoChangeDTO);
+			return new ResponseEntity<>(HttpStatus.NO_CONTENT); 
+		} catch (IllegalArgumentException e) {
+			return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+		} catch (Exception e) {
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR); 
+		}
+	}
+	
 	
 	@PostMapping("/changePassword")
-	@PreAuthorize("hasRole('ROLE_PATIENT') ")
+	@PreAuthorize("hasRole('ROLE_PATIENT') or hasRole('ROLE_SUPPLIER')")
 	public ResponseEntity<?> changePassword(@RequestBody ChangePasswordDTO changePasswordDTO) {
 		
 		try {
@@ -116,6 +160,27 @@ public class UserController {
 		catch (Exception e) {
 			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
+	}
+	
+	@PostMapping("/changeFirstPassword")
+	public ResponseEntity<?> changeFirstPassword(@RequestBody PasswordChanger passwordChanger) {
+		
+		try {
+			userService.changeFirstPassword(passwordChanger.oldPassword, passwordChanger.newPassword);
+			return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+		} catch (BadCredentialsException e){
+			return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+		} catch (IllegalArgumentException e) {
+			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+		}
+		catch (Exception e) {
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+
+	static class PasswordChanger {
+		public String oldPassword;
+		public String newPassword;
 	}
 	
 	
@@ -170,7 +235,104 @@ public class UserController {
 	}
 	
 	
+	@GetMapping("/freePharmacistsForSelectedPharmacyInDataRange/{pharmacyId}/{DateTime}")
+	@PreAuthorize("hasRole('ROLE_PATIENT')")
+	@CrossOrigin
+	public ResponseEntity<List<UnspecifiedDTO<PharmacistForAppointmentPharmacyGadeDTO>>> fidnAllFreePharmacistsForSelectedPharmacyInDataRange(@PathVariable UUID pharmacyId, @PathVariable long DateTime){
+		
+		System.out.println(pharmacyId);
+		System.out.println(DateTime + "    datuuum");
+		
+		
+		Date startDate= new Date(DateTime);
+		try {		
+			return new ResponseEntity<>(userService.fidnAllFreePharmacistsForSelectedPharmacyInDataRange(startDate,pharmacyId),HttpStatus.OK);
+		} catch (IllegalArgumentException e) {
+			e.printStackTrace();
+			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+		} catch (Exception e) {
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+		
+		
+	}
 	
+	
+	@GetMapping("/freePharmacistsForSelectedPharmacyInDataRange/sortByGradeAscending/{pharmacyId}/{DateTime}")
+	@PreAuthorize("hasRole('ROLE_PATIENT')")
+	@CrossOrigin
+	public ResponseEntity<List<UnspecifiedDTO<PharmacistForAppointmentPharmacyGadeDTO>>> fidnAllFreePharmacistsForSelectedPharmacyInDataRangeSortByGradeAscending(@PathVariable UUID pharmacyId, @PathVariable long DateTime){
+		
+		System.out.println(pharmacyId);
+		System.out.println(DateTime + "    datuuum");
+		
+		
+		Date startDate= new Date(DateTime);
+		try {		
+			return new ResponseEntity<>(userService.fidnAllFreePharmacistsForSelectedPharmacyInDataRangeSortByGradeAscending(startDate,pharmacyId),HttpStatus.OK);
+		} catch (IllegalArgumentException e) {
+			e.printStackTrace();
+			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+		} catch (Exception e) {
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+		
+		
+	}
+	
+	
+	@GetMapping("/freePharmacistsForSelectedPharmacyInDataRange/sortByGradeDescending/{pharmacyId}/{DateTime}")
+	@PreAuthorize("hasRole('ROLE_PATIENT')")
+	@CrossOrigin
+	public ResponseEntity<List<UnspecifiedDTO<PharmacistForAppointmentPharmacyGadeDTO>>> fidnAllFreePharmacistsForSelectedPharmacyInDataRangeSortByGradeDescending(@PathVariable UUID pharmacyId, @PathVariable long DateTime){
+		
+		System.out.println(pharmacyId);
+		System.out.println(DateTime + "    datuuum");
+		
+		
+		Date startDate= new Date(DateTime);
+		try {		
+			return new ResponseEntity<>(userService.fidnAllFreePharmacistsForSelectedPharmacyInDataRangeSortByGradeDescending(startDate,pharmacyId),HttpStatus.OK);
+		} catch (IllegalArgumentException e) {
+			e.printStackTrace();
+			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+		} catch (Exception e) {
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+		
+		
+	}
+	
+	@PutMapping("/subscribeToPharmacy") 
+	@CrossOrigin
+	@PreAuthorize("hasRole('PATIENT')")
+	public ResponseEntity<?> subscribeToPharmacy(@RequestBody String pharmacyId ) {
+		System.out.println("usao");
+	  
+		try {
+			userService.subscribeToPharmacy(pharmacyId);
+			return new ResponseEntity<>(HttpStatus.NO_CONTENT); 
+		} catch (IllegalArgumentException e) {
+			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+		} catch (Exception e) {
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR); 
+		}
+	}
+	
+	@PutMapping("/unsubscribeFromPharmacy") 
+	@CrossOrigin
+	@PreAuthorize("hasRole('PATIENT')")
+	public ResponseEntity<?> unsubscribeToPharmacy(@RequestBody String pharmacyId ) {
+		System.out.println("usao22");
+		try {
+			userService.unsubscribeFromPharmacy(pharmacyId);
+			return new ResponseEntity<>(HttpStatus.NO_CONTENT); 
+		} catch (IllegalArgumentException e) {
+			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+		} catch (Exception e) {
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR); 
+		}
+	}
 	
 
 }

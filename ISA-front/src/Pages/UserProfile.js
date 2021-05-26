@@ -144,7 +144,7 @@ class UserProfile extends Component {
 
 
 	componentDidMount() {
-		if (!this.hasRole("ROLE_PATIENT")) {
+		if (!(this.hasRole("ROLE_PATIENT") || !this.hasRole("SUPPLIER"))) {
 			this.setState({ redirect: true });
 			this.props.history.push('/login')
 		
@@ -154,7 +154,7 @@ class UserProfile extends Component {
 			console.log(GetAuthorisation());
 			console.log(localStorage.getItem("keyRole"));
 			
-
+			if(this.hasRole("ROLE_PATIENT")){
 			Axios.get(API_URL + "/users/patient", { validateStatus: () => true, headers: { Authorization : GetAuthorisation()} })
 				.then((res) => {
 					console.log(res.data);
@@ -190,6 +190,52 @@ class UserProfile extends Component {
 					console.log("ovaj eror je u pitanju");
 
 				});
+
+			}else if(this.hasRole("ROLE_SUPPLIER")){
+
+				console.log("usao u supplera 2");
+
+				Axios.get(API_URL + "/users/supplier", { validateStatus: () => true, headers: { Authorization : GetAuthorisation()} })
+				.then((res) => {
+					console.log(res.data);
+					if (res.status === 401) {                       
+                        this.setState({ redirect: true });				
+					} else {
+
+						//console.log(res.data.EntityDTO.email)
+						//console.log(res.data.EntityDTO.name)
+						
+					
+                        this.setState({
+							
+							email: res.data.email,
+							name: res.data.name,
+							surname: res.data.surname,
+							address: res.data.address,
+							phoneNumber: res.data.phoneNumber,
+							
+							
+
+							
+						});
+						
+						
+
+						
+
+					}
+				})
+				.catch((err) => {
+					console.log(err);
+					console.log("ovaj eror je u pitanju");
+
+				});
+
+			}
+
+			
+
+			
 		}
 	}
 
@@ -212,6 +258,7 @@ class UserProfile extends Component {
 
 			console.log(userDTO.name  )
 
+			if(this.hasRole("ROLE_PATIENT")){
 			Axios.put(API_URL + "/users/patient", userDTO, {
 				validateStatus: () => true,
 				headers: { Authorization: GetAuthorisation() },
@@ -240,10 +287,49 @@ class UserProfile extends Component {
 				})
 				.catch((err) => {
 					console.log(err);
+					this.setState({ hiddenUnsuccessfulAlert: false,
+						UnsuccessfulHeader: "Error", 
+						UnsuccessfulMessage: "Something was wrong" });
 				
 				});
 
+			}else if(this.hasRole("ROLE_SUPPLIER")){
 
+				Axios.put(API_URL + "/users/supplier", userDTO, {
+					validateStatus: () => true,
+					headers: { Authorization: GetAuthorisation() },
+				})
+					.then((res) => {
+						if (res.status === 400) {
+							this.setState({ hiddenUnsuccessfulAlert: false,
+								UnsuccessfulHeader: "Bad request", 
+								UnsuccessfulMessage: "Invalid argument." });
+	
+						} else if (res.status === 500) {
+	
+							this.setState({ hiddenUnsuccessfulAlert: false, 
+								UnsuccessfulHeader: "Internal server error", 
+								UnsuccessfulMessage: "Server error." });
+	
+						} else if (res.status === 204) {
+							console.log("Success");
+							this.setState({
+								hiddenSuccessfulAlert: false,
+								successfulHeader: "Success",
+								successfulMessage: "You updated your information.",
+								hiddenEditInfo: true,
+							});
+						}
+					})
+					.catch((err) => {
+						console.log(err);
+						this.setState({ hiddenUnsuccessfulAlert: false,
+							UnsuccessfulHeader: "Error", 
+							UnsuccessfulMessage: "Something was wrong" });
+					
+					});
+
+			}
 
 		}
 
@@ -359,6 +445,9 @@ class UserProfile extends Component {
 				})
 				.catch((err) => {
 					console.log(err);
+					this.setState({ hiddenUnsuccessfulAlert: false,
+						UnsuccessfulHeader: "Error", 
+						UnsuccessfulMessage: "Something was wrong" });
 									
 				});
 		}
@@ -410,6 +499,9 @@ class UserProfile extends Component {
 			})
 			.catch((err) => {
 				console.log(err);
+				this.setState({ hiddenUnsuccessfulAlert: false,
+					UnsuccessfulHeader: "Error", 
+					UnsuccessfulMessage: "Something was wrong" });
 			});
 
 
@@ -465,6 +557,9 @@ class UserProfile extends Component {
 			})
 			.catch((err) => {
 				console.log(err);
+				this.setState({ hiddenUnsuccessfulAlert: false,
+					UnsuccessfulHeader: "Error", 
+					UnsuccessfulMessage: "Something was wrong" });
 			});
 	};
 
@@ -508,7 +603,7 @@ class UserProfile extends Component {
 						<form id="contactForm" name="sentMessage">
 								<div className="control-group">
 									<div className="form-group controls mb-0 pb-2" >
-										<label>Email address:</label>
+										<b>Email address:</b>
 										<input
 											readOnly
 											placeholder="Email address"
@@ -522,7 +617,7 @@ class UserProfile extends Component {
 								</div>
 								<div className="control-group">
 									<div className="form-group controls mb-0 pb-2" >
-										<label>Name:</label>
+										<b>Name:</b>
 										<input
 											readOnly={this.state.hiddenEditInfo}
 											className={!this.state.hiddenEditInfo === false ? "form-control-plaintext" : "form-control"}
@@ -538,7 +633,7 @@ class UserProfile extends Component {
 								</div>
 								<div className="control-group">
 									<div className="form-group controls mb-0 pb-2">
-										<label>Surname:</label>
+										<b>Surname:</b>
 										<input
 											readOnly={this.state.hiddenEditInfo}
 											className={!this.state.hiddenEditInfo === false ? "form-control-plaintext" : "form-control"}
@@ -555,7 +650,7 @@ class UserProfile extends Component {
 								<div className="control-group">
 									
 									<div className="form-group controls mb-0 pb-2" >
-											<label>Adress:</label>
+											<b>Adress:</b>
 											<input
 												readOnly={this.state.hiddenEditInfo}
 												className={!this.state.hiddenEditInfo === false ? "form-control-plaintext" : "form-control"}
@@ -573,7 +668,7 @@ class UserProfile extends Component {
 								</div>
 								<div className="control-group">
 									<div className="form-group controls mb-0 pb-2" >
-										<label>Phone number:</label>
+										<b>Phone number:</b>
 										<input
 											placeholder="Phone number"
 											readOnly={this.state.hiddenEditInfo}
@@ -629,7 +724,7 @@ class UserProfile extends Component {
 											</div>
 											
 
-											<div className="mr-2" hidden={!this.state.hiddenEditInfo}>
+											<div className="mr-2" hidden={!this.state.hiddenEditInfo} hidden={this.hasRole("ROLE_SUPPLIER")} >
 												<button
 													onClick={this.handleAllergenModal}
 													className="btn btn-outline-primary btn-xl"

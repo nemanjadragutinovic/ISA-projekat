@@ -46,11 +46,11 @@ class HomePage extends React.Component {
 					<div className="container" style={{textAlign: "center"}}>
 						<h1>Welcome to Health Clinic </h1>
 
-            <Link  to="/login" hidden={this.hasSpecificRole("ROLE_PATIENT")} className="btn-Login-Register">
+            <Link  to="/login" hidden={this.hasAnyRole()} className="btn-Login-Register">
 							Login
 						</Link>
 
-						<Link  to="/registration" hidden={this.hasSpecificRole("ROLE_PATIENT")} className="btn-Login-Register">
+						<Link  to="/registration" hidden={this.hasAnyRole()} className="btn-Login-Register">
 							Register
 						</Link>
       

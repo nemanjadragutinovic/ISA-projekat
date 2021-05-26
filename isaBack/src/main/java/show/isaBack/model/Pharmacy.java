@@ -14,7 +14,6 @@ import javax.persistence.Version;
 public class Pharmacy {
 
 	
-	
 	@Id
 	private UUID id;
 	
@@ -27,22 +26,25 @@ public class Pharmacy {
 	@Column(name = "description", nullable = false)
 	private String description;
 	
-	@Column(name = "consultationPrice")
-    private double consultationPrice;
+	private double consultationPrice;
 	
 	public Pharmacy() {}
 	
-	public Pharmacy(UUID id, String name, String description, Address address, double consultationPrice) {
+	public Pharmacy(UUID id, String name, String description, Address address,double consultationPrice) {
 		super();
 		this.id = id;
 		this.name = name;
 		this.description = description;
 		this.address = address;
-		this.consultationPrice = consultationPrice;
+		this.consultationPrice=consultationPrice;
 	}
 	
 	public Pharmacy(String name, String description, Address address, double consultationPrice) {
-		this(UUID.randomUUID(), name, description, address, consultationPrice);
+		this(UUID.randomUUID(), name, description, address,consultationPrice);
+	}
+	public Pharmacy(String name, String city, String street,String country,String postcode,String description, double consultationPrice) {
+		this(UUID.randomUUID(), name, description, new Address(city,street,country,postcode),consultationPrice);
+		
 	}
 
 	public UUID getId() {
@@ -80,8 +82,9 @@ public class Pharmacy {
 	public void setConsultationPrice(double consultationPrice) {
 		this.consultationPrice = consultationPrice;
 	}
+
 	
-	
+
 	
 	
 	

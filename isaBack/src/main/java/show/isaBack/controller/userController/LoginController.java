@@ -97,9 +97,17 @@ public class LoginController {
 			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 		
-		
-		if (IsFirstPassword(authRequest))
+		User user = userRepository.findByEmail(authRequest.getUsername());
+		if(user.isFirstLogin()) {
+			System.out.println("gas gas gas gas");
 			return new ResponseEntity<>(HttpStatus.FOUND);
+		}
+		
+		
+		
+		
+	//	if (IsFirstPassword(authRequest))
+		//	return new ResponseEntity<>(HttpStatus.FOUND);
 
 		System.out.println("prosao do kraja");
 
