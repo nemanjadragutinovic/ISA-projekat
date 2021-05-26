@@ -25,6 +25,7 @@ import {
   Route,
   Switch
 } from "react-router-dom";
+import GoogleMap from './Pages/map';
 
 function App() {
   return (
@@ -49,7 +50,7 @@ function App() {
         <Route  to ="/historyDermatologistAppointmentsForPatient" path ="/historyDermatologistAppointmentsForPatient"  component={HistoryDermatologistAppointmentsForPatient}/>
         <Route  to ="/registerDrug" path ="/registerDrug"  component={RegisterDrug}/>
         
-      
+        
 
 
         </Switch>
