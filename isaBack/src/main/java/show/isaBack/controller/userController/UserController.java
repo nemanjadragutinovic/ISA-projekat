@@ -218,5 +218,51 @@ public class UserController {
 		
 	}
 	
+	
+	@GetMapping("/freePharmacistsForSelectedPharmacyInDataRange/sortByGradeAscending/{pharmacyId}/{DateTime}")
+	@PreAuthorize("hasRole('ROLE_PATIENT')")
+	@CrossOrigin
+	public ResponseEntity<List<UnspecifiedDTO<PharmacistForAppointmentPharmacyGadeDTO>>> fidnAllFreePharmacistsForSelectedPharmacyInDataRangeSortByGradeAscending(@PathVariable UUID pharmacyId, @PathVariable long DateTime){
+		
+		System.out.println(pharmacyId);
+		System.out.println(DateTime + "    datuuum");
+		
+		
+		Date startDate= new Date(DateTime);
+		try {		
+			return new ResponseEntity<>(userService.fidnAllFreePharmacistsForSelectedPharmacyInDataRangeSortByGradeAscending(startDate,pharmacyId),HttpStatus.OK);
+		} catch (IllegalArgumentException e) {
+			e.printStackTrace();
+			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+		} catch (Exception e) {
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+		
+		
+	}
+	
+	
+	@GetMapping("/freePharmacistsForSelectedPharmacyInDataRange/sortByGradeDescending/{pharmacyId}/{DateTime}")
+	@PreAuthorize("hasRole('ROLE_PATIENT')")
+	@CrossOrigin
+	public ResponseEntity<List<UnspecifiedDTO<PharmacistForAppointmentPharmacyGadeDTO>>> fidnAllFreePharmacistsForSelectedPharmacyInDataRangeSortByGradeDescending(@PathVariable UUID pharmacyId, @PathVariable long DateTime){
+		
+		System.out.println(pharmacyId);
+		System.out.println(DateTime + "    datuuum");
+		
+		
+		Date startDate= new Date(DateTime);
+		try {		
+			return new ResponseEntity<>(userService.fidnAllFreePharmacistsForSelectedPharmacyInDataRangeSortByGradeDescending(startDate,pharmacyId),HttpStatus.OK);
+		} catch (IllegalArgumentException e) {
+			e.printStackTrace();
+			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+		} catch (Exception e) {
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+		
+		
+	}
+	
 
 }

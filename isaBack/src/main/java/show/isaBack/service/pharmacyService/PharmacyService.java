@@ -1,6 +1,7 @@
 package show.isaBack.service.pharmacyService;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -142,7 +143,63 @@ public class PharmacyService implements IPharmacyService{
 	
 	
 	
-
+	
+	@Override
+	public List<UnspecifiedDTO<PharmacyWithGradeAndPriceDTO>> findAllPharmaciesWhoHaveFreeAppointmentsForPeriodWithGradesAndPriceSortByPriceAscending(Date startDate){
+		
+		List<UnspecifiedDTO<PharmacyWithGradeAndPriceDTO>> pharmaciesDTOSortedByPriceAscending=findAllPharmaciesWhoHaveFreeAppointmentsForPeriodWithGradesAndPrice(startDate);
+				
+		Collections.sort(pharmaciesDTOSortedByPriceAscending, (pharmacy1, pharmacy2) -> Double.compare(pharmacy1.EntityDTO.getPrice(), pharmacy2.EntityDTO.getPrice()));
+		
+		return pharmaciesDTOSortedByPriceAscending;
+		
+	}
+	
+	
+	
+	
+	@Override
+	public List<UnspecifiedDTO<PharmacyWithGradeAndPriceDTO>> findAllPharmaciesWhoHaveFreeAppointmentsForPeriodWithGradesAndPriceSortByPriceDescending(Date startDate){
+		
+		List<UnspecifiedDTO<PharmacyWithGradeAndPriceDTO>> pharmaciesDTOSortedByPriceDescending=findAllPharmaciesWhoHaveFreeAppointmentsForPeriodWithGradesAndPrice(startDate);
+				
+		Collections.sort(pharmaciesDTOSortedByPriceDescending, (pharmacy1, pharmacy2) -> Double.compare(pharmacy1.EntityDTO.getPrice(), pharmacy2.EntityDTO.getPrice()));
+		Collections.reverse(pharmaciesDTOSortedByPriceDescending);
+		
+		
+		return pharmaciesDTOSortedByPriceDescending;
+		
+	}
+	
+	
+	
+	
+	@Override
+	public List<UnspecifiedDTO<PharmacyWithGradeAndPriceDTO>> findAllPharmaciesWhoHaveFreeAppointmentsForPeriodWithGradesAndPriceSortByPharmacyGradeAscending(Date startDate){
+		
+		List<UnspecifiedDTO<PharmacyWithGradeAndPriceDTO>> pharmaciesDTOSortedByPharmacyGradeAscending=findAllPharmaciesWhoHaveFreeAppointmentsForPeriodWithGradesAndPrice(startDate);
+				
+		Collections.sort(pharmaciesDTOSortedByPharmacyGradeAscending, (pharmacy1, pharmacy2) -> Double.compare(pharmacy1.EntityDTO.getGrade(), pharmacy2.EntityDTO.getGrade()));
+		
+		
+		return pharmaciesDTOSortedByPharmacyGradeAscending;
+		
+	}
+	
+	
+	@Override
+	public List<UnspecifiedDTO<PharmacyWithGradeAndPriceDTO>> findAllPharmaciesWhoHaveFreeAppointmentsForPeriodWithGradesAndPriceSortByPharmacyGradeDescending(Date startDate){
+		
+		List<UnspecifiedDTO<PharmacyWithGradeAndPriceDTO>> pharmaciesDTOSortedByPharmacyGradeDescending=findAllPharmaciesWhoHaveFreeAppointmentsForPeriodWithGradesAndPrice(startDate);
+				
+		Collections.sort(pharmaciesDTOSortedByPharmacyGradeDescending, (pharmacy1, pharmacy2) -> Double.compare(pharmacy1.EntityDTO.getGrade(), pharmacy2.EntityDTO.getGrade()));
+		Collections.reverse(pharmaciesDTOSortedByPharmacyGradeDescending);
+		
+		
+		return pharmaciesDTOSortedByPharmacyGradeDescending;
+		
+	}
+	
 	@Override
 	public List<UnspecifiedDTO<AuthorityDTO>> findAll() {
 		// TODO Auto-generated method stub
