@@ -13,6 +13,7 @@ public interface IOfferService extends IService<OfferDTO, UnspecifiedDTO<OfferDT
 	public List<UnspecifiedDTO<OfferDTO>> findAllAccepted();
 	public List<UnspecifiedDTO<OfferDTO>> findAllRejected();
 	public List<UnspecifiedDTO<OfferDTO>> findAllWaiting();
+	public boolean checkIfCanUpdate(UUID id);
 		
 	
 
