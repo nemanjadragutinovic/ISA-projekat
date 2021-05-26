@@ -16,16 +16,12 @@ import DermatologistFreeAppointment from "./Pages/DermatologistFreeAppointment"
 import FutureDermatologistAppointmentsForPatient from "./Pages/FutureDermatologistAppointmentsForPatient"
 import HistoryDermatologistAppointmentsForPatient from "./Pages/HistoryDermatologistAppointmentsForPatient"
 import PharmaciesAppointmentStartPage from "./Pages/PharmaciesAppointmentStartPage"
-<<<<<<< HEAD
 import FuturePharmaciesConsultationsForPatient from "./Pages/FuturePharmaciesConsultationsForPatient"
-=======
 import OfferPage from './Components/SupplierPages/OfferPage';
 
->>>>>>> b35f771c3f515948aa395e22a10b0ab8f0e2f6f4
 
 import {
   BrowserRouter as Router,
-  Link,
   Route,
   Switch
 } from "react-router-dom";
@@ -51,19 +47,14 @@ function App() {
         <Route  to ="/futureDermatologistAppointmentsForPatient" path ="/futureDermatologistAppointmentsForPatient"  component={FutureDermatologistAppointmentsForPatient}/>
         <Route  to ="/historyDermatologistAppointmentsForPatient" path ="/historyDermatologistAppointmentsForPatient"  component={HistoryDermatologistAppointmentsForPatient}/>
         <Route  to ="/registerDrug" path ="/registerDrug"  component={RegisterDrug}/>
-
         <Route  to ="/pharmacistAppointment" path ="/pharmacistAppointment"  component={PharmaciesAppointmentStartPage}/>
-
         <Route  to ="/loyalityProgram" path ="/loyalityProgram"  component={LoyalityProgram}/>
         <Route  to ="/orders" path ="/orders"  component={OrdersPage}/>
-<<<<<<< HEAD
         <Route  to ="/futurePharmaciesConsultationsForPatient" path ="/futurePharmaciesConsultationsForPatient"  component={FuturePharmaciesConsultationsForPatient}/>
-       
-=======
         <Route  to ="/offers" path ="/offers"  component={OfferPage}/>
 
 
->>>>>>> b35f771c3f515948aa395e22a10b0ab8f0e2f6f4
+
 
         </Switch>
     </Router>
