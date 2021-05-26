@@ -46,6 +46,7 @@ import show.isaBack.repository.drugsRepository.AllergenRepository;
 import show.isaBack.repository.pharmacyRepository.PharmacyRepository;
 import show.isaBack.repository.userRepository.DermatologistRepository;
 import show.isaBack.repository.userRepository.PatientRepository;
+import show.isaBack.repository.userRepository.SupplierRepository;
 import show.isaBack.repository.userRepository.UserRepository;
 import show.isaBack.serviceInterfaces.IAppointmentService;
 import show.isaBack.serviceInterfaces.IEmployeeGradeService;
@@ -82,6 +83,9 @@ public class UserService implements IUserInterface{
 	
 	@Autowired
 	private IEmployeeGradeService employeeGradeService;
+	
+	@Autowired
+	private SupplierRepository supplierRepository;
 	
 	public UUID createPatient(UserRegistrationDTO patientRegistrationDTO) {
 		
@@ -140,6 +144,21 @@ public class UserService implements IUserInterface{
 
 		return new UnspecifiedDTO<PatientDTO>(patientId , new PatientDTO(patient.getEmail(), patient.getName(), patient.getSurname(), patient.getAddress(),
 				patient.getPhoneNumber(), patient.isActive(), patient.getUserAuthorities(),MapAllergenToAllergenDTO(patient.getAllergens())));
+	}
+	
+	@Override
+	public UserDTO getLoggedSupplier() {	
+		
+		
+		
+		UUID suppID = getLoggedUserId();
+		Supplier supp= supplierRepository.getOne(suppID);
+		
+		if(supp==null) {
+			System.out.println("pacijent je null");
+		}
+
+		return new UserDTO(supp.getEmail(), supp.getName(), supp.getSurname(), supp.getAddress(), supp.getPhoneNumber(), false, null);
 	}
 	
 	
@@ -261,13 +280,27 @@ public class UserService implements IUserInterface{
 		patientRepository.save(patient);
 	}
 	
+	@Override
+	public void updateSupplier(UserChangeInfoDTO supplierInfoChangeDTO) {
+		
+		UUID logedId= getLoggedUserId();
+		Supplier supp = supplierRepository.getOne(logedId);		
+		
+		supp.setName(supplierInfoChangeDTO.getName());
+		supp.setSurname(supplierInfoChangeDTO.getSurname());
+		supp.setAddress(supplierInfoChangeDTO.getAddress());
+		supp.setPhoneNumber(supplierInfoChangeDTO.getPhoneNumber());
+			
+		supplierRepository.save(supp);
+	}
+	
 	
 	@Override
 	public void changePassword(ChangePasswordDTO changePasswordDTO) {
 		
 		UUID id = getLoggedUserId();
 		User user = userRepository.getOne(id);
-		
+		System.out.println(user.getEmail());
 		authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(user.getEmail(), changePasswordDTO.getOldPassword()));
 		
 		if(changePasswordDTO.getNewPassword().isEmpty())
