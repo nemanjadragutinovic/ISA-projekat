@@ -26,6 +26,7 @@ import show.isaBack.DTO.drugDTO.AllergenDTO;
 import show.isaBack.DTO.pharmacyDTO.PharmacyWithGradeAndPriceDTO;
 import show.isaBack.DTO.userDTO.AuthorityDTO;
 import show.isaBack.DTO.userDTO.ChangePasswordDTO;
+import show.isaBack.DTO.userDTO.LoyalityProgramForPatientDTO;
 import show.isaBack.DTO.userDTO.PatientDTO;
 import show.isaBack.DTO.userDTO.PatientsAllergenDTO;
 import show.isaBack.DTO.userDTO.PharmacistForAppointmentPharmacyGadeDTO;
@@ -50,6 +51,7 @@ import show.isaBack.repository.userRepository.SupplierRepository;
 import show.isaBack.repository.userRepository.UserRepository;
 import show.isaBack.serviceInterfaces.IAppointmentService;
 import show.isaBack.serviceInterfaces.IEmployeeGradeService;
+import show.isaBack.serviceInterfaces.ILoyaltyService;
 import show.isaBack.serviceInterfaces.IUserInterface;
 import show.isaBack.unspecifiedDTO.UnspecifiedDTO;
 
@@ -86,6 +88,9 @@ public class UserService implements IUserInterface{
 	
 	@Autowired
 	private SupplierRepository supplierRepository;
+	
+	@Autowired
+	private ILoyaltyService loyaltyProgramService;
 	
 	public UUID createPatient(UserRegistrationDTO patientRegistrationDTO) {
 		
@@ -141,9 +146,12 @@ public class UserService implements IUserInterface{
 		if(patient==null) {
 			System.out.println("pacijent je null");
 		}
-
+		
+		LoyalityProgramForPatientDTO patientLoyalityProgramDTO=loyaltyProgramService.getLoyalityProgramForPatient(patient);
+		
 		return new UnspecifiedDTO<PatientDTO>(patientId , new PatientDTO(patient.getEmail(), patient.getName(), patient.getSurname(), patient.getAddress(),
-				patient.getPhoneNumber(), patient.isActive(), patient.getUserAuthorities(),MapAllergenToAllergenDTO(patient.getAllergens())));
+				patient.getPhoneNumber(), patient.isActive(), patient.getUserAuthorities(),MapAllergenToAllergenDTO(patient.getAllergens()), patient.getPenalty(),
+				patient.getPoints(), patientLoyalityProgramDTO));
 	}
 	
 	@Override

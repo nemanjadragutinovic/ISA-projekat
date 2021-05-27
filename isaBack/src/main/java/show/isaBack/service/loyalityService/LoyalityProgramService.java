@@ -9,8 +9,11 @@ import org.springframework.stereotype.Service;
 
 import show.isaBack.DTO.pharmacyDTO.PharmacyDTO;
 import show.isaBack.DTO.userDTO.AuthorityDTO;
+import show.isaBack.DTO.userDTO.LoyalityProgramForPatientDTO;
 import show.isaBack.DTO.userDTO.LoyaltyProgramDTO;
+import show.isaBack.model.LoyalityCategory;
 import show.isaBack.model.LoyalityProgram;
+import show.isaBack.model.Patient;
 import show.isaBack.model.Pharmacy;
 import show.isaBack.repository.userRepository.LoyalityProgramRepository;
 import show.isaBack.serviceInterfaces.ILoyaltyService;
@@ -23,7 +26,7 @@ public class LoyalityProgramService implements ILoyaltyService {
 	@Autowired
 	private LoyalityProgramRepository loyaltyProgramRepository;
 	
-	private final UUID LOYALITY_PROGRAM_ID = UUID.fromString("8c834328-9b5a-42c2-9e04-a1acc75f881d");
+	private final UUID ID_FOR_LOYALITY_PROGRAM = UUID.fromString("8c834328-9b5a-42c2-9e04-a1acc75f881d");
 	
 	
 	@Override
@@ -46,7 +49,7 @@ public class LoyalityProgramService implements ILoyaltyService {
 			
 			System.out.println(entityDTO.getDrugDiscountVip());
 			
-			LoyalityProgram loyaltyProgram = loyaltyProgramRepository.getOne(LOYALITY_PROGRAM_ID);
+			LoyalityProgram loyaltyProgram = loyaltyProgramRepository.getOne(ID_FOR_LOYALITY_PROGRAM);
 			System.out.println(loyaltyProgram.getDrugDiscountVip());
 			loyaltyProgram.setPointsForAppointment(entityDTO.getPointsForAppointment());
 			loyaltyProgram.setPointsForConsulting(entityDTO.getPointsForConsulting());
@@ -76,6 +79,32 @@ public class LoyalityProgramService implements ILoyaltyService {
 		}
 	}
 
+	
+	
+	@Override
+	public LoyalityProgramForPatientDTO getLoyalityProgramForPatient(Patient patient) {
+		
+		LoyalityProgram loyalityProgram= loyaltyProgramRepository.findById(ID_FOR_LOYALITY_PROGRAM).get();
+		LoyalityProgramForPatientDTO loyalityProgramForPatientDTO= createPatientLoyalityProgram(loyalityProgram,patient );
+		
+		return loyalityProgramForPatientDTO;
+		
+	}
+	
+	
+	public LoyalityProgramForPatientDTO createPatientLoyalityProgram( LoyalityProgram loyalityProgram , Patient patient) {
+		
+		if(patient.getPoints()  < loyalityProgram.getPointsToEnterLoyalCathegory()) {
+			return new LoyalityProgramForPatientDTO(LoyalityCategory.REGULAR, loyalityProgram.getAppointmentDiscountRegular(), loyalityProgram.getConsultationDiscountRegular(), loyalityProgram.getDrugDiscountRegular());           
+		}else if(patient.getPoints() >= loyalityProgram.getPointsToEnterLoyalCathegory() && patient.getPoints() < loyalityProgram.getPointsToEnterVipCathegory()) {
+			return new LoyalityProgramForPatientDTO(LoyalityCategory.LOYAL, loyalityProgram.getAppointmentDiscountLoyal(), loyalityProgram.getConsultationDiscountLoyal(), loyalityProgram.getDrugDiscountLoyal());
+		}else{
+			return new LoyalityProgramForPatientDTO(LoyalityCategory.VIP, loyalityProgram.getAppointmentDiscountVip(), loyalityProgram.getConsultationDiscountVip(), loyalityProgram.getDrugDiscountVip());  
+		}
+		
+	}
+	
+	
 	@Override
 	public List<UnspecifiedDTO<AuthorityDTO>> findAll() {
 		// TODO Auto-generated method stub
