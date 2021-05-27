@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
@@ -21,6 +22,11 @@ import show.isaBack.model.drugs.Allergen;
 public class Patient extends User {
 	
 	private static final long serialVersionUID = 1L;
+	
+	
+	private int penalty;
+	
+	private int points;
 	
 	@ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "patient_allergen",
@@ -42,10 +48,23 @@ public class Patient extends User {
 	public Patient(String email, String password, String name, String surname, String address, String phoneNumber) {
 		super(email, password, name, surname, address, phoneNumber, true);
 		//OVO TREBA IZMENITI KADA SE NAMESTI AKTIVACIJA!!!!!!!!!!!!!!!!!!!!
+		
+		this.penalty = 0;
+		this.points = 0;
 		this.allergens = new ArrayList<Allergen>();
 		
 	}
 	
+	
+	public Patient(String email, String password, String name, String surname, String address, String phoneNumber, boolean active, int penalty, int points) {
+		super(email, password, name, surname, address, phoneNumber,active);
+			
+		this.allergens = new ArrayList<Allergen>();
+		this.penalty = penalty;
+		this.points = points;
+		
+		
+	}
 	
 
 	public Patient(UUID id, String email, String password, String name, String surname, String address,
@@ -56,6 +75,26 @@ public class Patient extends User {
 	}
 	
 	
+	public void setPharmacies(List<Pharmacy> pharmacies) {
+		this.pharmacies = pharmacies;
+	}
+
+	public int getPenalty() {
+		return penalty;
+	}
+
+	public void setPenalty(int penalty) {
+		this.penalty = penalty;
+	}
+
+	public int getPoints() {
+		return points;
+	}
+
+	public void setPoints(int points) {
+		this.points = points;
+	}
+
 	public List<Allergen> getAllergens() {
 		return allergens;
 	}

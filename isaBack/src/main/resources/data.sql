@@ -45,7 +45,7 @@ insert into users (id, email, password, name, surname, phone_Number,first_Login,
 
 
 --PATIENTS
-insert into patient (id) values ('22793162-52d3-11eb-ae93-0242ac130002');
+insert into patient (id, points,penalty) values ('22793162-52d3-11eb-ae93-0242ac130002',0,0);
 
 --PHARMACISTS
 insert into pharmacist (id, pharmacy_id) values ('80c86094-ba60-11eb-8529-0242ac130003','775d8e36-9859-11eb-a8b3-0242ac130003');
