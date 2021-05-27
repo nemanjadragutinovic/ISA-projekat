@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import Axios from "axios";
 import Header from './Header';
 import MedicamentPicture from "../Images/medicament.jpg" ;
+import DrugSpecificationModal from "./DrugSpecification";
 const API_URL="http://localhost:8080";
 
 class Drugs extends Component {
@@ -9,13 +10,39 @@ class Drugs extends Component {
   
     
     state = {
-		allDrugs: [],
-    drugSearchName: "",
-    drugSearchProducerName: "",
-    drugSearchFabricCode: "",
-    showSearchedForm: false,
-    showResetSearced: false,
-    inputError : "none"
+      drugs: [],
+      specificationModalShow: false,
+      ingredients: [],
+      replacingDrugs: [],
+      drugGrades: [],
+      newGrades: [],
+      drugAmount: "",
+      drugQuantity: "",
+      drugManufacturer: "",
+      drugName: "",
+      onReciept: false,
+      drugKind: "",
+      drugFormat: "",
+      sideEffects: "",
+      points: "",
+      formShowed: false,
+      searchName: "",
+      searchGradeFrom: "",
+      searchGradeTo: "",
+      drugKinds: [],
+      showFeedbackModal: false,
+      showModifyFeedbackModal: false,
+      selectedDrugId: "",
+      drugNameModal: "",
+      grade: 1,
+      hiddenFailAlert: true,
+      failHeader: "",
+      failMessage: "",
+      hiddenSuccessAlert: true,
+      successHeader: "",
+      successMessage: "",
+      loggedPatient: false,
+      unauthorizedRedirect: false,
 		
 
 
@@ -27,127 +54,149 @@ class Drugs extends Component {
   componentDidMount() {
 		
 
-		Axios.get(API_URL + "/drug/allDrugs")
+		Axios.get("http://localhost:8080/drug/getDrugsWithGrade")
 
 			.then((res) => {
-				this.setState({ allDrugs: res.data });
+				this.setState({ drugs: res.data });
 			})
 			.catch((err) => {
 				console.log(err);
 			});
 
-
-  
+		Axios.get("http://localhost:8080/drug/drugkind")
+			.then((res) => {
+				this.setState({
+					drugKinds: res.data,
+				});
+				console.log(res.data);
+			})
+			.catch((err) => {
+				console.log(err);
+			});
          
 	}
 
 
-   handleSearchForm = () => {    
+  handleDrugKindChange = (event) => {
+		this.setState({ drugKind: event.target.value });
+	};
+
+	hangleFormToogle = () => {
+		this.setState({ formShowed: !this.state.formShowed });
+	};
+
+	handleNameChange = (event) => {
+		this.setState({ searchName: event.target.value });
+	};
+
+	handleGradeFromChange = (event) => {
+		this.setState({ searchGradeFrom: event.target.value });
+	};
+
+	handleGradeToChange = (event) => {
+		this.setState({ searchGradeTo: event.target.value });
+	};
+
+  handleResetSearch = () => {
+		Axios.get("http://localhost:8080/drug/getDrugsWithGrade")
+
+			.then((res) => {
+				this.setState({
+					drugs: res.data,
+					formShowed: false,
+					showingSearched: false,
+					searchName: "",
+					searchGradeFrom: "",
+					searchGradeTo: "",
+					drugKind: "",
+				});
+			})
+			.catch((err) => {
+				console.log(err);
+			});
+
+		Axios.get("http://localhost:8080/drug/drugkind")
+			.then((res) => {
+				this.setState({
+					drugKinds: res.data,
+				});
+				console.log(res.data);
+			})
+			.catch((err) => {
+				console.log(err);
+			});
+	};
+
+
+  handleSearchClick = () => {
+		{
+			let gradeFrom = this.state.searchGradeFrom;
+			let gradeTo = this.state.searchGradeTo;
+			let name = this.state.searchName;
+			let drugKind = this.state.drugKind;
+
+			if (gradeFrom === "") gradeFrom = -1;
+			if (gradeTo === "") gradeTo = -1;
+			if (name === "") name = "";
+			if (drugKind === "") drugKind = "";
+
+			Axios.get("http://localhost:8080/drug/searchDrugs", {
+				params: {
+					name: name,
+					gradeFrom: gradeFrom,
+					gradeTo: gradeTo,
+					drugKind: drugKind,
+				},
+			})
+				.then((res) => {
+					this.setState({
+						drugs: res.data,
+						formShowed: false,
+						showingSearched: true,
+					});
+				})
+				.catch((err) => {
+					console.log(err);
+				});
+		}
+	};
+
+
+  handleDrugClick = (drug) => {
+		console.log(drug);
+		this.setState({
+			drugAmount: drug.EntityDTO.recommendedAmount,
+			drugQuantity: drug.EntityDTO.quantity,
+			drugManufacturer: drug.EntityDTO.manufacturer.EntityDTO.name,
+			drugName: drug.EntityDTO.name,
+			drugKind: drug.EntityDTO.drugKind,
+			drugFormat: drug.EntityDTO.drugFormat,
+			sideEffects: drug.EntityDTO.sideEffects,
+			onReciept: drug.EntityDTO.onReciept,
+			points: drug.EntityDTO.loyalityPoints,
+			ingredients: drug.EntityDTO.ingredients,
+			replacingDrugs: drug.EntityDTO.replacingDrugs,
+			specificationModalShow: true,
+		});
+	};
+
+  handleModalClose = () => {
+		this.setState({ specificationModalShow: false });
+	};
+
+  handleCloseAlertFail = () => {
+		this.setState({ hiddenFailAlert: true });
+	};
+
+	handleCloseAlertSuccess = () => {
+		this.setState({ hiddenSuccessAlert: true });
+	};
+
+	handleClickIcon = (grade) => {
+		this.setState({ grade });
+	};
+
    
-    if(this.state.inputError=== "initial")
-      this.setState({inputError :"none"});
-      
-   
-    this.setState({showSearchedForm : !this.state.showSearchedForm,
-                    showResetSearced: false});
-
-                    if(this.state.showSearchedForm===false){
-
-                      this.setState({
-    
-                        showResetSearced: true,
-                        drugSearchName: "",
-                        drugSearchProducerName: "",
-                        drugSearchFabricCode: "", 
-                        inputError : "none"     
-                      
-                      });
-
-                    }
-
-                    
-   }
-
-   handleSearchNameChange = (event) => {
-		this.setState({ drugSearchName: event.target.value });
-	};
-
-  handleSearchProducerNameChange= (event) => {
-		this.setState({ drugSearchProducerName: event.target.value });
-	};
-
-  handleSearchFabricCodeChange= (event) => {
-		this.setState({ drugSearchFabricCode: event.target.value });
-	};
-
-  
-
-
-   SearchDrugs = () => {
-
-
-  if (this.state.drugSearchName === "" && this.state.drugSearchProducerName === "" &&  this.state.drugSearchFabricCode=== "" ) {
-        this.setState({ inputError : "initial" });
-           return false;
-  } 
-
-  this.setState({ inputError : "none" });
-
-    const searchDTO = {
-
-      name : this.state.drugSearchName,
-      producerName : this.state.drugSearchProducerName,
-      fabricCode : "",
-
-
-     };
-          
-		Axios.post(API_URL + "/drug/searchDrugs", searchDTO)
-
-		.then((res) => {
-      this.setState({
-        allDrugs: res.data,
-        showResetSearced : true,
-        showSearchedForm : false,      
-      
-      });
-     
-    })
-    .catch((err) => {
-      console.log(err);
-      
-    });
-
-		
-	};
-
-  resetSearch = () => {
-
-   
-    this.setState({
-    
-     showResetSearced : false,
-     showSearchedForm : false, 
-     drugSearchName: "",
-     drugSearchProducerName: "",
-     drugSearchFabricCode: "", 
-     inputError : "none"     
-   
-   });
-
-          
-    Axios.get(API_URL + "/drug/allDrugs")
-
-    .then((res) => {
-      this.setState({ allDrugs: res.data });
-    })
-    .catch((err) => {
-      console.log(err);
-    });
-
-
-		
-	};
 
 
 
@@ -167,108 +216,141 @@ class Drugs extends Component {
            
             <div style={{ width: "70%", marginTop: "5em", marginLeft: "auto",marginRight: "auto" }} width="100%">
 
-            <div className="inline" >
-            <button type="button" class="btn btn-primary btn-lg mr-3" onClick={this.handleSearchForm}>
-               
-                {this.state.showSearchedForm ? "Close search" : "Open search"}
-                                
-            </button>
-
-            <button hidden={!this.state.showResetSearced} type="button" class="btn btn-outline-primary btn-lg mr-3" onClick={this.resetSearch}>
-               
-               Reset search
-                               
-           </button>
-
-            </div>
+            <h5 className=" text-center mb-0 mt-2 text-uppercase">Drugs</h5>
+					<button className="btn btn-outline-primary btn-xl" type="button" onClick={this.hangleFormToogle}>
+						<i className="icofont-rounded-down mr-1"></i>
+						Search drugs
+					</button>
 
 
 
 
-            <form hidden={!this.state.showSearchedForm} className="form-inline" width="100%" id="searchForm">
-						
-              
-              <input
+            <form className={this.state.formShowed ? "form-inline mt-3" : "form-inline mt-3 collapse"} width="100%" id="formCollapse">
+						<div className="form-group mb-2" width="100%">
+							<input
 								placeholder="Name"
-                class="form-control mr-2"
+								className="form-control mr-3"
+								style={{ width: "9em" }}
 								type="text"
-								onChange={this.handleSearchNameChange}
-								value={this.state.drugSearchName}
-							/>             
-              
-              <input
-								placeholder="Producer name"
-                class="form-control mr-2"
-								type="text"
-								onChange={this.handleSearchProducerNameChange}
-								value={this.state.drugSearchProducerName}
+								onChange={this.handleNameChange}
+								value={this.state.searchName}
 							/>
-              
+              <select
+								placeholder="Drug kind"
+								onChange={this.handleDrugKindChange}
+								style={{ width: "9em" }}
+								className="form-control mr-3"
+							>
+								<option value="" selected disabled>
+									Drug Kind
+								</option>
+								{this.state.drugKinds.map((kind) => (
+									<option value={kind.EntityDTO.type}>{kind.EntityDTO.type}</option>
+								))}
+							</select>
 
-              
-             
-              
-							<button								
-								onClick={this.SearchDrugs}
-								className="btn btn-outline-primary btn-lg "
+							<input
+								placeholder="Grade from"
+								className="form-control mr-3"
+								style={{ width: "9em" }}
+								type="number"
+								min="0"
+								max="5"
+								onChange={this.handleGradeFromChange}
+								value={this.state.searchGradeFrom}
+							/>
+							<input
+								placeholder="Grade to"
+								className="form-control mr-3"
+								style={{ width: "9em" }}
+								type="number"
+								min="0"
+								max="5"
+								onChange={this.handleGradeToChange}
+								value={this.state.searchGradeTo}
+							/>
+							
+							<button
+								style={{ background: "#1977cc" }}
+								onClick={this.handleSearchClick}
+								className="btn btn-primary btn-x2"
 								type="button"
-                
-							>								
+							>
+								<i className="icofont-search mr-1"></i>
 								Search
 							</button>
-             
-
+						</div>
 					</form>
 
-          <div className="text-danger" style={{ display: this.state.inputError, fontSize: "17px"}}>
-										Enter something in field!
+          <div className={this.state.showingSearched ? "form-group mt-2" : "form-group mt-2 collapse"}>
+						<button type="button" className="btn btn-outline-secondary" onClick={this.handleResetSearch}>
+							<i className="icofont-close-line mr-1"></i>Reset
+						</button>
 					</div>
+
+          <table className={this.state.loggedPatient === true ? "table table-hover" : "table"} style={{ width: "100%", marginTop: "3rem" }}>
+						<tbody>
+							{this.state.drugs.map((drug) => (
+								<tr id={drug.Id} key={drug.Id} style={this.state.loggedPatient === true ? { cursor: "pointer" } : {}}>
+									<td width="130em">
+										<img className="img-fluid" src={MedicamentPicture} width="70em" />
+									</td>
+									<td onClick={() => this.props.onDrugSelect(drug)}>
+										<div>
+											<b>Name:</b> {drug.EntityDTO.drugInstanceName}
+										</div>
+										<div>
+											<b>Kind:</b> {drug.EntityDTO.drugKind}
+										</div>
+										<div>
+											<b>Grade:</b> {drug.EntityDTO.avgGrade}
+											<i className="icofont-star" style={{ color: "#1977cc" }}></i>
+										</div>
+									</td>
+									<td className="align-middle">
+										<div style={{ marginLeft: "55%" }}>
+											<button
+												type="button"
+												onClick={() => this.handleDrugClick(drug)}
+												className="btn btn-outline-secondary btn-block"
+											>
+												Specification
+											</button>
+										</div>
+										
+									</td>
+								</tr>
+							))}
+						</tbody>
+					</table>
+             
+
+					
+
+          
           </div>
 
 
 
 
-        <div className="container">
-                    <h1 >All drugs</h1>
-                    <table className="table" style={{ width: "70%", marginTop: "5em", marginLeft: "auto",marginRight: "auto" }}>
-                        
-                        <tbody>
-                            {
-                                this.state.allDrugs.map((drug) => (
-                                    <tr key={drug.Id} id={drug.Id} >
-                                       
-
-                                      <td width="100px">  
-                                       
-                                        <img src={MedicamentPicture } width="70px"></img>                                 
-                                     
-                                      </td>
-
-
-                                      <td>
-                                        
-                                        <div>  
-                                        <b>Name: </b>{drug.EntityDTO.name}
-                                        </div>  
-
-                                        <div>  
-                                        <b>Producer name: </b> {drug.EntityDTO.producerName}
-                                        </div> 
-
-                                        <div>  
-                                        <b>Fabric code: </b>{drug.EntityDTO.fabricCode}
-                                        </div>
-
-                                      </td>
-
-
-                                    </tr>
-                                ))
-                            }
-                        </tbody>
-                    </table>
-                </div>
+        
         </div>
+        <DrugSpecificationModal
+						onCloseModal={this.handleModalClose}
+						drugAmount={this.state.drugAmount}
+						header="Drug specification"
+						show={this.state.specificationModalShow}
+						drugQuantity={this.state.drugQuantity}
+						drugKind={this.state.drugKind}
+						drugFormat={this.state.drugFormat}
+						drugManufacturer={this.state.drugManufacturer}
+						drugName={this.state.drugName}
+						onReciept={this.state.onReciept}
+						sideEffects={this.state.sideEffects}
+						points={this.state.points}
+						ingredients={this.state.ingredients}
+						replacingDrugs={this.state.replacingDrugs}
+					/>
         </React.Fragment>
         
 		);

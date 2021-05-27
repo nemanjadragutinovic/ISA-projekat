@@ -23,6 +23,7 @@ import show.isaBack.DTO.drugDTO.DrugFormatIdDTO;
 import show.isaBack.DTO.drugDTO.DrugInstanceDTO;
 import show.isaBack.DTO.drugDTO.DrugKindIdDTO;
 import show.isaBack.DTO.drugDTO.DrugManufacturerDTO;
+import show.isaBack.DTO.drugDTO.DrugsWithGradesDTO;
 import show.isaBack.DTO.drugDTO.IngredientDTO;
 import show.isaBack.DTO.drugDTO.ManufacturerDTO;
 import show.isaBack.DTO.drugDTO.ReplaceDrugIdDTO;
@@ -59,7 +60,7 @@ public class DrugController {
 	}
 	
 	
-	@CrossOrigin
+/*	@CrossOrigin
 	@PostMapping("/searchDrugs" ) 
 	public ResponseEntity<List<UnspecifiedDTO<DrugDTO>>> getSearchedDrugs (@RequestBody DrugDTO userRequest) {
 					
@@ -70,7 +71,7 @@ public class DrugController {
 		catch (Exception e) {
 			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
-	}
+	} */
 	
 	@PutMapping
 	@CrossOrigin
@@ -142,6 +143,20 @@ public class DrugController {
 	public ResponseEntity<List<UnspecifiedDTO<DrugInstanceDTO>>> findAll() {
 		System.out.println("usao u get drug");
 		return new ResponseEntity<>(drugService.findAllDrugKinds(),HttpStatus.OK);
+	}
+	
+	@CrossOrigin
+	@GetMapping("/searchDrugs") 
+	public ResponseEntity<List<UnspecifiedDTO<DrugsWithGradesDTO>>> searchDrugs(@RequestParam String name, @RequestParam double gradeFrom, @RequestParam double gradeTo, @RequestParam String drugKind) {
+		System.out.println("usao u pretragu");
+		return new ResponseEntity<>(drugService.searchDrugs(name, gradeFrom, gradeTo, drugKind) ,HttpStatus.CREATED);
+	}
+	
+	@CrossOrigin
+	@GetMapping("/getDrugsWithGrade") 
+	public ResponseEntity<List<UnspecifiedDTO<DrugsWithGradesDTO>>> findDrugsWithGrades() {
+		System.out.println("usao u get drugs");
+		return new ResponseEntity<>(drugService.findDrugsWithGrades() ,HttpStatus.CREATED);
 	}
 	
 	
