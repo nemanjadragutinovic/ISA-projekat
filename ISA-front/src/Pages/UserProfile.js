@@ -53,7 +53,16 @@ class UserProfile extends Component {
 		errorAllergenHeader: "",
 		errorAllergenMessage: "",
 		openAllergenModal: false,
-		
+		patientPoints : "",
+		patientPenalties : "",
+		patientLoyaltyCategory : "",
+		examinationDiscount : "",
+		consultationDiscount : "",
+		drugDiscount : "",
+		showAnotherInformation: false,
+		hideButtonForAnotherInformation : false
+
+
 	};
 
 	constructor(props) {
@@ -144,7 +153,7 @@ class UserProfile extends Component {
 
 
 	componentDidMount() {
-		if (!this.hasRole("ROLE_PATIENT")) {
+		if (!(this.hasRole("ROLE_PATIENT") || !this.hasRole("SUPPLIER"))) {
 			this.setState({ redirect: true });
 			this.props.history.push('/login')
 		
@@ -154,7 +163,7 @@ class UserProfile extends Component {
 			console.log(GetAuthorisation());
 			console.log(localStorage.getItem("keyRole"));
 			
-
+			if(this.hasRole("ROLE_PATIENT")){
 			Axios.get(API_URL + "/users/patient", { validateStatus: () => true, headers: { Authorization : GetAuthorisation()} })
 				.then((res) => {
 					console.log(res.data);
@@ -175,6 +184,13 @@ class UserProfile extends Component {
 							phoneNumber: res.data.EntityDTO.phoneNumber,
 							userAllergens: res.data.EntityDTO.allergens,
 							
+							patientPoints : res.data.EntityDTO.points,
+							patientPenalties : res.data.EntityDTO.penalty,
+							patientLoyaltyCategory :  res.data.EntityDTO.loyalityProgramForPatientDTO.loyalityCategory,
+							examinationDiscount : res.data.EntityDTO.loyalityProgramForPatientDTO.examinationDiscount,
+							consultationDiscount : res.data.EntityDTO.loyalityProgramForPatientDTO.consultationDiscount,
+							drugDiscount : res.data.EntityDTO.loyalityProgramForPatientDTO.drugDiscount,
+
 
 							
 						});
@@ -182,6 +198,7 @@ class UserProfile extends Component {
 						
 
 						console.log(this.state.userAllergens)
+						
 
 					}
 				})
@@ -190,6 +207,52 @@ class UserProfile extends Component {
 					console.log("ovaj eror je u pitanju");
 
 				});
+
+			}else if(this.hasRole("ROLE_SUPPLIER")){
+
+				console.log("usao u supplera 2");
+
+				Axios.get(API_URL + "/users/supplier", { validateStatus: () => true, headers: { Authorization : GetAuthorisation()} })
+				.then((res) => {
+					console.log(res.data);
+					if (res.status === 401) {                       
+                        this.setState({ redirect: true });				
+					} else {
+
+						//console.log(res.data.EntityDTO.email)
+						//console.log(res.data.EntityDTO.name)
+						
+					
+                        this.setState({
+							
+							email: res.data.email,
+							name: res.data.name,
+							surname: res.data.surname,
+							address: res.data.address,
+							phoneNumber: res.data.phoneNumber,
+							
+							
+
+							
+						});
+						
+						
+
+						
+
+					}
+				})
+				.catch((err) => {
+					console.log(err);
+					console.log("ovaj eror je u pitanju");
+
+				});
+
+			}
+
+			
+
+			
 		}
 	}
 
@@ -212,6 +275,7 @@ class UserProfile extends Component {
 
 			console.log(userDTO.name  )
 
+			if(this.hasRole("ROLE_PATIENT")){
 			Axios.put(API_URL + "/users/patient", userDTO, {
 				validateStatus: () => true,
 				headers: { Authorization: GetAuthorisation() },
@@ -246,7 +310,43 @@ class UserProfile extends Component {
 				
 				});
 
+			}else if(this.hasRole("ROLE_SUPPLIER")){
 
+				Axios.put(API_URL + "/users/supplier", userDTO, {
+					validateStatus: () => true,
+					headers: { Authorization: GetAuthorisation() },
+				})
+					.then((res) => {
+						if (res.status === 400) {
+							this.setState({ hiddenUnsuccessfulAlert: false,
+								UnsuccessfulHeader: "Bad request", 
+								UnsuccessfulMessage: "Invalid argument." });
+	
+						} else if (res.status === 500) {
+	
+							this.setState({ hiddenUnsuccessfulAlert: false, 
+								UnsuccessfulHeader: "Internal server error", 
+								UnsuccessfulMessage: "Server error." });
+	
+						} else if (res.status === 204) {
+							console.log("Success");
+							this.setState({
+								hiddenSuccessfulAlert: false,
+								successfulHeader: "Success",
+								successfulMessage: "You updated your information.",
+								hiddenEditInfo: true,
+							});
+						}
+					})
+					.catch((err) => {
+						console.log(err);
+						this.setState({ hiddenUnsuccessfulAlert: false,
+							UnsuccessfulHeader: "Error", 
+							UnsuccessfulMessage: "Something was wrong" });
+					
+					});
+
+			}
 
 		}
 
@@ -480,6 +580,29 @@ class UserProfile extends Component {
 			});
 	};
 
+
+
+	handleClickAnotherInformation= () => {
+		this.setState({
+			showAnotherInformation: true,
+			hideButtonForAnotherInformation : true
+		});
+
+		
+	};
+
+
+	handleClickAnotherInformationClose= () => {
+		this.setState({
+			showAnotherInformation: false,
+			hideButtonForAnotherInformation : false
+		});
+
+		
+	};
+
+
+
 	render() {
 
         
@@ -507,6 +630,29 @@ class UserProfile extends Component {
 
 
 
+		<button type="button" class="btn btn-outline-primary "
+         onClick={() => this.handleClickAnotherInformation()}
+		 hidden={this.state.hideButtonForAnotherInformation}
+         style={{  marginTop: "2em", marginLeft: "auto",marginRight: "auto" }}
+         >
+
+		 Show another information
+        
+        </button>
+
+
+
+		<button type="button" class="btn btn-outline-primary "
+         onClick={() => this.handleClickAnotherInformationClose()}
+		 hidden={!this.state.hideButtonForAnotherInformation}
+         style={{  marginTop: "2em", marginLeft: "auto",marginRight: "auto" }}
+         >
+
+		Close another information
+        </button>
+			
+
+
             <h4 className=" text-center  mb-0 text-uppercase" style={{ marginTop: "2rem" }}>
 						User profile
 			</h4>
@@ -517,10 +663,10 @@ class UserProfile extends Component {
                         <h5 className=" text-center text-uppercase">Personal Information</h5>
                         
 
-						<form id="contactForm" name="sentMessage">
+						<form id="informationForm" >
 								<div className="control-group">
 									<div className="form-group controls mb-0 pb-2" >
-										<label>Email address:</label>
+										<b>Email address:</b>
 										<input
 											readOnly
 											placeholder="Email address"
@@ -534,7 +680,7 @@ class UserProfile extends Component {
 								</div>
 								<div className="control-group">
 									<div className="form-group controls mb-0 pb-2" >
-										<label>Name:</label>
+										<b>Name:</b>
 										<input
 											readOnly={this.state.hiddenEditInfo}
 											className={!this.state.hiddenEditInfo === false ? "form-control-plaintext" : "form-control"}
@@ -550,7 +696,7 @@ class UserProfile extends Component {
 								</div>
 								<div className="control-group">
 									<div className="form-group controls mb-0 pb-2">
-										<label>Surname:</label>
+										<b>Surname:</b>
 										<input
 											readOnly={this.state.hiddenEditInfo}
 											className={!this.state.hiddenEditInfo === false ? "form-control-plaintext" : "form-control"}
@@ -567,7 +713,7 @@ class UserProfile extends Component {
 								<div className="control-group">
 									
 									<div className="form-group controls mb-0 pb-2" >
-											<label>Adress:</label>
+											<b>Adress:</b>
 											<input
 												readOnly={this.state.hiddenEditInfo}
 												className={!this.state.hiddenEditInfo === false ? "form-control-plaintext" : "form-control"}
@@ -585,7 +731,7 @@ class UserProfile extends Component {
 								</div>
 								<div className="control-group">
 									<div className="form-group controls mb-0 pb-2" >
-										<label>Phone number:</label>
+										<b>Phone number:</b>
 										<input
 											placeholder="Phone number"
 											readOnly={this.state.hiddenEditInfo}
@@ -641,7 +787,7 @@ class UserProfile extends Component {
 											</div>
 											
 
-											<div className="mr-2" hidden={!this.state.hiddenEditInfo}>
+											<div className="mr-2" hidden={!this.state.hiddenEditInfo} hidden={this.hasRole("ROLE_SUPPLIER")} >
 												<button
 													onClick={this.handleAllergenModal}
 													className="btn btn-outline-primary btn-xl"
@@ -664,6 +810,215 @@ class UserProfile extends Component {
 
                     </div>
 
+
+
+
+				<div hidden= {!this.state.showAnotherInformation}>
+					<div className="col  container  offset-1 shadow p-3  bg-white ">
+                        <h5 className=" text-center text-uppercase">Another information</h5>
+                        
+
+
+								
+							<div className="form-row"  style={{ marginTop : "2em"}}>
+									<div className="form-col ml-2"
+										style={{
+												
+												fontSize: "1.4em",
+											}}
+									
+									 >
+										<b>Number of penalties: { " " } </b> 
+		
+									</div>
+
+									<div className="form-col ml-4 rounded pr-3 pl-3" 
+									
+									style={{
+												color: "white",
+												background: "red",
+												fontSize: "1.7em",
+												fontWeight: "400"
+											}}
+									
+									>
+									
+										{" "}{this.state.patientPenalties} {" "}
+		
+									</div>
+									
+							</div>
+
+
+
+								
+							<div className="form-row "  style={{ marginTop : "10px"}}>
+									<div className="form-col  ml-2"
+										style={{
+												
+												fontSize: "1.4em",
+											}}
+									
+									 >
+										<b>Number of points: { " " } </b> 
+		
+									</div>
+
+									<div className="form-col ml-4 rounded pr-3 pl-3" 
+									
+									style={{
+												color: "white",
+												background: "green",
+												fontSize: "1.4em",
+												marginTop : "2px",
+												fontWeight: "400"
+												
+											}}
+									
+									>
+									
+										{" "}{this.state.patientPoints} {" "}
+		
+									</div>
+									
+							</div>
+								
+							<div className="form-row "  style={{ marginTop : "30px"}}>
+									<div className="form-col  ml-2"
+										style={{
+												
+												fontSize: "1.4em",
+											}}
+									
+									 >
+										<b>Loyalty category: { " " } </b> 
+		
+									</div>
+
+									<div className="form-col ml-4 rounded pr-3 pl-3" 
+									
+									style={{
+												color: "white",
+												background: "violet",
+												fontSize: "1.4em",
+												marginTop : "2px",
+												fontWeight: "400"
+												
+											}}
+									
+									>
+									
+										{" "}{this.state.patientLoyaltyCategory} {" "}
+		
+									</div>
+									
+							</div>	
+
+								
+
+							<div className="form-row "  style={{ marginTop : "10px"}}>
+									<div className="form-col  ml-2"
+										style={{
+												
+												fontSize: "1.4em",
+											}}
+									
+									 >
+										<b>Examination discount: { " " } </b> 
+		
+									</div>
+
+									<div className="form-col ml-4 rounded pr-3 pl-3" 
+									
+									style={{
+												color: "white",
+												background: "violet",
+												fontSize: "1.4em",
+												marginTop : "2px",
+												fontWeight: "400"
+												
+											}}
+									
+									>
+									
+										{" "}{this.state.examinationDiscount} <b>{" %"}</b>
+		
+									</div>
+									
+							</div>
+
+							<div className="form-row "  style={{ marginTop : "10px"}}>
+									<div className="form-col  ml-2"
+										style={{
+												
+												fontSize: "1.4em",
+											}}
+									
+									 >
+										<b>Consultation discount: { " " } </b> 
+		
+									</div>
+
+									<div className="form-col ml-4 rounded pr-3 pl-3" 
+									
+									style={{
+												color: "white",
+												background: "violet",
+												fontSize: "1.4em",
+												marginTop : "2px",
+												fontWeight: "400"
+												
+											}}
+									
+									>
+									
+										{" "}{this.state.consultationDiscount} <b>{" %"}</b>
+		
+									</div>
+									
+							</div>					
+					
+
+
+							<div className="form-row "  style={{ marginTop : "10px"}}>
+									<div className="form-col  ml-2"
+										style={{
+												
+												fontSize: "1.4em",
+											}}
+									
+									 >
+										<b>Drugs discount: { " " } </b> 
+		
+									</div>
+
+									<div className="form-col ml-4 rounded pr-3 pl-3" 
+									
+									style={{
+												color: "white",
+												background: "violet",
+												fontSize: "1.4em",
+												marginTop : "2px",
+												fontWeight: "400"
+												
+											}}
+									
+									>
+									
+										{" "}{this.state.drugDiscount} <b>{" %"}</b>
+		
+									</div>
+									
+							</div>					
+
+
+
+
+
+                    </div>
+
+
+				</div>	
 					
 
             </div>

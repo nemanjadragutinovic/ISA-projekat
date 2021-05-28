@@ -8,11 +8,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import show.isaBack.DTO.drugDTO.DrugDTO;
+import show.isaBack.DTO.drugDTO.DrugFormatIdDTO;
 import show.isaBack.DTO.drugDTO.DrugInstanceDTO;
+import show.isaBack.DTO.drugDTO.DrugKindIdDTO;
+import show.isaBack.DTO.drugDTO.DrugsWithGradesDTO;
 import show.isaBack.DTO.drugDTO.IngredientDTO;
 import show.isaBack.DTO.drugDTO.ManufacturerDTO;
 import show.isaBack.DTO.pharmacyDTO.PharmacyDTO;
 import show.isaBack.DTO.userDTO.AuthorityDTO;
+import show.isaBack.Mappers.Pharmacy.DrugsWithGradesMapper;
 import show.isaBack.interfaceRepository.drugRepository.DrugInstanceRepository;
 import show.isaBack.interfaceRepository.drugRepository.DrugRepository;
 import show.isaBack.interfaceRepository.drugRepository.IngredientRepository;
@@ -22,6 +26,9 @@ import show.isaBack.model.DrugInstance;
 import show.isaBack.model.Ingredient;
 import show.isaBack.model.Manufacturer;
 import show.isaBack.model.Pharmacy;
+import show.isaBack.model.drugs.DrugFormatId;
+import show.isaBack.model.drugs.DrugKindId;
+import show.isaBack.repository.drugsRepository.DrugFeedbackRepository;
 import show.isaBack.serviceInterfaces.IDrugService;
 import show.isaBack.unspecifiedDTO.UnspecifiedDTO;
 
@@ -34,6 +41,9 @@ public class DrugService implements IDrugService{
 	
 	@Autowired
 	private DrugInstanceRepository drugInstanceRepository;
+	
+	@Autowired
+	private DrugFeedbackRepository drugFeedbackRepository;
 	
 	@Autowired
 	private ManufacturerRepository manufacturerRepository;
@@ -163,6 +173,116 @@ public class DrugService implements IDrugService{
 		drugInstanceRepository.save(drugInstance);
 		
 		return id;
+	}
+	
+	@Override
+	public List<UnspecifiedDTO<DrugInstanceDTO>> findAllDrugKinds() {
+		
+		List<UnspecifiedDTO<DrugInstanceDTO>> dkDTO = new ArrayList<UnspecifiedDTO<DrugInstanceDTO>>();
+		dkDTO = getAllDrugInstancesDTO();
+		
+		return dkDTO;
+	}
+	
+	private List<UnspecifiedDTO<DrugInstanceDTO>> getAllDrugInstancesDTO() {
+		
+		List<DrugInstance> drugkinds = drugInstanceRepository.findAll();
+		List<UnspecifiedDTO<DrugInstanceDTO>> drugKindDTO = new ArrayList<UnspecifiedDTO<DrugInstanceDTO>>();
+				
+		
+		for (DrugInstance currentDrugKind : drugkinds) 
+		{
+			DrugInstanceDTO dkDTO= new DrugInstanceDTO(currentDrugKind.getName(),currentDrugKind.getProducerName(),currentDrugKind.getFabricCode(),currentDrugKind.getDrugInstanceName(),currentDrugKind.getDrugFormat(),currentDrugKind.getQuantity(),currentDrugKind.getSideEffects(),currentDrugKind.getRecommendedAmount(),currentDrugKind.getLoyalityPoints(),currentDrugKind.isOnReciept(),currentDrugKind.getDrugKind());				
+			drugKindDTO.add(new UnspecifiedDTO<DrugInstanceDTO>(currentDrugKind.getId(),dkDTO));
+		}
+		
+		
+		return drugKindDTO;
+	}
+	
+	@Override
+	public List<UnspecifiedDTO<DrugsWithGradesDTO>> searchDrugs(String name, double gradeFrom, double gradeTo, String drugKind) {
+		List<DrugInstance> drugsWithName;
+		if(!name.equals("")) {
+			drugsWithName = drugInstanceRepository.findByName(name.toLowerCase());
+		}else
+			drugsWithName = drugInstanceRepository.findAll();
+		
+		List<DrugInstance> drugsWithKind = sreachDrugKind(drugsWithName, drugKind);
+		List<UnspecifiedDTO<DrugsWithGradesDTO>> drugsWithGrades = checkDrugGrades(drugsWithKind, gradeFrom, gradeTo);
+		
+		return drugsWithGrades;
+	}
+	
+	private List<DrugInstance> sreachDrugKind(List<DrugInstance> drugs, String Kind){
+		
+		if(Kind.equals(""))
+			return drugs;
+		
+		List<DrugInstance> drugsWithKind = new ArrayList<DrugInstance>();
+		for (DrugInstance drugInstance : drugs) {
+			if(drugInstance.getDrugKind().toString().equals(Kind)) {
+				drugsWithKind.add(drugInstance);
+			}
+		}
+		
+		return drugsWithKind;
+	}
+	
+	private List<UnspecifiedDTO<DrugsWithGradesDTO>> checkDrugGrades(List<DrugInstance> drugsWithKind, double gradeFrom, double gradeTo){
+		List<UnspecifiedDTO<DrugsWithGradesDTO>> drugsWithGrades = new ArrayList<UnspecifiedDTO<DrugsWithGradesDTO>>();
+		double grade;
+		
+		for (DrugInstance var : drugsWithKind) 
+		{ 
+			grade = findAvgGradeForDrug(var.getId());
+			
+			if(!(gradeFrom == -1.0 || gradeTo == -1.0)) {
+				if(grade >= gradeFrom && grade <= gradeTo) {
+					drugsWithGrades.add(DrugsWithGradesMapper.MapDrugInstancePersistenceToDrugInstanceIdentifiableDTO(var, grade));
+				}
+			}else {
+				if(gradeFrom == -1.0 & gradeTo != -1.0) {
+					if(grade <= gradeTo)
+						drugsWithGrades.add(DrugsWithGradesMapper.MapDrugInstancePersistenceToDrugInstanceIdentifiableDTO(var, grade));
+				}else if (gradeTo == -1.0 & gradeFrom != -1.0){
+					if(grade >= gradeFrom)
+						drugsWithGrades.add(DrugsWithGradesMapper.MapDrugInstancePersistenceToDrugInstanceIdentifiableDTO(var, grade));
+				}else {
+					drugsWithGrades.add(DrugsWithGradesMapper.MapDrugInstancePersistenceToDrugInstanceIdentifiableDTO(var, grade));
+				}
+			}
+			
+		}
+		
+		return drugsWithGrades;
+	}
+	
+	@Override
+	public List<UnspecifiedDTO<DrugsWithGradesDTO>> findDrugsWithGrades() {
+		List<DrugInstance> drugs = drugInstanceRepository.findAll();
+		List<UnspecifiedDTO<DrugsWithGradesDTO>> drugsWithGrades = new ArrayList<UnspecifiedDTO<DrugsWithGradesDTO>>();
+		double grade;
+		for (DrugInstance var : drugs) 
+		{ 
+			System.out.println(var.getDrugInstanceName());
+			grade = findAvgGradeForDrug(var.getId());
+			drugsWithGrades.add(DrugsWithGradesMapper.MapDrugInstancePersistenceToDrugInstanceIdentifiableDTO(var, grade));
+			
+		}
+	
+		return drugsWithGrades;
+	}
+	
+	@Override
+	public double findAvgGradeForDrug(UUID drugId) {
+		try {
+			double retVal = drugFeedbackRepository.findAvgGradeForDrug(drugId);
+			
+			return  retVal;
+		}catch (Exception e) {
+			return 0;
+		}
 	}
 
 	@Override

@@ -37,16 +37,37 @@ public interface AppointmentRepository extends PagingAndSortingRepository<Appoin
 			+ " AND a.appointmentStatus = 'FREE'  AND a.appointmentType = ?2 ORDER BY a.price DESC")
 	List<Appointment> sortByPriceDescendingAllFreeDermatologistAppointments(UUID pharmacyId, AppointmentType appointmentType);
 	
+	@Query(value = "SELECT a FROM Appointment a WHERE a.patient.id = ?1 AND a.startDateTime > CURRENT_TIMESTAMP"
+			+ "  AND a.appointmentType = ?2 AND a.appointmentStatus = 'SCHEDULED' ")
+	List<Appointment> findAllFuturePatientsAppointmets(UUID userId, AppointmentType appointmentType);  
 	
 	
+	@Query(value = "SELECT a FROM Appointment a WHERE (a.patient.id = ?1 AND a.appointmentStatus = 'FINISHED'"   
+			+ "  AND a.appointmentType = ?2) OR ( a.patient.id = ?1  AND a.appointmentType = ?2 AND a.startDateTime < CURRENT_TIMESTAMP) ")
+	List<Appointment> findAllHistoryPatientsAppointmets(UUID userId, AppointmentType appointmentType); 
 	
 	
+	@Query(value = "SELECT a FROM Appointment a WHERE a.appointmentType = 'CONSULTATION' AND a.appointmentStatus = 'SCHEDULED' "
+			+ " AND NOT (a.startDateTime >= ?2 OR a.endDateTime <= ?1) ")
+	List<Appointment> findAllBusyConsultationsInDataRange(Date startDate, Date endDate);
+	
+	@Query(value = "SELECT a FROM Appointment a WHERE a.appointmentType = 'CONSULTATION' AND a.appointmentStatus = 'SCHEDULED' "
+			+ " AND a.pharmacy.id = ?3 AND NOT (a.startDateTime >= ?2 OR a.endDateTime <= ?1) ")
+	List<Appointment> findAllBusyConsultationsInDataRangeForPharmacy(Date startDate, Date endDate,UUID pharmacyId);
 	
 	
+	@Query(value = "SELECT a FROM Appointment a WHERE a.appointmentType = 'CONSULTATION' AND a.appointmentStatus = 'SCHEDULED' "
+			+ " AND a.employee.id = ?3 AND NOT (a.startDateTime >= ?2 OR a.endDateTime <= ?1) ")
+	List<Appointment> findAllBusyConsultationsInDataRangeForPharmacist(Date startDate, Date endDate,UUID pharmacistId);
 	
 	
+	@Query(value = "SELECT a FROM Appointment a WHERE a.appointmentStatus = 'SCHEDULED' "
+			+ " AND a.patient.id = ?3 AND NOT (a.startDateTime >= ?2 OR a.endDateTime <= ?1) ")
+	List<Appointment> findAllSheduledAppointmentsForPatientsInDataRange(Date startDate, Date endDate,UUID patientId);
 	
-	
+	@Query(value = "SELECT a FROM Appointment a WHERE a.appointmentStatus = 'FINISHED' "
+			+ " AND a.patient.id = ?1 ")
+	List<Appointment> findAllFinishedAppointmentsForPatient(UUID patientId);
 	
 	
 	
