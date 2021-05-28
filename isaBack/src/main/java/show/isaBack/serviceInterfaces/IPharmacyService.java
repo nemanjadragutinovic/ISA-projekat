@@ -14,6 +14,7 @@ import show.isaBack.unspecifiedDTO.UnspecifiedDTO;
 public interface IPharmacyService extends IService<PharmacyDTO, UnspecifiedDTO<PharmacyDTO>>{
 
 	public List<UnspecifiedDTO<PharmacyDTO>> getAllPharmacies();
+	public List<UnspecifiedDTO<PharmacyDTO>> getAllPatientSubscribedPharmacies();
 	
 	public List<UnspecifiedDTO<PharmacyDTO>> getSearchedPharmacies(PharmacySearchDTO searchPharmacyRequest);
 	public UUID createPharmacy(PharmacyDTO pharmacyDTO);

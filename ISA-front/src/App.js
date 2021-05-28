@@ -18,7 +18,7 @@ import HistoryDermatologistAppointmentsForPatient from "./Pages/HistoryDermatolo
 import PharmaciesAppointmentStartPage from "./Pages/PharmaciesAppointmentStartPage"
 import FuturePharmaciesConsultationsForPatient from "./Pages/FuturePharmaciesConsultationsForPatient"
 import OfferPage from './Components/SupplierPages/OfferPage';
-
+import PatientsSubscribedPharmacies from './Components/Pharmacies/PatientsSubscribedPharmacies'
 
 import {
   BrowserRouter as Router,
@@ -52,7 +52,7 @@ function App() {
         <Route  to ="/orders" path ="/orders"  component={OrdersPage}/>
         <Route  to ="/futurePharmaciesConsultationsForPatient" path ="/futurePharmaciesConsultationsForPatient"  component={FuturePharmaciesConsultationsForPatient}/>
         <Route  to ="/offers" path ="/offers"  component={OfferPage}/>
-
+        <Route  to ="/patientsSubscribedPharmacies" path ="/patientsSubscribedPharmacies"  component={PatientsSubscribedPharmacies}/>
 
 
 

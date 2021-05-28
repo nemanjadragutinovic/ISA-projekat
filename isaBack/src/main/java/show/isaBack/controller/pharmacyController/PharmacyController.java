@@ -48,7 +48,19 @@ public class PharmacyController {
 		}
 	}
 	
-
+	
+	@CrossOrigin
+	@PreAuthorize("hasRole('ROLE_PATIENT')")
+	@GetMapping("/allPatientsSubscribedPharmacies") 
+	public ResponseEntity<List<UnspecifiedDTO<PharmacyDTO>>> getAllPatientSubscribedPharmacies() {
+		
+		try {
+		return new ResponseEntity<>(pharmacyService.getAllPatientSubscribedPharmacies() ,HttpStatus.OK);
+		} catch (Exception e) {
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+	
 		
 	@CrossOrigin
 	@PostMapping("/searchPharmacies" ) 
