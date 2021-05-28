@@ -731,6 +731,18 @@ public class AppointmentService implements IAppointmentService{
 				throw new IllegalArgumentException("Patient has alredy sheduled appointment in selected data range");
 	}
 	
+	public boolean canPatientReportPharmacy(UUID pharmacyId){
+		UUID patientId = userService.getLoggedUserId();
+		
+		List<Appointment> appointments = appointmentRepository.findAllFinishedAppointmentsForPatientinPharmacy(patientId,pharmacyId);
+		
+		if(appointments.size()==0) {
+			return false;
+		}else {
+			return true;
+		}
+	}
+	
 	
 	@Override
 	public List<UnspecifiedDTO<AuthorityDTO>> findAll() {
