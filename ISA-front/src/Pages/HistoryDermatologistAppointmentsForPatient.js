@@ -6,6 +6,7 @@ import DermatologistAppointmentPicture from "../Images/appointment.png" ;
 import UnsuccessfulAlert from "../Components/Alerts/UnsuccessfulAlert";
 import SuccessfulAlert from "../Components/Alerts/SuccessfulAlert";
 import {NavLink, Redirect } from "react-router-dom";
+import CreateComplaintModal from "../Components/CreateComplaintModal";
 
 const API_URL="http://localhost:8080";
 
@@ -23,6 +24,15 @@ class HistoryDermatologistAppointmentsForPatient extends Component {
         hiddenUnsuccessfulAlert: true,
         UnsuccessfulHeader: "",
         UnsuccessfulMessage: "",
+
+		showComplaintModal: false,
+		StaffName: "",
+		StaffSurame: "",
+		complaint: "",
+		staffId : "",
+		Date : new Date(),
+		text : "",
+		profession : "",
 
 
 
@@ -231,6 +241,63 @@ class HistoryDermatologistAppointmentsForPatient extends Component {
         
     }
 
+	handleComplaintClick = (staff) => {
+		console.log(staff);
+		
+				
+					this.setState({
+						selectedStaffId: staff.Id,
+						showComplaintModal: true,
+						StaffName: staff.EntityDTO.name,
+						StaffSurame: staff.EntityDTO.surname,
+						profession : staff.EntityDTO.profession,
+						grade: 0,
+					});
+				
+			
+			
+	};
+
+	handleComaplaint = () => {
+		let ComplaintStaffDTO = {
+			staffId: this.state.selectedStaffId,
+			date: new Date(),
+			text: this.state.text,
+			staffName: this.state.StaffName,
+			staffSurname: this.state.StaffSurame,
+			profession: "",
+			reply: "",
+			email: "",
+		};
+
+		Axios.post("http://localhost:8080/complaint", ComplaintStaffDTO, { validateStatus: () => true, headers: { Authorization: GetAuthorisation() } })
+			.then((resp) => {
+				if (resp.status === 500) {
+					this.setState({ hiddenFailAlert: false, failHeader: "Internal server error", failMessage: "Server error." });
+				} else if (resp.status === 201) {
+					
+					
+				}
+				this.setState({ showComplaintModal: false });
+			})
+			.catch((err) => {
+				console.log(err);
+			});
+	};
+
+	handleComplaintChange = (event) => {
+		this.setState({ text: event.target.value });
+	};
+
+	
+	handleComplaintModalClose = () => {
+		this.setState({ showComplaintModal: false });
+	};
+
+	handleStuffIdChange = (stuffID) => {
+		this.setState({ staffId: stuffID });
+	};
+
 
 
 
@@ -357,6 +424,20 @@ class HistoryDermatologistAppointmentsForPatient extends Component {
 										
 									</td>
 
+									<td className="align-middle">
+										<div style={{ marginLeft: "55%" }}>
+										<button
+											type="button"
+											onClick={() => this.handleComplaintClick(appointment.EntityDTO.employee)}
+											
+											className="btn btn-outline-secondary"
+										>
+											Make complaint
+										</button>
+										</div>
+										
+									</td>
+
                                     
                                     
 								</tr>
@@ -365,10 +446,25 @@ class HistoryDermatologistAppointmentsForPatient extends Component {
 					</table>
                 </div>
 
-
+			
+				
 
           
         </div>
+
+		<CreateComplaintModal
+					buttonName="Send complaint"
+					header="Give complaint"
+					handleComplaintChange={this.handleComplaintChange}
+					show={this.state.showComplaintModal}
+					onCloseModal={this.handleComplaintModalClose}
+					giveFeedback={this.handleComaplaint}
+					name={this.state.StaffName + " " + this.state.StaffSurame}
+					forWho="consultant"
+					handleClickIcon={this.handleClickIcon}
+					complaint={this.state.complaint}
+				/>
+		
         </React.Fragment>
         
 		);
