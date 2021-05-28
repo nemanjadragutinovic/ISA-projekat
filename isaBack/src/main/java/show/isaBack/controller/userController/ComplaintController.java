@@ -11,7 +11,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import show.isaBack.DTO.userDTO.ComplaintPharmacyDTO;
 import show.isaBack.DTO.userDTO.ComplaintStaffDTO;
+import show.isaBack.serviceInterfaces.IAppointmentService;
 import show.isaBack.serviceInterfaces.IComplaintService;
 
 @RestController
@@ -23,6 +25,9 @@ public class ComplaintController {
 	@Autowired
 	private IComplaintService complaintService;
 	
+	@Autowired
+	private IAppointmentService appointmentService;
+	
 	
 	@PostMapping
 	@PreAuthorize("hasRole('PATIENT')")
@@ -32,6 +37,23 @@ public class ComplaintController {
 		
 		try {
 			return new ResponseEntity<UUID>(complaintService.create(complaintStaffDTO),HttpStatus.CREATED);
+		
+		} catch (Exception e) {
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+	
+	@PostMapping("/pharmacy")
+	@PreAuthorize("hasRole('PATIENT')")
+	public ResponseEntity<UUID> createComplaintPharmacy(@RequestBody ComplaintPharmacyDTO complaintPharmacyDTO) {
+		System.out.println("usao u complaint pharmacy");
+		
+	//	if(!appointmentService.canPatientReportPharmacy(complaintPharmacyDTO.getPharmacyId())) {
+	//		return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+	//	}
+		
+		try {
+			return new ResponseEntity<UUID>(complaintService.createPharmacyComplaint(complaintPharmacyDTO),HttpStatus.CREATED);
 		
 		} catch (Exception e) {
 			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
