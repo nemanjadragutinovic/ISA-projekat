@@ -29,6 +29,10 @@ public class ComplaintPharmacy {
 	@Column(name="reply")
 	private String reply;
 	
+	@Column(name="active")
+	private boolean active;
+	
+
 	@Version
 	private Long version;
 	
@@ -48,7 +52,14 @@ public class ComplaintPharmacy {
 		this.name = name;
 	}
 
+	public boolean isActive() {
+		return active;
+	}
 
+	public void setActive(boolean active) {
+		this.active = active;
+	}
+	
 	public Long getVersion() {
 		return version;
 	}

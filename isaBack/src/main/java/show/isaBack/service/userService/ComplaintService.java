@@ -153,6 +153,50 @@ public class ComplaintService implements IComplaintService{
 		return complaintStuff.getId();
 	}
 	
+	@Override
+	public List<UnspecifiedDTO<ComplaintPharmacyDTO>> findAllPharmacyComplaints(){
+		
+		List<UnspecifiedDTO<ComplaintPharmacyDTO>> pharmacyList = new ArrayList<UnspecifiedDTO<ComplaintPharmacyDTO>>();
+		System.out.println("1");
+		for (ComplaintPharmacy pharmacy : complaintPharmacyRepository.findAll()) {
+			
+			if(pharmacy.isActive()==true) {
+			
+				ComplaintPharmacyDTO pharmacyDTO = new ComplaintPharmacyDTO(pharmacy.getId(),pharmacy.getDate(),pharmacy.getText(),pharmacy.getName(),pharmacy.getReply(),pharmacy.getPatient().getEmail());
+				pharmacyList.add(new UnspecifiedDTO<ComplaintPharmacyDTO>(pharmacy.getId(),pharmacyDTO));
+				}
+			}
+		
+		return pharmacyList;
+	}
+	
+	@Override
+	public UUID replyToPharmacy(ComplaintPharmacyDTO complaintStaffDTO){
+		
+		ComplaintPharmacy complaintPharmacy = complaintPharmacyRepository.findById(complaintStaffDTO.getPharmacyId()).get();
+		System.out.println();
+		complaintPharmacy.setReply(complaintStaffDTO.getReply());
+		complaintPharmacy.setActive(false);
+		
+		complaintPharmacyRepository.save(complaintPharmacy);
+		
+		try {
+			emailService.sendEmailforReplyedComplaint(complaintPharmacy);
+		} catch (MailException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (MessagingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		
+		return complaintPharmacy.getId();
+	}
+	
 
 
 		

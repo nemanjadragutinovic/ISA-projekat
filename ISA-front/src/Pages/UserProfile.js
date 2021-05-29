@@ -153,7 +153,7 @@ class UserProfile extends Component {
 
 
 	componentDidMount() {
-		if (!(this.hasRole("ROLE_PATIENT") || !this.hasRole("SUPPLIER"))) {
+		if ((!this.hasRole("ROLE_PATIENT") && !this.hasRole("ROLE_SUPPLIER"))) {
 			this.setState({ redirect: true });
 			this.props.history.push('/login')
 		
