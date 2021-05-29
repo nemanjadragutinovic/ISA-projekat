@@ -22,7 +22,7 @@ insert into pharmacy (id,name, city, street,country, post_code,description,consu
 --USERS
 
 --patients-users
-insert into users (id, email, password, name, surname, phone_Number,first_Login, active, address,user_type) values ('22793162-52d3-11eb-ae93-0242ac130002','patient1@gmail.com', '$2a$10$TyNl6ipLWyDE/TfFM3uRse0SVPP4Rz7.mdZdDK3zqjKZqtKtJ3pf2','Njeke','Zeke','0623333',false,true,'Kisacka 22','PATIENT');
+insert into users (id, email, password, name, surname, phone_Number,first_Login, active, address,user_type) values ('22793162-52d3-11eb-ae93-0242ac130002','nemanjadragutinovic54@gmail.com', '$2a$10$TyNl6ipLWyDE/TfFM3uRse0SVPP4Rz7.mdZdDK3zqjKZqtKtJ3pf2','Njeke','Zeke','0623333',false,true,'Kisacka 22','PATIENT');
 
 --sysadmins-users
 insert into users (id, email, password, name, surname, phone_Number,first_Login, active, address,user_type) values ('44444d47-1a8a-4ae1-b109-af7b56e94788','sysadmin@gmail.com','$2a$10$TyNl6ipLWyDE/TfFM3uRse0SVPP4Rz7.mdZdDK3zqjKZqtKtJ3pf2','Zec','Njekezovic','0612345',false,true,'Kosovska 22','SYSADMIN');
@@ -206,5 +206,5 @@ insert into patient_pharmacy_subscribe (patient_id, pharmacies_id) values ('2279
 insert into drug_feedback (date, grade, drug_id, patient_id) values ('2020-03-03',4,'2fe1cd8e-5839-11eb-ae93-0242ac130002', '22793162-52d3-11eb-ae93-0242ac130002');
 insert into drug_feedback (date, grade, drug_id, patient_id) values ('2020-05-03',5,'2c797174-5839-11eb-ae93-0242ac130002', '22793162-52d3-11eb-ae93-0242ac130002');
 
-insert into complaint_staff(id, date, email, profession, reply, staff_name, staff_surname, text, version, patient_id, user_id) values ('1dc48297-aa8c-473f-9194-cfd4b8f3bb6e','2020-03-03','abc@gmail.com','dermatolog','nista','Njekez','User','jako lose radite svooj posao',1,'22793162-52d3-11eb-ae93-0242ac130002','07a2c302-b584-11eb-8529-0242ac130003');
-insert into complaint_staff(id, date, email, profession, reply, staff_name, staff_surname, text, version, patient_id, user_id) values ('2dc48297-aa8c-473f-9194-cfd4b8f3bb6e','2020-03-03','abc@gmail.com','dermatolog','nista','Njekez','User','jako lose radite svooj posao',1,'22793162-52d3-11eb-ae93-0242ac130002','07a2c302-b584-11eb-8529-0242ac130003');
+insert into complaint_staff(id, date, email, profession, reply, staff_name, staff_surname, text, version, patient_id, user_id, active) values ('1dc48297-aa8c-473f-9194-cfd4b8f3bb6e','2020-03-03','abc@gmail.com','dermatolog','nista','Njekez','User','jako lose radite svooj posao',1,'22793162-52d3-11eb-ae93-0242ac130002','07a2c302-b584-11eb-8529-0242ac130003', true);
+insert into complaint_staff(id, date, email, profession, reply, staff_name, staff_surname, text, version, patient_id, user_id, active) values ('2dc48297-aa8c-473f-9194-cfd4b8f3bb6e','2020-03-03','abc@gmail.com','dermatolog','nista','Njekez','User','jako lose radite svooj posao',1,'22793162-52d3-11eb-ae93-0242ac130002','07a2c302-b584-11eb-8529-0242ac130003', true);

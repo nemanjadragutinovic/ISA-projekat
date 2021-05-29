@@ -5,7 +5,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import javax.mail.MessagingException;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mail.MailException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -14,6 +17,7 @@ import show.isaBack.DTO.pharmacyDTO.PharmacyDTO;
 import show.isaBack.DTO.userDTO.ComplaintPharmacyDTO;
 import show.isaBack.DTO.userDTO.ComplaintStaffDTO;
 import show.isaBack.DTO.userDTO.PharmacistForAppointmentPharmacyGadeDTO;
+import show.isaBack.emailService.EmailService;
 import show.isaBack.model.ComplaintPharmacy;
 import show.isaBack.model.ComplaintStaff;
 import show.isaBack.model.Patient;
@@ -57,6 +61,9 @@ public class ComplaintService implements IComplaintService{
 	@Autowired
 	private AppointmentRepository appointmentRepository;
 	
+	@Autowired
+	private EmailService emailService;
+	
 	@Override
 	public UUID create(ComplaintStaffDTO entityDTO){
 		
@@ -77,7 +84,7 @@ public class ComplaintService implements IComplaintService{
 			profession="pharmacist";
 		}
 		
-		ComplaintStaff complaintStaff = new ComplaintStaff(user,patient, entityDTO.getText(), user.getName(),user.getSurname(), profession, patient.getEmail());
+		ComplaintStaff complaintStaff = new ComplaintStaff(user,patient, entityDTO.getText(), user.getName(),user.getSurname(), profession, patient.getEmail(), true);
 		complaintRepository.save(complaintStaff);
 		
 		return complaintStaff.getId();
@@ -108,12 +115,42 @@ public class ComplaintService implements IComplaintService{
 	public List<UnspecifiedDTO<ComplaintStaffDTO>> findAllStaffComplaints(){
 		
 		List<UnspecifiedDTO<ComplaintStaffDTO>> staffList = new ArrayList<UnspecifiedDTO<ComplaintStaffDTO>>();
+		System.out.println("1");
 		for (ComplaintStaff staff : complaintRepository.findAll()) {
+			if(staff.isActive()==true) {
+			System.out.println(staff.getDate());
 			ComplaintStaffDTO staffDTO = new ComplaintStaffDTO(staff.getId(), staff.getDate(), staff.getText(), staff.getStaffName(),staff.getStaffSurname(), staff.getProfession(),staff.getReply(), staff.getEmail());
 			staffList.add(new UnspecifiedDTO<ComplaintStaffDTO>(staff.getId(),staffDTO));
-		}
+				}
+			}
 		
 		return staffList;
+	}
+	
+	@Override
+	public UUID replyToPatient(ComplaintStaffDTO complaintStaffDTO){
+		
+		ComplaintStaff complaintStuff = complaintRepository.findById(complaintStaffDTO.getComplaintId()).get();
+		System.out.println();
+		complaintStuff.setReply(complaintStaffDTO.getReply());
+		complaintStuff.setActive(false);
+		
+		complaintRepository.save(complaintStuff);
+		
+		try {
+			emailService.sendEmailforReplyedComplaint(complaintStuff);
+		} catch (MailException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (MessagingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return complaintStuff.getId();
 	}
 	
 
