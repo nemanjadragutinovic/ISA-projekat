@@ -14,7 +14,7 @@ import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
-
+import show.isaBack.model.ComplaintStaff;
 import show.isaBack.model.Patient;
 import show.isaBack.model.appointment.Appointment;
 @Service
@@ -55,6 +55,30 @@ public class EmailService {
 		
 	}
 	
+	
+	@Async
+	public void sendEmailforReplyedComplaint(ComplaintStaff complaintStaff)
+			throws MailException, InterruptedException, MessagingException {
+		
+		
+		System.out.println("usao 1");
+		
+		
+		
+		MimeMessage mimeMessage = javaMailSender.createMimeMessage();
+		MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, "utf-8");
+		String htmlMsg = "<p>Hello " + complaintStaff.getPatient().getName() + ",</p>" +
+					"<p>Here is your reply for your complaint:" + complaintStaff.getText()+ "</p>"
+					+ "<p>" + complaintStaff.getReply()+ "</p>" + "<p>Health Clinic</p>"; 
+		helper.setText(htmlMsg, true);
+		helper.setTo(complaintStaff.getPatient().getEmail());
+		System.out.println(complaintStaff.getPatient().getEmail());
+		helper.setSubject("Reply from Health Clinic");
+		helper.setFrom(env.getProperty("spring.mail.username"));
+		System.out.println("usao 2");
+		javaMailSender.send(mimeMessage);
+		
+	}
 	
 	@Async
 	public void sendAppointmentReservationNotification(Appointment appointment) throws MessagingException {

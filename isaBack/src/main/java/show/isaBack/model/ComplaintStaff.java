@@ -11,6 +11,8 @@ import javax.persistence.Version;
 @Entity
 public class ComplaintStaff {
 
+	
+
 	@Id
 	private UUID id;
 	
@@ -35,6 +37,12 @@ public class ComplaintStaff {
 	@Column(name="email")
 	private String email;
 	
+	@Column(name="active")
+	
+	private boolean active;
+	
+	
+
 	private String profession;
 	
 	@Version
@@ -42,11 +50,11 @@ public class ComplaintStaff {
 	
 	public ComplaintStaff() {}
 	
-	public ComplaintStaff(User user, Patient patient, String text, String name, String surname, String profession, String email) {
-		this(UUID.randomUUID(),user, patient, text, new Date(), "", name, surname, profession, email);
+	public ComplaintStaff(User user, Patient patient, String text, String name, String surname, String profession, String email, boolean active) {
+		this(UUID.randomUUID(),user, patient, text, new Date(), "", name, surname, profession, email, active);
 	}
 	
-	public ComplaintStaff(UUID id,User user, Patient patient, String text, Date date, String reply, String name, String surname, String profession, String email) {
+	public ComplaintStaff(UUID id,User user, Patient patient, String text, Date date, String reply, String name, String surname, String profession, String email, boolean active) {
 		super();
 		this.id = id;
 		this.staffComplaintId = new StaffFeedbackId(user, patient);
@@ -57,6 +65,7 @@ public class ComplaintStaff {
 		this.staffSurname=surname;
 		this.profession = profession;
 		this.email = email;
+		this.active = active;
 	}
 
 	public UUID getId() {
@@ -137,5 +146,13 @@ public class ComplaintStaff {
 
 	public void setStaffSurname(String staffSurname) {
 		this.staffSurname = staffSurname;
+	}
+	
+	public boolean isActive() {
+		return active;
+	}
+
+	public void setActive(boolean active) {
+		this.active = active;
 	}
 }

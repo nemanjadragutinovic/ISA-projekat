@@ -1,13 +1,14 @@
 package show.isaBack.DTO.userDTO;
 
-import java.util.UUID;
 import java.util.Date;
+import java.util.UUID;
+
 
 public class ComplaintStaffDTO {
 	
 	private UUID staffId;
 	
-	private Date Date;
+	private Date date;
     
 	private String text;
 
@@ -21,11 +22,21 @@ public class ComplaintStaffDTO {
 	
 	private String email;
 	
+	private UUID complaintId;
+	
+	public UUID getComplaintId() {
+		return complaintId;
+	}
+
+	public void setComplaintId(UUID complaintId) {
+		this.complaintId = complaintId;
+	}
+
 	public ComplaintStaffDTO() {}
 		
 	public ComplaintStaffDTO(UUID staffId, Date date, String text, String name, String surname, String profession, String reply, String email) {
 		this.staffId= staffId;
-		this.Date=date;
+		this.date=date;
 		this.text=text;
 		this.staffName=name;
 		this.staffSurname=surname;
@@ -50,12 +61,12 @@ public class ComplaintStaffDTO {
 		this.staffId = staffId;
 	}
 
-	public Date getDate() {
-		return Date;
+	public java.util.Date getDate() {
+		return date;
 	}
 
 	public void setDate(Date date) {
-		Date = date;
+		this.date = date;
 	}
 
 	public String getReply() {

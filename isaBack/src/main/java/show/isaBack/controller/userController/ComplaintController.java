@@ -65,13 +65,28 @@ public class ComplaintController {
 	}
 	
 	@GetMapping("/getStaffComplaints")
-	@PreAuthorize("hasRole('PATIENT')")
+	@PreAuthorize("hasRole('SYSADMIN')")
 	public ResponseEntity<List<UnspecifiedDTO<ComplaintStaffDTO>>> getStaffComplaints() {
 		System.out.println("usao u get complaints");
 		
 		
 		try {
 			return new ResponseEntity<>(complaintService.findAllStaffComplaints(),HttpStatus.CREATED);
+		
+		} catch (Exception e) {
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+	
+	@PostMapping("/replyToStaffComplaint")
+	@PreAuthorize("hasRole('SYSADMIN')")
+	public ResponseEntity<UUID> replyToStaffComplaint(@RequestBody ComplaintStaffDTO complaintStaffDTO) {
+		System.out.println("usao u reply complaints");
+		System.out.println(complaintStaffDTO.getReply());
+		System.out.println(complaintStaffDTO.getComplaintId());
+		
+		try {
+			return new ResponseEntity<>(complaintService.replyToPatient(complaintStaffDTO),HttpStatus.CREATED);
 		
 		} catch (Exception e) {
 			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
