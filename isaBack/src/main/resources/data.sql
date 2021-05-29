@@ -208,3 +208,5 @@ insert into drug_feedback (date, grade, drug_id, patient_id) values ('2020-05-03
 
 insert into complaint_staff(id, date, email, profession, reply, staff_name, staff_surname, text, version, patient_id, user_id, active) values ('1dc48297-aa8c-473f-9194-cfd4b8f3bb6e','2020-03-03','abc@gmail.com','dermatolog','nista','Njekez','User','jako lose radite svooj posao',1,'22793162-52d3-11eb-ae93-0242ac130002','07a2c302-b584-11eb-8529-0242ac130003', true);
 insert into complaint_staff(id, date, email, profession, reply, staff_name, staff_surname, text, version, patient_id, user_id, active) values ('2dc48297-aa8c-473f-9194-cfd4b8f3bb6e','2020-03-03','abc@gmail.com','dermatolog','nista','Njekez','User','jako lose radite svooj posao',1,'22793162-52d3-11eb-ae93-0242ac130002','07a2c302-b584-11eb-8529-0242ac130003', true);
+
+insert into complaint_pharmacy(id, date, name, reply, text, version, patient_id, pharmacy_id, active) values ('5a501523-7ddf-4fff-9434-ce4df4c85d3b', '2020-03-03', 'Nemanjaa', 'nista', 'najgora apoteka svih vremena dno dna', 1, '22793162-52d3-11eb-ae93-0242ac130002', '775d8e36-9859-11eb-a8b3-0242ac130003', true);

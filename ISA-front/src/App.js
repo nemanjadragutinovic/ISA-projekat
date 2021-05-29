@@ -19,6 +19,7 @@ import PharmaciesAppointmentStartPage from "./Pages/PharmaciesAppointmentStartPa
 import FuturePharmaciesConsultationsForPatient from "./Pages/FuturePharmaciesConsultationsForPatient"
 import OfferPage from './Components/SupplierPages/OfferPage';
 import AdminStaffComplains from './Components/AdminStaffComplains';
+import AdminPharmacyComplains from './Components/AdminPharmacyComplains';
 
 
 import {
@@ -54,6 +55,7 @@ function App() {
         <Route  to ="/futurePharmaciesConsultationsForPatient" path ="/futurePharmaciesConsultationsForPatient"  component={FuturePharmaciesConsultationsForPatient}/>
         <Route  to ="/offers" path ="/offers"  component={OfferPage}/>
         <Route  to ="/staffComplains" path ="/staffComplains"  component={AdminStaffComplains}/>
+        <Route  to ="/pharmacyComplains" path ="/pharmacyComplains"  component={AdminPharmacyComplains}/>
 
 
 

@@ -13,6 +13,8 @@ public interface IComplaintService {
 	public UUID createPharmacyComplaint(ComplaintPharmacyDTO entityDTO);
 	public List<UnspecifiedDTO<ComplaintStaffDTO>> findAllStaffComplaints();
 	public UUID replyToPatient(ComplaintStaffDTO complaintStaffDTO);
+	public List<UnspecifiedDTO<ComplaintPharmacyDTO>> findAllPharmacyComplaints();
+	public UUID replyToPharmacy(ComplaintPharmacyDTO complaintStaffDTO);
 	
 	
 

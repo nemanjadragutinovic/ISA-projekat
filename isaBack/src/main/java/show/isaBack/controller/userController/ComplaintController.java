@@ -92,5 +92,34 @@ public class ComplaintController {
 			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
+	
+	@GetMapping("/getPharmacyComplaints")
+	@PreAuthorize("hasRole('SYSADMIN')")
+	public ResponseEntity<List<UnspecifiedDTO<ComplaintPharmacyDTO>>> getPharmacyComplaints() {
+		System.out.println("usao u get complaints1212");
+		
+		
+		try {
+			return new ResponseEntity<>(complaintService.findAllPharmacyComplaints(),HttpStatus.CREATED);
+		
+		} catch (Exception e) {
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+	
+	@PostMapping("/replyToPharmacyComplaint")
+	@PreAuthorize("hasRole('SYSADMIN')")
+	public ResponseEntity<UUID> replyToPharmacyComplaint(@RequestBody ComplaintPharmacyDTO complaintStaffDTO) {
+		System.out.println("usao u reply hihihi");
+		System.out.println(complaintStaffDTO.getReply());
+		
+		
+		try {
+			return new ResponseEntity<>(complaintService.replyToPharmacy(complaintStaffDTO),HttpStatus.CREATED);
+		
+		} catch (Exception e) {
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
 
 }

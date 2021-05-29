@@ -7,7 +7,9 @@ public class ComplaintPharmacyDTO {
 
 	private UUID pharmacyId;
 
-	private String name;
+	private String pharmacyName;
+	
+	private String patientEmail;
 	
 	private Date Date;
     
@@ -15,14 +17,23 @@ public class ComplaintPharmacyDTO {
 	
 	private String reply;
 	
+	public String getPatientEmail() {
+		return patientEmail;
+	}
+
+	public void setPatientEmail(String patientEmail) {
+		this.patientEmail = patientEmail;
+	}
+
 	public ComplaintPharmacyDTO() {}
 		
-	public ComplaintPharmacyDTO(UUID pharmacyId, Date date, String text, String name, String reply) {
+	public ComplaintPharmacyDTO(UUID pharmacyId, Date date, String text, String pharmacyName, String reply, String patientEmail) {
 		this.pharmacyId= pharmacyId;
 		this.Date=date;
 		this.text=text;
-		this.name = name;
+		this.pharmacyName = pharmacyName;
 		this.reply = reply;
+		this.patientEmail = patientEmail;
 	}
 
 	public UUID getPharmacyId() {
@@ -58,10 +69,10 @@ public class ComplaintPharmacyDTO {
 	}
 	
 	public String getName() {
-		return name;
+		return pharmacyName;
 	}
 
-	public void setName(String name) {
-		this.name = name;
+	public void setName(String pharmacyName) {
+		this.pharmacyName = pharmacyName;
 	}
 }
