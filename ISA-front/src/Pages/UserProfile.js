@@ -53,7 +53,16 @@ class UserProfile extends Component {
 		errorAllergenHeader: "",
 		errorAllergenMessage: "",
 		openAllergenModal: false,
-		
+		patientPoints : "",
+		patientPenalties : "",
+		patientLoyaltyCategory : "",
+		examinationDiscount : "",
+		consultationDiscount : "",
+		drugDiscount : "",
+		showAnotherInformation: false,
+		hideButtonForAnotherInformation : false
+
+
 	};
 
 	constructor(props) {
@@ -175,6 +184,13 @@ class UserProfile extends Component {
 							phoneNumber: res.data.EntityDTO.phoneNumber,
 							userAllergens: res.data.EntityDTO.allergens,
 							
+							patientPoints : res.data.EntityDTO.points,
+							patientPenalties : res.data.EntityDTO.penalty,
+							patientLoyaltyCategory :  res.data.EntityDTO.loyalityProgramForPatientDTO.loyalityCategory,
+							examinationDiscount : res.data.EntityDTO.loyalityProgramForPatientDTO.examinationDiscount,
+							consultationDiscount : res.data.EntityDTO.loyalityProgramForPatientDTO.consultationDiscount,
+							drugDiscount : res.data.EntityDTO.loyalityProgramForPatientDTO.drugDiscount,
+
 
 							
 						});
@@ -182,6 +198,7 @@ class UserProfile extends Component {
 						
 
 						console.log(this.state.userAllergens)
+						
 
 					}
 				})
@@ -635,6 +652,29 @@ class UserProfile extends Component {
 			});
 	};
 
+
+
+	handleClickAnotherInformation= () => {
+		this.setState({
+			showAnotherInformation: true,
+			hideButtonForAnotherInformation : true
+		});
+
+		
+	};
+
+
+	handleClickAnotherInformationClose= () => {
+		this.setState({
+			showAnotherInformation: false,
+			hideButtonForAnotherInformation : false
+		});
+
+		
+	};
+
+
+
 	render() {
 
         
@@ -662,6 +702,29 @@ class UserProfile extends Component {
 
 
 
+		<button type="button" class="btn btn-outline-primary "
+         onClick={() => this.handleClickAnotherInformation()}
+		 hidden={this.state.hideButtonForAnotherInformation}
+         style={{  marginTop: "2em", marginLeft: "auto",marginRight: "auto" }}
+         >
+
+		 Show another information
+        
+        </button>
+
+
+
+		<button type="button" class="btn btn-outline-primary "
+         onClick={() => this.handleClickAnotherInformationClose()}
+		 hidden={!this.state.hideButtonForAnotherInformation}
+         style={{  marginTop: "2em", marginLeft: "auto",marginRight: "auto" }}
+         >
+
+		Close another information
+        </button>
+			
+
+
             <h4 className=" text-center  mb-0 text-uppercase" style={{ marginTop: "2rem" }}>
 						User profile
 			</h4>
@@ -672,7 +735,7 @@ class UserProfile extends Component {
                         <h5 className=" text-center text-uppercase">Personal Information</h5>
                         
 
-						<form id="contactForm" name="sentMessage">
+						<form id="informationForm" >
 								<div className="control-group">
 									<div className="form-group controls mb-0 pb-2" >
 										<b>Email address:</b>
@@ -819,6 +882,215 @@ class UserProfile extends Component {
 
                     </div>
 
+
+
+
+				<div hidden= {!this.state.showAnotherInformation}>
+					<div className="col  container  offset-1 shadow p-3  bg-white ">
+                        <h5 className=" text-center text-uppercase">Another information</h5>
+                        
+
+
+								
+							<div className="form-row"  style={{ marginTop : "2em"}}>
+									<div className="form-col ml-2"
+										style={{
+												
+												fontSize: "1.4em",
+											}}
+									
+									 >
+										<b>Number of penalties: { " " } </b> 
+		
+									</div>
+
+									<div className="form-col ml-4 rounded pr-3 pl-3" 
+									
+									style={{
+												color: "white",
+												background: "red",
+												fontSize: "1.7em",
+												fontWeight: "400"
+											}}
+									
+									>
+									
+										{" "}{this.state.patientPenalties} {" "}
+		
+									</div>
+									
+							</div>
+
+
+
+								
+							<div className="form-row "  style={{ marginTop : "10px"}}>
+									<div className="form-col  ml-2"
+										style={{
+												
+												fontSize: "1.4em",
+											}}
+									
+									 >
+										<b>Number of points: { " " } </b> 
+		
+									</div>
+
+									<div className="form-col ml-4 rounded pr-3 pl-3" 
+									
+									style={{
+												color: "white",
+												background: "green",
+												fontSize: "1.4em",
+												marginTop : "2px",
+												fontWeight: "400"
+												
+											}}
+									
+									>
+									
+										{" "}{this.state.patientPoints} {" "}
+		
+									</div>
+									
+							</div>
+								
+							<div className="form-row "  style={{ marginTop : "30px"}}>
+									<div className="form-col  ml-2"
+										style={{
+												
+												fontSize: "1.4em",
+											}}
+									
+									 >
+										<b>Loyalty category: { " " } </b> 
+		
+									</div>
+
+									<div className="form-col ml-4 rounded pr-3 pl-3" 
+									
+									style={{
+												color: "white",
+												background: "violet",
+												fontSize: "1.4em",
+												marginTop : "2px",
+												fontWeight: "400"
+												
+											}}
+									
+									>
+									
+										{" "}{this.state.patientLoyaltyCategory} {" "}
+		
+									</div>
+									
+							</div>	
+
+								
+
+							<div className="form-row "  style={{ marginTop : "10px"}}>
+									<div className="form-col  ml-2"
+										style={{
+												
+												fontSize: "1.4em",
+											}}
+									
+									 >
+										<b>Examination discount: { " " } </b> 
+		
+									</div>
+
+									<div className="form-col ml-4 rounded pr-3 pl-3" 
+									
+									style={{
+												color: "white",
+												background: "violet",
+												fontSize: "1.4em",
+												marginTop : "2px",
+												fontWeight: "400"
+												
+											}}
+									
+									>
+									
+										{" "}{this.state.examinationDiscount} <b>{" %"}</b>
+		
+									</div>
+									
+							</div>
+
+							<div className="form-row "  style={{ marginTop : "10px"}}>
+									<div className="form-col  ml-2"
+										style={{
+												
+												fontSize: "1.4em",
+											}}
+									
+									 >
+										<b>Consultation discount: { " " } </b> 
+		
+									</div>
+
+									<div className="form-col ml-4 rounded pr-3 pl-3" 
+									
+									style={{
+												color: "white",
+												background: "violet",
+												fontSize: "1.4em",
+												marginTop : "2px",
+												fontWeight: "400"
+												
+											}}
+									
+									>
+									
+										{" "}{this.state.consultationDiscount} <b>{" %"}</b>
+		
+									</div>
+									
+							</div>					
+					
+
+
+							<div className="form-row "  style={{ marginTop : "10px"}}>
+									<div className="form-col  ml-2"
+										style={{
+												
+												fontSize: "1.4em",
+											}}
+									
+									 >
+										<b>Drugs discount: { " " } </b> 
+		
+									</div>
+
+									<div className="form-col ml-4 rounded pr-3 pl-3" 
+									
+									style={{
+												color: "white",
+												background: "violet",
+												fontSize: "1.4em",
+												marginTop : "2px",
+												fontWeight: "400"
+												
+											}}
+									
+									>
+									
+										{" "}{this.state.drugDiscount} <b>{" %"}</b>
+		
+									</div>
+									
+							</div>					
+
+
+
+
+
+                    </div>
+
+
+				</div>	
 					
 
             </div>

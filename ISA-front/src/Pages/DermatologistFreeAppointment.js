@@ -279,7 +279,7 @@ class DermatologistFreeAppointment extends Component {
               <button className="dropdown-item" type="button" onClick={this.handleSortByPriceAscending} >Sort by price ascending</button>
               <button className="dropdown-item" type="button" onClick={this.handleSortByPriceDescending} >Sort by price descending</button>
               <button className="dropdown-item" type="button" onClick={this.handleSortByDermatologistGradeAscending} >Sort by dermatologist grade ascending</button>
-              <button className="dropdown-item" type="button"onClick={this.handleSortByDermatologistGradeDescending} >Sort by dermatologist grade descending</button>
+              <button className="dropdown-item" type="button" onClick={this.handleSortByDermatologistGradeDescending} >Sort by dermatologist grade descending</button>
             </div>
           </div>
 

@@ -1,6 +1,7 @@
 package show.isaBack.controller.pharmacyController;
 
 import java.util.List;
+import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -8,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -70,6 +72,24 @@ public class OfferController {
 	@PreAuthorize("hasRole('SUPPLIER')") 
 	public ResponseEntity<List<UnspecifiedDTO<OfferDTO>>> findAllWaiting() {
 		return new ResponseEntity<>(offerService.findAllWaiting(),HttpStatus.OK);
+	}
+	
+	@CrossOrigin
+	@GetMapping("/checkUpdate/{id}")
+	@PreAuthorize("hasRole('SUPPLIER')") 
+	public ResponseEntity<?> checkIfCanUpdate(@PathVariable UUID id) {
+		System.out.println("usao u check");
+		System.out.println(offerService.checkIfCanUpdate(id));
+		return new ResponseEntity<>(offerService.checkIfCanUpdate(id),HttpStatus.OK);
+	}
+	
+	@CrossOrigin
+	@PutMapping("/update")
+	@PreAuthorize("hasRole('SUPPLIER')")
+	public ResponseEntity<?> update(@RequestBody OfferDTO offerDTO) {
+		System.out.println("usao u update");
+		offerService.update(offerDTO, offerDTO.getId());
+		return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 	}
 
 }

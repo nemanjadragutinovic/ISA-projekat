@@ -21,6 +21,7 @@ import show.isaBack.Mappers.Appointmets.AppointmentsMapper;
 import show.isaBack.emailService.EmailService;
 import show.isaBack.model.Dermatologist;
 import show.isaBack.model.Patient;
+import show.isaBack.model.Pharmacist;
 import show.isaBack.model.Pharmacy;
 import show.isaBack.model.User;
 import show.isaBack.model.UserCharacteristics.WorkTime;
@@ -48,6 +49,7 @@ public class AppointmentService implements IAppointmentService{
 	@Autowired
 	private DermatologistRepository dermatologistRepository;
 	
+	
 	private AppointmentsMapper appointmentsMapper= new AppointmentsMapper();
 	
 	@Autowired
@@ -69,17 +71,22 @@ public class AppointmentService implements IAppointmentService{
 	@Autowired
 	private WorkTimeRepository workTimeRepository;
 	
+	
+	
 	@Override
 	public List<UnspecifiedDTO<DermatologistAppointmentDTO>> findAllFreeAppointmentsForPharmacyAndForAppointmentType(UUID pharmacyId,
 			AppointmentType appointmentType) {
 		
 		List<Appointment> appointments = appointmentRepository.findAllFreeAppointmentsForPharmacyAndForAppointmentType(pharmacyId, appointmentType); 
 		System.out.println(appointments);
-		List<Dermatologist> allDermatologist= dermatologistRepository.findAll();		
+		List<Dermatologist> allDermatologists= dermatologistRepository.findAll();		
 		
 		List<UnspecifiedDTO<EmployeeGradeDTO>> dermatologistEmployees= new ArrayList<UnspecifiedDTO<EmployeeGradeDTO>>();
 		
-		allDermatologist.forEach((dermatologist) -> dermatologistEmployees.add(appointmentsMapper.MapDermatologistToEmployeeDTO(dermatologist)));
+		for (Dermatologist dermatologist : allDermatologists) {
+			double avgGrade = userService.getAvgGradeForEmployee(dermatologist.getId());
+			dermatologistEmployees.add(appointmentsMapper.MapDermatologistToEmployeeDTO(dermatologist,avgGrade));
+		}
 		
 		List<UnspecifiedDTO<DermatologistAppointmentDTO>> freeAppointments=  appointmentsMapper.MapAppointmentsToListAppointmentsDTO(appointments,dermatologistEmployees);             
 		
@@ -129,11 +136,14 @@ public class AppointmentService implements IAppointmentService{
 	public List<UnspecifiedDTO<DermatologistAppointmentDTO>> sortByPriceAscendingAllFreeDermatologistAppointments(UUID pharmacyId,AppointmentType appointmentType){
 		
 		List<Appointment> appointments = appointmentRepository.sortByPriceDescendingAllFreeDermatologistAppointments(pharmacyId, appointmentType); 
-		List<Dermatologist> allDermatologist= dermatologistRepository.findAll();		
+		List<Dermatologist> allDermatologists= dermatologistRepository.findAll();		
 		
 		List<UnspecifiedDTO<EmployeeGradeDTO>> dermatologistEmployees= new ArrayList<UnspecifiedDTO<EmployeeGradeDTO>>();
 		
-		allDermatologist.forEach((dermatologist) -> dermatologistEmployees.add(appointmentsMapper.MapDermatologistToEmployeeDTO(dermatologist)));
+		for (Dermatologist dermatologist : allDermatologists) {
+			double avgGrade = userService.getAvgGradeForEmployee(dermatologist.getId());
+			dermatologistEmployees.add(appointmentsMapper.MapDermatologistToEmployeeDTO(dermatologist,avgGrade));
+		}
 		
 		List<UnspecifiedDTO<DermatologistAppointmentDTO>> freeAppointments=  appointmentsMapper.MapAppointmentsToListAppointmentsDTO(appointments,dermatologistEmployees);             
 		
@@ -148,11 +158,14 @@ public class AppointmentService implements IAppointmentService{
 	public List<UnspecifiedDTO<DermatologistAppointmentDTO>> sortByPriceDescendingAllFreeDermatologistAppointments(UUID pharmacyId,AppointmentType appointmentType){
 		
 		List<Appointment> appointments = appointmentRepository.sortByPriceAscendingAllFreeDermatologistAppointments(pharmacyId, appointmentType); 
-		List<Dermatologist> allDermatologist= dermatologistRepository.findAll();		
+		List<Dermatologist> allDermatologists= dermatologistRepository.findAll();		
 		
 		List<UnspecifiedDTO<EmployeeGradeDTO>> dermatologistEmployees= new ArrayList<UnspecifiedDTO<EmployeeGradeDTO>>();
 		
-		allDermatologist.forEach((dermatologist) -> dermatologistEmployees.add(appointmentsMapper.MapDermatologistToEmployeeDTO(dermatologist)));
+		for (Dermatologist dermatologist : allDermatologists) {
+			double avgGrade = userService.getAvgGradeForEmployee(dermatologist.getId());
+			dermatologistEmployees.add(appointmentsMapper.MapDermatologistToEmployeeDTO(dermatologist,avgGrade));
+		}
 		
 		List<UnspecifiedDTO<DermatologistAppointmentDTO>> freeAppointments=  appointmentsMapper.MapAppointmentsToListAppointmentsDTO(appointments,dermatologistEmployees);             
 		
@@ -199,11 +212,14 @@ public class AppointmentService implements IAppointmentService{
 		UUID logedPatiendID= userService.getLoggedUserId();
 		List<Appointment> appointments = appointmentRepository.findAllFuturePatientsAppointmets(logedPatiendID, appointmentType); 
 		System.out.println(appointments);
-		List<Dermatologist> allDermatologist= dermatologistRepository.findAll();		
+		List<Dermatologist> allDermatologists= dermatologistRepository.findAll();		
 		
 		List<UnspecifiedDTO<EmployeeGradeDTO>> dermatologistEmployees= new ArrayList<UnspecifiedDTO<EmployeeGradeDTO>>();
 		
-		allDermatologist.forEach((dermatologist) -> dermatologistEmployees.add(appointmentsMapper.MapDermatologistToEmployeeDTO(dermatologist)));
+		for (Dermatologist dermatologist : allDermatologists) {
+			double avgGrade = userService.getAvgGradeForEmployee(dermatologist.getId());
+			dermatologistEmployees.add(appointmentsMapper.MapDermatologistToEmployeeDTO(dermatologist,avgGrade));
+		}
 		
 		List<UnspecifiedDTO<DermatologistAppointmentDTO>> freeAppointments=  appointmentsMapper.MapAppointmentsToListAppointmentsDTO(appointments,dermatologistEmployees);             
 		
@@ -216,7 +232,7 @@ public class AppointmentService implements IAppointmentService{
 	
 	
 	@Override
-	public void cancelDermatologistAppointment(UUID appointmentId) {
+	public void cancelAppointment(UUID appointmentId) {
 		
 		Appointment appointment = appointmentRepository.findById(appointmentId).get();
 		
@@ -242,11 +258,15 @@ public class AppointmentService implements IAppointmentService{
 		UUID logedPatiendID= userService.getLoggedUserId();
 		List<Appointment> appointments = appointmentRepository.findAllHistoryPatientsAppointmets(logedPatiendID, appointmentType); 
 		System.out.println(appointments);
-		List<Dermatologist> allDermatologist= dermatologistRepository.findAll();		
+		List<Dermatologist> allDermatologists= dermatologistRepository.findAll();		
 		
 		List<UnspecifiedDTO<EmployeeGradeDTO>> dermatologistEmployees= new ArrayList<UnspecifiedDTO<EmployeeGradeDTO>>();
 		
-		allDermatologist.forEach((dermatologist) -> dermatologistEmployees.add(appointmentsMapper.MapDermatologistToEmployeeDTO(dermatologist)));
+		for (Dermatologist dermatologist : allDermatologists) {
+			double avgGrade = userService.getAvgGradeForEmployee(dermatologist.getId());
+			dermatologistEmployees.add(appointmentsMapper.MapDermatologistToEmployeeDTO(dermatologist,avgGrade));
+		}
+		
 		
 		List<UnspecifiedDTO<DermatologistAppointmentDTO>> freeAppointments=  appointmentsMapper.MapAppointmentsToListAppointmentsDTO(appointments,dermatologistEmployees);             
 		
@@ -254,6 +274,256 @@ public class AppointmentService implements IAppointmentService{
 		return freeAppointments;
 		
 	}
+	
+	
+	@Override
+	public List<UnspecifiedDTO<DermatologistAppointmentDTO>> findAllFuturePatientsConsultations(AppointmentType appointmentType) {
+		
+		UUID logedPatiendID= userService.getLoggedUserId();
+		List<Appointment> appointments = appointmentRepository.findAllFuturePatientsAppointmets(logedPatiendID, appointmentType); 
+		System.out.println(appointments);
+		List<Pharmacist> allPharmacists= pharmacistRepository.findAll();		
+		
+		List<UnspecifiedDTO<EmployeeGradeDTO>> pharmacistEmployees= new ArrayList<UnspecifiedDTO<EmployeeGradeDTO>>();
+		
+		for (Pharmacist pharmacist : allPharmacists) {
+			double avgGrade = userService.getAvgGradeForEmployee(pharmacist.getId());
+			pharmacistEmployees.add(appointmentsMapper.MapPharmacistsToEmployeeDTO(pharmacist,avgGrade));
+		}
+		
+		
+		
+		List<UnspecifiedDTO<DermatologistAppointmentDTO>> freeAppointments=  appointmentsMapper.MapAppointmentsToListAppointmentsDTO(appointments,pharmacistEmployees);             
+		
+		
+		return freeAppointments;
+		
+	}
+	
+	
+	
+	@Override
+	public List<UnspecifiedDTO<DermatologistAppointmentDTO>> findAllHistoryPatientsConsultations(AppointmentType appointmentType) {
+		
+		UUID logedPatiendID= userService.getLoggedUserId();
+		List<Appointment> appointments = appointmentRepository.findAllHistoryPatientsAppointmets(logedPatiendID, appointmentType); 
+		System.out.println(appointments);
+		List<Pharmacist> allPharmacists= pharmacistRepository.findAll();		
+		
+		List<UnspecifiedDTO<EmployeeGradeDTO>> pharmacistEmployees= new ArrayList<UnspecifiedDTO<EmployeeGradeDTO>>();
+		
+		for (Pharmacist pharmacist : allPharmacists) {
+			double avgGrade = userService.getAvgGradeForEmployee(pharmacist.getId());
+			pharmacistEmployees.add(appointmentsMapper.MapPharmacistsToEmployeeDTO(pharmacist,avgGrade));
+		}
+		
+		
+		
+		List<UnspecifiedDTO<DermatologistAppointmentDTO>> freeAppointments=  appointmentsMapper.MapAppointmentsToListAppointmentsDTO(appointments,pharmacistEmployees);             
+		
+		
+		return freeAppointments;
+		
+	}
+	
+	
+	@Override
+	public List<UnspecifiedDTO<DermatologistAppointmentDTO>> findAllHistoryPatientsAppointmetsSortByPriceAscending(AppointmentType appointmentType) throws Exception {
+				
+		List<UnspecifiedDTO<DermatologistAppointmentDTO>> sorterdAppointments=  findAllHistoryPatientsAppointmets(appointmentType);             
+		
+		if(sorterdAppointments==null)
+			throw new Exception(" The list is null");
+		
+		Collections.sort(sorterdAppointments, (appointment1, appointment2) -> Double.compare(appointment1.EntityDTO.getPrice(), appointment2.EntityDTO.getPrice()));
+		
+		
+		return sorterdAppointments;
+		
+	}
+	
+	
+	@Override
+	public List<UnspecifiedDTO<DermatologistAppointmentDTO>> findAllHistoryPatientsAppointmetsSortByPriceDescending(AppointmentType appointmentType) throws Exception {
+				
+		List<UnspecifiedDTO<DermatologistAppointmentDTO>> sorterdAppointments=  findAllHistoryPatientsAppointmets(appointmentType);             
+		
+		if(sorterdAppointments==null)
+			throw new Exception(" The list is null");
+		
+		Collections.sort(sorterdAppointments, (appointment1, appointment2) -> Double.compare(appointment1.EntityDTO.getPrice(), appointment2.EntityDTO.getPrice()));
+		Collections.reverse(sorterdAppointments);
+		
+		return sorterdAppointments;
+		
+	}
+	
+	@Override
+	public List<UnspecifiedDTO<DermatologistAppointmentDTO>> findAllHistoryPatientsAppointmetsSortByDateAscending(AppointmentType appointmentType) throws Exception {
+				
+		List<UnspecifiedDTO<DermatologistAppointmentDTO>> sorterdAppointments=  findAllHistoryPatientsAppointmets(appointmentType);             
+		
+		if(sorterdAppointments==null)
+			throw new Exception(" The list is null");
+		
+		Collections.sort(sorterdAppointments, (appointment1, appointment2) -> Double.compare(appointment1.EntityDTO.getStartDateTime().getTime(), appointment2.EntityDTO.getStartDateTime().getTime()));
+		
+		
+		return sorterdAppointments;
+		
+	}
+	
+	@Override
+	public List<UnspecifiedDTO<DermatologistAppointmentDTO>> findAllHistoryPatientsAppointmetsSortByDateDescending(AppointmentType appointmentType) throws Exception {
+				
+		List<UnspecifiedDTO<DermatologistAppointmentDTO>> sorterdAppointments=  findAllHistoryPatientsAppointmets(appointmentType);             
+		
+		if(sorterdAppointments==null)
+			throw new Exception(" The list is null");
+		
+		Collections.sort(sorterdAppointments, (appointment1, appointment2) -> Double.compare(appointment1.EntityDTO.getStartDateTime().getTime(), appointment2.EntityDTO.getStartDateTime().getTime()));
+		Collections.reverse(sorterdAppointments);
+		
+		return sorterdAppointments;
+		
+	}
+	
+	
+	
+	@Override
+	public List<UnspecifiedDTO<DermatologistAppointmentDTO>> findAllHistoryPatientsAppointmetsSortByDurationAscending(AppointmentType appointmentType) throws Exception {
+				
+		List<UnspecifiedDTO<DermatologistAppointmentDTO>> sorterdAppointments=  findAllHistoryPatientsAppointmets(appointmentType);             
+		
+		if(sorterdAppointments==null)
+			throw new Exception(" The list is null");
+		
+		Collections.sort(sorterdAppointments, (appointment1, appointment2) -> Double.compare(appointment1.EntityDTO.getEndDateTime().getTime() - appointment1.EntityDTO.getStartDateTime().getTime(),       
+					appointment2.EntityDTO.getEndDateTime().getTime() - appointment2.EntityDTO.getStartDateTime().getTime()));
+		
+		return sorterdAppointments;
+		
+	}
+	
+	
+	@Override
+	public List<UnspecifiedDTO<DermatologistAppointmentDTO>> findAllHistoryPatientsAppointmetsSortByDurationDescending(AppointmentType appointmentType) throws Exception {
+				
+		List<UnspecifiedDTO<DermatologistAppointmentDTO>> sorterdAppointments=  findAllHistoryPatientsAppointmets(appointmentType);             
+		
+		if(sorterdAppointments==null)
+			throw new Exception(" The list is null");
+		
+		Collections.sort(sorterdAppointments, (appointment1, appointment2) -> Double.compare(appointment1.EntityDTO.getEndDateTime().getTime() - appointment1.EntityDTO.getStartDateTime().getTime(),       
+					appointment2.EntityDTO.getEndDateTime().getTime() - appointment2.EntityDTO.getStartDateTime().getTime()));
+		
+		Collections.reverse(sorterdAppointments);
+		
+		return sorterdAppointments;
+		
+	}
+	
+	
+	
+	
+	@Override
+	public List<UnspecifiedDTO<DermatologistAppointmentDTO>> findAllHistoryPatientsConsultationsSortByPriceAscending(AppointmentType appointmentType) throws Exception {
+				
+		List<UnspecifiedDTO<DermatologistAppointmentDTO>> sorterdAppointments=  findAllHistoryPatientsConsultations(appointmentType);             
+		
+		if(sorterdAppointments==null)
+			throw new Exception(" The list is null");
+		
+		Collections.sort(sorterdAppointments, (appointment1, appointment2) -> Double.compare(appointment1.EntityDTO.getPrice(), appointment2.EntityDTO.getPrice()));
+		
+		
+		return sorterdAppointments;
+		
+	}
+	
+	@Override
+	public List<UnspecifiedDTO<DermatologistAppointmentDTO>> findAllHistoryPatientsConsultationsSortByPriceDescending(AppointmentType appointmentType) throws Exception {
+		
+		List<UnspecifiedDTO<DermatologistAppointmentDTO>> sorterdAppointments=  findAllHistoryPatientsConsultations(appointmentType);             
+		
+		if(sorterdAppointments==null)
+			throw new Exception(" The list is null");
+		
+		Collections.sort(sorterdAppointments, (appointment1, appointment2) -> Double.compare(appointment1.EntityDTO.getPrice(), appointment2.EntityDTO.getPrice()));
+		Collections.reverse(sorterdAppointments);
+		
+		return sorterdAppointments;
+		
+	}
+	
+	
+	
+	@Override
+	public List<UnspecifiedDTO<DermatologistAppointmentDTO>> findAllHistoryPatientsConsultationsSortByDateAscending(AppointmentType appointmentType) throws Exception {
+				
+		List<UnspecifiedDTO<DermatologistAppointmentDTO>> sorterdAppointments=  findAllHistoryPatientsConsultations(appointmentType);             
+		
+		if(sorterdAppointments==null)
+			throw new Exception(" The list is null");
+		
+		Collections.sort(sorterdAppointments, (appointment1, appointment2) -> Double.compare(appointment1.EntityDTO.getStartDateTime().getTime(), appointment2.EntityDTO.getStartDateTime().getTime()));
+		
+		
+		return sorterdAppointments;
+		
+	}
+	
+	@Override
+	public List<UnspecifiedDTO<DermatologistAppointmentDTO>> findAllHistoryPatientsConsultationsSortByDateDescending(AppointmentType appointmentType) throws Exception {
+		
+		List<UnspecifiedDTO<DermatologistAppointmentDTO>> sorterdAppointments=  findAllHistoryPatientsConsultations(appointmentType);             
+		
+		if(sorterdAppointments==null)
+			throw new Exception(" The list is null");
+		
+		Collections.sort(sorterdAppointments, (appointment1, appointment2) -> Double.compare(appointment1.EntityDTO.getStartDateTime().getTime(), appointment2.EntityDTO.getStartDateTime().getTime()));
+		Collections.reverse(sorterdAppointments);
+		
+		return sorterdAppointments;
+		
+	}
+	
+	
+	
+	@Override
+	public List<UnspecifiedDTO<DermatologistAppointmentDTO>> findAllHistoryPatientsConsultationsSortByDurationAscending(AppointmentType appointmentType) throws Exception {
+				
+		List<UnspecifiedDTO<DermatologistAppointmentDTO>> sorterdAppointments=  findAllHistoryPatientsConsultations(appointmentType);             
+		
+		if(sorterdAppointments==null)
+			throw new Exception(" The list is null");
+		
+		Collections.sort(sorterdAppointments, (appointment1, appointment2) -> Double.compare(appointment1.EntityDTO.getEndDateTime().getTime() - appointment1.EntityDTO.getStartDateTime().getTime(),       
+				appointment2.EntityDTO.getEndDateTime().getTime() - appointment2.EntityDTO.getStartDateTime().getTime()));
+		
+		
+		return sorterdAppointments;
+		
+	}
+	
+	@Override
+	public List<UnspecifiedDTO<DermatologistAppointmentDTO>> findAllHistoryPatientsConsultationsSortByDurationDescending(AppointmentType appointmentType) throws Exception {
+		
+		List<UnspecifiedDTO<DermatologistAppointmentDTO>> sorterdAppointments=  findAllHistoryPatientsConsultations(appointmentType);             
+		
+		if(sorterdAppointments==null)
+			throw new Exception(" The list is null");
+		
+		Collections.sort(sorterdAppointments, (appointment1, appointment2) -> Double.compare(appointment1.EntityDTO.getEndDateTime().getTime() - appointment1.EntityDTO.getStartDateTime().getTime(),       
+				appointment2.EntityDTO.getEndDateTime().getTime() - appointment2.EntityDTO.getStartDateTime().getTime()));
+		Collections.reverse(sorterdAppointments);
+		
+		return sorterdAppointments;
+		
+	}
+	
+	
+	
 	
 	
 	@Override	
@@ -459,6 +729,18 @@ public class AppointmentService implements IAppointmentService{
 		
 		if(appointmentRepository.findAllSheduledAppointmentsForPatientsInDataRange(appointment.getStartDateTime(), appointment.getEndDateTime(), appointment.getPatient().getId()).size() > 0)
 				throw new IllegalArgumentException("Patient has alredy sheduled appointment in selected data range");
+	}
+	
+	public boolean canPatientReportPharmacy(UUID pharmacyId){
+		UUID patientId = userService.getLoggedUserId();
+		
+		List<Appointment> appointments = appointmentRepository.findAllFinishedAppointmentsForPatientinPharmacy(patientId,pharmacyId);
+		
+		if(appointments.size()==0) {
+			return false;
+		}else {
+			return true;
+		}
 	}
 	
 	

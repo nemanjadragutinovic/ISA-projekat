@@ -111,6 +111,14 @@ class Header extends React.Component{
                     
                 </ReactBootStrap.NavDropdown>
 
+                <ReactBootStrap.NavDropdown alignRight title="Complaints" hidden={!this.hasRole("ROLE_SYSADMIN")} id="collasible-nav-dropdown">
+                    <ReactBootStrap.NavDropdown.Item href="/staffComplains" >Employee complaints</ReactBootStrap.NavDropdown.Item>
+                    <ReactBootStrap.NavDropdown.Item href="/pharmacyComplains" >Pharmacy complaints</ReactBootStrap.NavDropdown.Item>
+                    
+                    
+                    
+                </ReactBootStrap.NavDropdown>
+
                 <Link to="/loyalityProgram">
                 <ReactBootStrap.Nav.Link href="#deets" hidden={!this.hasRole("ROLE_SYSADMIN")} >Loyality Program</ReactBootStrap.Nav.Link>
                 </Link>

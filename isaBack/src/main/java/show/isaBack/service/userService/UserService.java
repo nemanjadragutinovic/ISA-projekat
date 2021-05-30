@@ -26,6 +26,7 @@ import show.isaBack.DTO.drugDTO.AllergenDTO;
 import show.isaBack.DTO.pharmacyDTO.PharmacyWithGradeAndPriceDTO;
 import show.isaBack.DTO.userDTO.AuthorityDTO;
 import show.isaBack.DTO.userDTO.ChangePasswordDTO;
+import show.isaBack.DTO.userDTO.LoyalityProgramForPatientDTO;
 import show.isaBack.DTO.userDTO.PatientDTO;
 import show.isaBack.DTO.userDTO.PatientsAllergenDTO;
 
@@ -58,6 +59,7 @@ import show.isaBack.repository.userRepository.SupplierRepository;
 import show.isaBack.repository.userRepository.UserRepository;
 import show.isaBack.serviceInterfaces.IAppointmentService;
 import show.isaBack.serviceInterfaces.IEmployeeGradeService;
+import show.isaBack.serviceInterfaces.ILoyaltyService;
 import show.isaBack.serviceInterfaces.IUserInterface;
 import show.isaBack.unspecifiedDTO.UnspecifiedDTO;
 
@@ -96,6 +98,9 @@ public class UserService implements IUserInterface{
 	
 	@Autowired
 	private SupplierRepository supplierRepository;
+	
+	@Autowired
+	private ILoyaltyService loyaltyProgramService;
 	
 	public UUID createPatient(UserRegistrationDTO patientRegistrationDTO) {
 		
@@ -151,9 +156,12 @@ public class UserService implements IUserInterface{
 		if(patient==null) {
 			System.out.println("pacijent je null");
 		}
-
+		
+		LoyalityProgramForPatientDTO patientLoyalityProgramDTO=loyaltyProgramService.getLoyalityProgramForPatient(patient);
+		
 		return new UnspecifiedDTO<PatientDTO>(patientId , new PatientDTO(patient.getEmail(), patient.getName(), patient.getSurname(), patient.getAddress(),
-				patient.getPhoneNumber(), patient.isActive(), patient.getUserAuthorities(),MapAllergenToAllergenDTO(patient.getAllergens())));
+				patient.getPhoneNumber(), patient.isActive(), patient.getUserAuthorities(),MapAllergenToAllergenDTO(patient.getAllergens()), patient.getPenalty(),
+				patient.getPoints(), patientLoyalityProgramDTO));
 	}
 	
 	@Override
@@ -456,7 +464,12 @@ public class UserService implements IUserInterface{
 		
 	}
 	
-	
+	@Override
+	public double getAvgGradeForEmployee(UUID employeeID){
+		
+		return employeeGradeService.getAvgGradeForEmployee(employeeID);
+		
+		}
 	
 	
 	
@@ -484,6 +497,38 @@ public class UserService implements IUserInterface{
 		return pharmacistDTOSorterByGradeDescending;
 		
 		
+	}
+	
+	@Override
+	public boolean subscribeToPharmacy(String pharmacyId) {
+		try {
+			UUID loggedUser= this.getLoggedUserId();
+
+			Patient patient = patientRepository.getOne(loggedUser);
+			Pharmacy pharmacy = pharmacyRepository.getOne(UUID.fromString(pharmacyId));
+			patient.addSubscribeToPharmacy(pharmacy);
+			
+			patientRepository.save(patient);
+			return true;
+		} 
+		catch (EntityNotFoundException e) { return false; } 
+		catch (IllegalArgumentException e) { return false; }		
+	}
+	
+	@Override
+	public boolean unsubscribeFromPharmacy(String pharmacyId) {
+		// TODO Auto-generated method stub
+		try {
+			UUID loggedUser= this.getLoggedUserId();
+
+			Patient patient = patientRepository.getOne(loggedUser);
+			patient.removeSubscribeFromPharmacy(UUID.fromString(pharmacyId));
+			
+			patientRepository.save(patient);
+			return true;
+		} 
+		catch (EntityNotFoundException e) { return false; } 
+		catch (IllegalArgumentException e) { return false; }	
 	}
 	
 	

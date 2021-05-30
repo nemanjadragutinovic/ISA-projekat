@@ -17,7 +17,6 @@ public class EmployeeGradeService implements IEmployeeGradeService{
 	@Override
 	public double getAvgGradeForEmployee(UUID employeeId) {
 		double avgGrade;
-		
 		try {
 			avgGrade = employeeGradeRepository.getAvgGradeForEmployee(employeeId);
 		} catch (Exception e) {

@@ -6,6 +6,7 @@ import DermatologistAppointmentPicture from "../Images/appointment.png" ;
 import UnsuccessfulAlert from "../Components/Alerts/UnsuccessfulAlert";
 import SuccessfulAlert from "../Components/Alerts/SuccessfulAlert";
 import {NavLink, Redirect } from "react-router-dom";
+import CreateComplaintModal from "../Components/CreateComplaintModal";
 
 const API_URL="http://localhost:8080";
 
@@ -23,6 +24,15 @@ class HistoryDermatologistAppointmentsForPatient extends Component {
         hiddenUnsuccessfulAlert: true,
         UnsuccessfulHeader: "",
         UnsuccessfulMessage: "",
+
+		showComplaintModal: false,
+		StaffName: "",
+		StaffSurame: "",
+		complaint: "",
+		staffId : "",
+		Date : new Date(),
+		text : "",
+		profession : "",
 
 
 
@@ -82,12 +92,214 @@ class HistoryDermatologistAppointmentsForPatient extends Component {
 
 
 
-    
- 
     moveToFutureExamination =() => {
 
        this.props.history.push("/futureDermatologistAppointmentsForPatient");
     }
+
+
+
+	handleSortByPriceAscending =() => {
+
+		console.log("sortiranjeee");
+		var appointmentType= "EXAMINATION";
+
+		Axios.get(API_URL + "/appointment/dermatologist/findAllHistoryPatientsAppointmets/sortByPriceAscending/" + appointmentType , {
+			validateStatus: () => true,
+			headers: { Authorization: GetAuthorisation() },
+		})
+			.then((res) => {
+				if (res.status === 401) {
+                    this.props.history.push('/login');
+				} else {
+					this.setState({ appointments: res.data });
+					console.log(res.data);
+				}
+			})
+			.catch((err) => {
+				console.log(err);
+			});
+        
+    }
+
+
+	handleSortByPriceDescending =() => {
+
+		var appointmentType= "EXAMINATION";
+
+		Axios.get(API_URL + "/appointment/dermatologist/findAllHistoryPatientsAppointmets/sortByPriceDescending/" + appointmentType , {
+			validateStatus: () => true,
+			headers: { Authorization: GetAuthorisation() },
+		})
+			.then((res) => {
+				if (res.status === 401) {
+                    this.props.history.push('/login');
+				} else {
+					this.setState({ appointments: res.data });
+					console.log(res.data);
+				}
+			})
+			.catch((err) => {
+				console.log(err);
+			});
+        
+    }
+
+	handleSortByDateAscending =() => {
+
+
+		console.log("sortiranjeee");
+		var appointmentType= "EXAMINATION";
+
+		Axios.get(API_URL + "/appointment/dermatologist/findAllHistoryPatientsAppointmets/sortByDateAscending/" + appointmentType , {
+			validateStatus: () => true,
+			headers: { Authorization: GetAuthorisation() },
+		})
+			.then((res) => {
+				if (res.status === 401) {
+                    this.props.history.push('/login');
+				} else {
+					this.setState({ appointments: res.data });
+					console.log(res.data);
+				}
+			})
+			.catch((err) => {
+				console.log(err);
+			});
+        
+    }
+
+
+	handleSortByDateDescending =() => {
+
+		
+		var appointmentType= "EXAMINATION";
+
+		Axios.get(API_URL + "/appointment/dermatologist/findAllHistoryPatientsAppointmets/sortByDateDescending/" + appointmentType , {
+			validateStatus: () => true,
+			headers: { Authorization: GetAuthorisation() },
+		})
+			.then((res) => {
+				if (res.status === 401) {
+                    this.props.history.push('/login');
+				} else {
+					this.setState({ appointments: res.data });
+					console.log(res.data);
+				}
+			})
+			.catch((err) => {
+				console.log(err);
+			});
+        
+    }
+
+
+	handleSortByDurationAppointmentAscending =() => {
+
+		var appointmentType= "EXAMINATION";
+
+		Axios.get(API_URL + "/appointment/dermatologist/findAllHistoryPatientsAppointmets/sortByDurationAscending/" + appointmentType , {
+			validateStatus: () => true,
+			headers: { Authorization: GetAuthorisation() },
+		})
+			.then((res) => {
+				if (res.status === 401) {
+                    this.props.history.push('/login');
+				} else {
+					this.setState({ appointments: res.data });
+					console.log(res.data);
+				}
+			})
+			.catch((err) => {
+				console.log(err);
+			});
+
+        
+    }
+
+	
+	handleSortByDurationAppointmentDescending =() => {
+
+		var appointmentType= "EXAMINATION";
+
+		Axios.get(API_URL + "/appointment/dermatologist/findAllHistoryPatientsAppointmets/sortByDurationDescending/" + appointmentType , {
+			validateStatus: () => true,
+			headers: { Authorization: GetAuthorisation() },
+		})
+			.then((res) => {
+				if (res.status === 401) {
+                    this.props.history.push('/login');
+				} else {
+					this.setState({ appointments: res.data });
+					console.log(res.data);
+				}
+			})
+			.catch((err) => {
+				console.log(err);
+			});
+
+        
+    }
+
+	handleComplaintClick = (staff) => {
+		console.log(staff);
+		
+				
+					this.setState({
+						selectedStaffId: staff.Id,
+						showComplaintModal: true,
+						StaffName: staff.EntityDTO.name,
+						StaffSurame: staff.EntityDTO.surname,
+						profession : staff.EntityDTO.profession,
+						grade: 0,
+					});
+				
+			
+			
+	};
+
+	handleComaplaint = () => {
+		let ComplaintStaffDTO = {
+			staffId: this.state.selectedStaffId,
+			date: new Date(),
+			text: this.state.text,
+			staffName: this.state.StaffName,
+			staffSurname: this.state.StaffSurame,
+			profession: "",
+			reply: "",
+			email: "",
+		};
+
+		Axios.post("http://localhost:8080/complaint", ComplaintStaffDTO, { validateStatus: () => true, headers: { Authorization: GetAuthorisation() } })
+			.then((resp) => {
+				if (resp.status === 500) {
+					this.setState({ hiddenFailAlert: false, failHeader: "Internal server error", failMessage: "Server error." });
+				} else if (resp.status === 201) {
+					
+					
+				}
+				this.setState({ showComplaintModal: false });
+			})
+			.catch((err) => {
+				console.log(err);
+			});
+	};
+
+	handleComplaintChange = (event) => {
+		this.setState({ text: event.target.value });
+	};
+
+	
+	handleComplaintModalClose = () => {
+		this.setState({ showComplaintModal: false });
+	};
+
+	handleStuffIdChange = (stuffID) => {
+		this.setState({ staffId: stuffID });
+	};
+
+
+
 
 	render() {
 	
@@ -108,6 +320,29 @@ class HistoryDermatologistAppointmentsForPatient extends Component {
          >
          Future Examination
         </button>
+
+
+		<div className="container" style={{  marginTop: "2em" }}>
+
+		<div className="dropdown">
+			<button className="btn btn-primary btn-lg dropdown-toggle"
+				type="button" id="dropdownMenu2"
+				data-toggle="dropdown" 
+				aria-haspopup="true" 
+				aria-expanded="false">
+				Sort
+			</button>
+			<div className="dropdown-menu" aria-labelledby="dropdownMenu2">
+					<button className="dropdown-item" type="button" onClick={this.handleSortByPriceAscending} >Sort by price ascending</button>
+					<button className="dropdown-item" type="button" onClick={this.handleSortByPriceDescending} >Sort by price descending</button>
+					<button className="dropdown-item" type="button" onClick={this.handleSortByDateAscending} >Sort by date ascending</button>
+					<button className="dropdown-item" type="button" onClick={this.handleSortByDateDescending} >Sort by date descending</button>
+					<button className="dropdown-item" type="button" onClick={this.handleSortByDurationAppointmentAscending} >Sort by duration appointment ascending</button>
+					<button className="dropdown-item" type="button" onClick={this.handleSortByDurationAppointmentDescending} >Sort by duration appointment descending</button>
+			</div>
+			</div>
+
+		</div>	
 
 
          <h1 hidden={this.state.appointments.length === 0} className="text-center  mt-3  " >Your history appointments!</h1>
@@ -189,6 +424,20 @@ class HistoryDermatologistAppointmentsForPatient extends Component {
 										
 									</td>
 
+									<td className="align-middle">
+										<div style={{ marginLeft: "55%" }}>
+										<button
+											type="button"
+											onClick={() => this.handleComplaintClick(appointment.EntityDTO.employee)}
+											
+											className="btn btn-outline-secondary"
+										>
+											Make complaint
+										</button>
+										</div>
+										
+									</td>
+
                                     
                                     
 								</tr>
@@ -197,10 +446,25 @@ class HistoryDermatologistAppointmentsForPatient extends Component {
 					</table>
                 </div>
 
-
+			
+				
 
           
         </div>
+
+		<CreateComplaintModal
+					buttonName="Send complaint"
+					header="Give complaint"
+					handleComplaintChange={this.handleComplaintChange}
+					show={this.state.showComplaintModal}
+					onCloseModal={this.handleComplaintModalClose}
+					giveFeedback={this.handleComaplaint}
+					name={this.state.StaffName + " " + this.state.StaffSurame}
+					forWho="consultant"
+					handleClickIcon={this.handleClickIcon}
+					complaint={this.state.complaint}
+				/>
+		
         </React.Fragment>
         
 		);

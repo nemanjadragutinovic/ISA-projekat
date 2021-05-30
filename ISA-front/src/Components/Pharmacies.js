@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import Axios from "axios";
 import Header from './Header';
 import PharmacyLogoPicture from "../Images/pharmacyLogo.jpg" ;
+import GetAuthorisation from "../Funciton/GetAuthorisation";
 const API_URL="http://localhost:8080";
 
 class Pharmacies extends Component {
@@ -17,7 +18,8 @@ class Pharmacies extends Component {
         searchCityName: "",
         showSearchedForm: false,
         showResetSearced: false,
-        inputError : "none"
+        inputError : "none",
+      
 		
 
 
@@ -167,6 +169,7 @@ class Pharmacies extends Component {
 	};
 
 
+
    
 
  
@@ -298,6 +301,7 @@ class Pharmacies extends Component {
                                         </div>
 
                                       </td>
+                                     
 
 
                                     </tr>

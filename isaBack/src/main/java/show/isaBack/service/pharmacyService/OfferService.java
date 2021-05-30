@@ -1,6 +1,7 @@
 package show.isaBack.service.pharmacyService;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
@@ -132,10 +133,15 @@ public class OfferService implements IOfferService{
 		return new Offers(offerDTO.getDateToDelivery(), offerDTO.getPrice(), offerDTO.getOfferStatus());
 	}
 
+	
+	
 	@Override
 	public void update(OfferDTO entityDTO, UUID id) {
-		// TODO Auto-generated method stub
-		
+		Offers offer = offerRepository.getOne(id);
+		offer.setPrice(entityDTO.getPrice());
+		if(entityDTO.getDateToDelivery() != null)
+			offer.setDateToDelivery(entityDTO.getDateToDelivery());
+		offerRepository.save(offer);
 	}
 
 	@Override
@@ -184,6 +190,37 @@ public class OfferService implements IOfferService{
 		
 		
 		return offers;
+	}
+	
+	@Override
+	public boolean checkIfCanUpdate(UUID id) {
+		Date todayDate = new Date();
+		List<Order> orders = orderRepository.findAll();
+		for(Order o: orders){
+			System.out.println(o.getId());
+			if(o.getOffers() == null)
+				continue;
+			
+			if(findIfThereIsOffer(o.getOffers(), id)) {
+				if( todayDate.before(o.getDate()) )
+					return true;
+				else 
+					return false;
+			}
+		}
+		
+		return false;
+	}
+	
+	private boolean findIfThereIsOffer(List<Offers> offers, UUID id) {
+		for(Offers o: offers) {
+			System.out.println(o.getId());
+			if(o.getId().equals(id))
+				return true;
+		}
+		
+		return false;
+		
 	}
 
 }
