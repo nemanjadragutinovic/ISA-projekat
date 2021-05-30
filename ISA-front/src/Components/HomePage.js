@@ -46,14 +46,12 @@ class HomePage extends React.Component {
           <section id="homePageSection" className="d-flex ">
 					<div className="container" style={{textAlign: "center"}}>
 						<h1>Welcome to Health Clinic </h1>
-              
-              
-            
-            <Link  to="/login" hidden={this.hasSpecificRole("ROLE_PATIENT") || this.hasSpecificRole("ROLE_PHARMACYADMIN")} className="btn-Login-Register">
+
+            <Link  to="/login" hidden={this.hasAnyRole()} className="btn-Login-Register">
 							Login
 						</Link>
 
-						<Link  to="/registration" hidden={this.hasSpecificRole("ROLE_PATIENT") || this.hasSpecificRole("ROLE_PHARMACYADMIN")} className="btn-Login-Register">
+						<Link  to="/registration" hidden={this.hasAnyRole()} className="btn-Login-Register">
 							Register
 						</Link>
       

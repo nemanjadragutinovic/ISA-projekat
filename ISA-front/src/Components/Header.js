@@ -79,8 +79,11 @@ class Header extends React.Component{
                 <ReactBootStrap.Nav.Link href="#deets" hidden={!this.hasRole("ROLE_PHARMACYADMIN")}>My Pharmacy</ReactBootStrap.Nav.Link>
                 </Link>
 
-                
-                <ReactBootStrap.NavDropdown alignRight title="My reports" hidden={this.hasRole("ROLE_PHARMACYADMIN")} id="collasible-nav-dropdown">
+
+              
+
+                <ReactBootStrap.NavDropdown alignRight title="My reports" id="collasible-nav-dropdown" hidden={!this.hasRole("ROLE_PATIENT")} >
+
                     <ReactBootStrap.NavDropdown.Item href="/futureDermatologistAppointmentsForPatient">Dermatologist</ReactBootStrap.NavDropdown.Item>
                     <ReactBootStrap.NavDropdown.Divider />
                     <ReactBootStrap.NavDropdown.Item href="/futurePharmaciesConsultationsForPatient">Pharmacies</ReactBootStrap.NavDropdown.Item>
@@ -90,7 +93,10 @@ class Header extends React.Component{
 
 
 
-                <ReactBootStrap.NavDropdown alignRight title="Apointment" hidden={this.hasRole("ROLE_PHARMACYADMIN")} id="collasible-nav-dropdown">
+
+
+                <ReactBootStrap.NavDropdown alignRight title="Apointment" id="collasible-nav-dropdown" hidden={!this.hasRole("ROLE_PATIENT")} >
+
                     <ReactBootStrap.NavDropdown.Item href="/pharmacistAppointment">Pharmacist</ReactBootStrap.NavDropdown.Item>
                     <ReactBootStrap.NavDropdown.Divider />
                     <ReactBootStrap.NavDropdown.Item href="/dermatologistAppointment">Dermatologist</ReactBootStrap.NavDropdown.Item>
@@ -105,15 +111,32 @@ class Header extends React.Component{
                     
                 </ReactBootStrap.NavDropdown>
 
+                <Link to="/loyalityProgram">
+                <ReactBootStrap.Nav.Link href="#deets" hidden={!this.hasRole("ROLE_SYSADMIN")} >Loyality Program</ReactBootStrap.Nav.Link>
+                </Link>
+
+                <Link to="/orders">
+                <ReactBootStrap.Nav.Link href="#deets" hidden={!this.hasRole("ROLE_SUPPLIER")} >Orders</ReactBootStrap.Nav.Link>
+                </Link>
+
+                <Link to="/offers">
+                <ReactBootStrap.Nav.Link href="#deets" hidden={!this.hasRole("ROLE_SUPPLIER")} >Offers</ReactBootStrap.Nav.Link>
+                </Link>
+
+                
+
                   
                 <ReactBootStrap.NavDropdown alignRight title="User" id="collasible-nav-dropdown">
                     <ReactBootStrap.NavDropdown.Item href="/login" hidden={this.IsLogedIn()}>Login</ReactBootStrap.NavDropdown.Item>
                     <ReactBootStrap.NavDropdown.Divider hidden={this.IsLogedIn()} />
                     <ReactBootStrap.NavDropdown.Item href="/registration" hidden={this.IsLogedIn()}>Register</ReactBootStrap.NavDropdown.Item>
 
+
+                   
                     
-                    <ReactBootStrap.NavDropdown.Item href="/userProfile" hidden={!this.hasRole("ROLE_PATIENT")}>My profile</ReactBootStrap.NavDropdown.Item>
-                    <ReactBootStrap.NavDropdown.Item href="/phadminProfile" hidden={!this.hasRole("ROLE_PHARMACYADMIN")}>My profile</ReactBootStrap.NavDropdown.Item>
+
+                    <ReactBootStrap.NavDropdown.Item href="/userProfile" hidden={!this.hasRole("ROLE_PHARMACYADMIN") ||!(this.hasRole("ROLE_PATIENT") || !this.hasRole("ROLE_SUPPLIER"))}>My profile</ReactBootStrap.NavDropdown.Item>
+
                     <ReactBootStrap.NavDropdown.Divider hidden={!this.IsLogedIn()} />
                     <ReactBootStrap.NavDropdown.Item onClick={this.handleLogout} href="/login" hidden={!this.IsLogedIn("*")}>Log out</ReactBootStrap.NavDropdown.Item>
 

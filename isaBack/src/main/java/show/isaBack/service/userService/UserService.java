@@ -1,6 +1,8 @@
 package show.isaBack.service.userService;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
@@ -9,6 +11,8 @@ import javax.persistence.EntityNotFoundException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.mail.MailException;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -16,13 +20,19 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.PathVariable;
 
 import show.isaBack.DTO.drugDTO.AllergenDTO;
+import show.isaBack.DTO.pharmacyDTO.PharmacyWithGradeAndPriceDTO;
 import show.isaBack.DTO.userDTO.AuthorityDTO;
 import show.isaBack.DTO.userDTO.ChangePasswordDTO;
 import show.isaBack.DTO.userDTO.PatientDTO;
 import show.isaBack.DTO.userDTO.PatientsAllergenDTO;
+
 import show.isaBack.DTO.userDTO.PhAdminDTO;
+
+import show.isaBack.DTO.userDTO.PharmacistForAppointmentPharmacyGadeDTO;
+
 import show.isaBack.DTO.userDTO.UserChangeInfoDTO;
 import show.isaBack.DTO.userDTO.UserDTO;
 import show.isaBack.DTO.userDTO.UserRegistrationDTO;
@@ -40,8 +50,14 @@ import show.isaBack.repository.drugsRepository.AllergenRepository;
 import show.isaBack.repository.pharmacyRepository.PharmacyRepository;
 import show.isaBack.repository.userRepository.DermatologistRepository;
 import show.isaBack.repository.userRepository.PatientRepository;
+
 import show.isaBack.repository.userRepository.PharmacyAdminRepository;
+
+import show.isaBack.repository.userRepository.SupplierRepository;
+
 import show.isaBack.repository.userRepository.UserRepository;
+import show.isaBack.serviceInterfaces.IAppointmentService;
+import show.isaBack.serviceInterfaces.IEmployeeGradeService;
 import show.isaBack.serviceInterfaces.IUserInterface;
 import show.isaBack.unspecifiedDTO.UnspecifiedDTO;
 
@@ -57,8 +73,7 @@ public class UserService implements IUserInterface{
 	private PatientRepository patientRepository;
 	@Autowired
 	private UserRepository userRepository;
-	@Autowired
-	private DermatologistRepository dermatologistRepository;
+	
 	@Autowired
 	private PharmacyRepository pharmacyRepository;
 	@Autowired
@@ -69,13 +84,18 @@ public class UserService implements IUserInterface{
 	@Autowired
 	private AllergenRepository allergenRepository;
 	
-	@Autowired
-	private Environment env;
 	
 	@Autowired
 	private AuthenticationManager authenticationManager;
 	
+	@Autowired
+	private IAppointmentService appointmentService;
 	
+	@Autowired
+	private IEmployeeGradeService employeeGradeService;
+	
+	@Autowired
+	private SupplierRepository supplierRepository;
 	
 	public UUID createPatient(UserRegistrationDTO patientRegistrationDTO) {
 		
@@ -136,6 +156,21 @@ public class UserService implements IUserInterface{
 				patient.getPhoneNumber(), patient.isActive(), patient.getUserAuthorities(),MapAllergenToAllergenDTO(patient.getAllergens())));
 	}
 	
+	@Override
+	public UserDTO getLoggedSupplier() {	
+		
+		
+		
+		UUID suppID = getLoggedUserId();
+		Supplier supp= supplierRepository.getOne(suppID);
+		
+		if(supp==null) {
+			System.out.println("pacijent je null");
+		}
+
+		return new UserDTO(supp.getEmail(), supp.getName(), supp.getSurname(), supp.getAddress(), supp.getPhoneNumber(), false, null);
+	}
+	
 	
 	public List<UnspecifiedDTO<AllergenDTO>> MapAllergenToAllergenDTO(List<Allergen> allergens){
 		
@@ -186,6 +221,7 @@ public class UserService implements IUserInterface{
 	public UUID createDermatologist(UserRegistrationDTO entityDTO) {
 		Dermatologist dermatologist = CreateDermathologistFromDTO(entityDTO);
 		dermatologist.setPassword(passwordEncoder.encode(dermatologist.getId().toString()));
+		dermatologist.setFirstLogin(true);
 		UnspecifiedDTO<AuthorityDTO> authority = authorityService.findByName("ROLE_DERMATHOLOGIST");
 		List<Authority> authorities = new ArrayList<Authority>();
 		authorities.add(new Authority(authority.Id,authority.EntityDTO.getName()));
@@ -206,6 +242,8 @@ public class UserService implements IUserInterface{
 	public UUID createAdmin(UserRegistrationDTO entityDTO) {
 		SystemAdmin systemAdmin = CreateAdminFromDTO(entityDTO);
 		systemAdmin.setPassword(passwordEncoder.encode(systemAdmin.getId().toString()));
+		systemAdmin.setFirstLogin(true);
+		System.out.println("prvi login = " + systemAdmin.isFirstLogin());
 		UnspecifiedDTO<AuthorityDTO> authority = authorityService.findByName("ROLE_SYSADMIN");
 		List<Authority> authorities = new ArrayList<Authority>();
 		authorities.add(new Authority(authority.Id,authority.EntityDTO.getName()));
@@ -225,6 +263,8 @@ public class UserService implements IUserInterface{
 		Pharmacy pharmacy = pharmacyRepository.getOne(pharmacyId);
 		PharmacyAdmin pharmacyAdmin = CreatePharmacyAdminFromDTO(entityDTO, pharmacy);
 		pharmacyAdmin.setPassword(passwordEncoder.encode(pharmacyAdmin.getId().toString()));
+		pharmacyAdmin.setFirstLogin(true);
+		
 		UnspecifiedDTO<AuthorityDTO> authority = authorityService.findByName("ROLE_PHARMACYADMIN");
 		List<Authority> authorities = new ArrayList<Authority>();
 		authorities.add(new Authority(authority.Id,authority.EntityDTO.getName()));
@@ -251,6 +291,7 @@ public class UserService implements IUserInterface{
 	}
 	
 	@Override
+
 	public void updatePhAdmin(UserChangeInfoDTO phadminInfoChangeDTO) {
 		
 		UUID logedId= getLoggedUserId();
@@ -263,19 +304,50 @@ public class UserService implements IUserInterface{
 			
 		phAdminRepository.save(phadmin);
 	}
+
+	@Override
+	public void updateSupplier(UserChangeInfoDTO supplierInfoChangeDTO) {
+		
+		UUID logedId= getLoggedUserId();
+		Supplier supp = supplierRepository.getOne(logedId);		
+		
+		supp.setName(supplierInfoChangeDTO.getName());
+		supp.setSurname(supplierInfoChangeDTO.getSurname());
+		supp.setAddress(supplierInfoChangeDTO.getAddress());
+		supp.setPhoneNumber(supplierInfoChangeDTO.getPhoneNumber());
+			
+		supplierRepository.save(supp);
+	}
+	
+
 	
 	@Override
 	public void changePassword(ChangePasswordDTO changePasswordDTO) {
 		
 		UUID id = getLoggedUserId();
 		User user = userRepository.getOne(id);
-		
+		System.out.println(user.getEmail());
 		authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(user.getEmail(), changePasswordDTO.getOldPassword()));
 		
 		if(changePasswordDTO.getNewPassword().isEmpty())
 			throw new IllegalArgumentException("Invalid new password");
 		
 		user.setPassword(passwordEncoder.encode(changePasswordDTO.getNewPassword()));
+		userRepository.save(user);
+		
+	}
+	
+	public void changeFirstPassword(String oldPassword, String newPassword) {
+		
+		User user = userRepository.findById(UUID.fromString(oldPassword)).get();
+		
+		authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(user.getEmail(), oldPassword));
+		
+		if(newPassword.isEmpty())
+			throw new IllegalArgumentException("Invalid new password");
+		
+		user.setPassword(passwordEncoder.encode(newPassword));
+		user.setFirstLogin(false);
 		userRepository.save(user);
 		
 	}
@@ -331,6 +403,8 @@ public class UserService implements IUserInterface{
 	public UUID createSupplier(UserRegistrationDTO entityDTO) {
 		Supplier supp = CreateSupplierFromDTO(entityDTO);
 		supp.setPassword(passwordEncoder.encode(supp.getId().toString()));
+		supp.setFirstLogin(true);
+		
 		UnspecifiedDTO<AuthorityDTO> authority = authorityService.findByName("ROLE_SUPPLIER");
 		List<Authority> authorities = new ArrayList<Authority>();
 		authorities.add(new Authority(authority.Id,authority.EntityDTO.getName()));
@@ -344,6 +418,75 @@ public class UserService implements IUserInterface{
 	private Supplier CreateSupplierFromDTO(UserRegistrationDTO patientDTO) {
 		return new Supplier(patientDTO.getEmail(), passwordEncoder.encode(patientDTO.getPassword()), patientDTO.getName(), patientDTO.getSurname(), patientDTO.getAddress(), patientDTO.getPhoneNumber());
 	}
+	
+	
+	
+	@Override
+	public List<UnspecifiedDTO<PharmacistForAppointmentPharmacyGadeDTO>> fidnAllFreePharmacistsForSelectedPharmacyInDataRange(Date startDate, UUID pharmacyId){
+		
+		long startTime = startDate.getTime();
+		Date endDate= new Date(startTime + 7200000);
+		
+		System.out.println( "startno vreme " + startDate + "   " +  " Krajnje vremee " + endDate);
+		
+		List<UnspecifiedDTO<PharmacistForAppointmentPharmacyGadeDTO>> pharmacistDTO= new ArrayList<UnspecifiedDTO<PharmacistForAppointmentPharmacyGadeDTO>>();  
+		List<User>  pharmaciest= new ArrayList<User>();
+		pharmaciest= appointmentService.fidnAllFreePharmacistsForSelectedPharmacyInDataRange(startDate,endDate,pharmacyId);
+		
+		for (User user : pharmaciest) {
+			pharmacistDTO.add(convertPharmacistToPharmacistWithGradeDTO(user));
+		}
+		
+	
+		return pharmacistDTO;
+		
+		
+	}
+	
+	
+	
+	public UnspecifiedDTO<PharmacistForAppointmentPharmacyGadeDTO> convertPharmacistToPharmacistWithGradeDTO(User pharmacist){
+		
+		double avgGrade = employeeGradeService.getAvgGradeForEmployee(pharmacist.getId());
+		
+		
+		return new UnspecifiedDTO<PharmacistForAppointmentPharmacyGadeDTO>(pharmacist.getId() ,
+				new PharmacistForAppointmentPharmacyGadeDTO(pharmacist.getName(),pharmacist.getSurname(),avgGrade));
+		
+		
+	}
+	
+	
+	
+	
+	
+	@Override
+	public List<UnspecifiedDTO<PharmacistForAppointmentPharmacyGadeDTO>> fidnAllFreePharmacistsForSelectedPharmacyInDataRangeSortByGradeAscending(Date startDate, UUID pharmacyId){
+		
+		List<UnspecifiedDTO<PharmacistForAppointmentPharmacyGadeDTO>> pharmacistDTOSorterByGradeAscending=fidnAllFreePharmacistsForSelectedPharmacyInDataRange(startDate,pharmacyId);
+		Collections.sort(pharmacistDTOSorterByGradeAscending, (pharmacist1, pharmacist2) -> Double.compare(pharmacist1.EntityDTO.getGrade(), pharmacist2.EntityDTO.getGrade()));
+		
+		
+	
+		return pharmacistDTOSorterByGradeAscending;
+		
+		
+	}
+	
+	@Override
+	public List<UnspecifiedDTO<PharmacistForAppointmentPharmacyGadeDTO>> fidnAllFreePharmacistsForSelectedPharmacyInDataRangeSortByGradeDescending(Date startDate, UUID pharmacyId){
+		
+		List<UnspecifiedDTO<PharmacistForAppointmentPharmacyGadeDTO>> pharmacistDTOSorterByGradeDescending=fidnAllFreePharmacistsForSelectedPharmacyInDataRange(startDate,pharmacyId);
+		Collections.sort(pharmacistDTOSorterByGradeDescending, (pharmacist1, pharmacist2) -> Double.compare(pharmacist1.EntityDTO.getGrade(), pharmacist2.EntityDTO.getGrade()));
+		Collections.reverse(pharmacistDTOSorterByGradeDescending);
+		
+	
+		return pharmacistDTOSorterByGradeDescending;
+		
+		
+	}
+	
+	
 	
 	@Override
 	public List<UnspecifiedDTO<AuthorityDTO>> findAll() {
