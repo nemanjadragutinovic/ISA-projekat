@@ -1,19 +1,25 @@
 package show.isaBack.service.drugService;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
+import javax.mail.MessagingException;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mail.MailException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 
 import show.isaBack.DTO.drugDTO.DrugDTO;
 import show.isaBack.DTO.drugDTO.DrugFormatIdDTO;
 import show.isaBack.DTO.drugDTO.DrugInstanceDTO;
 import show.isaBack.DTO.drugDTO.DrugKindIdDTO;
+import show.isaBack.DTO.drugDTO.DrugReservationDTO;
 import show.isaBack.DTO.drugDTO.DrugsWithGradesDTO;
 import show.isaBack.DTO.drugDTO.IngredientDTO;
 import show.isaBack.DTO.drugDTO.ManufacturerDTO;
@@ -29,14 +35,19 @@ import show.isaBack.model.Drug;
 import show.isaBack.model.DrugInstance;
 import show.isaBack.model.Ingredient;
 import show.isaBack.model.Manufacturer;
+import show.isaBack.model.Patient;
 import show.isaBack.model.Pharmacy;
 import show.isaBack.model.drugs.DrugFormatId;
 import show.isaBack.model.drugs.DrugInPharmacy;
 import show.isaBack.model.drugs.DrugKindId;
+import show.isaBack.model.drugs.DrugReservation;
 import show.isaBack.model.drugs.EReceipt;
 import show.isaBack.repository.drugsRepository.DrugFeedbackRepository;
 import show.isaBack.repository.drugsRepository.EReceiptRepository;
+import show.isaBack.repository.pharmacyRepository.PharmacyRepository;
+import show.isaBack.repository.userRepository.PatientRepository;
 import show.isaBack.repository.drugsRepository.DrugInPharmacyRepository;
+import show.isaBack.repository.drugsRepository.DrugReservationRepository;
 import show.isaBack.service.loyalityService.LoyalityProgramService;
 import show.isaBack.serviceInterfaces.IDrugService;
 import show.isaBack.serviceInterfaces.ILoyaltyService;
@@ -63,9 +74,9 @@ public class DrugService implements IDrugService{
 	private IngredientRepository ingredientRepository;
 	
 	@Autowired
-
 	private EReceiptRepository eReceiptRepository;
 
+	@Autowired
 	private IUserInterface userService;
 	
 	@Autowired
@@ -74,6 +85,19 @@ public class DrugService implements IDrugService{
 	@Autowired
 	private ILoyaltyService loyalityProgramService;
 
+	@Autowired
+	private PatientRepository patientRepository;
+	
+	@Autowired
+	private PharmacyRepository pharmacyRepository;
+	
+	@Autowired
+	private DrugReservationRepository drugReservationRepository;
+	
+	
+	
+	int MAX_PENALTY=3;
+	
 	
 	@Override
 	public List<UnspecifiedDTO<DrugDTO>> getAllDrugs() {
@@ -339,7 +363,6 @@ public class DrugService implements IDrugService{
 	@Override
 	public List<UnspecifiedPharmacyWithDrugAndPrice> findPharmaciesByDrugIdWithDrugPrice(UUID drugId) {
 		
-			
 		UUID patientId = userService.getLoggedUserId();
 
 		
@@ -386,18 +409,61 @@ public class DrugService implements IDrugService{
 		
 		try {
 			int count = drugInPharmacyRepository.getCountForDrugInpharmacy(drugId, pharmacyId);
-			System.out.println("COUNT" + count);
 			return count;
 		} catch (Exception e) {
-			System.out.println("ZERO");
-			return 0;
+			int count = 0;
+			return count;
 		}
 	}
 	
 	
+	@Override
+	
+	public void createDrugReservation(DrugReservationDTO drugReservationDTO) {
+
+		UUID Id = userService.getLoggedUserId();
+		Patient patient = patientRepository.getOne(Id);
+
+		Pharmacy pharmacy=pharmacyRepository.getOne(drugReservationDTO.getPharmacyId());
+		DrugInstance drugInstance=drugInstanceRepository.getOne(drugReservationDTO.getDrugId());
+
+		DrugReservation drugReservation = new DrugReservation(patient,pharmacy,drugInstance,
+				drugReservationDTO.getDrugsCount(), drugReservationDTO.getEndDate(), drugReservationDTO.getPriceForOneDrug());
+		
+		IsReservationValid(drugReservation.getEndDate(),drugReservation.getStartDate(),patient.getPenalty());
+		
+	
+		reduceDrugsInPharmacyCount( drugInstance.getId(),pharmacy.getId(),drugReservationDTO.getDrugsCount());
+		
+			
+		drugReservationRepository.save(drugReservation);
+	
+		
+	}
+	
+	public void reduceDrugsInPharmacyCount(UUID drugId, UUID pharmacyId, int reduceCount) {
+		
+		DrugInPharmacy drugInPharmacy= drugInPharmacyRepository.getDrugInPharmacy(drugId, pharmacyId);
+		
+		drugInPharmacy.reduceCount(reduceCount);
+		
+		drugInPharmacyRepository.save(drugInPharmacy);
+		
+	}
+
+	public void IsReservationValid(Date endDate,Date startDate, int patientPenalty) {
+			
+		if(endDate.compareTo(new Date())<0 || endDate.compareTo(startDate)<0)
+			throw new IllegalArgumentException("Bad request with dates");
+		
+		if(patientPenalty >= MAX_PENALTY)
+			throw new IllegalArgumentException("Patient has 3 and more penalties");
+		
+	}
 	
 
-
+	
+	
 	@Override
 	public List<UnspecifiedDTO<AuthorityDTO>> findAll() {
 		// TODO Auto-generated method stub

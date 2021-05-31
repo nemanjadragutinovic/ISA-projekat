@@ -5,6 +5,7 @@ import MedicamentPicture from "../Images/medicament.jpg" ;
 import DrugSpecificationModal from "./DrugSpecification";
 import GetAuthorisation from "../../src/Funciton/GetAuthorisation"
 import PharmaciesWithDrugAndPrice from '../Components/Pharmacies/PharmaciesWithDrugAndPrice';
+import ReservationDrugModal from "./Modal/ReservationDrugsModal";
 
 const API_URL="http://localhost:8080";
 
@@ -47,8 +48,21 @@ class Drugs extends Component {
       loggedPatient: false,
       unauthorizedRedirect: false,
 	  pharmacies: [],
-	  showPharmaciesPage : false
+	  showPharmaciesPage : false,
 		
+	  showReservationDialog : false,
+	  pharmacyId : "",
+	  maxCount : "",
+	  price : 0 ,
+	  drugId : "",	
+	  hiddenErrorAlert: true,
+	  errorHeader : "",
+	  errorMessage : "",
+
+	  hiddenSuccessfulAlert : true,
+	  SuccessfulHeader : "",
+	  SuccessfulMessage : ""
+	  
 
 
   };
@@ -202,6 +216,10 @@ class Drugs extends Component {
 		this.setState({ grade });
 	};
 
+	handleCloseSuccessfulAlert = () => {
+		this.setState({ hiddenSuccessfulAlert: true });
+	};
+
 	
 	handleDrugClick = (drug) => {
 		console.log(drug);
@@ -244,6 +262,8 @@ class Drugs extends Component {
 									showPharmaciesPage : true});
                 }
 
+				this.refreshPharmacies();
+
 				console.log(this.state.pharmacies);
                 
 			})
@@ -264,12 +284,93 @@ class Drugs extends Component {
 
 
 
-	openReserveDialog = () => {
-		console.log("souu")
+	openReservationDialog = (pharmacy) => {
+		
+		this.setState({ showReservationDialog : true,
+						pharmacyId : pharmacy.Id,
+						maxCount : pharmacy.availableDrugCount,
+						price : pharmacy.drugPrice});
+
+
+			console.log(pharmacy.Id + "id " +pharmacy.availableDrugCount+ "kolicina " + pharmacy.drugPrice + "cena " );
+
+	};
+	
+	closeReservationDrugModal = () => {
+		this.setState({ showReservationDialog : false,
+			hiddenErrorAlert : true,
+			errorHeader	: "",
+			errorMessage : "" });
+	};
+	
+	handleCloseErrorAlert = () => {
+		this.setState({hiddenErrorAlert : true,
+			errorHeader	: "",
+			errorMessage : ""			
+						});
 	};
 	
 
+	reserveDrugs = (drugCount, endDate, forwardedPrice) => {
+		this.setState({hiddenErrorAlert : true,
+			errorHeader	: "",
+			errorMessage : ""			
+						});
 
+		
+		let DrugReservationDTO = {
+			drugId: this.state.drugId,
+			pharmacyId: this.state.pharmacyId,
+			drugsCount: drugCount,
+			priceForOneDrug: forwardedPrice,
+			endDate: endDate,
+		};
+
+		
+
+		console.log(DrugReservationDTO)
+
+		Axios.post(API_URL + "/drug/reserveDrug", DrugReservationDTO, 
+		{ validateStatus: () => true, headers: { Authorization: GetAuthorisation() } })
+			.then((res) => {
+				if (res.status === 400) {
+					this.setState({ hiddenErrorAlert: false, errorHeader: "Bad request", errorMessage: res.data });
+				}else if (res.status === 401) {
+						this.props.history.push('/login');	
+				} else if (res.status === 500) {
+					this.setState({ hiddenErrorAlert: false, errorHeader: "Internal server error", errorMessage: "Server error." });
+				} else if (res.status === 201) {
+					console.log(res.data);
+					this.setState({ showReservationDialog: false,
+						hiddenSuccessfulAlert : false,
+						SuccessfulHeader : "Successful reservation ",
+						SuccessfulMessage : "You reserved drugs " });
+				}
+
+				
+				this.handleOnDrugSelect(this.state.drugId)
+			})
+			.catch((err) => {
+				this.setState({ hiddenErrorAlert: false, errorHeader: "Internal server error", errorMessage: "Some error" });
+				console.log(err);
+			});			
+	};
+
+	
+		refreshPharmacies () {
+
+			let newPharmaciesList= [];
+			for (let pharmacy of this.state.pharmacies) {
+			  if (pharmacy.availableDrugCount !== 0) 
+			  		newPharmaciesList.push(pharmacy)
+			}
+		
+			this.setState({
+				pharmacies : newPharmaciesList,
+			});
+		
+		  }
+	
 
 	render() {
 	
@@ -435,10 +536,31 @@ class Drugs extends Component {
 					pharmacies= {this.state.pharmacies}
 					show={this.state.showPharmaciesPage}			
 					back={this.backToDrugsPage}	
-					openReserveDialog={this.openReserveDialog}		
-
+					openReservationDialog={this.openReservationDialog}		
+					
+					hiddenSuccessfulAlert={this.state.hiddenSuccessfulAlert}
+					SuccessfulHeader={this.state.SuccessfulHeader}
+					SuccessfulMessage={this.state.SuccessfulMessage}
+					handleCloseSuccessfulAlert={this.handleCloseSuccessfulAlert}			
 
 		   />
+
+			<ReservationDrugModal
+
+
+			
+			show={this.state.showReservationDialog}			
+			maxCount={this.state.maxCount}
+			drugPrice={this.state.price}		
+			closeModal={this.closeReservationDrugModal}					
+			reserveDrugs= {this.reserveDrugs}					
+			hiddenErrorAlert={this.state.hiddenErrorAlert}						
+			errorHeader={this.state.errorHeader}	
+			errorMessage={this.state.errorMessage}	
+			handleCloseErrorAlert={this.handleCloseErrorAlert}						
+
+			/>					
+
 
 
    

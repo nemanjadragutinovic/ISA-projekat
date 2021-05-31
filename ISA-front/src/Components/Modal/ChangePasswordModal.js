@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { Button, Modal } from "react-bootstrap";
-import HeadingAlert from "../Alerts/UnsuccessfulAlert";
+import UnsuccessfulAlert from "../Alerts/UnsuccessfulAlert";
 
 class ChangePasswordModal extends Component {
 	state = {
@@ -35,7 +35,7 @@ class ChangePasswordModal extends Component {
 					<Modal.Title id="contained-modal-title-vcenter">{this.props.header}</Modal.Title>
 				</Modal.Header>
 				<Modal.Body>
-					<HeadingAlert
+					<UnsuccessfulAlert
 						hidden={this.props.hiddenPasswordErrorAlert}
 						header={this.props.errorPasswordHeader}
 						message={this.props.errorPasswordMessage}
