@@ -20,6 +20,7 @@ import FuturePharmaciesConsultationsForPatient from "./Pages/FuturePharmaciesCon
 import OfferPage from './Components/SupplierPages/OfferPage';
 import AdminStaffComplains from './Components/AdminStaffComplains';
 import AdminPharmacyComplains from './Components/AdminPharmacyComplains';
+import QrCode from './Components/QrCode';
 
 
 import {
@@ -56,6 +57,7 @@ function App() {
         <Route  to ="/offers" path ="/offers"  component={OfferPage}/>
         <Route  to ="/staffComplains" path ="/staffComplains"  component={AdminStaffComplains}/>
         <Route  to ="/pharmacyComplains" path ="/pharmacyComplains"  component={AdminPharmacyComplains}/>
+        <Route  to ="/qrCode" path ="/qrCode"  component={QrCode}/>
 
 
 

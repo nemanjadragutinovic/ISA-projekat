@@ -24,5 +24,6 @@ public interface IDrugService extends IService<DrugInstanceDTO, UnspecifiedDTO<D
 	public List<UnspecifiedDTO<DrugsWithGradesDTO>> searchDrugs(String name, double gradeFrom, double gradeTo, String drugKind);
 	public double findAvgGradeForDrug(UUID drugId);
 	public List<UnspecifiedDTO<DrugsWithGradesDTO>> findDrugsWithGrades();
+	public boolean isQrCodeValid(String id);
 
 }

@@ -28,7 +28,9 @@ import show.isaBack.model.Manufacturer;
 import show.isaBack.model.Pharmacy;
 import show.isaBack.model.drugs.DrugFormatId;
 import show.isaBack.model.drugs.DrugKindId;
+import show.isaBack.model.drugs.EReceipt;
 import show.isaBack.repository.drugsRepository.DrugFeedbackRepository;
+import show.isaBack.repository.drugsRepository.EReceiptRepository;
 import show.isaBack.serviceInterfaces.IDrugService;
 import show.isaBack.unspecifiedDTO.UnspecifiedDTO;
 
@@ -50,6 +52,9 @@ public class DrugService implements IDrugService{
 	
 	@Autowired
 	private IngredientRepository ingredientRepository;
+	
+	@Autowired
+	private EReceiptRepository eReceiptRepository;
 	
 	@Override
 	public List<UnspecifiedDTO<DrugDTO>> getAllDrugs() {
@@ -283,6 +288,30 @@ public class DrugService implements IDrugService{
 		}catch (Exception e) {
 			return 0;
 		}
+	}
+	@Override
+	public boolean isQrCodeValid(String id) {
+		
+	
+		
+		if(id==null) {
+			return false;
+		}
+		
+		try {
+			UUID QrID = UUID.fromString(id);
+		if(eReceiptRepository.existsById(QrID)) {
+			if(eReceiptRepository.findById(QrID).get().getStatus().toString().equals("NEW")) {
+				return true;
+				
+			}
+		}
+		}catch (Exception e) {
+			return false;
+		}
+		
+		
+		return false;
 	}
 
 	@Override
