@@ -76,7 +76,7 @@ class PharmaciesWithDrugAndPrice extends Component {
                                                         type="button"
                                                         className="btn btn-outline-primary"
                                                         style={{  marginTop: "25px" }}
-                                                        onClick={() => this.props.openReserveDialog(pharmacy)}
+                                                        onClick={() => this.props.openReservationDialog(pharmacy)}
                                                 >
                                                         Reserve drug
                                                 </button>
