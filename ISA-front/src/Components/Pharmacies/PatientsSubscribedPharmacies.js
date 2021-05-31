@@ -1,11 +1,11 @@
 import React, { Component } from "react";
 import Axios from "axios";
-import Header from './Header';
-import PharmacyLogoPicture from "../Images/pharmacyLogo.jpg" ;
-import GetAuthorisation from "../Funciton/GetAuthorisation";
+import Header from '../../Components/Header';
+import PharmacyLogoPicture from "../../Images/pharmacyLogo.jpg" ;
+import GetAuthorisation from "../../Funciton/GetAuthorisation";
 const API_URL="http://localhost:8080";
 
-class Pharmacies extends Component {
+class PatientsSubscribedPharmacies extends Component {
 	
   
     
@@ -31,10 +31,23 @@ class Pharmacies extends Component {
   componentDidMount() {
 		
 
-		Axios.get(API_URL + "/pharmacy/allPharmacies")
+            if (!this.hasRole("ROLE_PATIENT")) {
+                this.props.history.push('/login');
+        }
 
+
+        Axios.get(API_URL + "/pharmacy/allPatientsSubscribedPharmacies" ,{
+			validateStatus: () => true,
+			headers: { Authorization: GetAuthorisation() },
+		})
 			.then((res) => {
-				this.setState({ allPharmacies: res.data });
+				
+                if (res.status === 401) {
+                    this.props.history.push('/login');
+                }else{
+                    this.setState({ allPharmacies: res.data });
+                }
+                
 			})
 			.catch((err) => {
 				console.log(err);
@@ -44,6 +57,18 @@ class Pharmacies extends Component {
   
          
 	}
+
+    hasRole = (requestRole) => {
+        let currentRoles = JSON.parse(localStorage.getItem("keyRole"));
+    
+        if (currentRoles === null) return false;
+    
+    
+        for (let currentRole of currentRoles) {
+          if (currentRole === requestRole) return true;
+        }
+        return false;
+      };
 
 
    handleSearchForm = () => {    
@@ -326,4 +351,4 @@ class Pharmacies extends Component {
 	}
 }
 
-export default Pharmacies;
+export default PatientsSubscribedPharmacies;
