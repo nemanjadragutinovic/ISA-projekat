@@ -12,15 +12,15 @@ class PharmaciesWithDrugAndPrice extends Component {
     
     render() {
 		return (
-			<div hidden={!this.props.show}>
-
+			<div hidden={!this.props.show} className="container">
+                       
                             <SuccessfulAlert
                                 hidden={this.props.hiddenSuccessfulAlert}
                                 header={this.props.SuccessfulHeader}
                                 message={this.props.SuccessfulMessage}
                                 handleCloseAlert={this.props.handleCloseSuccessfulAlert}
                             />
-                
+                      
 
 
                 <button  type="button" class="btn btn-link btn-lg"

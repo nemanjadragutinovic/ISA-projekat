@@ -18,6 +18,7 @@ import show.isaBack.model.ComplaintPharmacy;
 import show.isaBack.model.ComplaintStaff;
 import show.isaBack.model.Patient;
 import show.isaBack.model.appointment.Appointment;
+import show.isaBack.model.drugs.DrugReservation;
 @Service
 public class EmailService {
 	
@@ -144,8 +145,32 @@ public class EmailService {
 						"</p> <p>Health Clinic</p>";
 
 		helper.setText(htmlMsg, true);
-		//helper.setTo(appointment.getPatient().getEmail());
-		helper.setTo("stefanzec@hotmail.rs");
+		helper.setTo(appointment.getPatient().getEmail());
+		helper.setSubject("Appointment reservation");
+		helper.setFrom(env.getProperty("spring.mail.username"));
+		javaMailSender.send(mimeMessage);
+		
+	}
+	
+	
+	@Async
+	public void sendNotificationForDrugReservation(DrugReservation drugReservation) throws MessagingException {
+		
+		DateFormat formatterForTime = new SimpleDateFormat("HH:mm");
+		DateFormat mainFormatter = new SimpleDateFormat("yyyy-MM-dd");
+		
+		
+		MimeMessage mimeMessage = javaMailSender.createMimeMessage();
+		MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, "utf-8");
+		String htmlMsg = "<p>Hello " + drugReservation.getPatient().getName() + ",</p>" + "<p>You successfully reserved drug in phamracy: " + drugReservation.getPharmacy().getName() + 
+						", on date " + mainFormatter.format(drugReservation.getStartDate()) + ", at " + formatterForTime.format(drugReservation.getStartDate()) + " o'clock"+
+						", to date " + mainFormatter.format(drugReservation.getEndDate()) + ", at " + formatterForTime.format(drugReservation.getEndDate()) + " o'clock."+
+						" Drug reservation specific id : " + drugReservation.getId() +
+						"</p> <p>Health Clinic</p>";
+
+		helper.setText(htmlMsg, true);
+		helper.setTo(drugReservation.getPatient().getEmail());
+		//helper.setTo("stefanzec@hotmail.rs");
 		helper.setSubject("Appointment reservation");
 		helper.setFrom(env.getProperty("spring.mail.username"));
 		javaMailSender.send(mimeMessage);

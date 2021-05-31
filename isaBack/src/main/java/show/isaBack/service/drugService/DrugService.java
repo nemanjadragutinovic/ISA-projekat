@@ -27,6 +27,7 @@ import show.isaBack.DTO.pharmacyDTO.PharmacyDTO;
 import show.isaBack.DTO.pharmacyDTO.UnspecifiedPharmacyWithDrugAndPrice;
 import show.isaBack.DTO.userDTO.AuthorityDTO;
 import show.isaBack.Mappers.Pharmacy.DrugsWithGradesMapper;
+import show.isaBack.emailService.EmailService;
 import show.isaBack.interfaceRepository.drugRepository.DrugInstanceRepository;
 import show.isaBack.interfaceRepository.drugRepository.DrugRepository;
 import show.isaBack.interfaceRepository.drugRepository.IngredientRepository;
@@ -94,7 +95,9 @@ public class DrugService implements IDrugService{
 	@Autowired
 	private DrugReservationRepository drugReservationRepository;
 	
-	
+
+	@Autowired
+	private EmailService emailService;
 	
 	int MAX_PENALTY=3;
 	
@@ -438,6 +441,21 @@ public class DrugService implements IDrugService{
 			
 		drugReservationRepository.save(drugReservation);
 	
+		sendEmail(drugReservation);
+		
+	}
+	
+	
+	public void sendEmail(DrugReservation drugReservation) {
+		
+		try {
+			emailService.sendNotificationForDrugReservation(drugReservation);
+		} catch (MailException e) {
+			e.printStackTrace();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
 		
 	}
 	
