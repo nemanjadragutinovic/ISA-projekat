@@ -19,12 +19,15 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+
 import show.isaBack.DTO.drugDTO.DrugDTO;
 import show.isaBack.DTO.drugDTO.DrugFormatIdDTO;
 import show.isaBack.DTO.drugDTO.DrugInstanceDTO;
 import show.isaBack.DTO.drugDTO.DrugKindIdDTO;
 import show.isaBack.DTO.drugDTO.DrugManufacturerDTO;
 import show.isaBack.DTO.drugDTO.DrugReservationDTO;
+import show.isaBack.DTO.drugDTO.DrugReservationResponseDTO;
 import show.isaBack.DTO.drugDTO.DrugsWithGradesDTO;
 import show.isaBack.DTO.drugDTO.IngredientDTO;
 import show.isaBack.DTO.drugDTO.ManufacturerDTO;
@@ -163,7 +166,7 @@ public class DrugController {
 	
 	@CrossOrigin
 	@GetMapping("/canPatientUseQR") 
-	@PreAuthorize("hasRole('PATIENT')")
+	@PreAuthorize("hasRole('ROLE_PATIENT')")
 	public ResponseEntity<?> canPatientUseQR(@RequestParam String id) {
 		System.out.println("can patient use qr");
 		System.out.println(id + "xixixi");
@@ -183,6 +186,13 @@ public class DrugController {
 			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 		
+	}
+	
+	@GetMapping("/futurePatientsDrugsReservation")
+	@PreAuthorize("hasRole('ROLE_PATIENT')")
+	public ResponseEntity<List<UnspecifiedDTO<DrugReservationResponseDTO>>> findAllFuturePatientsDrugReservation() {
+		
+		return new ResponseEntity<>(drugService.findAllFuturePatientsDrugReservation() ,HttpStatus.OK);
 	}
 	
 	

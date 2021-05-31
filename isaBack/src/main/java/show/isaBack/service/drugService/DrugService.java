@@ -20,12 +20,14 @@ import show.isaBack.DTO.drugDTO.DrugFormatIdDTO;
 import show.isaBack.DTO.drugDTO.DrugInstanceDTO;
 import show.isaBack.DTO.drugDTO.DrugKindIdDTO;
 import show.isaBack.DTO.drugDTO.DrugReservationDTO;
+import show.isaBack.DTO.drugDTO.DrugReservationResponseDTO;
 import show.isaBack.DTO.drugDTO.DrugsWithGradesDTO;
 import show.isaBack.DTO.drugDTO.IngredientDTO;
 import show.isaBack.DTO.drugDTO.ManufacturerDTO;
 import show.isaBack.DTO.pharmacyDTO.PharmacyDTO;
 import show.isaBack.DTO.pharmacyDTO.UnspecifiedPharmacyWithDrugAndPrice;
 import show.isaBack.DTO.userDTO.AuthorityDTO;
+import show.isaBack.Mappers.Drugs.DrugReservationMapper;
 import show.isaBack.Mappers.Pharmacy.DrugsWithGradesMapper;
 import show.isaBack.emailService.EmailService;
 import show.isaBack.interfaceRepository.drugRepository.DrugInstanceRepository;
@@ -420,8 +422,7 @@ public class DrugService implements IDrugService{
 	}
 	
 	
-	@Override
-	
+	@Override	
 	public void createDrugReservation(DrugReservationDTO drugReservationDTO) {
 
 		UUID Id = userService.getLoggedUserId();
@@ -475,12 +476,22 @@ public class DrugService implements IDrugService{
 			throw new IllegalArgumentException("Bad request with dates");
 		
 		if(patientPenalty >= MAX_PENALTY)
-			throw new IllegalArgumentException("Patient has 3 and more penalties");
+			throw new IllegalArgumentException("Patient has 3 or more penalties");
 		
 	}
 	
 
+	@Override
+	public List<UnspecifiedDTO<DrugReservationResponseDTO>> findAllFuturePatientsDrugReservation(){
+		UUID patientId = userService.getLoggedUserId();
+		List<DrugReservation> drugReservations= new ArrayList<DrugReservation>();
+		drugReservations= drugReservationRepository.findAllFutureDrugsReservationForPatients(patientId);
+		
 	
+		return DrugReservationMapper.mapDrugsReservationToDrugsReseervationDTO(drugReservations);
+		
+		
+	}
 	
 	@Override
 	public List<UnspecifiedDTO<AuthorityDTO>> findAll() {

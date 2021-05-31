@@ -96,7 +96,7 @@ class ReservationDrugModal extends Component {
 								<div style={{ marginTop: "1em" }}>
 									<h5>
 										Total price:{" "}
-										<b color="red">{(Math.round(this.state.drugCount * this.props.drugPrice * 100) / 100).toFixed(2)} din</b>
+										<b style={{color : "red"}}>{(Math.round(this.state.drugCount * this.props.drugPrice * 100) / 100).toFixed(2)} din</b>
 									</h5>
 								</div>
 							
