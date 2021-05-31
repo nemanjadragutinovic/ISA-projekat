@@ -22,12 +22,14 @@ import PatientsSubscribedPharmacies from './Components/Pharmacies/PatientsSubscr
 import AdminStaffComplains from './Components/AdminStaffComplains';
 import AdminPharmacyComplains from './Components/AdminPharmacyComplains';
 import QrCode from './Components/QrCode';
+import qrPharmacieswithDrugs from './Components/qrPharmacieswithDrugs';
 
 
 
 import {
   BrowserRouter as Router,
   Route,
+  Link,
   Switch
 } from "react-router-dom";
 
@@ -61,6 +63,8 @@ function App() {
         <Route  to ="/staffComplains" path ="/staffComplains"  component={AdminStaffComplains}/>
         <Route  to ="/pharmacyComplains" path ="/pharmacyComplains"  component={AdminPharmacyComplains}/>
         <Route  to ="/qrCode" path ="/qrCode"  component={QrCode}/>
+        
+        <Route to="/qrPharmacieswithDrugs/:id" path ="/qrPharmacieswithDrugs/:id"  component={qrPharmacieswithDrugs}/>
 
 
 

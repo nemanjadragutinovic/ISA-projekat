@@ -18,6 +18,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 
 import show.isaBack.DTO.drugDTO.DrugDTO;
+import show.isaBack.DTO.drugDTO.PharmacyDrugPriceDTO;
+import show.isaBack.DTO.drugDTO.PharmacyERecipeDTO;
 import show.isaBack.DTO.pharmacyDTO.PharmacyDTO;
 import show.isaBack.DTO.pharmacyDTO.PharmacySearchDTO;
 import show.isaBack.DTO.pharmacyDTO.PharmacyWithGradeAndPriceDTO;
@@ -195,6 +197,24 @@ public class PharmacyController {
 			e.printStackTrace();
 			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
+	}
+	
+	@GetMapping("/qrPharmacieswithDrugs/{id}")
+	@PreAuthorize("hasRole('ROLE_PATIENT')")
+	public ResponseEntity<List<UnspecifiedDTO<PharmacyDrugPriceDTO>>> getAllPharmaciesWithDrugs(@PathVariable UUID id) {
+		System.out.println("qr1231234");
+		return new ResponseEntity<List<UnspecifiedDTO<PharmacyDrugPriceDTO>>>(pharmacyService.getAllPharmaciesWithDrugs(id),HttpStatus.OK);
+		
+	}
+	
+	@PostMapping("/buyDrugsWithQr")
+	@PreAuthorize("hasRole('ROLE_PATIENT')")
+	public ResponseEntity<?> buyDrugsWithQr(@RequestBody PharmacyERecipeDTO pharmacyERecipeDTO) {
+		
+		System.out.println("by qr");
+		
+		return new ResponseEntity<>(pharmacyService.buyDrugsWithQr(pharmacyERecipeDTO),HttpStatus.CREATED);
+		
 	}
 	
 

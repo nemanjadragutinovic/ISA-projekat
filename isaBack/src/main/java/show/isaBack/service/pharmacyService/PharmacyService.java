@@ -12,18 +12,32 @@ import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-
+import org.springframework.transaction.annotation.Transactional;
 
 import show.isaBack.DTO.drugDTO.DrugDTO;
+import show.isaBack.DTO.drugDTO.PharmacyDrugPriceDTO;
+import show.isaBack.DTO.drugDTO.PharmacyERecipeDTO;
 import show.isaBack.DTO.pharmacyDTO.PharmacyDTO;
 import show.isaBack.DTO.pharmacyDTO.PharmacySearchDTO;
 import show.isaBack.DTO.pharmacyDTO.PharmacyWithGradeAndPriceDTO;
 import show.isaBack.DTO.userDTO.AuthorityDTO;
+import show.isaBack.DTO.userDTO.LoyalityProgramForPatientDTO;
+import show.isaBack.Mappers.Pharmacy.PharmacyMapper;
 import show.isaBack.model.Drug;
 import show.isaBack.model.Patient;
 import show.isaBack.model.Pharmacy;
+import show.isaBack.model.PharmacyGrade;
+import show.isaBack.model.drugs.DrugInPharmacy;
+import show.isaBack.model.drugs.EReceipt;
+import show.isaBack.model.drugs.EReceiptItems;
+import show.isaBack.model.drugs.EReceiptStatus;
+import show.isaBack.repository.Pharmacy.PharmacyGradeRepository;
+import show.isaBack.repository.drugsRepository.DrugInPharmacyRepository;
+import show.isaBack.repository.drugsRepository.EReceiptItemsRepository;
+import show.isaBack.repository.drugsRepository.EReceiptRepository;
 import show.isaBack.repository.pharmacyRepository.PharmacyRepository;
 import show.isaBack.repository.userRepository.PatientRepository;
+import show.isaBack.service.loyalityService.LoyalityProgramService;
 import show.isaBack.serviceInterfaces.IAppointmentService;
 import show.isaBack.serviceInterfaces.IPharmacyGradeService;
 import show.isaBack.serviceInterfaces.IPharmacyService;
@@ -47,7 +61,22 @@ public class PharmacyService implements IPharmacyService{
 	private PatientRepository patientRepository;
 	
 	@Autowired
-	private IUserInterface userService;;
+	private IUserInterface userService;
+	
+	@Autowired
+	private EReceiptItemsRepository itemRepository;
+	
+	@Autowired
+	private DrugInPharmacyRepository drugInPharmacyRepository;
+	
+	@Autowired
+	private LoyalityProgramService loyalityService;
+	
+	@Autowired
+	private PharmacyGradeRepository pharmacyGradeRepository;
+	
+	@Autowired
+	private EReceiptRepository eReceiptRepository;
 	
 	
 	@Override
@@ -231,6 +260,109 @@ public class PharmacyService implements IPharmacyService{
 		
 		return pharmaciesDTOSortedByPharmacyGradeDescending;
 		
+	}
+	
+	@Override
+	public List<UnspecifiedDTO<PharmacyDrugPriceDTO>> getAllPharmaciesWithDrugs(UUID id) {
+	
+		List<EReceiptItems> items = itemRepository.findAllByEReceiptId(id);
+		List<Pharmacy> allPharmacies = pharmacyRepository.findAll();
+		List<UnspecifiedDTO<PharmacyDrugPriceDTO>> pharmacies = new ArrayList<UnspecifiedDTO<PharmacyDrugPriceDTO>>();
+		
+		double price;
+		double grade;
+		
+		for (Pharmacy pha : allPharmacies) {
+			
+			if(doesPharmacyHaveAllItems(items,pha)!=-1) {
+				price = doesPharmacyHaveAllItems(items,pha);
+				grade = avgGrade(pha);
+				pharmacies.add(PharmacyMapper.MapPharmacyPersistenceToPharmacyDrugPriceIdentifiableDTO(pha, grade, price));
+				
+				
+			}
+			
+		}
+		
+
+		
+		
+		return pharmacies;
+	}
+	
+	private double doesPharmacyHaveAllItems(List<EReceiptItems> items, Pharmacy pha) {
+		
+		UUID patientID = userService.getLoggedUserId();
+		
+		Patient patient = patientRepository.findById(patientID).get();
+		
+		LoyalityProgramForPatientDTO lp = loyalityService.getLoyalityProgramForPatient(patient);
+		
+		System.out.println(lp.getDrugDiscount() + "-drug diskaunt");
+		
+		boolean found;
+		
+		double price = 0;
+		
+		for (EReceiptItems i : items) {
+			found = false;
+			for (DrugInPharmacy drugInPharmacy : drugInPharmacyRepository.findAll()) {
+				if(drugInPharmacy.getPharmacy().getId().equals(pha.getId())) {
+					if(i.getDrugInstance().getId().equals(drugInPharmacy.getDrug().getId()) && drugInPharmacy.getCount()>=i.getAmount()) {
+						found = true;
+						price += drugInPharmacy.getPrice() * i.getAmount();
+						
+					}
+				}
+				
+			}
+			if(found==false)
+				return -1;
+		}
+		
+		price = ((100 - lp.getDrugDiscount()) * price)/100;
+		
+		return price;
+	}
+	
+	private double avgGrade(Pharmacy pha) {
+		double finalGrade=0;
+		int numberOfGrades=0;
+		for (PharmacyGrade pGrade : pharmacyGradeRepository.findAll()) {
+			
+			if(pGrade.getPharmacy().getId().equals(pha.getId())) {
+				finalGrade += pGrade.getGrade();
+				numberOfGrades++;
+			}
+		}
+		
+		if(numberOfGrades==0) {
+			return 0;
+		}
+		
+		return finalGrade/numberOfGrades;
+	}
+	
+	@Override
+	@Transactional
+	public UUID buyDrugsWithQr(PharmacyERecipeDTO pharmacyERecipeDTO) {
+		EReceipt eReceipt = eReceiptRepository.findById(pharmacyERecipeDTO.geteRecipeId()).get();
+		List<EReceiptItems> items = itemRepository.findAllByEReceiptId(pharmacyERecipeDTO.geteRecipeId());
+		
+		for (EReceiptItems eReceiptItems : items) {
+			DrugInPharmacy drugInPharmacy = drugInPharmacyRepository.findByDrugIdAndPharmacyId(eReceiptItems.getDrugInstance().getId(), pharmacyERecipeDTO.getPharmacyId());
+			System.out.println(drugInPharmacy.getDrug().getDrugInstanceName());
+			System.out.println(eReceiptItems.getAmount());
+			drugInPharmacy.setCount(drugInPharmacy.getCount()-eReceiptItems.getAmount());
+			drugInPharmacyRepository.save(drugInPharmacy);
+		}
+		
+		eReceipt.setStatus(EReceiptStatus.PROCESSED);
+		eReceipt.setPharmacy(pharmacyRepository.getOne(pharmacyERecipeDTO.getPharmacyId()));
+		eReceipt.setPrice(pharmacyERecipeDTO.getPrice());
+		eReceiptRepository.save(eReceipt);
+		
+		return pharmacyERecipeDTO.geteRecipeId();
 	}
 	
 	@Override

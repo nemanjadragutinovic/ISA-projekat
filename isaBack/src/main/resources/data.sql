@@ -46,7 +46,7 @@ insert into users (id, email, password, name, surname, phone_Number,first_Login,
 
 
 --PATIENTS
-insert into patient (id, points,penalty) values ('22793162-52d3-11eb-ae93-0242ac130002',0,0);
+insert into patient (id, points,penalty) values ('22793162-52d3-11eb-ae93-0242ac130002',12,0);
 insert into patient (id, points,penalty) values ('32793162-52d3-11eb-ae93-0242ac130002',0,3);
 
 --PHARMACISTS
@@ -164,7 +164,9 @@ insert into work_time (id, start_date,end_date, start_time,end_time, employee_id
 
 --PHARMACIES-GRADES
 insert into pharmacy_grade (id,patient_id, pharmacy_id, grade, date) values ('489fd674-bb0b-11eb-8529-0242ac130003','22793162-52d3-11eb-ae93-0242ac130002', '775d8e36-9859-11eb-a8b3-0242ac130003',4, '2021-05-022');
-insert into pharmacy_grade (id,patient_id, pharmacy_id, grade, date) values ('489fd89a-bb0b-11eb-8529-0242ac130003','22793162-52d3-11eb-ae93-0242ac130002', '775d9322-9859-11eb-a8b3-0242ac130003',3, '2021-05-022');
+insert into pharmacy_grade (id,patient_id, pharmacy_id, grade, date) values ('489fd89a-bb0b-11eb-8529-0242ac130003','22793162-52d3-11eb-ae93-0242ac130002', '775d9322-9859-11eb-a8b3-0242ac130003',2, '2021-05-022');
+insert into pharmacy_grade (id,patient_id, pharmacy_id, grade, date) values ('589fd674-bb0b-11eb-8529-0242ac130003','32793162-52d3-11eb-ae93-0242ac130002', '775d8e36-9859-11eb-a8b3-0242ac130003',5, '2021-05-022');
+insert into pharmacy_grade (id,patient_id, pharmacy_id, grade, date) values ('589fd89a-bb0b-11eb-8529-0242ac130003','32793162-52d3-11eb-ae93-0242ac130002', '775d9322-9859-11eb-a8b3-0242ac130003',5, '2021-05-022');
 
 
 
