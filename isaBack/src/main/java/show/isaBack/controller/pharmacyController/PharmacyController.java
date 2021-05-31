@@ -16,11 +16,14 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+
 import show.isaBack.DTO.drugDTO.DrugDTO;
 import show.isaBack.DTO.pharmacyDTO.PharmacyDTO;
 import show.isaBack.DTO.pharmacyDTO.PharmacySearchDTO;
 import show.isaBack.DTO.pharmacyDTO.PharmacyWithGradeAndPriceDTO;
+import show.isaBack.DTO.pharmacyDTO.UnspecifiedPharmacyWithDrugAndPrice;
 import show.isaBack.security.TokenUtils;
+import show.isaBack.serviceInterfaces.IDrugService;
 import show.isaBack.serviceInterfaces.IPharmacyService;
 import show.isaBack.unspecifiedDTO.UnspecifiedDTO;
 
@@ -36,6 +39,9 @@ public class PharmacyController {
 	@Autowired
 	private TokenUtils tokenUtils;
 	
+	@Autowired
+	IDrugService drugService;
+	
 	
 	@CrossOrigin
 	@GetMapping("/allPharmacies") 
@@ -48,7 +54,19 @@ public class PharmacyController {
 		}
 	}
 	
-
+	
+	@CrossOrigin
+	@PreAuthorize("hasRole('ROLE_PATIENT')")
+	@GetMapping("/allPatientsSubscribedPharmacies") 
+	public ResponseEntity<List<UnspecifiedDTO<PharmacyDTO>>> getAllPatientSubscribedPharmacies() {
+		
+		try {
+		return new ResponseEntity<>(pharmacyService.getAllPatientSubscribedPharmacies() ,HttpStatus.OK);
+		} catch (Exception e) {
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+	
 		
 	@CrossOrigin
 	@PostMapping("/searchPharmacies" ) 
@@ -158,6 +176,23 @@ public class PharmacyController {
 			e.printStackTrace();
 			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 		} catch (Exception e) {
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+	
+	
+	@GetMapping("/findPharmaciesByDrugIdWithDrugPrice/{drugId}")
+	@PreAuthorize("hasRole('ROLE_PATIENT')")
+	public ResponseEntity<List<UnspecifiedPharmacyWithDrugAndPrice>> findPharmaciesByDrugIdWithDrugPrice(@PathVariable UUID drugId) {
+		try {
+			
+			return new ResponseEntity<>(drugService.findPharmaciesByDrugIdWithDrugPrice(drugId),HttpStatus.OK);
+		
+		} catch (IllegalArgumentException e) {
+			e.printStackTrace();
+			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+		} catch (Exception e) {
+			e.printStackTrace();
 			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}

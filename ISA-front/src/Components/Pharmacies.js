@@ -300,6 +300,15 @@ class Pharmacies extends Component {
                                         <b>Description: </b>{pharmacy.EntityDTO.description}
                                         </div>
 
+
+                                        <div>
+                                        <b>Pharmacy grade: </b> {pharmacy.EntityDTO.grade} {" "} 
+                                        <i className="icon-star" style={{ color: "yellow"}}></i>
+                                        
+										                    </div>
+
+
+
                                       </td>
                                      
 

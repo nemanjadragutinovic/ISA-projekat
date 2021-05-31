@@ -20,11 +20,14 @@ import show.isaBack.DTO.pharmacyDTO.PharmacySearchDTO;
 import show.isaBack.DTO.pharmacyDTO.PharmacyWithGradeAndPriceDTO;
 import show.isaBack.DTO.userDTO.AuthorityDTO;
 import show.isaBack.model.Drug;
+import show.isaBack.model.Patient;
 import show.isaBack.model.Pharmacy;
 import show.isaBack.repository.pharmacyRepository.PharmacyRepository;
+import show.isaBack.repository.userRepository.PatientRepository;
 import show.isaBack.serviceInterfaces.IAppointmentService;
 import show.isaBack.serviceInterfaces.IPharmacyGradeService;
 import show.isaBack.serviceInterfaces.IPharmacyService;
+import show.isaBack.serviceInterfaces.IUserInterface;
 import show.isaBack.unspecifiedDTO.UnspecifiedDTO;
 
 @Service
@@ -40,6 +43,12 @@ public class PharmacyService implements IPharmacyService{
 	@Autowired
 	private IPharmacyGradeService pharmacyGradeService;
 	
+	@Autowired
+	private PatientRepository patientRepository;
+	
+	@Autowired
+	private IUserInterface userService;;
+	
 	
 	@Override
 	public List<UnspecifiedDTO<PharmacyDTO>> getAllPharmacies() {
@@ -49,8 +58,32 @@ public class PharmacyService implements IPharmacyService{
 		List<UnspecifiedDTO<PharmacyDTO>> pharmacyDTOList = new ArrayList<UnspecifiedDTO<PharmacyDTO>>();
 				
 		for (Pharmacy currentPharmacy : pharmacies) 
-		{
-			PharmacyDTO pharmacyDTO= new PharmacyDTO(currentPharmacy);	
+		{	
+			double pharmacyGrade= pharmacyGradeService.getAvgGradeForPharmacy(currentPharmacy.getId());
+			PharmacyDTO pharmacyDTO= new PharmacyDTO(currentPharmacy,pharmacyGrade);	
+			pharmacyDTOList.add(new UnspecifiedDTO<PharmacyDTO>(currentPharmacy.getId(),pharmacyDTO));
+		}
+		
+		return pharmacyDTOList;
+	}
+	
+	
+	
+	@Override
+	public List<UnspecifiedDTO<PharmacyDTO>> getAllPatientSubscribedPharmacies() {
+		 	
+		
+		UUID logedUserId= userService.getLoggedUserId();
+		Patient patient = patientRepository.findById(logedUserId).get();
+		
+		List<Pharmacy> pharmacies =patient.getPharmacies();
+		
+		List<UnspecifiedDTO<PharmacyDTO>> pharmacyDTOList = new ArrayList<UnspecifiedDTO<PharmacyDTO>>();
+				
+		for (Pharmacy currentPharmacy : pharmacies) 
+		{	
+			double pharmacyGrade= pharmacyGradeService.getAvgGradeForPharmacy(currentPharmacy.getId());
+			PharmacyDTO pharmacyDTO= new PharmacyDTO(currentPharmacy,pharmacyGrade);	
 			pharmacyDTOList.add(new UnspecifiedDTO<PharmacyDTO>(currentPharmacy.getId(),pharmacyDTO));
 		}
 		

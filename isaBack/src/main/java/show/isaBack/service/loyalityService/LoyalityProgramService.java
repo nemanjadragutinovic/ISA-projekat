@@ -16,7 +16,9 @@ import show.isaBack.model.LoyalityProgram;
 import show.isaBack.model.Patient;
 import show.isaBack.model.Pharmacy;
 import show.isaBack.repository.userRepository.LoyalityProgramRepository;
+import show.isaBack.repository.userRepository.PatientRepository;
 import show.isaBack.serviceInterfaces.ILoyaltyService;
+import show.isaBack.serviceInterfaces.IUserInterface;
 import show.isaBack.unspecifiedDTO.UnspecifiedDTO;
 
 @Service
@@ -25,6 +27,9 @@ public class LoyalityProgramService implements ILoyaltyService {
 	
 	@Autowired
 	private LoyalityProgramRepository loyaltyProgramRepository;
+	
+	@Autowired
+	private PatientRepository patientRepository;
 	
 	private final UUID ID_FOR_LOYALITY_PROGRAM = UUID.fromString("8c834328-9b5a-42c2-9e04-a1acc75f881d");
 	
@@ -104,6 +109,16 @@ public class LoyalityProgramService implements ILoyaltyService {
 		
 	}
 	
+	
+	@Override
+	public double getDiscountPriceForDrugForPatient(UUID patientId, double standardPrice) {
+		
+		Patient patient = patientRepository.getOne(patientId);
+		LoyalityProgramForPatientDTO loyalityProgramForPatientDTO = getLoyalityProgramForPatient(patient);
+		double discountPrice= ((100 - loyalityProgramForPatientDTO.getDrugDiscount()) / 100.0 ) * standardPrice;
+		
+		return discountPrice;
+	}
 	
 	@Override
 	public List<UnspecifiedDTO<AuthorityDTO>> findAll() {

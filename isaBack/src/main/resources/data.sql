@@ -116,9 +116,19 @@ insert into manufacturer (id, name) values ('574c3c20-5838-11eb-ae93-0242ac13000
 insert into manufacturer (id, name) values ('5c49beb4-5838-11eb-ae93-0242ac130002', 'Ekosan');
 insert into manufacturer (id, name) values ('61297672-5838-11eb-ae93-0242ac130002', 'Hemotehna');
 
+--DRUGS-INSTANCE
 insert into drug_instance(drug_format, drug_instance_name, loyality_points, on_reciept, quantity, recommended_amount, side_effects, manufacturer_id, id, drug_kind) values('CAPSULE', 'Brufen',1, false, 500, '3x1 na dan', 'Nema nezeljenih dejstava', '20ddef44-5838-11eb-ae93-0242ac130002','2fe1cd8e-5839-11eb-ae93-0242ac130002', 'HUMAN');
 insert into drug_instance(drug_format, drug_instance_name, loyality_points, on_reciept, quantity, recommended_amount, side_effects, manufacturer_id, id, drug_kind) values('CAPSULE', 'IBALGIN',1, false, 400, '2x1 na dan', 'Nema nezeljenih dejstava', '574c3c20-5838-11eb-ae93-0242ac130002','2c797174-5839-11eb-ae93-0242ac130002', 'HUMAN');
 insert into drug_instance(drug_format, drug_instance_name, loyality_points, on_reciept, quantity, recommended_amount, side_effects, manufacturer_id, id, drug_kind) values('CAPSULE', 'Blokmax',1, false, 500, '2x1 na dan', 'Nema nezeljenih dejstava', '5c49beb4-5838-11eb-ae93-0242ac130002','dac2b818-5838-11eb-ae93-0242ac130002', 'BIOLOGICAL');
+
+
+--DRUGS-IN-PHARMACY
+
+insert into drug_in_pharmacy(id, pharmacy_id, drug_instance_id, date_from, date_to, price, count) values ('39438ef2-c180-11eb-8529-0242ac130003','775d8e36-9859-11eb-a8b3-0242ac130003','2fe1cd8e-5839-11eb-ae93-0242ac130002','2021-5-11','2021-08-22', 340, 50);
+insert into drug_in_pharmacy(id, pharmacy_id, drug_instance_id, date_from, date_to, price, count) values ('3943c304-c180-11eb-8529-0242ac130003','775d9322-9859-11eb-a8b3-0242ac130003','2fe1cd8e-5839-11eb-ae93-0242ac130002','2021-5-11','2021-08-22', 320, 30);
+insert into drug_in_pharmacy(id, pharmacy_id, drug_instance_id, date_from, date_to, price, count) values ('3943c4c6-c180-11eb-8529-0242ac130003','775d8e36-9859-11eb-a8b3-0242ac130003','2c797174-5839-11eb-ae93-0242ac130002','2021-5-11','2021-08-22', 180, 38);
+insert into drug_in_pharmacy(id, pharmacy_id, drug_instance_id, date_from, date_to, price, count) values ('3943c5a2-c180-11eb-8529-0242ac130003','775d9322-9859-11eb-a8b3-0242ac130003','2c797174-5839-11eb-ae93-0242ac130002','2021-5-11','2021-08-22', 190, 50);
+
 
 --INGREDIENTS
 insert into ingredient(id, name) values ('4b852c00-b7bd-11eb-8529-0242ac130003', 'Sastojak1');
