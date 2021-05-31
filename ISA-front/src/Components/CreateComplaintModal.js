@@ -17,7 +17,7 @@ class CreateComplaintModal extends Component {
 					</Modal.Title>
 				</Modal.Header>
 				<Modal.Body>
-					<h5>{"Give complaint for " + this.props.name + " " + this.props.forWho}</h5>
+					
 
 					<input
 						className="form-control"
