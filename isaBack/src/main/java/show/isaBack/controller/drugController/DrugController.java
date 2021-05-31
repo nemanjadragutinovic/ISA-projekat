@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -75,7 +76,7 @@ public class DrugController {
 	
 	@PutMapping
 	@CrossOrigin
-	//@PreAuthorize("hasRole('SYSADMIN')")
+	@PreAuthorize("hasRole('SYSADMIN')")
 	public ResponseEntity<UUID> addDrugInstance(@RequestBody DrugInstanceDTO drugInstanceDTO) {
 		
 		UUID drugInstanceId = drugService.create(drugInstanceDTO);
@@ -87,7 +88,7 @@ public class DrugController {
 	
 	@PutMapping("/replacement") 
 	@CrossOrigin
-//	@PreAuthorize("hasRole('SYSADMIN')")
+	@PreAuthorize("hasRole('SYSADMIN')")
 	public ResponseEntity<UUID> addDrugReplacement(@RequestBody ReplaceDrugIdDTO replaceDrugIdDTO) {
 		
 		
@@ -104,7 +105,7 @@ public class DrugController {
 	
 	@PutMapping("/manufacturer") 
 	@CrossOrigin
-	//@PreAuthorize("hasRole('SYSADMIN')")
+	@PreAuthorize("hasRole('SYSADMIN')")
 	public ResponseEntity<UUID> addDrugManufacturer(@RequestBody DrugManufacturerDTO drugManufacturerDTO) {
 		
 		UUID drugInstanceId = drugService.addDrugManufacturer(drugManufacturerDTO.getDrug_id(), drugManufacturerDTO.getManufacturer_id());
@@ -114,7 +115,7 @@ public class DrugController {
 	
 	@PutMapping("/ingredient") 
 	@CrossOrigin
-	//@PreAuthorize("hasRole('SYSADMIN')")
+	@PreAuthorize("hasRole('SYSADMIN')")
 	public ResponseEntity<UUID> addDrugIngredient(@RequestBody IngredientDTO ingredientDTO) {
 		
 		UUID drugInstanceId = drugService.addDrugIngredients(ingredientDTO.getId(), ingredientDTO);
@@ -157,6 +158,15 @@ public class DrugController {
 	public ResponseEntity<List<UnspecifiedDTO<DrugsWithGradesDTO>>> findDrugsWithGrades() {
 		System.out.println("usao u get drugs");
 		return new ResponseEntity<>(drugService.findDrugsWithGrades() ,HttpStatus.CREATED);
+	}
+	
+	@CrossOrigin
+	@GetMapping("/canPatientUseQR") 
+	@PreAuthorize("hasRole('PATIENT')")
+	public ResponseEntity<?> canPatientUseQR(@RequestParam String id) {
+		System.out.println("can patient use qr");
+		System.out.println(id + "xixixi");
+		return new ResponseEntity<>(drugService.isQrCodeValid(id) ,HttpStatus.CREATED);
 	}
 	
 	
