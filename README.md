@@ -1,4 +1,4 @@
-Projekat iz internet softverske arhitekture.
+Projekat iz internet softverske arhitekture 2020/2021.
 
 Projekat radili:
 
