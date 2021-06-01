@@ -487,8 +487,7 @@ public class DrugService implements IDrugService{
 		UUID patientId = userService.getLoggedUserId();
 		List<DrugReservation> drugReservations= new ArrayList<DrugReservation>();
 		drugReservations= drugReservationRepository.findAllFutureDrugsReservationForPatients(patientId);
-		
-		System.out.println(drugReservations);
+
 		return DrugReservationMapper.mapDrugsReservationToDrugsReseervationDTO(drugReservations);
 		
 		
@@ -499,7 +498,6 @@ public class DrugService implements IDrugService{
 		UUID patientId = userService.getLoggedUserId();
 		List<DrugReservation> drugReservations= new ArrayList<DrugReservation>();
 		drugReservations= drugReservationRepository.findAllhistoryDrugsReservationForPatients(patientId);
-		System.out.println(drugReservations);
 	
 		return DrugReservationMapper.mapDrugsReservationToDrugsReseervationDTO(drugReservations);
 		
