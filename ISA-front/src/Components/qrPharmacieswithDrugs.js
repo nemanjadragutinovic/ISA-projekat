@@ -94,6 +94,7 @@ class qrPharmacieswithDrugs extends Component {
 
                     <div className="container" style={{ marginTop: "2%" }}>
 					    <h5 className=" text-center mb-0 mt-2 text-uppercase">Pharmacies to buy eRecipe</h5>
+                        <h5 className=" text-center mb-0 mt-2 text-uppercase" hidden={this.state.pharmacies.length!==0}>Currently there are no drugs in stock! Come back later.</h5>
 
                         <table className="table" style={{ width: "100%", marginTop: "3rem" }}>
 						<tbody>

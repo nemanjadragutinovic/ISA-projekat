@@ -22,7 +22,7 @@ insert into pharmacy (id,name, city, street,country, post_code,description,consu
 --USERS
 
 --patients-users
-insert into users (id, email, password, name, surname, phone_Number,first_Login, active, address,user_type) values ('22793162-52d3-11eb-ae93-0242ac130002','patient1@gmail.com', '$2a$10$TyNl6ipLWyDE/TfFM3uRse0SVPP4Rz7.mdZdDK3zqjKZqtKtJ3pf2','Njeke','Zeke','0623333',false,true,'Kisacka 22','PATIENT');
+insert into users (id, email, password, name, surname, phone_Number,first_Login, active, address,user_type) values ('22793162-52d3-11eb-ae93-0242ac130002','nemanjadragutinovic54@gmail.com', '$2a$10$TyNl6ipLWyDE/TfFM3uRse0SVPP4Rz7.mdZdDK3zqjKZqtKtJ3pf2','Njeke','Zeke','0623333',false,true,'Kisacka 22','PATIENT');
 insert into users (id, email, password, name, surname, phone_Number,first_Login, active, address,user_type) values ('32793162-52d3-11eb-ae93-0242ac130002','patient2@gmail.com', '$2a$10$TyNl6ipLWyDE/TfFM3uRse0SVPP4Rz7.mdZdDK3zqjKZqtKtJ3pf2','Njeke','Zeke','0623333',false,true,'Kisacka 22','PATIENT');
 
 --sysadmins-users
