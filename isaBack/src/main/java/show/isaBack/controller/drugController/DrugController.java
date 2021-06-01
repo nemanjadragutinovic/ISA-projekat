@@ -3,6 +3,8 @@ package show.isaBack.controller.drugController;
 import java.util.List;
 import java.util.UUID;
 
+import javax.persistence.EntityNotFoundException;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -20,7 +22,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-
+import show.isaBack.DTO.AppointmentDTO.IdDTO;
 import show.isaBack.DTO.drugDTO.DrugDTO;
 import show.isaBack.DTO.drugDTO.DrugFormatIdDTO;
 import show.isaBack.DTO.drugDTO.DrugInstanceDTO;
@@ -195,6 +197,34 @@ public class DrugController {
 		return new ResponseEntity<>(drugService.findAllFuturePatientsDrugReservation() ,HttpStatus.OK);
 	}
 	
+	
+	@GetMapping("/historyPatientsDrugsReservations")
+	@PreAuthorize("hasRole('ROLE_PATIENT')")
+	public ResponseEntity<List<UnspecifiedDTO<DrugReservationResponseDTO>>> findAllhistoryPatientsDrugReservation() {
+		
+		return new ResponseEntity<>(drugService.findAllhistoryPatientsDrugReservation() ,HttpStatus.OK);
+	}
+	
+	
+	@PreAuthorize("hasRole('ROLE_PATIENT')")
+	@CrossOrigin
+	@PostMapping("/cancelDrugReservation")
+	public ResponseEntity<?>  cancelPatientDrugReservation(@RequestBody IdDTO drugIdObject) {
+		
+		try {
+			drugService.cancelPatientDrugReservation(drugIdObject);
+			return new ResponseEntity<>(HttpStatus.OK);
+		
+		} catch (EntityNotFoundException e) {
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND); 
+		} catch (IllegalArgumentException e) {
+			return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+		} catch (Exception e) {
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}	
+			
+		
+	}
 	
 	
 }

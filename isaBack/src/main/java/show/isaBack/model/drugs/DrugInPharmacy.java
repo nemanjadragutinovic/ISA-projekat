@@ -122,5 +122,8 @@ public class DrugInPharmacy implements Serializable {
 			this.count=this.count - reduceCount;
 	}
 	
+	public void addCount(int addCount) {
+			this.count=this.count + addCount;
+	}
 	
 }

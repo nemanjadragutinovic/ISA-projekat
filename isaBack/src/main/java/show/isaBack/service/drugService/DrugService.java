@@ -14,7 +14,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-
+import show.isaBack.DTO.AppointmentDTO.IdDTO;
 import show.isaBack.DTO.drugDTO.DrugDTO;
 import show.isaBack.DTO.drugDTO.DrugFormatIdDTO;
 import show.isaBack.DTO.drugDTO.DrugInstanceDTO;
@@ -44,6 +44,7 @@ import show.isaBack.model.drugs.DrugFormatId;
 import show.isaBack.model.drugs.DrugInPharmacy;
 import show.isaBack.model.drugs.DrugKindId;
 import show.isaBack.model.drugs.DrugReservation;
+import show.isaBack.model.drugs.DrugReservationStatus;
 import show.isaBack.model.drugs.EReceipt;
 import show.isaBack.repository.drugsRepository.DrugFeedbackRepository;
 import show.isaBack.repository.drugsRepository.EReceiptRepository;
@@ -487,11 +488,50 @@ public class DrugService implements IDrugService{
 		List<DrugReservation> drugReservations= new ArrayList<DrugReservation>();
 		drugReservations= drugReservationRepository.findAllFutureDrugsReservationForPatients(patientId);
 		
+		System.out.println(drugReservations);
+		return DrugReservationMapper.mapDrugsReservationToDrugsReseervationDTO(drugReservations);
+		
+		
+	}
+	
+	@Override
+	public List<UnspecifiedDTO<DrugReservationResponseDTO>> findAllhistoryPatientsDrugReservation(){
+		UUID patientId = userService.getLoggedUserId();
+		List<DrugReservation> drugReservations= new ArrayList<DrugReservation>();
+		drugReservations= drugReservationRepository.findAllhistoryDrugsReservationForPatients(patientId);
+		System.out.println(drugReservations);
 	
 		return DrugReservationMapper.mapDrugsReservationToDrugsReseervationDTO(drugReservations);
 		
 		
 	}
+	
+	@Override
+	public void cancelPatientDrugReservation(IdDTO drugIdObject) {
+		
+		DrugReservation drugReservation= drugReservationRepository.getOne(drugIdObject.getId());
+		chechForCancelDrugReservation(drugReservation);
+			
+		drugReservation.setDrugReservationStatus(DrugReservationStatus.CANCELED);
+		DrugInPharmacy drugInPharmacy= drugInPharmacyRepository.getDrugInPharmacy(drugReservation.getDrugInstance().getId(), drugReservation.getPharmacy().getId());
+		drugInPharmacy.addCount(drugReservation.getCount());
+		
+		drugReservationRepository.save(drugReservation);
+		drugInPharmacyRepository.save(drugInPharmacy);
+	}
+	
+	public void chechForCancelDrugReservation(DrugReservation drugReservation) {
+		
+		Date endDadateOneDayBefore=new Date(drugReservation.getEndDate().getTime() - 86400000);
+		Date nowDate= new Date();
+		
+		if(nowDate.compareTo(endDadateOneDayBefore) > 0)
+			throw new IllegalArgumentException("End date of reservation is after current date - 24h");
+		
+		
+	}
+	
+	
 	
 	@Override
 	public List<UnspecifiedDTO<AuthorityDTO>> findAll() {

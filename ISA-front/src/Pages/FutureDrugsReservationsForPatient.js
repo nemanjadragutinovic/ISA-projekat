@@ -7,6 +7,10 @@ import UnsuccessfulAlert from "../Components/Alerts/UnsuccessfulAlert";
 import SuccessfulAlert from "../Components/Alerts/SuccessfulAlert";
 import {NavLink, Redirect } from "react-router-dom";
 import HistoryPharmacistConsultation from "../Components/Consultations/HistoryPharmacistConsultation"
+import HistoryDrugsReservations from "../Components/Reservations/HistoryDrugsReservations"
+
+
+
 const API_URL="http://localhost:8080";
 
 class FutureDrugsReservationsForPatients extends Component {
@@ -16,7 +20,7 @@ class FutureDrugsReservationsForPatients extends Component {
     state = {
         
         pharmacyId: "",
-        drugsReservation : [],
+        drugsReservations : [],
         hiddenSuccessfulAlert: true,
         successfulHeader: "",
         successfulMessage: "",
@@ -25,9 +29,9 @@ class FutureDrugsReservationsForPatients extends Component {
         UnsuccessfulMessage: "",
         hideFutureButton : true,
         hideHistoryButton : false,
-        historyConsultations : [],
-        hideFutureConsultations : false,
-        hideHistoryConsultations : true,
+        historyDrugsReservation  : [],
+        hideFutureDrugsReservations  : false,
+        hideHistoryDrugsReservations  : true,
 
 
     };
@@ -53,7 +57,7 @@ class FutureDrugsReservationsForPatients extends Component {
 				if (res.status === 401) {
                     this.props.history.push('/login');
 				} else {
-					this.setState({ drugsReservation: res.data });
+					this.setState({ drugsReservations: res.data });
 					console.log(res.data);
 				}
 			})
@@ -94,14 +98,25 @@ class FutureDrugsReservationsForPatients extends Component {
 
 		this.setState({ hideFutureButton : false,
 			hideHistoryButton : true,
-			hideFutureConsultations : true,
-			hideHistoryConsultations : false,
+			hideFutureDrugsReservations  : true,
+			hideHistoryDrugsReservations  : false,
+
+		});
+
+		this.setState({ hiddenSuccessfulAlert: true,
+			successfulHeader: "",
+			successfulMessage: "",
+			hiddenUnsuccessfulAlert: true,
+			UnsuccessfulHeader: "",
+			UnsuccessfulMessage: "",
 
 		});
 
 
+		
 
-        Axios.get(API_URL + "/drug/futurePatientsDrugsReservations", {
+
+        Axios.get(API_URL + "/drug/historyPatientsDrugsReservations", {
 			validateStatus: () => true,
 			headers: { Authorization: GetAuthorisation() },
 		})
@@ -109,7 +124,7 @@ class FutureDrugsReservationsForPatients extends Component {
 				if (res.status === 401) {
                     this.props.history.push('/login');
 				} else {
-					this.setState({ historyConsultations: res.data});
+					this.setState({ historyDrugsReservation : res.data});
 					console.log(res.data);
 				}
 			})
@@ -125,8 +140,8 @@ class FutureDrugsReservationsForPatients extends Component {
 
         this.setState({ hideFutureButton : true,
                         hideHistoryButton : false,
-                        hideFutureConsultations : false,
-                        hideHistoryConsultations : true,
+                        hideFutureDrugsReservations  : false,
+                        hideHistoryDrugsReservations  : true,
         
         });
 
@@ -135,11 +150,11 @@ class FutureDrugsReservationsForPatients extends Component {
        
     }
 
-	handleCancelAppointment = (appointmentId) => {
+	handleCancelDrug = (drugId) => {
   
-		let appointmentIdObject = { id: appointmentId};
+		let drugIdObject = { id: drugId};
 	
-		Axios.post(API_URL + "/appointment/pharmacist/cancelAppointment",appointmentIdObject , {
+		Axios.post(API_URL + "/drug/cancelDrugReservation",drugIdObject , {
 				validateStatus: () => true,
 				headers: { Authorization: GetAuthorisation() },
 			})
@@ -171,7 +186,7 @@ class FutureDrugsReservationsForPatients extends Component {
 				hiddenEditInfo: true,
 			  });
 	
-			  this.refreshAppointments(appointmentId);
+			  this.refreshDrugs(drugId);
 	
 			}
 		  })
@@ -187,16 +202,16 @@ class FutureDrugsReservationsForPatients extends Component {
 	
 	  }
 	
-	  refreshAppointments (appointmentId) {
+	  refreshDrugs (drugId) {
 	
-		let newAppointmentsList= [];
-		for (let appointment of this.state.appointments) {
-		  if (appointment.Id !== appointmentId) 
-			  newAppointmentsList.push(appointment)
+		let newDrugsList= [];
+		for (let drug of this.state.drugsReservations) {
+		  if (drug.Id !== drugId) 
+		 		 newDrugsList.push(drug)
 		}
 	
 		this.setState({
-		 appointments : newAppointmentsList,
+			drugsReservations : newDrugsList,
 		});
 	
 	  }
@@ -250,8 +265,8 @@ class FutureDrugsReservationsForPatients extends Component {
         </button>
 
 
-         <h1 hidden={this.state.drugsReservation.length === 0 || this.state.hideFutureConsultations } className="text-center  mt-3  " >Your future drugs reservations!</h1>
-         <h1 hidden={this.state.drugsReservation.length !== 0 || this.state.hideFutureConsultations} className="text-center  mt-3 text-danger"  >You don't have future drugs reservations!</h1>
+         <h1 hidden={this.state.drugsReservations.length === 0 || this.state.hideFutureDrugsReservations  } className="text-center  mt-3  " >Your future drugs reservations!</h1>
+         <h1 hidden={this.state.drugsReservations.length !== 0 || this.state.hideFutureDrugsReservations } className="text-center  mt-3 text-danger"  >You don't have future drugs reservations!</h1>
 
 
 
@@ -270,11 +285,11 @@ class FutureDrugsReservationsForPatients extends Component {
 
         
    
-        <div className="container" hidden={this.state.hideFutureConsultations }>
+        <div className="container" hidden={this.state.hideFutureDrugsReservations  }>
                     
           <table className="table table-hover" style={{ width: "70%", marginTop: "5em", marginLeft: "auto",marginRight: "auto" }}>
 						<tbody>
-							{this.state.drugsReservation.map((drugReservation) => (
+							{this.state.drugsReservations.map((drugReservation) => (
 								<tr
 									id={drugReservation.Id}
 									key={drugReservation.Id}
@@ -350,7 +365,7 @@ class FutureDrugsReservationsForPatients extends Component {
                                                         || drugReservation.EntityDTO.drugReservationStatus === "EXPIRED" 
                                                         || drugReservation.EntityDTO.drugReservationStatus === "PROCESSED" 
                                             }
-											onClick={() => this.handleCancelAppointment(drugReservation.Id)}
+											onClick={() => this.handleCancelDrug(drugReservation.Id)}
 											
 										>
 											Cancel
@@ -372,20 +387,15 @@ class FutureDrugsReservationsForPatients extends Component {
         </div>
 
 
-		<HistoryPharmacistConsultation
+		
 
-			hideHistoryConsultations={this.state.hideHistoryConsultations}
-			appointments= {this.state.historyConsultations}
+		<HistoryDrugsReservations
 
-			handleSortByPriceAscending={this.handleSortByPriceAscending}
-			handleSortByPriceDescending={this.handleSortByPriceDescending}
-			handleSortByDateAscending={this.handleSortByDateAscending}
-			handleSortByDateDescending={this.handleSortByDateDescending}
-			handleSortByDurationAppointmentAscending={this.handleSortByDurationAppointmentAscending}
-			handleSortByDurationAppointmentDescending={this.handleSortByDurationAppointmentDescending}								
-		/>
-
-								
+		hideHistoryReservations={this.state.hideHistoryDrugsReservations }
+		drugsReservations= {this.state.historyDrugsReservation }
+		hideFutureDrugsReservations= {this.state.hideFutureDrugsReservations }
+										
+		/>						
 
 
 
