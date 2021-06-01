@@ -217,5 +217,71 @@ public class PharmacyController {
 		
 	}
 	
+	@GetMapping("/qrSort-name/{id}")
+	@PreAuthorize("hasRole('ROLE_PATIENT')")
+	public ResponseEntity<List<UnspecifiedDTO<PharmacyDrugPriceDTO>>> sortQrPharmaciesByName(@PathVariable UUID id){
+	
+		List<UnspecifiedDTO<PharmacyDrugPriceDTO>> pharmacies = pharmacyService.sortQrPharmaciesByName(id);
+		
+		return new ResponseEntity<>(pharmacies, HttpStatus.OK);
+	}
+	
+	@GetMapping("/qrSort-nameReverse/{id}")
+	@PreAuthorize("hasRole('ROLE_PATIENT')")
+	public ResponseEntity<List<UnspecifiedDTO<PharmacyDrugPriceDTO>>> sortQrPharmaciesByNameReverse(@PathVariable UUID id){
+	
+		List<UnspecifiedDTO<PharmacyDrugPriceDTO>> pharmacies = pharmacyService.sortQrPharmaciesByNameReverse(id);
+		
+		return new ResponseEntity<>(pharmacies, HttpStatus.OK);
+	}
+	@GetMapping("/qrSort-price/{id}")
+	@PreAuthorize("hasRole('ROLE_PATIENT')")
+	public ResponseEntity<List<UnspecifiedDTO<PharmacyDrugPriceDTO>>> sortQrPharmaciesByPrice(@PathVariable UUID id){
+	
+		List<UnspecifiedDTO<PharmacyDrugPriceDTO>> pharmacies = pharmacyService.sortQrPharmaciesByPrice(id);
+		
+		return new ResponseEntity<>(pharmacies, HttpStatus.OK);
+	}
+	@GetMapping("/qrSort-priceReverse/{id}")
+	@PreAuthorize("hasRole('ROLE_PATIENT')")
+	public ResponseEntity<List<UnspecifiedDTO<PharmacyDrugPriceDTO>>> sortQrPharmaciesByPriceReverse(@PathVariable UUID id){
+	
+		List<UnspecifiedDTO<PharmacyDrugPriceDTO>> pharmacies = pharmacyService.sortQrPharmaciesByPriceReverse(id);
+		
+		return new ResponseEntity<>(pharmacies, HttpStatus.OK);
+	}
+	@GetMapping("/qrSort-grade/{id}")
+	@PreAuthorize("hasRole('ROLE_PATIENT')")
+	public ResponseEntity<List<UnspecifiedDTO<PharmacyDrugPriceDTO>>> sortQrPharmaciesByGrade(@PathVariable UUID id){
+	
+		List<UnspecifiedDTO<PharmacyDrugPriceDTO>> pharmacies = pharmacyService.sortQrPharmaciesByGrade(id);
+		
+		return new ResponseEntity<>(pharmacies, HttpStatus.OK);
+	}
+	@GetMapping("/qrSort-gradeReverse/{id}")
+	@PreAuthorize("hasRole('ROLE_PATIENT')")
+	public ResponseEntity<List<UnspecifiedDTO<PharmacyDrugPriceDTO>>> sortQrPharmaciesByGradeReverse(@PathVariable UUID id){
+	
+		List<UnspecifiedDTO<PharmacyDrugPriceDTO>> pharmacies = pharmacyService.sortQrPharmaciesByGradeReverse(id);
+		
+		return new ResponseEntity<>(pharmacies, HttpStatus.OK);
+	}
+	@GetMapping("/qrSort-address/{id}")
+	@PreAuthorize("hasRole('ROLE_PATIENT')")
+	public ResponseEntity<List<UnspecifiedDTO<PharmacyDrugPriceDTO>>> sortQrPharmaciesByAddress(@PathVariable UUID id){
+	
+		List<UnspecifiedDTO<PharmacyDrugPriceDTO>> pharmacies = pharmacyService.sortQrPharmaciesByAddress(id);
+		
+		return new ResponseEntity<>(pharmacies, HttpStatus.OK);
+	}
+	@GetMapping("/qrSort-addressReverse/{id}")
+	@PreAuthorize("hasRole('ROLE_PATIENT')")
+	public ResponseEntity<List<UnspecifiedDTO<PharmacyDrugPriceDTO>>> sortQrPharmaciesByAddressReverse(@PathVariable UUID id){
+	
+		List<UnspecifiedDTO<PharmacyDrugPriceDTO>> pharmacies = pharmacyService.sortQrPharmaciesByAddressReverse(id);
+		
+		return new ResponseEntity<>(pharmacies, HttpStatus.OK);
+	}
+	
 
 }

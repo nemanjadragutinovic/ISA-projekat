@@ -29,4 +29,12 @@ public interface IPharmacyService extends IService<PharmacyDTO, UnspecifiedDTO<P
 	public List<UnspecifiedDTO<PharmacyWithGradeAndPriceDTO>> findAllPharmaciesWhoHaveFreeAppointmentsForPeriodWithGradesAndPriceSortByPharmacyGradeDescending(Date startDate);
 	public List<UnspecifiedDTO<PharmacyDrugPriceDTO>> getAllPharmaciesWithDrugs(UUID id);
 	public UUID buyDrugsWithQr(PharmacyERecipeDTO pharmacyERecipeDTO);
+	public List<UnspecifiedDTO<PharmacyDrugPriceDTO>> sortQrPharmaciesByName(UUID id);
+	public List<UnspecifiedDTO<PharmacyDrugPriceDTO>> sortQrPharmaciesByNameReverse(UUID id);
+	public List<UnspecifiedDTO<PharmacyDrugPriceDTO>> sortQrPharmaciesByPrice(UUID id);
+	public List<UnspecifiedDTO<PharmacyDrugPriceDTO>> sortQrPharmaciesByPriceReverse(UUID id);
+	public List<UnspecifiedDTO<PharmacyDrugPriceDTO>> sortQrPharmaciesByGrade(UUID id);
+	public List<UnspecifiedDTO<PharmacyDrugPriceDTO>> sortQrPharmaciesByGradeReverse(UUID id);
+	public List<UnspecifiedDTO<PharmacyDrugPriceDTO>> sortQrPharmaciesByAddress(UUID id);
+	public List<UnspecifiedDTO<PharmacyDrugPriceDTO>> sortQrPharmaciesByAddressReverse(UUID id);
 }
