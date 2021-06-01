@@ -29,7 +29,11 @@ import show.isaBack.DTO.userDTO.ChangePasswordDTO;
 import show.isaBack.DTO.userDTO.LoyalityProgramForPatientDTO;
 import show.isaBack.DTO.userDTO.PatientDTO;
 import show.isaBack.DTO.userDTO.PatientsAllergenDTO;
+
+import show.isaBack.DTO.userDTO.PhAdminDTO;
+
 import show.isaBack.DTO.userDTO.PharmacistForAppointmentPharmacyGadeDTO;
+
 import show.isaBack.DTO.userDTO.UserChangeInfoDTO;
 import show.isaBack.DTO.userDTO.UserDTO;
 import show.isaBack.DTO.userDTO.UserRegistrationDTO;
@@ -47,7 +51,11 @@ import show.isaBack.repository.drugsRepository.AllergenRepository;
 import show.isaBack.repository.pharmacyRepository.PharmacyRepository;
 import show.isaBack.repository.userRepository.DermatologistRepository;
 import show.isaBack.repository.userRepository.PatientRepository;
+
+import show.isaBack.repository.userRepository.PharmacyAdminRepository;
+
 import show.isaBack.repository.userRepository.SupplierRepository;
+
 import show.isaBack.repository.userRepository.UserRepository;
 import show.isaBack.serviceInterfaces.IAppointmentService;
 import show.isaBack.serviceInterfaces.IEmployeeGradeService;
@@ -72,6 +80,8 @@ public class UserService implements IUserInterface{
 	private PharmacyRepository pharmacyRepository;
 	@Autowired
 	private EmailService emailService;
+	@Autowired
+    private PharmacyAdminRepository phAdminRepository;	
 	
 	@Autowired
 	private AllergenRepository allergenRepository;
@@ -289,6 +299,21 @@ public class UserService implements IUserInterface{
 	}
 	
 	@Override
+
+	public void updatePhAdmin(UserChangeInfoDTO phadminInfoChangeDTO) {
+		
+		UUID logedId= getLoggedUserId();
+		PharmacyAdmin phadmin = phAdminRepository.getOne(logedId);		
+		
+		phadmin.setName(phadminInfoChangeDTO.getName());
+		phadmin.setSurname(phadminInfoChangeDTO.getSurname());
+		phadmin.setAddress(phadminInfoChangeDTO.getAddress());
+		phadmin.setPhoneNumber(phadminInfoChangeDTO.getPhoneNumber());
+			
+		phAdminRepository.save(phadmin);
+	}
+
+	@Override
 	public void updateSupplier(UserChangeInfoDTO supplierInfoChangeDTO) {
 		
 		UUID logedId= getLoggedUserId();
@@ -302,6 +327,7 @@ public class UserService implements IUserInterface{
 		supplierRepository.save(supp);
 	}
 	
+
 	
 	@Override
 	public void changePassword(ChangePasswordDTO changePasswordDTO) {
@@ -537,8 +563,32 @@ public class UserService implements IUserInterface{
 		return false;
 	}
 
+	@Override
+	public UnspecifiedDTO<PhAdminDTO> getLoggedPhAdmin() {
+
+		
+		
+		UUID phAdminId = getLoggedUserId();
+		PharmacyAdmin phAdmin= phAdminRepository.getOne(phAdminId);
+		
+		
+		if(phAdmin==null) {
+			System.out.println("Admin apoteke je null");
+		}
+
+		return new UnspecifiedDTO<PhAdminDTO>(phAdminId , new PhAdminDTO(phAdmin.getEmail(), phAdmin.getName(), phAdmin.getSurname(), phAdmin.getAddress(),
+				phAdmin.getPhoneNumber(), phAdmin.isActive(), phAdmin.getUserAuthorities()));
+	}
+
 	
-	
+	@Override
+	public UUID getPhIdForPhAdmin() {
+		UUID phAdmin=getLoggedUserId();
+		
+		PharmacyAdmin pharmacyAdmin = phAdminRepository.getOne(phAdmin);
+		
+		return pharmacyAdmin.getPharmacy().getId();
+	}
 	
 	
 	

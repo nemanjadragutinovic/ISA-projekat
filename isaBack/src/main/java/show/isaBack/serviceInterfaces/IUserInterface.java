@@ -8,7 +8,11 @@ import show.isaBack.DTO.drugDTO.AllergenDTO;
 import show.isaBack.DTO.userDTO.ChangePasswordDTO;
 import show.isaBack.DTO.userDTO.PatientDTO;
 import show.isaBack.DTO.userDTO.PatientsAllergenDTO;
+
+import show.isaBack.DTO.userDTO.PhAdminDTO;
+
 import show.isaBack.DTO.userDTO.PharmacistForAppointmentPharmacyGadeDTO;
+
 import show.isaBack.DTO.userDTO.UserChangeInfoDTO;
 
 import show.isaBack.DTO.userDTO.UserDTO;
@@ -20,6 +24,7 @@ public interface IUserInterface extends IService<UserDTO, UnspecifiedDTO<UserDTO
 	boolean activatingAccountForPatient(UUID id);
 	public UUID createPatient(UserRegistrationDTO patientRegistrationDTO);
 	public UnspecifiedDTO<PatientDTO> getLoggedPatient();
+	public UnspecifiedDTO<PhAdminDTO> getLoggedPhAdmin();
 	public UUID getLoggedUserId(); 
 
 	public UUID createDermatologist(UserRegistrationDTO entityDTO);
@@ -29,7 +34,7 @@ public interface IUserInterface extends IService<UserDTO, UnspecifiedDTO<UserDTO
 
 	public void updatePatient(UserChangeInfoDTO patientInfoChangeDTO);
 	public void changePassword(ChangePasswordDTO changePasswordDTO);
-
+	public void updatePhAdmin(UserChangeInfoDTO phadminInfoChangeDTO);
 	
 	public void addAllergenForPatient(PatientsAllergenDTO patientsAllergenDTO);
 	public void removeAllergenForPatient(PatientsAllergenDTO patientsAllergenDTO);
@@ -48,5 +53,6 @@ public interface IUserInterface extends IService<UserDTO, UnspecifiedDTO<UserDTO
 	public boolean unsubscribeFromPharmacy(String pharmacyId) ;
 	
 	public double getAvgGradeForEmployee(UUID employeeID);
+	public UUID getPhIdForPhAdmin();
 	
 }

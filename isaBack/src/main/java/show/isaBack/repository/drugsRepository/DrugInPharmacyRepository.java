@@ -21,5 +21,8 @@ public interface DrugInPharmacyRepository extends JpaRepository<DrugInPharmacy, 
 	
 	@Query(value = "SELECT d FROM DrugInPharmacy d WHERE d.drugInstance.id = ?1 AND d.pharmacy.id = ?2")
 	DrugInPharmacy getDrugInPharmacy(UUID drugId, UUID pharmacyId);
+
+	
+
 	
 }

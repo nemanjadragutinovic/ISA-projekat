@@ -42,8 +42,8 @@ public class Pharmacy {
 	public Pharmacy(String name, String description, Address address, double consultationPrice) {
 		this(UUID.randomUUID(), name, description, address,consultationPrice);
 	}
-	public Pharmacy(String name, String city, String street,String country,String postcode,String description, double consultationPrice) {
-		this(UUID.randomUUID(), name, description, new Address(city,street,country,postcode),consultationPrice);
+	public Pharmacy(String name, String city, String street,String country,String postcode,double latitude, double longitude,String description, double consultationPrice) {
+		this(UUID.randomUUID(), name, description, new Address(city,street,country,postcode,latitude,longitude),consultationPrice);
 		
 	}
 

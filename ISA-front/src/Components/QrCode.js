@@ -103,7 +103,7 @@ class QrCode extends Component {
 					this.setState({
 						result: data,
 						redirect:true,
-						redirectUrl : "/qrFoundPharmacies/"+data
+						redirectUrl : "/qrPharmacieswithDrugs/"+data
 						})
 					
 
@@ -134,8 +134,8 @@ class QrCode extends Component {
             <React.Fragment>
                 <Header />
 
-                <div className="container" style={{ marginTop: "10%" }}>
-					<h5 className=" text-center mb-0 mt-2 text-uppercase">Enter QR code</h5>
+                <div className="container" style={{ marginTop: "2%" }}>
+					<h5 className=" text-left mb-0 mt-2 text-uppercase">Enter QR code</h5>
        		
                         <QrReader ref="qrReader1"
                             delay={this.state.delay}
@@ -144,14 +144,17 @@ class QrCode extends Component {
                             onScan={this.handleScan}
                             legacyMode={true}
                         />
+
+						
             
             </div>
 
-            <div>
-            <button
+            <div className="container" style={{ marginTop: "4%" }}>
+            <button 
 					type="button"
+					
 					onClick={this.openImageDialog.bind(this)}
-					className="btn btn-outline-secondary mt-3"
+					className="btn btn-outline-secondary mt-3 "
 				>
 					Submit QR Code
 				</button>
