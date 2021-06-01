@@ -4,6 +4,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
+import javax.persistence.EntityNotFoundException;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -12,8 +14,10 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import show.isaBack.DTO.drugDTO.DrugDTO;
@@ -21,6 +25,7 @@ import show.isaBack.DTO.pharmacyDTO.PharmacyDTO;
 import show.isaBack.DTO.pharmacyDTO.PharmacySearchDTO;
 import show.isaBack.DTO.pharmacyDTO.PharmacyWithGradeAndPriceDTO;
 import show.isaBack.security.TokenUtils;
+import show.isaBack.service.userService.UserService;
 import show.isaBack.serviceInterfaces.IPharmacyService;
 import show.isaBack.unspecifiedDTO.UnspecifiedDTO;
 
@@ -161,6 +166,37 @@ public class PharmacyController {
 			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
+	
+	
+	@CrossOrigin
+	@PutMapping("/editPharmacy/{phId}")
+	@PreAuthorize("hasRole('PHARMACYADMIN')")
+	public ResponseEntity<?> updatePharmacy(@PathVariable UUID phId,@RequestBody PharmacyDTO pharmacyDTO) {
+		try {
+			pharmacyService.updatePharmacy(phId,pharmacyDTO);
+			return new ResponseEntity<>(HttpStatus.NO_CONTENT); 
+		} catch (IllegalArgumentException e) {
+			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR); 
+		}
+	}
+	
+	@CrossOrigin
+	@GetMapping("/pharmacyInfo/{phId}")
+	@PreAuthorize("hasRole('PHARMACYADMIN')")
+	public ResponseEntity<UnspecifiedDTO<PharmacyWithGradeAndPriceDTO>> getPharmacyInfo(@PathVariable UUID phId) {
+		try {
+			
+			return new ResponseEntity<>(pharmacyService.convertPharmacyToPharmacyWithGradeAndPriceDTO(phId),HttpStatus.OK);
+
+		} catch (Exception e) {
+			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+		}
+	}
+	
+	
 	
 
 }

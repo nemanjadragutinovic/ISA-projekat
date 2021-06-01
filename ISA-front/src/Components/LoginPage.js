@@ -3,7 +3,7 @@ import React, { Component } from "react";
 import Axios from "axios";
 import { Redirect } from "react-router-dom";
 import ChangePasswordModal from './Modal/ChangePasswordModal';
-
+import GetAuthorisation from "../Funciton/GetAuthorisation";
 class LoginPage extends Component {
 
     state = {
@@ -100,7 +100,23 @@ class LoginPage extends Component {
                 localStorage.setItem("keyToken", res.data.accessToken);
                 localStorage.setItem("keyRole", JSON.stringify(res.data.roles));
                 localStorage.setItem("expireTime", new Date(new Date().getTime() + res.data.expiresIn).getTime());
-
+                console.log(`Bearer ${localStorage.getItem("keyToken")}`);
+                if (JSON.stringify(res.data.roles) === '["ROLE_PHARMACYADMIN"]') {
+                    Axios.get("http://localhost:8080/users/phIdForAdmin", {
+                        headers: {
+                            Authorization: GetAuthorisation(),
+                        },
+                    })
+                        .then((response) => {
+                            localStorage.setItem("keyPharmacyId", response.data);
+                            console.log(response.data);
+                        })
+                        .catch((err) => {
+                            console.log(err);
+                        });
+                }
+                console.log("aaa");
+                console.log(`id apoteke ${localStorage.getItem("keyPhramcyId")}`);
                 console.log(res.data.roles);
               
                 this.setState({ redirect: true });

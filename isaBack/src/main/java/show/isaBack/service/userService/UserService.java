@@ -581,7 +581,14 @@ public class UserService implements IUserInterface{
 	}
 
 	
-	
+	@Override
+	public UUID getPhIdForPhAdmin() {
+		UUID phAdmin=getLoggedUserId();
+		
+		PharmacyAdmin pharmacyAdmin = phAdminRepository.getOne(phAdmin);
+		
+		return pharmacyAdmin.getPharmacy().getId();
+	}
 	
 	
 	

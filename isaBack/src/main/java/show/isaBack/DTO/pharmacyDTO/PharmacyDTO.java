@@ -33,10 +33,10 @@ public class PharmacyDTO {
 	}
 	
 	
-	public PharmacyDTO(String name, String city, String street, String country, String postCode, String description,double consultationPrice) {
+	public PharmacyDTO(String name, String city, String street, String country, String postCode,double latitude, double longitude, String description,double consultationPrice) {
 		super();
 		this.name = name;
-		this.address = new Address(city,street,country,postCode);
+		this.address = new Address(city,street,country,postCode,longitude,latitude);
 		this.description = description;
 		this.consultationPrice= consultationPrice;
 	}

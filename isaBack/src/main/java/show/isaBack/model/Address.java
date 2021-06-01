@@ -17,6 +17,12 @@ public class Address {
 		
 	    @Column(name = "postCode" , nullable = false)
 		private String postCode;
+	    
+	    @Column(name = "latitude", nullable=false)
+		private double latitude;
+		
+	    @Column(name = "longitude" , nullable=false)
+		private double longitude;
 
 	    
 	    public Address() {
@@ -24,12 +30,15 @@ public class Address {
 			
 		}
 	    
-		public Address(String city, String street, String country, String postCode) {
+		public Address(String city, String street, String country, String postCode,double latitude, double longitude) {
 			super();
 			this.city = city;
 			this.street = street;
 			this.country = country;
 			this.postCode = postCode;
+			this.latitude = latitude;
+			this.longitude=longitude;
+			
 		}
 
 		public String getCity() {
@@ -64,7 +73,21 @@ public class Address {
 			this.postCode = postCode;
 		}
 		
-		
+		public double getLatitude() {
+			return latitude;
+		}
+
+		public void setLatitude(double latitude) {
+			this.latitude = latitude;
+		}
+
+		public double getLongitude() {
+			return longitude;
+		}
+
+		public void setLongitude(double longitude) {
+			this.longitude = longitude;
+		}
 	    
 	    
 	

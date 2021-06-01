@@ -31,6 +31,7 @@ import {
   Route,
   Switch
 } from "react-router-dom";
+import PharmacyForAdmin from './Components/Pharmacies/PharmacyForPhAdmin';
 
 
 function App() {
@@ -65,7 +66,7 @@ function App() {
         <Route  to ="/offers" path ="/offers"  component={OfferPage}/>
         <Route  to ="/staffComplains" path ="/staffComplains"  component={AdminStaffComplains}/>
         <Route  to ="/pharmacyComplains" path ="/pharmacyComplains"  component={AdminPharmacyComplains}/>
-
+        <Route  to ="/adminpharmacy" path ="/adminpharmacy"  component={PharmacyForAdmin}/>
 
 
 

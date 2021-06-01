@@ -368,5 +368,18 @@ public class UserController {
 		}
 	}
 	
-
+	@GetMapping("/phIdForAdmin")
+	@PreAuthorize("hasRole('PHARMACYADMIN')") 
+	public ResponseEntity<UUID> getPharmacyIdForPharmacyAdmin() {
+		
+		try {
+			
+			UUID phId = userService.getPhIdForPhAdmin();
+			return new ResponseEntity<>(phId,HttpStatus.OK); 
+		} catch (EntityNotFoundException e) {
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND); 
+		} catch (Exception e) {
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR); 
+		}
+	}
 }
