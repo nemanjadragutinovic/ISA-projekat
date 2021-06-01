@@ -14,7 +14,7 @@ public class PharmacyDTO {
 	private Address address;		
 	private String description;
 	private double consultationPrice;
-	
+	private double grade;
 	
 	
 	public PharmacyDTO() {
@@ -33,7 +33,21 @@ public class PharmacyDTO {
 	}
 	
 	
-	public PharmacyDTO(String name, String city, String street, String country, String postCode,double latitude, double longitude, String description,double consultationPrice) {
+
+	public PharmacyDTO(Pharmacy pharmacy,	double pharmacyGrade) {
+		super();
+					
+		this.name = pharmacy.getName();
+		this.address = pharmacy.getAddress();
+		this.description = pharmacy.getDescription();
+		this.consultationPrice= pharmacy.getConsultationPrice();
+		this.grade=pharmacyGrade;
+	}
+	
+	
+	
+	
+public PharmacyDTO(String name, String city, String street, String country, String postCode,double latitude, double longitude, String description,double consultationPrice) {
 		super();
 		this.name = name;
 		this.address = new Address(city,street,country,postCode,longitude,latitude);
@@ -52,6 +66,20 @@ public class PharmacyDTO {
 	}
 
 	
+	
+	
+	
+	
+
+	public double getGrade() {
+		return grade;
+	}
+
+
+	public void setGrade(double grade) {
+		this.grade = grade;
+	}
+
 
 	public String getName() {
 		return name;

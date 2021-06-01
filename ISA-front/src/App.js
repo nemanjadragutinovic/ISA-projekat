@@ -22,13 +22,18 @@ import HistoryDermatologistAppointmentsForPatient from "./Pages/HistoryDermatolo
 import PharmaciesAppointmentStartPage from "./Pages/PharmaciesAppointmentStartPage"
 import FuturePharmaciesConsultationsForPatient from "./Pages/FuturePharmaciesConsultationsForPatient"
 import OfferPage from './Components/SupplierPages/OfferPage';
+import PatientsSubscribedPharmacies from './Components/Pharmacies/PatientsSubscribedPharmacies'
 import AdminStaffComplains from './Components/AdminStaffComplains';
 import AdminPharmacyComplains from './Components/AdminPharmacyComplains';
+import QrCode from './Components/QrCode';
+import qrPharmacieswithDrugs from './Components/qrPharmacieswithDrugs';
+
 
 
 import {
   BrowserRouter as Router,
   Route,
+  Link,
   Switch
 } from "react-router-dom";
 import PharmacyForAdmin from './Components/Pharmacies/PharmacyForPhAdmin';
@@ -64,9 +69,15 @@ function App() {
         <Route  to ="/orders" path ="/orders"  component={OrdersPage}/>
         <Route  to ="/futurePharmaciesConsultationsForPatient" path ="/futurePharmaciesConsultationsForPatient"  component={FuturePharmaciesConsultationsForPatient}/>
         <Route  to ="/offers" path ="/offers"  component={OfferPage}/>
+        <Route  to ="/patientsSubscribedPharmacies" path ="/patientsSubscribedPharmacies"  component={PatientsSubscribedPharmacies}/>
         <Route  to ="/staffComplains" path ="/staffComplains"  component={AdminStaffComplains}/>
         <Route  to ="/pharmacyComplains" path ="/pharmacyComplains"  component={AdminPharmacyComplains}/>
         <Route  to ="/adminpharmacy" path ="/adminpharmacy"  component={PharmacyForAdmin}/>
+        <Route  to ="/qrCode" path ="/qrCode"  component={QrCode}/>
+        
+        <Route to="/qrPharmacieswithDrugs/:id" path ="/qrPharmacieswithDrugs/:id"  component={qrPharmacieswithDrugs}/>
+
+
 
 
 

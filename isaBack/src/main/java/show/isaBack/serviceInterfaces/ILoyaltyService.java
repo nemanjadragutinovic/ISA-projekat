@@ -14,4 +14,5 @@ public interface ILoyaltyService extends IService<LoyaltyProgramDTO, Unspecified
 	
 	
 	public LoyalityProgramForPatientDTO getLoyalityProgramForPatient(Patient patient);
+	public double getDiscountPriceForDrugForPatient(UUID patientId, double standarPrice);
 }

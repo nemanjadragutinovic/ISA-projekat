@@ -3,6 +3,9 @@ import Axios from "axios";
 import Header from './Header';
 import MedicamentPicture from "../Images/medicament.jpg" ;
 import DrugSpecificationModal from "./DrugSpecification";
+import GetAuthorisation from "../../src/Funciton/GetAuthorisation"
+import PharmaciesWithDrugAndPrice from '../Components/Pharmacies/PharmaciesWithDrugAndPrice';
+
 const API_URL="http://localhost:8080";
 
 class Drugs extends Component {
@@ -43,6 +46,8 @@ class Drugs extends Component {
       successMessage: "",
       loggedPatient: false,
       unauthorizedRedirect: false,
+	  pharmacies: [],
+	  showPharmaciesPage : false
 		
 
 
@@ -53,6 +58,10 @@ class Drugs extends Component {
 
   componentDidMount() {
 		
+
+		this.state.loggedPatient= this.hasRole("ROLE_PATIENT");
+
+
 
 		Axios.get("http://localhost:8080/drug/getDrugsWithGrade")
 
@@ -76,6 +85,19 @@ class Drugs extends Component {
          
 	}
 
+
+
+	hasRole = (requestRole) => {
+        let currentRoles = JSON.parse(localStorage.getItem("keyRole"));
+    
+        if (currentRoles === null) return false;
+    
+    
+        for (let currentRole of currentRoles) {
+          if (currentRole === requestRole) return true;
+        }
+        return false;
+      };
 
   handleDrugKindChange = (event) => {
 		this.setState({ drugKind: event.target.value });
@@ -162,23 +184,7 @@ class Drugs extends Component {
 	};
 
 
-  handleDrugClick = (drug) => {
-		console.log(drug);
-		this.setState({
-			drugAmount: drug.EntityDTO.recommendedAmount,
-			drugQuantity: drug.EntityDTO.quantity,
-			drugManufacturer: drug.EntityDTO.manufacturer.EntityDTO.name,
-			drugName: drug.EntityDTO.name,
-			drugKind: drug.EntityDTO.drugKind,
-			drugFormat: drug.EntityDTO.drugFormat,
-			sideEffects: drug.EntityDTO.sideEffects,
-			onReciept: drug.EntityDTO.onReciept,
-			points: drug.EntityDTO.loyalityPoints,
-			ingredients: drug.EntityDTO.ingredients,
-			replacingDrugs: drug.EntityDTO.replacingDrugs,
-			specificationModalShow: true,
-		});
-	};
+ 
 
   handleModalClose = () => {
 		this.setState({ specificationModalShow: false });
@@ -196,7 +202,72 @@ class Drugs extends Component {
 		this.setState({ grade });
 	};
 
-   
+	
+	handleDrugClick = (drug) => {
+		console.log(drug);
+		this.setState({
+			drugAmount: drug.EntityDTO.recommendedAmount,
+			drugQuantity: drug.EntityDTO.quantity,
+			drugManufacturer: drug.EntityDTO.manufacturer.EntityDTO.name,
+			drugName: drug.EntityDTO.name,
+			drugKind: drug.EntityDTO.drugKind,
+			drugFormat: drug.EntityDTO.drugFormat,
+			sideEffects: drug.EntityDTO.sideEffects,
+			onReciept: drug.EntityDTO.onReciept,
+			points: drug.EntityDTO.loyalityPoints,
+			ingredients: drug.EntityDTO.ingredients,
+			replacingDrugs: drug.EntityDTO.replacingDrugs,
+			specificationModalShow: true,
+		});
+	};
+	
+
+	handleOnDrugSelect = (selectedDrugId) => {
+		
+		if (this.hasRole("ROLE_PATIENT")) {
+			
+		console.log("idemoo")
+		
+		this.setState({ drugId: selectedDrugId });
+
+
+		Axios.get(API_URL + "/pharmacy/findPharmaciesByDrugIdWithDrugPrice/" + selectedDrugId,{
+			validateStatus: () => true,
+			headers: { Authorization: GetAuthorisation() },
+		})
+			.then((res) => {
+				
+                if (res.status === 401) {
+                    this.props.history.push('/login');
+                }else{
+                    this.setState({ pharmacies: res.data,
+									showPharmaciesPage : true});
+                }
+
+				console.log(this.state.pharmacies);
+                
+			})
+			.catch((err) => {
+				console.log(err);
+			});
+
+
+	}
+
+	};
+
+
+	backToDrugsPage = () => {
+		this.setState({ showPharmaciesPage : false,
+						pharmacies : [] });
+	};
+
+
+
+	openReserveDialog = () => {
+		console.log("souu")
+	};
+	
 
 
 
@@ -209,7 +280,7 @@ class Drugs extends Component {
 
       <Header/>
       
-      <div id="allDrugs">
+      <div id="allDrugs" hidden={this.state.showPharmaciesPage}>
 
             
            
@@ -221,9 +292,6 @@ class Drugs extends Component {
 						<i className="icofont-rounded-down mr-1"></i>
 						Search drugs
 					</button>
-
-
-
 
             <form className={this.state.formShowed ? "form-inline mt-3" : "form-inline mt-3 collapse"} width="100%" id="formCollapse">
 						<div className="form-group mb-2" width="100%">
@@ -287,6 +355,14 @@ class Drugs extends Component {
 							<i className="icofont-close-line mr-1"></i>Reset
 						</button>
 					</div>
+		
+
+		
+			<div hidden={!this.hasRole("ROLE_PATIENT")} style={{  marginTop: "3em" }} >
+				<b><g1 >Click on drug to reserve it!</g1></b>
+			</div>
+			
+
 
           <table className={this.state.loggedPatient === true ? "table table-hover" : "table"} style={{ width: "100%", marginTop: "3rem" }}>
 						<tbody>
@@ -295,7 +371,7 @@ class Drugs extends Component {
 									<td width="130em">
 										<img className="img-fluid" src={MedicamentPicture} width="70em" />
 									</td>
-									<td onClick={() => this.props.onDrugSelect(drug)}>
+									<td  onClick={() => this.handleOnDrugSelect(drug.Id)}>
 										<div>
 											<b>Name:</b> {drug.EntityDTO.drugInstanceName}
 										</div>
@@ -304,7 +380,7 @@ class Drugs extends Component {
 										</div>
 										<div>
 											<b>Grade:</b> {drug.EntityDTO.avgGrade}
-											<i className="icofont-star" style={{ color: "#1977cc" }}></i>
+											<i className="icon-star" style={{ color: "yellow"}}></i>
 										</div>
 									</td>
 									<td className="align-middle">
@@ -351,8 +427,25 @@ class Drugs extends Component {
 						ingredients={this.state.ingredients}
 						replacingDrugs={this.state.replacingDrugs}
 					/>
-        </React.Fragment>
+       
+	   
+	   	<PharmaciesWithDrugAndPrice
+
+
+					pharmacies= {this.state.pharmacies}
+					show={this.state.showPharmaciesPage}			
+					back={this.backToDrugsPage}	
+					openReserveDialog={this.openReserveDialog}		
+
+
+		   />
+
+
+   
+	   
+	    </React.Fragment>
         
+
 		);
 	}
 }

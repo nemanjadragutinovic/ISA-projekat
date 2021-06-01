@@ -5,7 +5,10 @@ import java.util.List;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+
 
 import show.isaBack.DTO.drugDTO.DrugDTO;
 import show.isaBack.DTO.drugDTO.DrugFormatIdDTO;
@@ -15,6 +18,7 @@ import show.isaBack.DTO.drugDTO.DrugsWithGradesDTO;
 import show.isaBack.DTO.drugDTO.IngredientDTO;
 import show.isaBack.DTO.drugDTO.ManufacturerDTO;
 import show.isaBack.DTO.pharmacyDTO.PharmacyDTO;
+import show.isaBack.DTO.pharmacyDTO.UnspecifiedPharmacyWithDrugAndPrice;
 import show.isaBack.DTO.userDTO.AuthorityDTO;
 import show.isaBack.Mappers.Pharmacy.DrugsWithGradesMapper;
 import show.isaBack.interfaceRepository.drugRepository.DrugInstanceRepository;
@@ -27,9 +31,16 @@ import show.isaBack.model.Ingredient;
 import show.isaBack.model.Manufacturer;
 import show.isaBack.model.Pharmacy;
 import show.isaBack.model.drugs.DrugFormatId;
+import show.isaBack.model.drugs.DrugInPharmacy;
 import show.isaBack.model.drugs.DrugKindId;
+import show.isaBack.model.drugs.EReceipt;
 import show.isaBack.repository.drugsRepository.DrugFeedbackRepository;
+import show.isaBack.repository.drugsRepository.EReceiptRepository;
+import show.isaBack.repository.drugsRepository.DrugInPharmacyRepository;
+import show.isaBack.service.loyalityService.LoyalityProgramService;
 import show.isaBack.serviceInterfaces.IDrugService;
+import show.isaBack.serviceInterfaces.ILoyaltyService;
+import show.isaBack.serviceInterfaces.IUserInterface;
 import show.isaBack.unspecifiedDTO.UnspecifiedDTO;
 
 @Service
@@ -50,6 +61,19 @@ public class DrugService implements IDrugService{
 	
 	@Autowired
 	private IngredientRepository ingredientRepository;
+	
+	@Autowired
+
+	private EReceiptRepository eReceiptRepository;
+
+	private IUserInterface userService;
+	
+	@Autowired
+	private DrugInPharmacyRepository drugInPharmacyRepository;
+	
+	@Autowired
+	private ILoyaltyService loyalityProgramService;
+
 	
 	@Override
 	public List<UnspecifiedDTO<DrugDTO>> getAllDrugs() {
@@ -284,6 +308,95 @@ public class DrugService implements IDrugService{
 			return 0;
 		}
 	}
+
+	@Override
+	public boolean isQrCodeValid(String id) {
+		
+	
+		
+		if(id==null) {
+			return false;
+		}
+		
+		try {
+			UUID QrID = UUID.fromString(id);
+		if(eReceiptRepository.existsById(QrID)) {
+			if(eReceiptRepository.findById(QrID).get().getStatus().toString().equals("NEW")) {
+				return true;
+				
+			}
+		}
+		}catch (Exception e) {
+			return false;
+		}
+		
+		
+		return false;
+	}
+
+	
+	
+	@Override
+	public List<UnspecifiedPharmacyWithDrugAndPrice> findPharmaciesByDrugIdWithDrugPrice(UUID drugId) {
+		
+			
+		UUID patientId = userService.getLoggedUserId();
+
+		
+		List<DrugInPharmacy> availablePharmaciesWithDrug = new ArrayList<DrugInPharmacy>();
+		availablePharmaciesWithDrug= drugInPharmacyRepository.getAllPharmaciesForDrug(drugId);
+		
+		
+		List<UnspecifiedPharmacyWithDrugAndPrice> returnPharmacies = new ArrayList<UnspecifiedPharmacyWithDrugAndPrice>();
+		returnPharmacies=convertAvailablePharmaciesToDTO(availablePharmaciesWithDrug);
+		
+		for (UnspecifiedPharmacyWithDrugAndPrice currentPharmacy : returnPharmacies) {
+				
+				int count= getCoutForDrugInPharmacy(drugId, currentPharmacy.Id);
+				
+				if(count != 0) {
+					currentPharmacy.setAvailableDrugCount(count);
+					currentPharmacy.setDrugPrice(loyalityProgramService.getDiscountPriceForDrugForPatient(patientId, currentPharmacy.getDrugPrice()));
+				
+					System.out.println("Name " + currentPharmacy.EntityDTO.getName() + "price " + currentPharmacy.getDrugPrice() + "count " + count);
+				}
+				
+		}
+
+		return returnPharmacies;
+	}
+	
+	
+	public List<UnspecifiedPharmacyWithDrugAndPrice> convertAvailablePharmaciesToDTO(List<DrugInPharmacy> availablePharmaciesWithDrug ){
+		
+		List<UnspecifiedPharmacyWithDrugAndPrice> retVal = new ArrayList<UnspecifiedPharmacyWithDrugAndPrice>();
+		
+		for (DrugInPharmacy drugInPharmacy : availablePharmaciesWithDrug) {
+			
+			Pharmacy pharmacy= drugInPharmacy.getPharmacy();
+			retVal.add(new UnspecifiedPharmacyWithDrugAndPrice(pharmacy.getId(), pharmacy.getName(),pharmacy.getAddress(),
+					pharmacy.getDescription(), pharmacy.getConsultationPrice(), drugInPharmacy.getPrice(),0));
+		
+		}
+		
+		return retVal;
+	}
+	
+	private int getCoutForDrugInPharmacy(UUID drugId, UUID pharmacyId) {
+		
+		try {
+			int count = drugInPharmacyRepository.getCountForDrugInpharmacy(drugId, pharmacyId);
+			System.out.println("COUNT" + count);
+			return count;
+		} catch (Exception e) {
+			System.out.println("ZERO");
+			return 0;
+		}
+	}
+	
+	
+	
+
 
 	@Override
 	public List<UnspecifiedDTO<AuthorityDTO>> findAll() {

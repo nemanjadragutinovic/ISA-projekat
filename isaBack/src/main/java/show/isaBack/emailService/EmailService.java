@@ -2,6 +2,7 @@ package show.isaBack.emailService;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.List;
 
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
@@ -18,6 +19,7 @@ import show.isaBack.model.ComplaintPharmacy;
 import show.isaBack.model.ComplaintStaff;
 import show.isaBack.model.Patient;
 import show.isaBack.model.appointment.Appointment;
+import show.isaBack.model.drugs.EReceiptItems;
 @Service
 public class EmailService {
 	
@@ -148,6 +150,38 @@ public class EmailService {
 		helper.setTo("stefanzec@hotmail.rs");
 		helper.setSubject("Appointment reservation");
 		helper.setFrom(env.getProperty("spring.mail.username"));
+		javaMailSender.send(mimeMessage);
+		
+	}
+	
+	@Async
+	public void sendEmailAfterQRPurchase(Patient pat,List<EReceiptItems> items)
+			throws MailException, InterruptedException, MessagingException {
+		
+		
+		System.out.println("usao 1");
+		
+		String show="<p>";
+		
+		for (EReceiptItems eReceiptItems : items) {
+			show += "Drug name: " + eReceiptItems.getDrugInstance().getDrugInstanceName() + "         Amount: " +  eReceiptItems.getAmount() + "<br>";
+		}
+		
+		show += "</p>";
+		
+		MimeMessage mimeMessage = javaMailSender.createMimeMessage();
+		MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, "utf-8");
+		String htmlMsg = "<p>Hello " + pat.getName() + " " +pat.getSurname() + ",</p>" +
+					"<p>Here is the list of drugs you bought:" + "</p>"
+					+ show 
+					+ "<p>Health Clinic</p>"; 
+		
+		helper.setText(htmlMsg, true);
+		helper.setTo(pat.getEmail());
+		System.out.println(pat.getEmail());
+		helper.setSubject("List of drugs you bought");
+		helper.setFrom(env.getProperty("spring.mail.username"));
+		System.out.println("usao 2");
 		javaMailSender.send(mimeMessage);
 		
 	}

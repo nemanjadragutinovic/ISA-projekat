@@ -87,7 +87,8 @@ class Header extends React.Component{
                     <ReactBootStrap.NavDropdown.Item href="/futureDermatologistAppointmentsForPatient">Dermatologist</ReactBootStrap.NavDropdown.Item>
                     <ReactBootStrap.NavDropdown.Divider />
                     <ReactBootStrap.NavDropdown.Item href="/futurePharmaciesConsultationsForPatient">Pharmacies</ReactBootStrap.NavDropdown.Item>
-                    
+                    <ReactBootStrap.NavDropdown.Divider />
+                    <ReactBootStrap.NavDropdown.Item href="/patientsSubscribedPharmacies">Subscribed pharmacies</ReactBootStrap.NavDropdown.Item>
                 </ReactBootStrap.NavDropdown>
 
 
@@ -102,6 +103,10 @@ class Header extends React.Component{
                     <ReactBootStrap.NavDropdown.Item href="/dermatologistAppointment">Dermatologist</ReactBootStrap.NavDropdown.Item>
                     
                 </ReactBootStrap.NavDropdown>
+
+                <Link to="/qrCode">
+                <ReactBootStrap.Nav.Link href="#deets" hidden={!this.hasRole("ROLE_PATIENT")} >Scan QR code</ReactBootStrap.Nav.Link>
+                </Link>
 
                 <ReactBootStrap.NavDropdown alignRight title="Register" hidden={!this.hasRole("ROLE_SYSADMIN")} id="collasible-nav-dropdown">
                     <ReactBootStrap.NavDropdown.Item href="/registerStaff" >Stuff member</ReactBootStrap.NavDropdown.Item>

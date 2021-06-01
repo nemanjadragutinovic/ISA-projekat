@@ -26,6 +26,7 @@ insert into users (id, email, password, name, surname, phone_Number, first_Login
 
 --patients-users
 insert into users (id, email, password, name, surname, phone_Number,first_Login, active, address,user_type) values ('22793162-52d3-11eb-ae93-0242ac130002','nemanjadragutinovic54@gmail.com', '$2a$10$TyNl6ipLWyDE/TfFM3uRse0SVPP4Rz7.mdZdDK3zqjKZqtKtJ3pf2','Njeke','Zeke','0623333',false,true,'Kisacka 22','PATIENT');
+insert into users (id, email, password, name, surname, phone_Number,first_Login, active, address,user_type) values ('32793162-52d3-11eb-ae93-0242ac130002','patient2@gmail.com', '$2a$10$TyNl6ipLWyDE/TfFM3uRse0SVPP4Rz7.mdZdDK3zqjKZqtKtJ3pf2','Njeke','Zeke','0623333',false,true,'Kisacka 22','PATIENT');
 
 --sysadmins-users
 insert into users (id, email, password, name, surname, phone_Number,first_Login, active, address,user_type) values ('44444d47-1a8a-4ae1-b109-af7b56e94788','sysadmin@gmail.com','$2a$10$TyNl6ipLWyDE/TfFM3uRse0SVPP4Rz7.mdZdDK3zqjKZqtKtJ3pf2','Zec','Njekezovic','0612345',false,true,'Kosovska 22','SYSADMIN');
@@ -48,7 +49,8 @@ insert into users (id, email, password, name, surname, phone_Number,first_Login,
 
 
 --PATIENTS
-insert into patient (id, points,penalty) values ('22793162-52d3-11eb-ae93-0242ac130002',0,0);
+insert into patient (id, points,penalty) values ('22793162-52d3-11eb-ae93-0242ac130002',12,0);
+insert into patient (id, points,penalty) values ('32793162-52d3-11eb-ae93-0242ac130002',0,3);
 
 --PHARMACISTS
 insert into pharmacist (id, pharmacy_id) values ('80c86094-ba60-11eb-8529-0242ac130003','775d8e36-9859-11eb-a8b3-0242ac130003');
@@ -65,6 +67,7 @@ insert into pharmacy_admin(id,pharmacy_id) values ('62ee0102-ba54-11eb-8529-0242
 --USER-AUTHORITY
 
 insert into user_authority (user_id, authority_id) values ('22793162-52d3-11eb-ae93-0242ac130002', '7852aa5e-7040-4d99-8255-537a0b226c75');
+insert into user_authority (user_id, authority_id) values ('32793162-52d3-11eb-ae93-0242ac130002', '7852aa5e-7040-4d99-8255-537a0b226c75');
 insert into user_authority (user_id, authority_id) values ('44444d47-1a8a-4ae1-b109-af7b56e94788', '563e9925-cff6-42b7-99fa-6b1235f67655');
 insert into user_authority (user_id, authority_id) values ('17a2c302-b584-11eb-8529-0242ac130003', 'ea16767c-2c1f-49fb-ac98-c7739c0036e8');
 insert into user_authority (user_id, authority_id) values ('54444d47-1a8a-4ae1-b109-af7b56e94788', 'ef9a3723-a72e-44ec-83ac-9d748fd0240f');
@@ -129,9 +132,19 @@ insert into manufacturer (id, name) values ('574c3c20-5838-11eb-ae93-0242ac13000
 insert into manufacturer (id, name) values ('5c49beb4-5838-11eb-ae93-0242ac130002', 'Ekosan');
 insert into manufacturer (id, name) values ('61297672-5838-11eb-ae93-0242ac130002', 'Hemotehna');
 
+--DRUGS-INSTANCE
 insert into drug_instance(drug_format, drug_instance_name, loyality_points, on_reciept, quantity, recommended_amount, side_effects, manufacturer_id, id, drug_kind) values('CAPSULE', 'Brufen',1, false, 500, '3x1 na dan', 'Nema nezeljenih dejstava', '20ddef44-5838-11eb-ae93-0242ac130002','2fe1cd8e-5839-11eb-ae93-0242ac130002', 'HUMAN');
 insert into drug_instance(drug_format, drug_instance_name, loyality_points, on_reciept, quantity, recommended_amount, side_effects, manufacturer_id, id, drug_kind) values('CAPSULE', 'IBALGIN',1, false, 400, '2x1 na dan', 'Nema nezeljenih dejstava', '574c3c20-5838-11eb-ae93-0242ac130002','2c797174-5839-11eb-ae93-0242ac130002', 'HUMAN');
 insert into drug_instance(drug_format, drug_instance_name, loyality_points, on_reciept, quantity, recommended_amount, side_effects, manufacturer_id, id, drug_kind) values('CAPSULE', 'Blokmax',1, false, 500, '2x1 na dan', 'Nema nezeljenih dejstava', '5c49beb4-5838-11eb-ae93-0242ac130002','dac2b818-5838-11eb-ae93-0242ac130002', 'BIOLOGICAL');
+
+
+--DRUGS-IN-PHARMACY
+
+insert into drug_in_pharmacy(id, pharmacy_id, drug_instance_id, date_from, date_to, price, count) values ('39438ef2-c180-11eb-8529-0242ac130003','775d8e36-9859-11eb-a8b3-0242ac130003','2fe1cd8e-5839-11eb-ae93-0242ac130002','2021-5-11','2021-08-22', 340, 50);
+insert into drug_in_pharmacy(id, pharmacy_id, drug_instance_id, date_from, date_to, price, count) values ('3943c304-c180-11eb-8529-0242ac130003','775d9322-9859-11eb-a8b3-0242ac130003','2fe1cd8e-5839-11eb-ae93-0242ac130002','2021-5-11','2021-08-22', 320, 30);
+insert into drug_in_pharmacy(id, pharmacy_id, drug_instance_id, date_from, date_to, price, count) values ('3943c4c6-c180-11eb-8529-0242ac130003','775d8e36-9859-11eb-a8b3-0242ac130003','2c797174-5839-11eb-ae93-0242ac130002','2021-5-11','2021-08-22', 180, 38);
+insert into drug_in_pharmacy(id, pharmacy_id, drug_instance_id, date_from, date_to, price, count) values ('3943c5a2-c180-11eb-8529-0242ac130003','775d9322-9859-11eb-a8b3-0242ac130003','2c797174-5839-11eb-ae93-0242ac130002','2021-5-11','2021-08-22', 190, 50);
+
 
 --INGREDIENTS
 insert into ingredient(id, name) values ('4b852c00-b7bd-11eb-8529-0242ac130003', 'Sastojak1');
@@ -164,7 +177,9 @@ insert into work_time (id, start_date,end_date, start_time,end_time, employee_id
 
 --PHARMACIES-GRADES
 insert into pharmacy_grade (id,patient_id, pharmacy_id, grade, date) values ('489fd674-bb0b-11eb-8529-0242ac130003','22793162-52d3-11eb-ae93-0242ac130002', '775d8e36-9859-11eb-a8b3-0242ac130003',4, '2021-05-022');
-insert into pharmacy_grade (id,patient_id, pharmacy_id, grade, date) values ('489fd89a-bb0b-11eb-8529-0242ac130003','22793162-52d3-11eb-ae93-0242ac130002', '775d9322-9859-11eb-a8b3-0242ac130003',3, '2021-05-022');
+insert into pharmacy_grade (id,patient_id, pharmacy_id, grade, date) values ('489fd89a-bb0b-11eb-8529-0242ac130003','22793162-52d3-11eb-ae93-0242ac130002', '775d9322-9859-11eb-a8b3-0242ac130003',2, '2021-05-022');
+insert into pharmacy_grade (id,patient_id, pharmacy_id, grade, date) values ('589fd674-bb0b-11eb-8529-0242ac130003','32793162-52d3-11eb-ae93-0242ac130002', '775d8e36-9859-11eb-a8b3-0242ac130003',5, '2021-05-022');
+insert into pharmacy_grade (id,patient_id, pharmacy_id, grade, date) values ('589fd89a-bb0b-11eb-8529-0242ac130003','32793162-52d3-11eb-ae93-0242ac130002', '775d9322-9859-11eb-a8b3-0242ac130003',5, '2021-05-022');
 
 
 
@@ -223,3 +238,8 @@ insert into complaint_staff(id, date, email, profession, reply, staff_name, staf
 insert into complaint_staff(id, date, email, profession, reply, staff_name, staff_surname, text, version, patient_id, user_id, active) values ('2dc48297-aa8c-473f-9194-cfd4b8f3bb6e','2020-03-03','abc@gmail.com','dermatolog','nista','Njekez','User','jako lose radite svooj posao',1,'22793162-52d3-11eb-ae93-0242ac130002','07a2c302-b584-11eb-8529-0242ac130003', true);
 
 insert into complaint_pharmacy(id, date, name, reply, text, version, patient_id, pharmacy_id, active) values ('5a501523-7ddf-4fff-9434-ce4df4c85d3b', '2020-03-03', 'Nemanjaa', 'nista', 'najgora apoteka svih vremena dno dna', 1, '22793162-52d3-11eb-ae93-0242ac130002', '775d8e36-9859-11eb-a8b3-0242ac130003', true);
+
+insert into ereceipt (id, price, creation_date, status, patient_id, version) values ('1d4ac49a-67ad-11eb-ae93-0242ac130002', -1, '2021-01-13', 'NEW', '22793162-52d3-11eb-ae93-0242ac130002',1);
+
+insert into ereceipt_items(e_receipt_id, drug_instance_id, amount) values ('1d4ac49a-67ad-11eb-ae93-0242ac130002','2fe1cd8e-5839-11eb-ae93-0242ac130002',2);
+insert into ereceipt_items(e_receipt_id, drug_instance_id, amount) values ('1d4ac49a-67ad-11eb-ae93-0242ac130002','2c797174-5839-11eb-ae93-0242ac130002',2);

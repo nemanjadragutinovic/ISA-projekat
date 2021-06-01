@@ -20,12 +20,20 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+
 import show.isaBack.DTO.drugDTO.DrugDTO;
+import show.isaBack.DTO.drugDTO.PharmacyDrugPriceDTO;
+import show.isaBack.DTO.drugDTO.PharmacyERecipeDTO;
 import show.isaBack.DTO.pharmacyDTO.PharmacyDTO;
 import show.isaBack.DTO.pharmacyDTO.PharmacySearchDTO;
 import show.isaBack.DTO.pharmacyDTO.PharmacyWithGradeAndPriceDTO;
+import show.isaBack.DTO.pharmacyDTO.UnspecifiedPharmacyWithDrugAndPrice;
 import show.isaBack.security.TokenUtils;
+
 import show.isaBack.service.userService.UserService;
+
+import show.isaBack.serviceInterfaces.IDrugService;
+
 import show.isaBack.serviceInterfaces.IPharmacyService;
 import show.isaBack.unspecifiedDTO.UnspecifiedDTO;
 
@@ -41,6 +49,9 @@ public class PharmacyController {
 	@Autowired
 	private TokenUtils tokenUtils;
 	
+	@Autowired
+	IDrugService drugService;
+	
 	
 	@CrossOrigin
 	@GetMapping("/allPharmacies") 
@@ -53,7 +64,19 @@ public class PharmacyController {
 		}
 	}
 	
-
+	
+	@CrossOrigin
+	@PreAuthorize("hasRole('ROLE_PATIENT')")
+	@GetMapping("/allPatientsSubscribedPharmacies") 
+	public ResponseEntity<List<UnspecifiedDTO<PharmacyDTO>>> getAllPatientSubscribedPharmacies() {
+		
+		try {
+		return new ResponseEntity<>(pharmacyService.getAllPatientSubscribedPharmacies() ,HttpStatus.OK);
+		} catch (Exception e) {
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+	
 		
 	@CrossOrigin
 	@PostMapping("/searchPharmacies" ) 
@@ -168,6 +191,7 @@ public class PharmacyController {
 	}
 	
 	
+
 	@CrossOrigin
 	@PutMapping("/editPharmacy/{phId}")
 	@PreAuthorize("hasRole('PHARMACYADMIN')")
@@ -197,6 +221,109 @@ public class PharmacyController {
 	}
 	
 	
+
+	@GetMapping("/findPharmaciesByDrugIdWithDrugPrice/{drugId}")
+	@PreAuthorize("hasRole('ROLE_PATIENT')")
+	public ResponseEntity<List<UnspecifiedPharmacyWithDrugAndPrice>> findPharmaciesByDrugIdWithDrugPrice(@PathVariable UUID drugId) {
+		try {
+			
+			return new ResponseEntity<>(drugService.findPharmaciesByDrugIdWithDrugPrice(drugId),HttpStatus.OK);
+		
+		} catch (IllegalArgumentException e) {
+			e.printStackTrace();
+			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+	
+	@GetMapping("/qrPharmacieswithDrugs/{id}")
+	@PreAuthorize("hasRole('ROLE_PATIENT')")
+	public ResponseEntity<List<UnspecifiedDTO<PharmacyDrugPriceDTO>>> getAllPharmaciesWithDrugs(@PathVariable UUID id) {
+		System.out.println("qr1231234");
+		return new ResponseEntity<List<UnspecifiedDTO<PharmacyDrugPriceDTO>>>(pharmacyService.getAllPharmaciesWithDrugs(id),HttpStatus.OK);
+		
+	}
+	
+	@PostMapping("/buyDrugsWithQr")
+	@PreAuthorize("hasRole('ROLE_PATIENT')")
+	public ResponseEntity<?> buyDrugsWithQr(@RequestBody PharmacyERecipeDTO pharmacyERecipeDTO) {
+		
+		System.out.println("by qr");
+		
+		return new ResponseEntity<>(pharmacyService.buyDrugsWithQr(pharmacyERecipeDTO),HttpStatus.CREATED);
+		
+	}
+	
+	@GetMapping("/qrSort-name/{id}")
+	@PreAuthorize("hasRole('ROLE_PATIENT')")
+	public ResponseEntity<List<UnspecifiedDTO<PharmacyDrugPriceDTO>>> sortQrPharmaciesByName(@PathVariable UUID id){
+	
+		List<UnspecifiedDTO<PharmacyDrugPriceDTO>> pharmacies = pharmacyService.sortQrPharmaciesByName(id);
+		
+		return new ResponseEntity<>(pharmacies, HttpStatus.OK);
+	}
+	
+	@GetMapping("/qrSort-nameReverse/{id}")
+	@PreAuthorize("hasRole('ROLE_PATIENT')")
+	public ResponseEntity<List<UnspecifiedDTO<PharmacyDrugPriceDTO>>> sortQrPharmaciesByNameReverse(@PathVariable UUID id){
+	
+		List<UnspecifiedDTO<PharmacyDrugPriceDTO>> pharmacies = pharmacyService.sortQrPharmaciesByNameReverse(id);
+		
+		return new ResponseEntity<>(pharmacies, HttpStatus.OK);
+	}
+	@GetMapping("/qrSort-price/{id}")
+	@PreAuthorize("hasRole('ROLE_PATIENT')")
+	public ResponseEntity<List<UnspecifiedDTO<PharmacyDrugPriceDTO>>> sortQrPharmaciesByPrice(@PathVariable UUID id){
+	
+		List<UnspecifiedDTO<PharmacyDrugPriceDTO>> pharmacies = pharmacyService.sortQrPharmaciesByPrice(id);
+		
+		return new ResponseEntity<>(pharmacies, HttpStatus.OK);
+	}
+	@GetMapping("/qrSort-priceReverse/{id}")
+	@PreAuthorize("hasRole('ROLE_PATIENT')")
+	public ResponseEntity<List<UnspecifiedDTO<PharmacyDrugPriceDTO>>> sortQrPharmaciesByPriceReverse(@PathVariable UUID id){
+	
+		List<UnspecifiedDTO<PharmacyDrugPriceDTO>> pharmacies = pharmacyService.sortQrPharmaciesByPriceReverse(id);
+		
+		return new ResponseEntity<>(pharmacies, HttpStatus.OK);
+	}
+	@GetMapping("/qrSort-grade/{id}")
+	@PreAuthorize("hasRole('ROLE_PATIENT')")
+	public ResponseEntity<List<UnspecifiedDTO<PharmacyDrugPriceDTO>>> sortQrPharmaciesByGrade(@PathVariable UUID id){
+	
+		List<UnspecifiedDTO<PharmacyDrugPriceDTO>> pharmacies = pharmacyService.sortQrPharmaciesByGrade(id);
+		
+		return new ResponseEntity<>(pharmacies, HttpStatus.OK);
+	}
+	@GetMapping("/qrSort-gradeReverse/{id}")
+	@PreAuthorize("hasRole('ROLE_PATIENT')")
+	public ResponseEntity<List<UnspecifiedDTO<PharmacyDrugPriceDTO>>> sortQrPharmaciesByGradeReverse(@PathVariable UUID id){
+	
+		List<UnspecifiedDTO<PharmacyDrugPriceDTO>> pharmacies = pharmacyService.sortQrPharmaciesByGradeReverse(id);
+		
+		return new ResponseEntity<>(pharmacies, HttpStatus.OK);
+	}
+	@GetMapping("/qrSort-address/{id}")
+	@PreAuthorize("hasRole('ROLE_PATIENT')")
+	public ResponseEntity<List<UnspecifiedDTO<PharmacyDrugPriceDTO>>> sortQrPharmaciesByAddress(@PathVariable UUID id){
+	
+		List<UnspecifiedDTO<PharmacyDrugPriceDTO>> pharmacies = pharmacyService.sortQrPharmaciesByAddress(id);
+		
+		return new ResponseEntity<>(pharmacies, HttpStatus.OK);
+	}
+	
+	
+	@GetMapping("/qrSort-addressReverse/{id}")
+	@PreAuthorize("hasRole('ROLE_PATIENT')")
+	public ResponseEntity<List<UnspecifiedDTO<PharmacyDrugPriceDTO>>> sortQrPharmaciesByAddressReverse(@PathVariable UUID id){
+	
+		List<UnspecifiedDTO<PharmacyDrugPriceDTO>> pharmacies = pharmacyService.sortQrPharmaciesByAddressReverse(id);
+		
+		return new ResponseEntity<>(pharmacies, HttpStatus.OK);
+	}
+
 	
 
 }
