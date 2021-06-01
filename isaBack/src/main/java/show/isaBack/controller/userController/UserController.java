@@ -29,6 +29,7 @@ import show.isaBack.DTO.drugDTO.AllergenDTO;
 import show.isaBack.DTO.userDTO.ChangePasswordDTO;
 import show.isaBack.DTO.userDTO.PatientDTO;
 import show.isaBack.DTO.userDTO.PatientsAllergenDTO;
+import show.isaBack.DTO.userDTO.PhAdminDTO;
 import show.isaBack.DTO.userDTO.PharmacistForAppointmentPharmacyGadeDTO;
 import show.isaBack.DTO.userDTO.UserChangeInfoDTO;
 import show.isaBack.DTO.userDTO.UserDTO;
@@ -90,6 +91,24 @@ public class UserController {
 		
 	}
 	
+
+	@GetMapping("/phadmin")
+	@PreAuthorize("hasRole('ROLE_PHARMACYADMIN')")
+	public ResponseEntity<UnspecifiedDTO<PhAdminDTO>> getLogedPhAdimn(HttpServletRequest request) {
+		try {
+			UnspecifiedDTO<PhAdminDTO> phAdmin = userService.getLoggedPhAdmin();
+			
+			return new ResponseEntity<>(phAdmin,HttpStatus.OK);  
+		} catch (EntityNotFoundException e) {
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND); 
+		} 
+		catch (Exception e) {
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR); 
+		}
+		
+		
+	}
+
 	@GetMapping("/supplier")
 	@PreAuthorize("hasRole('ROLE_SUPPLIER')")
 	public ResponseEntity<UserDTO> getLoggedSupplier(HttpServletRequest request) {
@@ -108,11 +127,26 @@ public class UserController {
 		} 
 		catch (Exception e) {
 			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR); 
-		}
-		
-		
+		}			
 	}
 	
+
+	@PutMapping("/phadmin") 
+	@CrossOrigin
+	@PreAuthorize("hasRole('ROLE_PHARMACYADMIN')")
+	public ResponseEntity<?> updatePhAdminInfo(@RequestBody UserChangeInfoDTO userInfoChangeDTO ) {
+	  
+		try {
+			userService.updatePhAdmin(userInfoChangeDTO);
+			return new ResponseEntity<>(HttpStatus.NO_CONTENT); 
+		} catch (IllegalArgumentException e) {
+			return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+		} catch (Exception e) {
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR); 
+		}
+	}
+	
+
 	
 	@PutMapping("/patient") 
 	@CrossOrigin
@@ -334,5 +368,18 @@ public class UserController {
 		}
 	}
 	
-
+	@GetMapping("/phIdForAdmin")
+	@PreAuthorize("hasRole('PHARMACYADMIN')") 
+	public ResponseEntity<UUID> getPharmacyIdForPharmacyAdmin() {
+		
+		try {
+			
+			UUID phId = userService.getPhIdForPhAdmin();
+			return new ResponseEntity<>(phId,HttpStatus.OK); 
+		} catch (EntityNotFoundException e) {
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND); 
+		} catch (Exception e) {
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR); 
+		}
+	}
 }

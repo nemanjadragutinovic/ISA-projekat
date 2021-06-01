@@ -9,8 +9,10 @@
     "axios": "^0.21.1",
     "bootstrap": "^4.6.0",
     "bootstrap-icons": "^1.5.0",
+    "cors": "^2.8.5",
     "jquery": "^3.6.0",
     "popper.js": "^1.16.1",
+    "qrcode-reader": "^1.0.4",
     "qrcode.react": "^1.0.1",
     "react": "^17.0.2",
     "react-big-calendar": "^0.31.0",
@@ -19,8 +21,10 @@
     "react-dom": "^17.0.2",
     "react-native": "^0.64.0",
     "react-router-dom": "^5.2.0",
-    "react-scripts": "4.0.2",
+    "react-scripts": "^4.0.3",
+    "react-yandex-maps": "^4.6.0",
     "reactstrap": "^8.9.0",
+    "react-qr-reader": "^2.2.1",
     "web-vitals": "^1.1.0"
   },
   "scripts": {

@@ -30,8 +30,9 @@ class HomePage extends React.Component {
     
     
     render() {
+      console.log(`Bearer ${localStorage.getItem("keyToken")}`);
     return (
-     
+      
       <React.Fragment>
      
           <Header/>

@@ -153,7 +153,7 @@ class UserProfile extends Component {
 
 
 	componentDidMount() {
-		if ((!this.hasRole("ROLE_PATIENT") && !this.hasRole("ROLE_SUPPLIER"))) {
+		if (!this.hasRole("ROLE_PATIENT") && !this.hasRole("ROLE_SUPPLIER") && !this.hasRole("ROLE_PHARMACYADMIN")) {
 			this.setState({ redirect: true });
 			this.props.history.push('/login')
 		
@@ -248,6 +248,42 @@ class UserProfile extends Component {
 
 				});
 
+			}else if(this.hasRole("ROLE_PHARMACYADMIN")){
+
+				console.log("usao admina apoteke");
+				Axios.get(API_URL + "/users/phadmin", { validateStatus: () => true, headers: { Authorization : GetAuthorisation()} })
+				.then((res) => {
+					console.log(res.data);
+					if (res.status === 401) {                       
+                        this.setState({ redirect: true });				
+					} else {
+
+						
+                        this.setState({
+							
+							email: res.data.email,
+							name: res.data.name,
+							surname: res.data.surname,
+							address: res.data.address,
+							phoneNumber: res.data.phoneNumber,
+							
+							
+
+							
+						});
+						
+						
+
+						
+
+					}
+				})
+				.catch((err) => {
+					console.log(err);
+					console.log("erradminapoteke");
+
+				});
+
 			}
 
 			
@@ -313,6 +349,42 @@ class UserProfile extends Component {
 			}else if(this.hasRole("ROLE_SUPPLIER")){
 
 				Axios.put(API_URL + "/users/supplier", userDTO, {
+					validateStatus: () => true,
+					headers: { Authorization: GetAuthorisation() },
+				})
+					.then((res) => {
+						if (res.status === 400) {
+							this.setState({ hiddenUnsuccessfulAlert: false,
+								UnsuccessfulHeader: "Bad request", 
+								UnsuccessfulMessage: "Invalid argument." });
+	
+						} else if (res.status === 500) {
+	
+							this.setState({ hiddenUnsuccessfulAlert: false, 
+								UnsuccessfulHeader: "Internal server error", 
+								UnsuccessfulMessage: "Server error." });
+	
+						} else if (res.status === 204) {
+							console.log("Success");
+							this.setState({
+								hiddenSuccessfulAlert: false,
+								successfulHeader: "Success",
+								successfulMessage: "You updated your information.",
+								hiddenEditInfo: true,
+							});
+						}
+					})
+					.catch((err) => {
+						console.log(err);
+						this.setState({ hiddenUnsuccessfulAlert: false,
+							UnsuccessfulHeader: "Error", 
+							UnsuccessfulMessage: "Something was wrong" });
+					
+					});
+
+			}else if(this.hasRole("ROLE_PHARMACYADMIN")){
+
+				Axios.put(API_URL + "/users/phadmin", userDTO, {
 					validateStatus: () => true,
 					headers: { Authorization: GetAuthorisation() },
 				})

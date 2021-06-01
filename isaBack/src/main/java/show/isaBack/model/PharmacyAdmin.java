@@ -34,5 +34,14 @@ public class PharmacyAdmin extends User {
 
 		
 	}
+	
+	public Pharmacy getPharmacy() {
+		return pharmacy;
+	}
+
+	public void setPharmacy(Pharmacy pharmacy) {
+		this.pharmacy = pharmacy;
+	}
+	
 
 }
