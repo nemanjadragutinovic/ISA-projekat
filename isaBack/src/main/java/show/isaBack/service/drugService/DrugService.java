@@ -1,6 +1,7 @@
 package show.isaBack.service.drugService;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
@@ -16,12 +17,14 @@ import org.springframework.transaction.annotation.Transactional;
 
 import show.isaBack.DTO.AppointmentDTO.IdDTO;
 import show.isaBack.DTO.drugDTO.DrugDTO;
+import show.isaBack.DTO.drugDTO.DrugEReceiptDTO;
 import show.isaBack.DTO.drugDTO.DrugFormatIdDTO;
 import show.isaBack.DTO.drugDTO.DrugInstanceDTO;
 import show.isaBack.DTO.drugDTO.DrugKindIdDTO;
 import show.isaBack.DTO.drugDTO.DrugReservationDTO;
 import show.isaBack.DTO.drugDTO.DrugReservationResponseDTO;
 import show.isaBack.DTO.drugDTO.DrugsWithGradesDTO;
+import show.isaBack.DTO.drugDTO.EreceiptDTO;
 import show.isaBack.DTO.drugDTO.IngredientDTO;
 import show.isaBack.DTO.drugDTO.ManufacturerDTO;
 import show.isaBack.DTO.pharmacyDTO.PharmacyDTO;
@@ -31,7 +34,7 @@ import show.isaBack.DTO.userDTO.AuthorityDTO;
 import show.isaBack.DTO.userDTO.PatientDTO;
 
 import show.isaBack.Mappers.Drugs.DrugReservationMapper;
-
+import show.isaBack.Mappers.Drugs.EReceiptsMapper;
 import show.isaBack.Mappers.Pharmacy.DrugsWithGradesMapper;
 import show.isaBack.emailService.EmailService;
 import show.isaBack.interfaceRepository.drugRepository.DrugInstanceRepository;
@@ -50,12 +53,15 @@ import show.isaBack.model.drugs.DrugKindId;
 import show.isaBack.model.drugs.DrugReservation;
 import show.isaBack.model.drugs.DrugReservationStatus;
 import show.isaBack.model.drugs.EReceipt;
+import show.isaBack.model.drugs.EReceiptItems;
+import show.isaBack.model.drugs.EReceiptStatus;
 import show.isaBack.repository.drugsRepository.DrugFeedbackRepository;
 import show.isaBack.repository.drugsRepository.EReceiptRepository;
 import show.isaBack.repository.pharmacyRepository.PharmacyRepository;
 import show.isaBack.repository.userRepository.PatientRepository;
 import show.isaBack.repository.drugsRepository.DrugInPharmacyRepository;
 import show.isaBack.repository.drugsRepository.DrugReservationRepository;
+import show.isaBack.repository.drugsRepository.EReceiptItemsRepository;
 import show.isaBack.service.loyalityService.LoyalityProgramService;
 import show.isaBack.service.userService.UserService;
 import show.isaBack.serviceInterfaces.IDrugService;
@@ -108,6 +114,12 @@ public class DrugService implements IDrugService{
 
 	@Autowired
 	private EmailService emailService;
+	
+	@Autowired
+	private EReceiptRepository eReceiptRepository1;
+	
+	@Autowired
+	private EReceiptItemsRepository eReceiptItemsRepository;
 	
 	int MAX_PENALTY=3;
 	
@@ -542,6 +554,130 @@ public class DrugService implements IDrugService{
 	}
 	
 	
+	@Override
+	public List<UnspecifiedDTO<EreceiptDTO>> findAllPatientsEreceipts(){
+		UUID patientId = userService.getLoggedUserId();
+		List<UnspecifiedDTO<EreceiptDTO>> EreceiptsDTOlist= new ArrayList<UnspecifiedDTO<EreceiptDTO>>();
+		List<EReceipt> EReceiptList=eReceiptRepository.findAllEReceiptsForPatient(patientId);
+		
+		for (EReceipt eReceipt : EReceiptList) {				
+			
+			List<UnspecifiedDTO<DrugEReceiptDTO>> listDrugdDTO=
+					EReceiptsMapper.mapEReceiptItemsToEreceiptsDrugDTO(eReceiptItemsRepository.findAllByEReceiptId(eReceipt.getId()));           
+			
+			UnspecifiedDTO<EreceiptDTO> eReceiptDTO= EReceiptsMapper.mapEreceiptToEreceiptDTO(eReceipt,listDrugdDTO); 
+			EreceiptsDTOlist.add(eReceiptDTO);
+			
+		}
+		
+		return EreceiptsDTOlist;
+		
+	}
+	
+	
+	
+	@Override
+	public List<UnspecifiedDTO<EreceiptDTO>> findAllPatientsEreceiptsSortByDateAscending(){
+		
+		UUID patientId = userService.getLoggedUserId();
+		List<UnspecifiedDTO<EreceiptDTO>> EreceiptsDTOlist= new ArrayList<UnspecifiedDTO<EreceiptDTO>>();
+		List<EReceipt> EReceiptList=eReceiptRepository.findAllEReceiptsForPatientSortByDateAscending(patientId);
+		
+		for (EReceipt eReceipt : EReceiptList) {				
+			
+			List<UnspecifiedDTO<DrugEReceiptDTO>> listDrugdDTO=
+					EReceiptsMapper.mapEReceiptItemsToEreceiptsDrugDTO(eReceiptItemsRepository.findAllByEReceiptId(eReceipt.getId()));           
+			
+			UnspecifiedDTO<EreceiptDTO> eReceiptDTO= EReceiptsMapper.mapEreceiptToEreceiptDTO(eReceipt,listDrugdDTO); 
+			EreceiptsDTOlist.add(eReceiptDTO);
+			
+		}
+		return EreceiptsDTOlist;
+		
+	}
+	
+	
+	@Override
+	public List<UnspecifiedDTO<EreceiptDTO>> findAllPatientsEreceiptsSortByDateDescending(){
+		
+		UUID patientId = userService.getLoggedUserId();
+		List<UnspecifiedDTO<EreceiptDTO>> EreceiptsDTOlist= new ArrayList<UnspecifiedDTO<EreceiptDTO>>();
+		List<EReceipt> EReceiptList=eReceiptRepository.findAllEReceiptsForPatientSortByDateDescending(patientId);
+		
+		for (EReceipt eReceipt : EReceiptList) {				
+			
+			List<UnspecifiedDTO<DrugEReceiptDTO>> listDrugdDTO=
+					EReceiptsMapper.mapEReceiptItemsToEreceiptsDrugDTO(eReceiptItemsRepository.findAllByEReceiptId(eReceipt.getId()));           
+			
+			UnspecifiedDTO<EreceiptDTO> eReceiptDTO= EReceiptsMapper.mapEreceiptToEreceiptDTO(eReceipt,listDrugdDTO); 
+			EreceiptsDTOlist.add(eReceiptDTO);
+			
+		}
+		return EreceiptsDTOlist;
+		
+	}
+	
+	
+	@Override
+	public List<UnspecifiedDTO<EreceiptDTO>> findAllPatientsEreceiptsSortByDateAscendingWithStatus(EReceiptStatus searchStatus){
+		
+		UUID patientId = userService.getLoggedUserId();
+		List<UnspecifiedDTO<EreceiptDTO>> EreceiptsDTOlist= new ArrayList<UnspecifiedDTO<EreceiptDTO>>();
+		List<EReceipt> EReceiptList=eReceiptRepository.findAllEReceiptsForPatientSortByDateAscescendingWithStatus(patientId,searchStatus);
+		
+		for (EReceipt eReceipt : EReceiptList) {				
+			
+			List<UnspecifiedDTO<DrugEReceiptDTO>> listDrugdDTO=
+					EReceiptsMapper.mapEReceiptItemsToEreceiptsDrugDTO(eReceiptItemsRepository.findAllByEReceiptId(eReceipt.getId()));           
+			
+			UnspecifiedDTO<EreceiptDTO> eReceiptDTO= EReceiptsMapper.mapEreceiptToEreceiptDTO(eReceipt,listDrugdDTO); 
+			EreceiptsDTOlist.add(eReceiptDTO);
+			
+		}
+		return EreceiptsDTOlist;
+		
+	}
+	
+	
+	@Override
+	public List<UnspecifiedDTO<EreceiptDTO>> findAllPatientsEreceiptsSortByDateDescendingWithStatus(EReceiptStatus searchStatus){
+		
+		UUID patientId = userService.getLoggedUserId();
+		List<UnspecifiedDTO<EreceiptDTO>> EreceiptsDTOlist= new ArrayList<UnspecifiedDTO<EreceiptDTO>>();
+		List<EReceipt> EReceiptList=eReceiptRepository.findAllEReceiptsForPatientSortByDateDescendingWitStatus(patientId,searchStatus);
+		
+		for (EReceipt eReceipt : EReceiptList) {				
+			
+			List<UnspecifiedDTO<DrugEReceiptDTO>> listDrugdDTO=
+					EReceiptsMapper.mapEReceiptItemsToEreceiptsDrugDTO(eReceiptItemsRepository.findAllByEReceiptId(eReceipt.getId()));           
+			
+			UnspecifiedDTO<EreceiptDTO> eReceiptDTO= EReceiptsMapper.mapEreceiptToEreceiptDTO(eReceipt,listDrugdDTO); 
+			EreceiptsDTOlist.add(eReceiptDTO);
+			
+		}
+		return EreceiptsDTOlist;
+		
+	}
+	
+	@Override
+	public List<UnspecifiedDTO<EreceiptDTO>> findAllPatientsEreceiptsWithStatus(EReceiptStatus searchStatus){
+		
+		UUID patientId = userService.getLoggedUserId();
+		List<UnspecifiedDTO<EreceiptDTO>> EreceiptsDTOlist= new ArrayList<UnspecifiedDTO<EreceiptDTO>>();
+		List<EReceipt> EReceiptList=eReceiptRepository.findAllEReceiptsForPatientWithStatus(patientId,searchStatus);
+		
+		for (EReceipt eReceipt : EReceiptList) {				
+			
+			List<UnspecifiedDTO<DrugEReceiptDTO>> listDrugdDTO=
+					EReceiptsMapper.mapEReceiptItemsToEreceiptsDrugDTO(eReceiptItemsRepository.findAllByEReceiptId(eReceipt.getId()));           
+			
+			UnspecifiedDTO<EreceiptDTO> eReceiptDTO= EReceiptsMapper.mapEreceiptToEreceiptDTO(eReceipt,listDrugdDTO); 
+			EreceiptsDTOlist.add(eReceiptDTO);
+			
+		}
+		return EreceiptsDTOlist;
+		
+	}
 	
 	@Override
 	public List<UnspecifiedDTO<AuthorityDTO>> findAll() {

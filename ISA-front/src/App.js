@@ -28,7 +28,7 @@ import AdminPharmacyComplains from './Components/AdminPharmacyComplains';
 import QrCode from './Components/QrCode';
 import FutureDrugsReservationsForPatients from "./Pages/FutureDrugsReservationsForPatient"
 import qrPharmacieswithDrugs from './Components/qrPharmacieswithDrugs';
-
+import PatientsEReceipts from "./Pages/PatientsEReceipts"
 
 
 
@@ -78,7 +78,7 @@ function App() {
         <Route  to ="/qrCode" path ="/qrCode"  component={QrCode}/>
         <Route  to ="/futureDrugsReservationForPatient" path ="/futureDrugsReservationForPatient"  component={FutureDrugsReservationsForPatients}/>     
         <Route to="/qrPharmacieswithDrugs/:id" path ="/qrPharmacieswithDrugs/:id"  component={qrPharmacieswithDrugs}/>
-
+        <Route  to ="/allPatients-E-receipts" path ="/allPatients-E-receipts"  component={PatientsEReceipts}/>
 
 
 

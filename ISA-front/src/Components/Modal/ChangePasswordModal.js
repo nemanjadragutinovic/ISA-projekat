@@ -26,7 +26,7 @@ class ChangePasswordModal extends Component {
 			<Modal
 				show={this.props.show}
 				size="lg"
-				dialogClassName="modal-80w-80h"
+				dialogClassName="modal-100w-100h"
 				aria-labelledby="contained-modal-title-vcenter"
 				centered
 				onHide={this.props.onCloseModal}
