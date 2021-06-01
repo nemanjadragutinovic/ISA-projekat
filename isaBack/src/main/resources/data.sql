@@ -14,12 +14,15 @@ insert into authority (id, name) values ('ef9a3723-a72e-44ec-83ac-9d748fd0240f',
 insert into authority (id, name) values ('a1e3bac1-6093-4705-b835-eed75c3e5f21','ROLE_PHARMACIST');
 insert into authority (id, name) values ('ea16767c-2c1f-49fb-ac98-c7739c0036e8','ROLE_PHARMACYADMIN');
 
---PHARMACY nemanjaaaa
+--PHARMACY nemanjaaaa 
 
-insert into pharmacy (id,name, city, street,country, post_code,description,consultation_price) values ('775d8e36-9859-11eb-a8b3-0242ac130003','apoteka Jankovic','Novi Sad','Futoski put 54','Serbia', '21000', 'Zdravlje je prioritet!',1250);            
-insert into pharmacy (id,name, city, street,country, post_code,description,consultation_price) values ('775d9322-9859-11eb-a8b3-0242ac130003','Benu','Novi Sad','Vojvodjanske brigade 30','Serbia', '21000', 'U svemu najbolji!',1400);  
+insert into pharmacy (id,name, city, street,country, post_code,latitude,longitude,description,consultation_price) values ('775d8e36-9859-11eb-a8b3-0242ac130003','apoteka Jankovic','Novi Sad','Futoski put 54','Serbia', '21000',45.24555195890135, 19.797846045982986, 'Zdravlje je prioritet!',1250);            
+insert into pharmacy (id,name, city, street,country, post_code,latitude,longitude,description,consultation_price) values ('775d9322-9859-11eb-a8b3-0242ac130003','Benu','Novi Sad','Vojvodjanske brigade 30','Serbia', '21000',45.24945171512143, 19.843664046981377, 'U svemu najbolji!',1400);  
 
 
+--PHADMIN
+
+insert into users (id, email, password, name, surname, phone_Number, first_Login, active, address, user_type) values ('62ee0102-ba54-11eb-8529-0242ac130003','phadmin@gmail.com', '$2a$10$TyNl6ipLWyDE/TfFM3uRse0SVPP4Rz7.mdZdDK3zqjKZqtKtJ3pf2','Petar','Petrovic','062850007',false,true,'Temerinska 110', 'PHARMACYADMIN');
 
 --USERS
 
@@ -62,7 +65,11 @@ insert into pharmacist (id, pharmacy_id) values ('56a92e1c-bd9c-11eb-8529-0242ac
 --SYSTEM ADMIN
 insert into system_admin(id) values ('44444d47-1a8a-4ae1-b109-af7b56e94788');
 
+
+insert into pharmacy_admin(id,pharmacy_id) values ('62ee0102-ba54-11eb-8529-0242ac130003','775d8e36-9859-11eb-a8b3-0242ac130003');
+
 --USER-AUTHORITY
+
 insert into user_authority (user_id, authority_id) values ('22793162-52d3-11eb-ae93-0242ac130002', '7852aa5e-7040-4d99-8255-537a0b226c75');
 insert into user_authority (user_id, authority_id) values ('32793162-52d3-11eb-ae93-0242ac130002', '7852aa5e-7040-4d99-8255-537a0b226c75');
 insert into user_authority (user_id, authority_id) values ('88dc12eb-6f5a-4f1e-8058-b38f84293574', '7852aa5e-7040-4d99-8255-537a0b226c75');
@@ -88,6 +95,12 @@ insert into user_authority (user_id, authority_id) values ('22793162-52d3-11eb-a
 --roleDermatologist
 insert into user_authority (user_id, authority_id) values ('07a2c302-b584-11eb-8529-0242ac130003', '09af8857-2f78-4eec-970f-059d3ed4589f');
 insert into user_authority (user_id, authority_id) values ('aef9fa80-b584-11eb-8529-0242ac130003', '09af8857-2f78-4eec-970f-059d3ed4589f');
+
+
+--role-Phadmin
+
+insert into user_authority (user_id, authority_id) values ('62ee0102-ba54-11eb-8529-0242ac130003', 'ea16767c-2c1f-49fb-ac98-c7739c0036e8');
+
 
 ---DERMATOLOGIST-PHARMACIES
 
@@ -115,8 +128,8 @@ insert into appointment (id, appointment_status, appointment_type, start_date_ti
 insert into appointment (id, appointment_status, appointment_type, start_date_time, end_date_time, price,pharmacy_id, employee_id) values ('56a93312-bd9c-11eb-8529-0242ac130003','FREE','CONSULTATION', '2021-06-28 14:30:00', '2021-06-28 15:30:00', 1300, '775d9322-9859-11eb-a8b3-0242ac130003','56a92e1c-bd9c-11eb-8529-0242ac130003');
 
 
---insert into appointment (id, appointment_status, appointment_type, start_date_time, end_date_time, price,pharmacy_id, employee_id, patient_id) values ('802a3992-be1a-11eb-8529-0242ac130003','FINISHED','CONSULTATION', '2021-04-28 11:30:00', '2021-04-28 12:00:00', 1200, '775d9322-9859-11eb-a8b3-0242ac130003', '56a92e1c-bd9c-11eb-8529-0242ac130003', '22793162-52d3-11eb-ae93-0242ac130002');       
---insert into appointment (id, appointment_status, appointment_type, start_date_time, end_date_time, price,pharmacy_id, employee_id, patient_id) values ('802a3be0-be1a-11eb-8529-0242ac130003','FINISHED','CONSULTATION', '2021-04-28 14:30:00', '2021-04-28 15:30:00', 1300, '775d9322-9859-11eb-a8b3-0242ac130003','56a92e1c-bd9c-11eb-8529-0242ac130003', '22793162-52d3-11eb-ae93-0242ac130002');
+insert into appointment (id, appointment_status, appointment_type, start_date_time, end_date_time, price,pharmacy_id, employee_id, patient_id) values ('802a3992-be1a-11eb-8529-0242ac130003','FINISHED','CONSULTATION', '2021-04-28 11:30:00', '2021-04-28 12:00:00', 1200, '775d9322-9859-11eb-a8b3-0242ac130003', '56a92e1c-bd9c-11eb-8529-0242ac130003', '22793162-52d3-11eb-ae93-0242ac130002');       
+insert into appointment (id, appointment_status, appointment_type, start_date_time, end_date_time, price,pharmacy_id, employee_id, patient_id) values ('802a3be0-be1a-11eb-8529-0242ac130003','FINISHED','CONSULTATION', '2021-04-28 14:30:00', '2021-04-28 15:30:00', 1300, '775d9322-9859-11eb-a8b3-0242ac130003','56a92e1c-bd9c-11eb-8529-0242ac130003', '22793162-52d3-11eb-ae93-0242ac130002');
 
 --MANUFACTURER
 insert into manufacturer (id, name) values ('20ddef44-5838-11eb-ae93-0242ac130002', 'Hemofarm');
@@ -249,6 +262,7 @@ insert into ereceipt (id, price, creation_date, status, patient_id, version) val
 insert into ereceipt_items(e_receipt_id, drug_instance_id, amount) values ('1d4ac49a-67ad-11eb-ae93-0242ac130002','2fe1cd8e-5839-11eb-ae93-0242ac130002',2);
 insert into ereceipt_items(e_receipt_id, drug_instance_id, amount) values ('1d4ac49a-67ad-11eb-ae93-0242ac130002','2c797174-5839-11eb-ae93-0242ac130002',2);
 
+
 insert into ereceipt_items(e_receipt_id, drug_instance_id, amount) values ('fc7c6dcb-164c-41ea-96bc-faaa8caeef10','0db9e1a0-3760-4835-8785-6dcc9c199ee0',2);
 
 insert into ereceipt_items(e_receipt_id, drug_instance_id, amount) values ('fed6f795-7e1f-4e5c-b81b-2c54b859928a','2fe1cd8e-5839-11eb-ae93-0242ac130002',5);
@@ -256,6 +270,15 @@ insert into ereceipt_items(e_receipt_id, drug_instance_id, amount) values ('fed6
 insert into ereceipt_items(e_receipt_id, drug_instance_id, amount) values ('fed6f795-7e1f-4e5c-b81b-2c54b859928a','4d62cbe3-69a1-40a0-8e9c-9479132dadbe',7);
 
 insert into ereceipt_items(e_receipt_id, drug_instance_id, amount) values ('71efc25b-4bd7-44f5-ad06-205c10e4c22d','2fe1cd8e-5839-11eb-ae93-0242ac130002',10);
+
+
+--DRUGS-RESERVATIONS
+
+insert into drug_reservation(id, count, price_for_one_drug, end_date,start_date, drug_reservation_status, drug_instance_id, patient_id, pharmacy_id) values ('bc3196de-c2e2-11eb-8529-0242ac130003', 4, 250, '2021-04-20 14:44:03','2021-04-28 14:44:03',  'PROCESSED',  'dac2b818-5838-11eb-ae93-0242ac130002', '22793162-52d3-11eb-ae93-0242ac130002','775d8e36-9859-11eb-a8b3-0242ac130003');
+insert into drug_reservation(id, count, price_for_one_drug, end_date,start_date, drug_reservation_status,  drug_instance_id, patient_id, pharmacy_id) values ('bc3198f0-c2e2-11eb-8529-0242ac130003', 2, 280, '2021-02-18 17:04:03', '2021-01-16 17:04:03',  'PROCESSED', 'dac2b818-5838-11eb-ae93-0242ac130002', '22793162-52d3-11eb-ae93-0242ac130002','775d8e36-9859-11eb-a8b3-0242ac130003');
+
+
+
 
 
 

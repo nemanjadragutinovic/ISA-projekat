@@ -12,6 +12,7 @@ import java.util.UUID;
 import javax.mail.MessagingException;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mail.MailException;
 import org.springframework.stereotype.Service;
@@ -30,6 +31,11 @@ import show.isaBack.emailService.EmailService;
 import show.isaBack.model.Drug;
 import show.isaBack.model.Patient;
 import show.isaBack.model.Pharmacy;
+
+import show.isaBack.model.PharmacyAdmin;
+import show.isaBack.repository.pharmacyRepository.PharmacyRepository;
+import show.isaBack.repository.userRepository.PharmacyAdminRepository;
+
 import show.isaBack.model.PharmacyGrade;
 import show.isaBack.model.drugs.DrugInPharmacy;
 import show.isaBack.model.drugs.EReceipt;
@@ -42,6 +48,7 @@ import show.isaBack.repository.drugsRepository.EReceiptRepository;
 import show.isaBack.repository.pharmacyRepository.PharmacyRepository;
 import show.isaBack.repository.userRepository.PatientRepository;
 import show.isaBack.service.loyalityService.LoyalityProgramService;
+
 import show.isaBack.serviceInterfaces.IAppointmentService;
 import show.isaBack.serviceInterfaces.IPharmacyGradeService;
 import show.isaBack.serviceInterfaces.IPharmacyService;
@@ -61,6 +68,9 @@ public class PharmacyService implements IPharmacyService{
 	@Autowired
 	private IPharmacyGradeService pharmacyGradeService;
 	
+	@Autowired
+	private PharmacyAdminRepository phAdminRepository;
+
 	@Autowired
 	private PatientRepository patientRepository;
 	
@@ -85,6 +95,7 @@ public class PharmacyService implements IPharmacyService{
 	@Autowired
 	private EmailService emailService;
 	
+
 	
 	@Override
 	public List<UnspecifiedDTO<PharmacyDTO>> getAllPharmacies() {
@@ -174,7 +185,7 @@ public class PharmacyService implements IPharmacyService{
 	
 	private Pharmacy createPharmacyFromDTO(PharmacyDTO pharmacyDTO) {
 		
-		return new Pharmacy(pharmacyDTO.getName(),pharmacyDTO.getAddress().getCity(),pharmacyDTO.getAddress().getStreet(),pharmacyDTO.getAddress().getCountry(),pharmacyDTO.getAddress().getPostCode(),pharmacyDTO.getDescription(), pharmacyDTO.getConsultationPrice());
+		return new Pharmacy(pharmacyDTO.getName(),pharmacyDTO.getAddress().getCity(),pharmacyDTO.getAddress().getStreet(),pharmacyDTO.getAddress().getCountry(),pharmacyDTO.getAddress().getPostCode(),pharmacyDTO.getAddress().getLongitude(),pharmacyDTO.getAddress().getLatitude(),pharmacyDTO.getDescription(), pharmacyDTO.getConsultationPrice());
 	}
 
 
@@ -209,6 +220,12 @@ public class PharmacyService implements IPharmacyService{
 		return new UnspecifiedDTO<PharmacyWithGradeAndPriceDTO>(pharmacy.getId() , new  PharmacyWithGradeAndPriceDTO(pharmacy.getName(), pharmacy.getAddress(),pharmacyGrade, pharmacy.getConsultationPrice()));
 	}
 	
+	public UnspecifiedDTO<PharmacyWithGradeAndPriceDTO> convertPharmacyToPharmacyWithGradeAndPriceDTO (UUID phId ){
+		
+		double pharmacyGrade= pharmacyGradeService.getAvgGradeForPharmacy(phId);
+		Pharmacy pharmacy= pharmacyRepository.getOne(phId);
+		return new UnspecifiedDTO<PharmacyWithGradeAndPriceDTO>(phId , new  PharmacyWithGradeAndPriceDTO(pharmacy.getName(), pharmacy.getAddress(),pharmacyGrade, pharmacy.getConsultationPrice(),pharmacy.getDescription()));
+	}
 	
 	
 	
@@ -257,6 +274,22 @@ public class PharmacyService implements IPharmacyService{
 	
 	
 	@Override
+	public void updatePharmacy(UUID phID, PharmacyDTO pharmacyDTO) {
+		Pharmacy pharmacy = pharmacyRepository.getOne(phID);		
+		System.out.println("ph id je   "+phID);
+		pharmacy.setAddress(pharmacyDTO.getAddress());
+		pharmacy.setName(pharmacyDTO.getName());
+		pharmacy.setDescription(pharmacyDTO.getDescription());
+		pharmacy.setConsultationPrice(pharmacyDTO.getConsultationPrice());
+		System.out.println(pharmacy);
+		pharmacyRepository.save(pharmacy);
+		
+		Pharmacy pharmacy1 = pharmacyRepository.getOne(phID);	
+		System.out.println("sacuvana "+ pharmacy1.getName() );
+	}
+
+	
+	@Override
 	public List<UnspecifiedDTO<PharmacyWithGradeAndPriceDTO>> findAllPharmaciesWhoHaveFreeAppointmentsForPeriodWithGradesAndPriceSortByPharmacyGradeDescending(Date startDate){
 		
 		List<UnspecifiedDTO<PharmacyWithGradeAndPriceDTO>> pharmaciesDTOSortedByPharmacyGradeDescending=findAllPharmaciesWhoHaveFreeAppointmentsForPeriodWithGradesAndPrice(startDate);
@@ -289,7 +322,7 @@ public class PharmacyService implements IPharmacyService{
 				System.out.println(pha.getName() + "prosla");
 				price = doesPharmacyHaveAllItems(items,pha);
 				grade = avgGrade(pha);
-				pharmacies.add(PharmacyMapper.MapPharmacyPersistenceToPharmacyDrugPriceIdentifiableDTO(pha, grade, price));
+				pharmacies.add(PharmacyMapper.MapPharmacyPersistenceToPharmacyDrugPriceUnspecifiedDTO(pha, grade, price));
 				
 				
 			}
@@ -363,7 +396,7 @@ UUID patientID = userService.getLoggedUserId();
 		List<EReceiptItems> items = itemRepository.findAllByEReceiptId(pharmacyERecipeDTO.geteRecipeId());
 		
 		for (EReceiptItems eReceiptItems : items) {
-			DrugInPharmacy drugInPharmacy = drugInPharmacyRepository.findByDrugIdAndPharmacyId(eReceiptItems.getDrugInstance().getId(), pharmacyERecipeDTO.getPharmacyId());
+			DrugInPharmacy drugInPharmacy = drugInPharmacyRepository.getDrugInPharmacy(eReceiptItems.getDrugInstance().getId(), pharmacyERecipeDTO.getPharmacyId());
 			System.out.println(drugInPharmacy.getDrug().getDrugInstanceName());
 			System.out.println(eReceiptItems.getAmount());
 			drugInPharmacy.setCount(drugInPharmacy.getCount()-eReceiptItems.getAmount());

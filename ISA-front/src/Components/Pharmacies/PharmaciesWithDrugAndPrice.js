@@ -1,8 +1,6 @@
 import React, { Component } from "react";
 import PharmacyLogoPicture from "../../Images/pharmacyLogo.jpg" ;
-import Axios from "axios";
-import GetAuthorisation from "../../Funciton/GetAuthorisation";
-
+import SuccessfulAlert from "../Alerts/SuccessfulAlert";
 
 
 
@@ -14,7 +12,15 @@ class PharmaciesWithDrugAndPrice extends Component {
     
     render() {
 		return (
-			<div hidden={!this.props.show}>
+			<div hidden={!this.props.show} className="container">
+                       
+                            <SuccessfulAlert
+                                hidden={this.props.hiddenSuccessfulAlert}
+                                header={this.props.SuccessfulHeader}
+                                message={this.props.SuccessfulMessage}
+                                handleCloseAlert={this.props.handleCloseSuccessfulAlert}
+                            />
+                      
 
 
                 <button  type="button" class="btn btn-link btn-lg"
@@ -76,7 +82,7 @@ class PharmaciesWithDrugAndPrice extends Component {
                                                         type="button"
                                                         className="btn btn-outline-primary"
                                                         style={{  marginTop: "25px" }}
-                                                        onClick={() => this.props.openReserveDialog(pharmacy)}
+                                                        onClick={() => this.props.openReservationDialog(pharmacy)}
                                                 >
                                                         Reserve drug
                                                 </button>

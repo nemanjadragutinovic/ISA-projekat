@@ -115,7 +115,15 @@ public class DrugInPharmacy implements Serializable {
 	}
 	
 	
+	public void reduceCount(int reduceCount) {
+		if(this.count - reduceCount < 0)
+			throw new IllegalArgumentException("Not enough drugs in storage.");
+		else
+			this.count=this.count - reduceCount;
+	}
 	
-	
+	public void addCount(int addCount) {
+			this.count=this.count + addCount;
+	}
 	
 }
