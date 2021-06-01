@@ -3,10 +3,14 @@ package show.isaBack.controller.drugController;
 import java.util.List;
 import java.util.UUID;
 
+import javax.persistence.EntityNotFoundException;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.orm.ObjectOptimisticLockingFailureException;
+import org.springframework.security.access.AuthorizationServiceException;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,12 +22,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-
+import show.isaBack.DTO.AppointmentDTO.IdDTO;
 import show.isaBack.DTO.drugDTO.DrugDTO;
 import show.isaBack.DTO.drugDTO.DrugFormatIdDTO;
 import show.isaBack.DTO.drugDTO.DrugInstanceDTO;
 import show.isaBack.DTO.drugDTO.DrugKindIdDTO;
 import show.isaBack.DTO.drugDTO.DrugManufacturerDTO;
+import show.isaBack.DTO.drugDTO.DrugReservationDTO;
+import show.isaBack.DTO.drugDTO.DrugReservationResponseDTO;
 import show.isaBack.DTO.drugDTO.DrugsWithGradesDTO;
 import show.isaBack.DTO.drugDTO.IngredientDTO;
 import show.isaBack.DTO.drugDTO.ManufacturerDTO;
@@ -162,15 +168,63 @@ public class DrugController {
 	
 	@CrossOrigin
 	@GetMapping("/canPatientUseQR") 
-	@PreAuthorize("hasRole('PATIENT')")
+	@PreAuthorize("hasRole('ROLE_PATIENT')")
 	public ResponseEntity<?> canPatientUseQR(@RequestParam String id) {
 		System.out.println("can patient use qr");
 		System.out.println(id + "xixixi");
 		return new ResponseEntity<>(drugService.isQrCodeValid(id) ,HttpStatus.CREATED);
 	}
 	
+	@PostMapping("/reserveDrug")
+	@PreAuthorize("hasRole('ROLE_PATIENT')")
+	public ResponseEntity<?> createDrugReservation(@RequestBody DrugReservationDTO drugReservationDTO) {
+		try {
+			drugService.createDrugReservation(drugReservationDTO); 
+			return new ResponseEntity<>(HttpStatus.CREATED);
+			
+		} catch (IllegalArgumentException e) {
+			return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+		} catch (Exception e) {
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+		
+	}
+	
+	@GetMapping("/futurePatientsDrugsReservation")
+	@PreAuthorize("hasRole('ROLE_PATIENT')")
+	public ResponseEntity<List<UnspecifiedDTO<DrugReservationResponseDTO>>> findAllFuturePatientsDrugReservation() {
+		
+		return new ResponseEntity<>(drugService.findAllFuturePatientsDrugReservation() ,HttpStatus.OK);
+	}
 	
 	
+	@GetMapping("/historyPatientsDrugsReservations")
+	@PreAuthorize("hasRole('ROLE_PATIENT')")
+	public ResponseEntity<List<UnspecifiedDTO<DrugReservationResponseDTO>>> findAllhistoryPatientsDrugReservation() {
+		
+		return new ResponseEntity<>(drugService.findAllhistoryPatientsDrugReservation() ,HttpStatus.OK);
+	}
+	
+	
+	@PreAuthorize("hasRole('ROLE_PATIENT')")
+	@CrossOrigin
+	@PostMapping("/cancelDrugReservation")
+	public ResponseEntity<?>  cancelPatientDrugReservation(@RequestBody IdDTO drugIdObject) {
+		
+		try {
+			drugService.cancelPatientDrugReservation(drugIdObject);
+			return new ResponseEntity<>(HttpStatus.OK);
+		
+		} catch (EntityNotFoundException e) {
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND); 
+		} catch (IllegalArgumentException e) {
+			return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+		} catch (Exception e) {
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}	
+			
+		
+	}
 	
 	
 }

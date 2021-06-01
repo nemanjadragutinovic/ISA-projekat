@@ -14,7 +14,7 @@ public class OrderMapper {
 	public static UnspecifiedDTO<OrderForProviderDTO> MapOrderInstancePersistenceToOrderInstanceIdentifiableDTO(Order order){
 		if(order == null) throw new IllegalArgumentException();
 				
-		return new UnspecifiedDTO<OrderForProviderDTO>(order.getId(), new OrderForProviderDTO(PharmacyMapper.MapPharmacyPersistenceToPharmacyIdentifiableDTO(order.getPharmacy()), UserMapper.MapPharmacyAdminPersistenceToPharmacyAdminIdentifiableDTO(order.getPharmacyAdmin()), MapListDrugOrderPersistenceToListDrugOrderIdentifiableDTO(order.getOrder()) ,order.getDate(), order.getOrderStatus()
+		return new UnspecifiedDTO<OrderForProviderDTO>(order.getId(), new OrderForProviderDTO(PharmacyMapper.MapPharmacyPersistenceToPharmacyUnspecifiedDTO(order.getPharmacy()), UserMapper.MapPharmacyAdminPersistenceToPharmacyAdminIdentifiableDTO(order.getPharmacyAdmin()), MapListDrugOrderPersistenceToListDrugOrderIdentifiableDTO(order.getOrder()) ,order.getDate(), order.getOrderStatus()
 											, OfferMapper.MapListDrugOrderPersistenceToListDrugOrderIdentifiableDTO(order.getOffers())));
 	}
 	

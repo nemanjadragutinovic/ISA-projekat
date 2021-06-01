@@ -3,8 +3,11 @@ package show.isaBack.serviceInterfaces;
 import java.util.List;
 import java.util.UUID;
 
+import show.isaBack.DTO.AppointmentDTO.IdDTO;
 import show.isaBack.DTO.drugDTO.DrugDTO;
 import show.isaBack.DTO.drugDTO.DrugInstanceDTO;
+import show.isaBack.DTO.drugDTO.DrugReservationDTO;
+import show.isaBack.DTO.drugDTO.DrugReservationResponseDTO;
 import show.isaBack.DTO.drugDTO.DrugsWithGradesDTO;
 import show.isaBack.DTO.drugDTO.IngredientDTO;
 import show.isaBack.DTO.drugDTO.ManufacturerDTO;
@@ -29,6 +32,8 @@ public interface IDrugService extends IService<DrugInstanceDTO, UnspecifiedDTO<D
 	public boolean isQrCodeValid(String id);
 
 	public List<UnspecifiedPharmacyWithDrugAndPrice> findPharmaciesByDrugIdWithDrugPrice(UUID drugId);
-
-
+	public void createDrugReservation(DrugReservationDTO drugReservationDTO);
+	public List<UnspecifiedDTO<DrugReservationResponseDTO>> findAllFuturePatientsDrugReservation();
+	public void cancelPatientDrugReservation(IdDTO drugIdObject);
+	public List<UnspecifiedDTO<DrugReservationResponseDTO>> findAllhistoryPatientsDrugReservation();
 }

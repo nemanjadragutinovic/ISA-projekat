@@ -123,8 +123,8 @@ insert into appointment (id, appointment_status, appointment_type, start_date_ti
 insert into appointment (id, appointment_status, appointment_type, start_date_time, end_date_time, price,pharmacy_id, employee_id) values ('56a93312-bd9c-11eb-8529-0242ac130003','FREE','CONSULTATION', '2021-06-28 14:30:00', '2021-06-28 15:30:00', 1300, '775d9322-9859-11eb-a8b3-0242ac130003','56a92e1c-bd9c-11eb-8529-0242ac130003');
 
 
---insert into appointment (id, appointment_status, appointment_type, start_date_time, end_date_time, price,pharmacy_id, employee_id, patient_id) values ('802a3992-be1a-11eb-8529-0242ac130003','FINISHED','CONSULTATION', '2021-04-28 11:30:00', '2021-04-28 12:00:00', 1200, '775d9322-9859-11eb-a8b3-0242ac130003', '56a92e1c-bd9c-11eb-8529-0242ac130003', '22793162-52d3-11eb-ae93-0242ac130002');       
---insert into appointment (id, appointment_status, appointment_type, start_date_time, end_date_time, price,pharmacy_id, employee_id, patient_id) values ('802a3be0-be1a-11eb-8529-0242ac130003','FINISHED','CONSULTATION', '2021-04-28 14:30:00', '2021-04-28 15:30:00', 1300, '775d9322-9859-11eb-a8b3-0242ac130003','56a92e1c-bd9c-11eb-8529-0242ac130003', '22793162-52d3-11eb-ae93-0242ac130002');
+insert into appointment (id, appointment_status, appointment_type, start_date_time, end_date_time, price,pharmacy_id, employee_id, patient_id) values ('802a3992-be1a-11eb-8529-0242ac130003','FINISHED','CONSULTATION', '2021-04-28 11:30:00', '2021-04-28 12:00:00', 1200, '775d9322-9859-11eb-a8b3-0242ac130003', '56a92e1c-bd9c-11eb-8529-0242ac130003', '22793162-52d3-11eb-ae93-0242ac130002');       
+insert into appointment (id, appointment_status, appointment_type, start_date_time, end_date_time, price,pharmacy_id, employee_id, patient_id) values ('802a3be0-be1a-11eb-8529-0242ac130003','FINISHED','CONSULTATION', '2021-04-28 14:30:00', '2021-04-28 15:30:00', 1300, '775d9322-9859-11eb-a8b3-0242ac130003','56a92e1c-bd9c-11eb-8529-0242ac130003', '22793162-52d3-11eb-ae93-0242ac130002');
 
 --MANUFACTURER
 insert into manufacturer (id, name) values ('20ddef44-5838-11eb-ae93-0242ac130002', 'Hemofarm');
@@ -243,3 +243,14 @@ insert into ereceipt (id, price, creation_date, status, patient_id, version) val
 
 insert into ereceipt_items(e_receipt_id, drug_instance_id, amount) values ('1d4ac49a-67ad-11eb-ae93-0242ac130002','2fe1cd8e-5839-11eb-ae93-0242ac130002',2);
 insert into ereceipt_items(e_receipt_id, drug_instance_id, amount) values ('1d4ac49a-67ad-11eb-ae93-0242ac130002','2c797174-5839-11eb-ae93-0242ac130002',2);
+
+
+--DRUGS-RESERVATIONS
+
+insert into drug_reservation(id, count, price_for_one_drug, end_date,start_date, drug_reservation_status, drug_instance_id, patient_id, pharmacy_id) values ('bc3196de-c2e2-11eb-8529-0242ac130003', 4, 250, '2021-04-20 14:44:03','2021-04-28 14:44:03',  'PROCESSED',  'dac2b818-5838-11eb-ae93-0242ac130002', '22793162-52d3-11eb-ae93-0242ac130002','775d8e36-9859-11eb-a8b3-0242ac130003');
+insert into drug_reservation(id, count, price_for_one_drug, end_date,start_date, drug_reservation_status,  drug_instance_id, patient_id, pharmacy_id) values ('bc3198f0-c2e2-11eb-8529-0242ac130003', 2, 280, '2021-02-18 17:04:03', '2021-01-16 17:04:03',  'PROCESSED', 'dac2b818-5838-11eb-ae93-0242ac130002', '22793162-52d3-11eb-ae93-0242ac130002','775d8e36-9859-11eb-a8b3-0242ac130003');
+
+
+
+
+

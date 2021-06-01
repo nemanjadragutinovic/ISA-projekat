@@ -69,9 +69,9 @@ public class PharmacyService implements IPharmacyService{
 	private IPharmacyGradeService pharmacyGradeService;
 	
 	@Autowired
-
 	private PharmacyAdminRepository phAdminRepository;
 
+	@Autowired
 	private PatientRepository patientRepository;
 	
 	@Autowired
@@ -317,7 +317,7 @@ public class PharmacyService implements IPharmacyService{
 			if(doesPharmacyHaveAllItems(items,pha)!=-1) {
 				price = doesPharmacyHaveAllItems(items,pha);
 				grade = avgGrade(pha);
-				pharmacies.add(PharmacyMapper.MapPharmacyPersistenceToPharmacyDrugPriceIdentifiableDTO(pha, grade, price));
+				pharmacies.add(PharmacyMapper.MapPharmacyPersistenceToPharmacyDrugPriceUnspecifiedDTO(pha, grade, price));
 				
 				
 			}
@@ -390,7 +390,7 @@ public class PharmacyService implements IPharmacyService{
 		List<EReceiptItems> items = itemRepository.findAllByEReceiptId(pharmacyERecipeDTO.geteRecipeId());
 		
 		for (EReceiptItems eReceiptItems : items) {
-			DrugInPharmacy drugInPharmacy = drugInPharmacyRepository.findByDrugIdAndPharmacyId(eReceiptItems.getDrugInstance().getId(), pharmacyERecipeDTO.getPharmacyId());
+			DrugInPharmacy drugInPharmacy = drugInPharmacyRepository.getDrugInPharmacy(eReceiptItems.getDrugInstance().getId(), pharmacyERecipeDTO.getPharmacyId());
 			System.out.println(drugInPharmacy.getDrug().getDrugInstanceName());
 			System.out.println(eReceiptItems.getAmount());
 			drugInPharmacy.setCount(drugInPharmacy.getCount()-eReceiptItems.getAmount());

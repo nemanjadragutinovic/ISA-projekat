@@ -89,6 +89,8 @@ class Header extends React.Component{
                     <ReactBootStrap.NavDropdown.Item href="/futurePharmaciesConsultationsForPatient">Pharmacies</ReactBootStrap.NavDropdown.Item>
                     <ReactBootStrap.NavDropdown.Divider />
                     <ReactBootStrap.NavDropdown.Item href="/patientsSubscribedPharmacies">Subscribed pharmacies</ReactBootStrap.NavDropdown.Item>
+                    <ReactBootStrap.NavDropdown.Divider />
+                    <ReactBootStrap.NavDropdown.Item href="/futureDrugsReservationForPatient">Drugs reservations</ReactBootStrap.NavDropdown.Item>
                 </ReactBootStrap.NavDropdown>
 
 

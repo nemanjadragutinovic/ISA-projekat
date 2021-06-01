@@ -210,7 +210,7 @@ public class UserService implements IUserInterface{
 	
 	@Override
 	public UUID getLoggedUserId() {
-				
+		
 		Authentication currentUser = SecurityContextHolder.getContext().getAuthentication();
 		System.out.println(currentUser.getName() + " Pronadjem pacijent");
 		String email = currentUser.getName();
