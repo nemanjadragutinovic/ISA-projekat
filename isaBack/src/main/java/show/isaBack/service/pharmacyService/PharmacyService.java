@@ -385,6 +385,83 @@ public class PharmacyService implements IPharmacyService{
 	}
 	
 	@Override
+	public List<UnspecifiedDTO<PharmacyDrugPriceDTO>> sortQrPharmaciesByName(UUID id) {
+		List<UnspecifiedDTO<PharmacyDrugPriceDTO>> pharmacies = getAllPharmaciesWithDrugs(id);
+
+		Collections.sort(pharmacies, (p1, p2) -> (p1.EntityDTO.getPharmacy().EntityDTO.getName().compareTo(p2.EntityDTO.getPharmacy().EntityDTO.getName())));
+		Collections.reverse(pharmacies);
+
+		return pharmacies;
+	}
+	
+	@Override
+	public List<UnspecifiedDTO<PharmacyDrugPriceDTO>> sortQrPharmaciesByNameReverse(UUID id) {
+		List<UnspecifiedDTO<PharmacyDrugPriceDTO>> pharmacies = getAllPharmaciesWithDrugs(id);
+
+		Collections.sort(pharmacies, (p1, p2) -> (p1.EntityDTO.getPharmacy().EntityDTO.getName().compareTo(p2.EntityDTO.getPharmacy().EntityDTO.getName())));
+		
+
+		return pharmacies;
+	}
+	@Override
+	public List<UnspecifiedDTO<PharmacyDrugPriceDTO>> sortQrPharmaciesByPrice(UUID id) {
+		List<UnspecifiedDTO<PharmacyDrugPriceDTO>> pharmacies = getAllPharmaciesWithDrugs(id);
+
+		Collections.sort(pharmacies, (p1, p2) -> Double.compare(p1.EntityDTO.getPharmacy().EntityDTO.getConsultationPrice(),p2.EntityDTO.getPharmacy().EntityDTO.getConsultationPrice()));
+		Collections.reverse(pharmacies);
+
+		return pharmacies;
+	}
+	@Override
+	public List<UnspecifiedDTO<PharmacyDrugPriceDTO>> sortQrPharmaciesByPriceReverse(UUID id) {
+		List<UnspecifiedDTO<PharmacyDrugPriceDTO>> pharmacies = getAllPharmaciesWithDrugs(id);
+
+		Collections.sort(pharmacies, (p1, p2) -> Double.compare(p1.EntityDTO.getPharmacy().EntityDTO.getConsultationPrice(),p2.EntityDTO.getPharmacy().EntityDTO.getConsultationPrice()));
+		
+
+		return pharmacies;
+	}
+	
+	@Override
+	public List<UnspecifiedDTO<PharmacyDrugPriceDTO>> sortQrPharmaciesByGrade(UUID id) {
+		List<UnspecifiedDTO<PharmacyDrugPriceDTO>> pharmacies = getAllPharmaciesWithDrugs(id);
+
+		Collections.sort(pharmacies, (p1, p2) -> Double.compare(p1.EntityDTO.getPharmacy().EntityDTO.getGrade(),p2.EntityDTO.getPharmacy().EntityDTO.getGrade()));
+		Collections.reverse(pharmacies);
+
+		return pharmacies;
+	}
+	@Override
+	public List<UnspecifiedDTO<PharmacyDrugPriceDTO>> sortQrPharmaciesByGradeReverse(UUID id) {
+		List<UnspecifiedDTO<PharmacyDrugPriceDTO>> pharmacies = getAllPharmaciesWithDrugs(id);
+
+		Collections.sort(pharmacies, (p1, p2) -> Double.compare(p1.EntityDTO.getPharmacy().EntityDTO.getGrade(),p2.EntityDTO.getPharmacy().EntityDTO.getGrade()));
+		
+
+		return pharmacies;
+	}
+	
+	@Override
+	public List<UnspecifiedDTO<PharmacyDrugPriceDTO>> sortQrPharmaciesByAddress(UUID id) {
+		List<UnspecifiedDTO<PharmacyDrugPriceDTO>> pharmacies = getAllPharmaciesWithDrugs(id);
+
+		Collections.sort(pharmacies, (p1, p2) -> (p1.EntityDTO.getPharmacy().EntityDTO.getAddress().getStreet().compareTo(p2.EntityDTO.getPharmacy().EntityDTO.getAddress().getStreet())));
+		
+
+		return pharmacies;
+	}
+	
+	@Override
+	public List<UnspecifiedDTO<PharmacyDrugPriceDTO>> sortQrPharmaciesByAddressReverse(UUID id) {
+		List<UnspecifiedDTO<PharmacyDrugPriceDTO>> pharmacies = getAllPharmaciesWithDrugs(id);
+
+		Collections.sort(pharmacies, (p1, p2) -> (p1.EntityDTO.getPharmacy().EntityDTO.getAddress().getStreet().compareTo(p2.EntityDTO.getPharmacy().EntityDTO.getAddress().getStreet())));
+		Collections.reverse(pharmacies);
+
+		return pharmacies;
+	}
+	
+	@Override
 	public List<UnspecifiedDTO<AuthorityDTO>> findAll() {
 		// TODO Auto-generated method stub
 		return null;
