@@ -203,12 +203,13 @@ class qrPharmacieswithDrugs extends Component {
 					    <h5 className=" text-center mb-0 mt-2 text-uppercase">Pharmacies to buy eRecipe</h5>
                         <h5 className=" text-center mb-0 mt-2 text-uppercase" hidden={this.state.pharmacies.length!==0}>Currently there are no drugs in stock! Come back later.</h5>
 
-                        <div className="form-group">
+                        <div className="form-group " hidden={this.state.pharmacies.length==0}>
 						<div className="form-group controls mb-0 pb-2">
 							<div className="form-row mt-3">
 								<div className="form-col">
-									<div className="dropdown">
+									<div className="dropdown" >
 										<button
+                                        
 											className="btn btn-primary dropdown-toggle"
 											type="button"
 											id="dropdownMenu2"
@@ -222,7 +223,7 @@ class qrPharmacieswithDrugs extends Component {
 											<button className="dropdown-item" type="button" onClick={this.handleSortByName}>
 												Name - A to Z
 											</button>
-											<button className="dropdown-item" type="button" onClick={this.handleSortByNameReverse}>
+											<button className="dropdown-item" hidden={this.state.pharmacies.length!==0} type="button" onClick={this.handleSortByNameReverse}>
 												Name - Z to A
 											</button>
                                             <button className="dropdown-item" type="button" onClick={this.handleSortByPrice}>

@@ -304,10 +304,14 @@ public class PharmacyService implements IPharmacyService{
 	
 	@Override
 	public List<UnspecifiedDTO<PharmacyDrugPriceDTO>> getAllPharmaciesWithDrugs(UUID id) {
-	
-		List<EReceiptItems> items = itemRepository.findAllByEReceiptId(id);
-		List<Pharmacy> allPharmacies = pharmacyRepository.findAll();
 		List<UnspecifiedDTO<PharmacyDrugPriceDTO>> pharmacies = new ArrayList<UnspecifiedDTO<PharmacyDrugPriceDTO>>();
+		List<EReceiptItems> items = itemRepository.findAllByEReceiptId(id);
+		System.out.println(items.size());
+		if(items.size()==0) {
+			return pharmacies;
+		}
+		List<Pharmacy> allPharmacies = pharmacyRepository.findAll();
+		
 		
 		double price;
 		double grade;
@@ -315,6 +319,7 @@ public class PharmacyService implements IPharmacyService{
 		for (Pharmacy pha : allPharmacies) {
 			
 			if(doesPharmacyHaveAllItems(items,pha)!=-1) {
+				System.out.println(pha.getName() + "prosla");
 				price = doesPharmacyHaveAllItems(items,pha);
 				grade = avgGrade(pha);
 				pharmacies.add(PharmacyMapper.MapPharmacyPersistenceToPharmacyDrugPriceUnspecifiedDTO(pha, grade, price));
@@ -332,7 +337,7 @@ public class PharmacyService implements IPharmacyService{
 	
 	private double doesPharmacyHaveAllItems(List<EReceiptItems> items, Pharmacy pha) {
 		
-		UUID patientID = userService.getLoggedUserId();
+UUID patientID = userService.getLoggedUserId();
 		
 		Patient patient = patientRepository.findById(patientID).get();
 		
@@ -345,6 +350,7 @@ public class PharmacyService implements IPharmacyService{
 		double price = 0;
 		
 		for (EReceiptItems i : items) {
+			System.out.println(i.getAmount());
 			found = false;
 			for (DrugInPharmacy drugInPharmacy : drugInPharmacyRepository.findAll()) {
 				if(drugInPharmacy.getPharmacy().getId().equals(pha.getId())) {

@@ -27,7 +27,11 @@ import show.isaBack.DTO.drugDTO.ManufacturerDTO;
 import show.isaBack.DTO.pharmacyDTO.PharmacyDTO;
 import show.isaBack.DTO.pharmacyDTO.UnspecifiedPharmacyWithDrugAndPrice;
 import show.isaBack.DTO.userDTO.AuthorityDTO;
+
+import show.isaBack.DTO.userDTO.PatientDTO;
+
 import show.isaBack.Mappers.Drugs.DrugReservationMapper;
+
 import show.isaBack.Mappers.Pharmacy.DrugsWithGradesMapper;
 import show.isaBack.emailService.EmailService;
 import show.isaBack.interfaceRepository.drugRepository.DrugInstanceRepository;
@@ -53,6 +57,7 @@ import show.isaBack.repository.userRepository.PatientRepository;
 import show.isaBack.repository.drugsRepository.DrugInPharmacyRepository;
 import show.isaBack.repository.drugsRepository.DrugReservationRepository;
 import show.isaBack.service.loyalityService.LoyalityProgramService;
+import show.isaBack.service.userService.UserService;
 import show.isaBack.serviceInterfaces.IDrugService;
 import show.isaBack.serviceInterfaces.ILoyaltyService;
 import show.isaBack.serviceInterfaces.IUserInterface;
@@ -80,8 +85,10 @@ public class DrugService implements IDrugService{
 	@Autowired
 	private EReceiptRepository eReceiptRepository;
 
+	
 	@Autowired
-	private IUserInterface userService;
+	private UserService userService;
+
 	
 	@Autowired
 	private DrugInPharmacyRepository drugInPharmacyRepository;
@@ -342,6 +349,9 @@ public class DrugService implements IDrugService{
 	@Override
 	public boolean isQrCodeValid(String id) {
 		
+		UUID patientId = userService.getLoggedUserId();
+		
+		
 	
 		
 		if(id==null) {
@@ -351,8 +361,10 @@ public class DrugService implements IDrugService{
 		try {
 			UUID QrID = UUID.fromString(id);
 		if(eReceiptRepository.existsById(QrID)) {
-			if(eReceiptRepository.findById(QrID).get().getStatus().toString().equals("NEW")) {
+			if(eReceiptRepository.findById(QrID).get().getStatus().toString().equals("NEW") && eReceiptRepository.findById(QrID).get().getPatient().getId().equals(patientId) ) {
+				System.out.println("KAKO JE OVDE USAO ????????????????????????????");
 				return true;
+				
 				
 			}
 		}
