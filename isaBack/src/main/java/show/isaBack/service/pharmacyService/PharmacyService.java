@@ -9,8 +9,11 @@ import java.util.Optional;
 
 import java.util.UUID;
 
+import javax.mail.MessagingException;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.mail.MailException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,6 +26,7 @@ import show.isaBack.DTO.pharmacyDTO.PharmacyWithGradeAndPriceDTO;
 import show.isaBack.DTO.userDTO.AuthorityDTO;
 import show.isaBack.DTO.userDTO.LoyalityProgramForPatientDTO;
 import show.isaBack.Mappers.Pharmacy.PharmacyMapper;
+import show.isaBack.emailService.EmailService;
 import show.isaBack.model.Drug;
 import show.isaBack.model.Patient;
 import show.isaBack.model.Pharmacy;
@@ -77,6 +81,9 @@ public class PharmacyService implements IPharmacyService{
 	
 	@Autowired
 	private EReceiptRepository eReceiptRepository;
+	
+	@Autowired
+	private EmailService emailService;
 	
 	
 	@Override
@@ -361,6 +368,18 @@ public class PharmacyService implements IPharmacyService{
 		eReceipt.setPharmacy(pharmacyRepository.getOne(pharmacyERecipeDTO.getPharmacyId()));
 		eReceipt.setPrice(pharmacyERecipeDTO.getPrice());
 		eReceiptRepository.save(eReceipt);
+		
+		UUID patientID = userService.getLoggedUserId();
+		Patient patient = patientRepository.findById(patientID).get();
+		
+		try {
+			emailService.sendEmailAfterQRPurchase(patient, items);
+		} catch (MailException | InterruptedException | MessagingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		
 		
 		return pharmacyERecipeDTO.geteRecipeId();
 	}
