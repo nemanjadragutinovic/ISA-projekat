@@ -4,7 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import show.isaBack.DTO.drugDTO.DrugEReceiptDTO;
+import show.isaBack.DTO.drugDTO.DrugWithEreceiptsDTO;
 import show.isaBack.DTO.drugDTO.EreceiptDTO;
+import show.isaBack.DTO.drugDTO.EreceiptWithPharmacyDTO;
+import show.isaBack.model.DrugInstance;
 import show.isaBack.model.drugs.EReceipt;
 import show.isaBack.model.drugs.EReceiptItems;
 import show.isaBack.unspecifiedDTO.UnspecifiedDTO;
@@ -39,6 +42,33 @@ public class EReceiptsMapper {
 		}
 		
 		return eReceptsDrugsDTO;
+	}
+	
+	public static List<UnspecifiedDTO<EreceiptWithPharmacyDTO>> mapEReceiptItemsToEreceiptsWithPharmacyDrugDTO(List<EReceiptItems> eReceiptItems){
+		
+		List<UnspecifiedDTO<EreceiptWithPharmacyDTO>> eReceptsWithPharmacyDrugsDTO = new ArrayList<UnspecifiedDTO<EreceiptWithPharmacyDTO>>();
+			
+		for (EReceiptItems eReceiptItem : eReceiptItems) {
+			
+			eReceptsWithPharmacyDrugsDTO.add(new UnspecifiedDTO<EreceiptWithPharmacyDTO>(eReceiptItem.geteReceipt().getId(),
+					   new EreceiptWithPharmacyDTO(eReceiptItem.geteReceipt().getCreationDate(),eReceiptItem.geteReceipt().getPrice(),
+							   eReceiptItem.geteReceipt().getStatus(),eReceiptItem.geteReceipt().getPharmacy().getName())));
+			
+		}
+		
+		return eReceptsWithPharmacyDrugsDTO;
+	}
+	
+	
+	
+	public static UnspecifiedDTO<DrugWithEreceiptsDTO> mapProccessedDrugWithEreceiptsForHimToDrugWithEreceiptsDTO(DrugInstance drugInstance, List<UnspecifiedDTO<EreceiptWithPharmacyDTO>> eReceiptItemsForDrug){           
+		
+		if(drugInstance == null) 
+		throw new IllegalArgumentException();
+		
+		return new UnspecifiedDTO<DrugWithEreceiptsDTO>(drugInstance.getId(), 
+				new DrugWithEreceiptsDTO(drugInstance.getName(),drugInstance.getDrugFormat(),eReceiptItemsForDrug));
+		
 	}
 	
 	

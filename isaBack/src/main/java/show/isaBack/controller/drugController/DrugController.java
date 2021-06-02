@@ -31,6 +31,7 @@ import show.isaBack.DTO.drugDTO.DrugKindIdDTO;
 import show.isaBack.DTO.drugDTO.DrugManufacturerDTO;
 import show.isaBack.DTO.drugDTO.DrugReservationDTO;
 import show.isaBack.DTO.drugDTO.DrugReservationResponseDTO;
+import show.isaBack.DTO.drugDTO.DrugWithEreceiptsDTO;
 import show.isaBack.DTO.drugDTO.DrugsWithGradesDTO;
 import show.isaBack.DTO.drugDTO.EreceiptDTO;
 import show.isaBack.DTO.drugDTO.IngredientDTO;
@@ -300,5 +301,14 @@ public class DrugController {
 		
 			
 	}
+	
+	
+	@GetMapping("/patientsProccessedDrugs-eReceipts")
+	@PreAuthorize("hasRole('ROLE_PATIENT')")
+	public ResponseEntity<List<UnspecifiedDTO<DrugWithEreceiptsDTO>>> findAllPatientsPRoccesedDrugsFromEreceipts() {
+		
+		return new ResponseEntity<>(drugService.findAllPatientsPRoccesedDrugsFromEreceipts() ,HttpStatus.OK);
+	}
+	
 	
 }

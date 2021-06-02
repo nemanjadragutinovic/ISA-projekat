@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import Axios from "axios";
 import Header from '../Components/Header';
 import GetAuthorisation from "../Funciton/GetAuthorisation";
-import PharmacistAppointmentPicture from "../Images/pharmacist.png" ;
+import eReceiptsPicture from "../Images/notepad.png" ;
 import UnsuccessfulAlert from "../Components/Alerts/UnsuccessfulAlert";
 import SuccessfulAlert from "../Components/Alerts/SuccessfulAlert";
 import {NavLink, Redirect } from "react-router-dom";
@@ -81,10 +81,10 @@ class PatientsEReceipts extends Component {
 
     
  
-    moveToHistoryConsultation =() => {
+  moveToProcessedDrugs =() => {
 
-       
-
+	this.props.history.push('/allPatients-processed-drugs-e-receipts')
+		
        
     }
 
@@ -218,11 +218,11 @@ class PatientsEReceipts extends Component {
 
 
         <button type="button" class="btn btn-outline-primary btn-lg"
-         onClick={() => this.moveToHistoryConsultation()}
+         onClick={() => this.moveToProcessedDrugs()}
          hidden={this.state.hideHistoryButton} 
          style={{  marginTop: "2em", marginLeft: "auto",marginRight: "auto" }}
          >
-         History consultations
+         Processed drugs with E-receipts
         </button>
 
         <div className="container form-inline " style={{  marginTop: "2em" }}>
@@ -314,6 +314,10 @@ class PatientsEReceipts extends Component {
 									style={{ cursor: "pointer" }}
 									
 								>
+
+									<td width="130em">
+										<img className="img-fluid" src={eReceiptsPicture} width="90em" />
+									</td>
 									
 									<td>
 										<div>
@@ -341,7 +345,7 @@ class PatientsEReceipts extends Component {
 											style={{marginTop : "0.3em"}}
 											onClick={() => this.ClickOnEReceipt(eReceipt)}
 										>
-											Receipt drugs
+											Drugs
 										</button>
                                     </td>
 								</tr>

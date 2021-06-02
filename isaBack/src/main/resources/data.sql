@@ -252,9 +252,9 @@ insert into ereceipt (id, price, creation_date, status, patient_id, version) val
 insert into ereceipt (id, price, creation_date, status, patient_id, version) values ('bac4bc07-4d4e-4123-8ed7-00e50adca2a2', -1, '2021-05-18', 'REJECTED', '88dc12eb-6f5a-4f1e-8058-b38f84293574',1);
 insert into ereceipt (id, price, creation_date, status, patient_id, version) values ('65c38e7d-438b-4284-8e2b-ad7fea10d856', -1, '2021-04-20', 'REJECTED', '32793162-52d3-11eb-ae93-0242ac130002',1);
 insert into ereceipt (id, price, creation_date, status, patient_id, version) values ('3b5c5c32-9e7e-43f9-a357-7511472c75a1', -1, '2021-07-05', 'REJECTED', '22793162-52d3-11eb-ae93-0242ac130002',1);
-insert into ereceipt (id, price, creation_date, status, patient_id, version) values ('19ba9848-2818-492c-9f65-2436c4d6c27c', -1, '2021-08-01', 'PROCESSED', '88dc12eb-6f5a-4f1e-8058-b38f84293574',1);
-insert into ereceipt (id, price, creation_date, status, patient_id, version) values ('03ff49bd-71eb-45cf-b5bb-8a2b4e9cdc6b', -1, '2021-05-22', 'PROCESSED', '22793162-52d3-11eb-ae93-0242ac130002',1);
-insert into ereceipt (id, price, creation_date, status, patient_id, version) values ('f84b0350-ad00-4fca-9273-fbd0ced2457c', -1, '2021-06-21', 'PROCESSED', '32793162-52d3-11eb-ae93-0242ac130002',1);
+insert into ereceipt (id, price, creation_date, status, patient_id, version,pharmacy_id) values ('19ba9848-2818-492c-9f65-2436c4d6c27c', 280, '2021-08-01', 'PROCESSED', '88dc12eb-6f5a-4f1e-8058-b38f84293574',1,'775d8e36-9859-11eb-a8b3-0242ac130003');
+insert into ereceipt (id, price, creation_date, status, patient_id, version,pharmacy_id) values ('03ff49bd-71eb-45cf-b5bb-8a2b4e9cdc6b', 430, '2021-05-22', 'PROCESSED', '22793162-52d3-11eb-ae93-0242ac130002',1,'775d8e36-9859-11eb-a8b3-0242ac130003');
+insert into ereceipt (id, price, creation_date, status, patient_id, version,pharmacy_id) values ('f84b0350-ad00-4fca-9273-fbd0ced2457c', 730, '2021-06-21', 'PROCESSED', '22793162-52d3-11eb-ae93-0242ac130002',1,'775d8e36-9859-11eb-a8b3-0242ac130003');
 insert into ereceipt (id, price, creation_date, status, patient_id, version) values ('fc7c6dcb-164c-41ea-96bc-faaa8caeef10', -1, '2021-04-11', 'NEW', '88dc12eb-6f5a-4f1e-8058-b38f84293574',1);
 insert into ereceipt (id, price, creation_date, status, patient_id, version) values ('fed6f795-7e1f-4e5c-b81b-2c54b859928a', -1, '2021-07-26', 'NEW', '22793162-52d3-11eb-ae93-0242ac130002',1);
 insert into ereceipt (id, price, creation_date, status, patient_id, version) values ('71efc25b-4bd7-44f5-ad06-205c10e4c22d', -1, '2021-09-24', 'NEW', '88dc12eb-6f5a-4f1e-8058-b38f84293574',1);
@@ -269,7 +269,10 @@ insert into ereceipt_items(e_receipt_id, drug_instance_id, amount) values ('fed6
 insert into ereceipt_items(e_receipt_id, drug_instance_id, amount) values ('fed6f795-7e1f-4e5c-b81b-2c54b859928a','2c797174-5839-11eb-ae93-0242ac130002',6);
 insert into ereceipt_items(e_receipt_id, drug_instance_id, amount) values ('fed6f795-7e1f-4e5c-b81b-2c54b859928a','4d62cbe3-69a1-40a0-8e9c-9479132dadbe',7);
 
-insert into ereceipt_items(e_receipt_id, drug_instance_id, amount) values ('71efc25b-4bd7-44f5-ad06-205c10e4c22d','2fe1cd8e-5839-11eb-ae93-0242ac130002',10);
+--insert into ereceipt_items(e_receipt_id, drug_instance_id, amount) values ('71efc25b-4bd7-44f5-ad06-205c10e4c22d','2fe1cd8e-5839-11eb-ae93-0242ac130002',10);
+
+insert into ereceipt_items(e_receipt_id, drug_instance_id, amount) values ('03ff49bd-71eb-45cf-b5bb-8a2b4e9cdc6b','2fe1cd8e-5839-11eb-ae93-0242ac130002',2);
+insert into ereceipt_items(e_receipt_id, drug_instance_id, amount) values ('f84b0350-ad00-4fca-9273-fbd0ced2457c','dac2b818-5838-11eb-ae93-0242ac130002',4);
 
 
 --DRUGS-RESERVATIONS

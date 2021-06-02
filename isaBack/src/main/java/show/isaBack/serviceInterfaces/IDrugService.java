@@ -8,6 +8,7 @@ import show.isaBack.DTO.drugDTO.DrugDTO;
 import show.isaBack.DTO.drugDTO.DrugInstanceDTO;
 import show.isaBack.DTO.drugDTO.DrugReservationDTO;
 import show.isaBack.DTO.drugDTO.DrugReservationResponseDTO;
+import show.isaBack.DTO.drugDTO.DrugWithEreceiptsDTO;
 import show.isaBack.DTO.drugDTO.DrugsWithGradesDTO;
 import show.isaBack.DTO.drugDTO.EreceiptDTO;
 import show.isaBack.DTO.drugDTO.IngredientDTO;
@@ -44,4 +45,6 @@ public interface IDrugService extends IService<DrugInstanceDTO, UnspecifiedDTO<D
 	public List<UnspecifiedDTO<EreceiptDTO>> findAllPatientsEreceiptsSortByDateAscendingWithStatus(EReceiptStatus searchStatus);
 	public List<UnspecifiedDTO<EreceiptDTO>> findAllPatientsEreceiptsSortByDateDescendingWithStatus(EReceiptStatus searchStatus);
 	public List<UnspecifiedDTO<EreceiptDTO>> findAllPatientsEreceiptsWithStatus(EReceiptStatus searchStatus);
+	public List<UnspecifiedDTO<DrugWithEreceiptsDTO>> findAllPatientsPRoccesedDrugsFromEreceipts();
+	
 }

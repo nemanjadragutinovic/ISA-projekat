@@ -23,8 +23,10 @@ import show.isaBack.DTO.drugDTO.DrugInstanceDTO;
 import show.isaBack.DTO.drugDTO.DrugKindIdDTO;
 import show.isaBack.DTO.drugDTO.DrugReservationDTO;
 import show.isaBack.DTO.drugDTO.DrugReservationResponseDTO;
+import show.isaBack.DTO.drugDTO.DrugWithEreceiptsDTO;
 import show.isaBack.DTO.drugDTO.DrugsWithGradesDTO;
 import show.isaBack.DTO.drugDTO.EreceiptDTO;
+import show.isaBack.DTO.drugDTO.EreceiptWithPharmacyDTO;
 import show.isaBack.DTO.drugDTO.IngredientDTO;
 import show.isaBack.DTO.drugDTO.ManufacturerDTO;
 import show.isaBack.DTO.pharmacyDTO.PharmacyDTO;
@@ -115,8 +117,7 @@ public class DrugService implements IDrugService{
 	@Autowired
 	private EmailService emailService;
 	
-	@Autowired
-	private EReceiptRepository eReceiptRepository1;
+
 	
 	@Autowired
 	private EReceiptItemsRepository eReceiptItemsRepository;
@@ -678,6 +679,34 @@ public class DrugService implements IDrugService{
 		return EreceiptsDTOlist;
 		
 	}
+	
+	
+	@Override
+	public List<UnspecifiedDTO<DrugWithEreceiptsDTO>> findAllPatientsPRoccesedDrugsFromEreceipts(){
+		
+		UUID patientId = userService.getLoggedUserId();
+		List<UnspecifiedDTO<DrugWithEreceiptsDTO>> drugsWithEreceipts= new ArrayList<UnspecifiedDTO<DrugWithEreceiptsDTO>>();
+		
+		List<DrugInstance> processedDrugsList=eReceiptItemsRepository.findAllProccessedDistinctDrugsByPatient(patientId);
+		
+		System.out.println("1");
+		System.out.println(processedDrugsList);
+		
+		for (DrugInstance drugInstance : processedDrugsList) {
+			List<UnspecifiedDTO<EreceiptWithPharmacyDTO>> eReceiptsWithPharmacyForDrug= 
+				EReceiptsMapper.mapEReceiptItemsToEreceiptsWithPharmacyDrugDTO(eReceiptItemsRepository.findAllEreciptsForDrugByPatient(patientId,drugInstance.getId()));         
+		
+			System.out.println("2");
+			
+			drugsWithEreceipts.add(EReceiptsMapper.mapProccessedDrugWithEreceiptsForHimToDrugWithEreceiptsDTO(drugInstance,eReceiptsWithPharmacyForDrug));
+			
+		}
+			
+		
+		return drugsWithEreceipts;
+		
+	}
+	
 	
 	@Override
 	public List<UnspecifiedDTO<AuthorityDTO>> findAll() {
