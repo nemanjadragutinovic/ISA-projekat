@@ -48,7 +48,8 @@ insert into users (id, email, password, name, surname, phone_Number,first_Login,
 insert into users (id, email, password, name, surname, phone_Number,first_Login, active, address,user_type) values ('17a2c302-b584-11eb-8529-0242ac130003','pharmacyadmin@gmail.com', '$2a$10$TyNl6ipLWyDE/TfFM3uRse0SVPP4Rz7.mdZdDK3zqjKZqtKtJ3pf2','Marija','Jovanovic','064555787',false ,true,'Partizanska 11','PHARMACYADMIN');
 
 --supplier-users
-insert into users (id, email, password, name, surname, phone_Number,first_Login, active, address,user_type) values ('54444d47-1a8a-4ae1-b109-af7b56e94788','supp@gmail.com', '$2a$10$TyNl6ipLWyDE/TfFM3uRse0SVPP4Rz7.mdZdDK3zqjKZqtKtJ3pf2','Njekez','Pekez','064555787',false ,true,'Partizanska 221','SUPPLIER');      
+insert into users (id, email, password, name, surname, phone_Number,first_Login, active, address,user_type) values ('54444d47-1a8a-4ae1-b109-af7b56e94788','supp1@gmail.com', '$2a$10$TyNl6ipLWyDE/TfFM3uRse0SVPP4Rz7.mdZdDK3zqjKZqtKtJ3pf2','Njekez','Pekez','064555787',false ,true,'Partizanska 221','SUPPLIER');
+insert into users (id, email, password, name, surname, phone_Number,first_Login, active, address,user_type) values ('64444d47-1a8a-4ae1-b109-af7b56e94788','supp2@gmail.com', '$2a$10$TyNl6ipLWyDE/TfFM3uRse0SVPP4Rz7.mdZdDK3zqjKZqtKtJ3pf2','Nje','Kee','064555787',false ,true,'Partizanska 1','SUPPLIER');       
 
 
 --PATIENTS
@@ -76,9 +77,11 @@ insert into user_authority (user_id, authority_id) values ('88dc12eb-6f5a-4f1e-8
 insert into user_authority (user_id, authority_id) values ('44444d47-1a8a-4ae1-b109-af7b56e94788', '563e9925-cff6-42b7-99fa-6b1235f67655');
 insert into user_authority (user_id, authority_id) values ('17a2c302-b584-11eb-8529-0242ac130003', 'ea16767c-2c1f-49fb-ac98-c7739c0036e8');
 insert into user_authority (user_id, authority_id) values ('54444d47-1a8a-4ae1-b109-af7b56e94788', 'ef9a3723-a72e-44ec-83ac-9d748fd0240f');
+insert into user_authority (user_id, authority_id) values ('64444d47-1a8a-4ae1-b109-af7b56e94788', 'ef9a3723-a72e-44ec-83ac-9d748fd0240f');
 
 --SUPLIER
 insert into supplier(id) values ('54444d47-1a8a-4ae1-b109-af7b56e94788');
+insert into supplier(id) values ('64444d47-1a8a-4ae1-b109-af7b56e94788');
 
 --DERMATOLOGIST
 insert into dermatologist (id) values ('07a2c302-b584-11eb-8529-0242ac130003');
@@ -210,6 +213,7 @@ insert into loyaltyprogram (id, points_for_appointment, points_for_consulting, p
 
 --ORDERS
 insert into orders (id, date, type, pharmacy_id, pharmacy_admin_id) values ('11111111-67ac-11eb-ae93-0242ac130022', '2021-07-07' , 'CREATED' , '775d8e36-9859-11eb-a8b3-0242ac130003' , '17a2c302-b584-11eb-8529-0242ac130003');
+insert into orders (id, date, type, pharmacy_id, pharmacy_admin_id) values ('21111111-67ac-11eb-ae93-0242ac130022', '2021-08-07' , 'CREATED' , '775d8e36-9859-11eb-a8b3-0242ac130003' , '17a2c302-b584-11eb-8529-0242ac130003');
 
 --drug--orders
 insert into drug_order (id, amount, drug_instance_id) values ('99e26092-67ad-11eb-ae93-0242ac130002', 2, '2fe1cd8e-5839-11eb-ae93-0242ac130002' );
@@ -221,6 +225,9 @@ insert into order_drug_for_order (order_id, drug_order_id) values ('11111111-67a
 insert into order_drug_for_order (order_id, drug_order_id) values ('11111111-67ac-11eb-ae93-0242ac130022', '44e26092-67ad-11eb-ae93-0242ac130002');
 insert into order_drug_for_order (order_id, drug_order_id) values ('11111111-67ac-11eb-ae93-0242ac130022', '55e26092-67ad-11eb-ae93-0242ac130002');
 
+insert into order_drug_for_order (order_id, drug_order_id) values ('21111111-67ac-11eb-ae93-0242ac130022', '44e26092-67ad-11eb-ae93-0242ac130002');
+insert into order_drug_for_order (order_id, drug_order_id) values ('21111111-67ac-11eb-ae93-0242ac130022', '55e26092-67ad-11eb-ae93-0242ac130002');
+
 
 --suplier drug storage
 insert into supplier_drug_storage(drug_instance_id, supplier_id, count, version) values ('dac2b818-5838-11eb-ae93-0242ac130002', '54444d47-1a8a-4ae1-b109-af7b56e94788', 20, 1);
@@ -230,7 +237,7 @@ insert into supplier_drug_storage(drug_instance_id, supplier_id, count, version)
 --offers
 
 insert into offers (id, date_to_delivery, status, price, supplier_id) values ('33331111-67ac-11eb-ae93-0242ac130002', '2021-06-06', 'WAITING', 5555, '54444d47-1a8a-4ae1-b109-af7b56e94788' );
-insert into offers (id, date_to_delivery, status, price, supplier_id) values ('44441111-67ac-11eb-ae93-0242ac130002', '2021-07-07', 'WAITING', 7520, '54444d47-1a8a-4ae1-b109-af7b56e94788' );
+insert into offers (id, date_to_delivery, status, price, supplier_id) values ('44441111-67ac-11eb-ae93-0242ac130002', '2021-07-07', 'WAITING', 7520, '64444d47-1a8a-4ae1-b109-af7b56e94788' );
 insert into offers (id, date_to_delivery, status, price, supplier_id) values ('55551111-67ac-11eb-ae93-0242ac130002', '2021-08-08', 'WAITING', 6633 ,'54444d47-1a8a-4ae1-b109-af7b56e94788');
 
 insert into offers_for_order (order_id, offers_id) values ('11111111-67ac-11eb-ae93-0242ac130022', '33331111-67ac-11eb-ae93-0242ac130002');
