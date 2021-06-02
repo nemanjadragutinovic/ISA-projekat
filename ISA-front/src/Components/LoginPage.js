@@ -4,6 +4,7 @@ import Axios from "axios";
 import { Redirect } from "react-router-dom";
 import ChangePasswordModal from './Modal/ChangePasswordModal';
 import GetAuthorisation from "../Funciton/GetAuthorisation";
+import ModalDialog from './ModalDialog';
 class LoginPage extends Component {
 
     state = {
@@ -22,7 +23,9 @@ class LoginPage extends Component {
 		newPasswordRetypeNotSameError: "none",
 		errorPasswordHeader: "",
 		errorPasswordMessage: "none",
-		hiddenPasswordErrorAlert: true
+		hiddenPasswordErrorAlert: true,
+        openModalCantUse:false,
+        openModalActivate:false
         
 
 
@@ -87,9 +90,13 @@ class LoginPage extends Component {
         Axios.post("http://localhost:8080/auth/login", loginDTO, { validateStatus: () => true })
         .then((res) => {
             if (res.status === 401) {
-                this.setState({ errorHeader: "Bad credentials!"});
+                this.setState({ errorHeader: "Bad credentials!", openModalCantUse:true});
             } else if (res.status === 500) {
                 this.setState({ errorHeader: "Internal server error!"});
+            }else if(res.status === 403){
+
+                this.setState({ openModalActivate: true});
+             
             }else if(res.status === 302){
 
                 this.setState({ openPasswordModal: true });
@@ -192,6 +199,19 @@ class LoginPage extends Component {
         }
     };
 
+    handleModalCloseCantUse= () => {
+		this.setState({ 
+			openModalCantUse: false,
+            
+		});
+	};
+    handleModalCloseActive= () => {
+		this.setState({ 
+			openModalActivate: false,
+            
+		});
+	};
+
     render() {
         if (this.state.redirect) return <Redirect push to="/" />;
         return(
@@ -214,6 +234,7 @@ class LoginPage extends Component {
                         <label for="exampleInputPassword1">Password</label>
                         <input type="Password" onChange={this.handlePasswordChange} value={this.state.name} class="form-control" id="password" placeholder="Password"/>
                     </div>
+                   
                     
                     
                     <div class="text-center">
@@ -239,6 +260,18 @@ class LoginPage extends Component {
 				changePassword={this.changePassword}
 				onCloseModal={this.handlePasswordModalClose}
 				header="Change password"
+			/>
+            <ModalDialog
+				show={this.state.openModalCantUse}
+				onCloseModal={this.handleModalCloseCantUse}
+				header="Error"
+				text="You entered wrong credentials."
+			/>
+             <ModalDialog
+				show={this.state.openModalActivate}
+				onCloseModal={this.handleModalCloseActive}
+				header="Error"
+				text="You need to activate your account."
 			/>
             </React.Fragment>
         );
