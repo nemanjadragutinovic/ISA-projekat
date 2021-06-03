@@ -161,6 +161,7 @@ public class ComplaintService implements IComplaintService{
 		for (ComplaintPharmacy pharmacy : complaintPharmacyRepository.findAll()) {
 			
 			if(pharmacy.isActive()==true) {
+				System.out.println(pharmacy.getName());
 			
 				ComplaintPharmacyDTO pharmacyDTO = new ComplaintPharmacyDTO(pharmacy.getId(),pharmacy.getDate(),pharmacy.getText(),pharmacy.getName(),pharmacy.getReply(),pharmacy.getPatient().getEmail());
 				pharmacyList.add(new UnspecifiedDTO<ComplaintPharmacyDTO>(pharmacy.getId(),pharmacyDTO));

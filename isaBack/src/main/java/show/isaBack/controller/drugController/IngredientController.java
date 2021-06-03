@@ -27,7 +27,7 @@ public class IngredientController {
 	
 	@CrossOrigin
 	@PostMapping(consumes = "application/json")
-	//@PreAuthorize("hasRole('SYSADMIN')")
+	@PreAuthorize("hasRole('SYSADMIN')")
 	public ResponseEntity<UUID> create(@RequestBody IngredientDTO entityDTO) {
 		
 		
