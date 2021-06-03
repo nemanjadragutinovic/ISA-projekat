@@ -26,6 +26,7 @@ class registerStaff extends Component {
 		surnameError: "none",
 		addressError: "none",
 		phoneError: "none",
+		employeeError: "none",
 		emailNotValid: "none",
 		openModal: false,
 		pharmacies:[],
@@ -66,21 +67,7 @@ class registerStaff extends Component {
 				console.log(err);
 			});
 
-		Axios.get("/api/users/sysadmin/auth", { validateStatus: () => true, headers: { Authorization: GetAuthorisation() } })
-            .then((res) => {
-				console.log(res.statusm, "TEST")
-                if (res.status === 401) {
-                    this.setState({
-                        redirect: true,
-                        redirectUrl: "/unauthorized"
-                    });
-                } else {
-                    console.log(res.data);
-                }
-            })
-            .catch((err) => {
-                console.log(err);
-            });
+		
 	}
 	
 
@@ -112,28 +99,28 @@ class registerStaff extends Component {
 	};
     handleSelectedValueSysAdminChange = (event) => {
        
-		this.setState({ selectValue: "sysadmin" });
+		this.setState({ selectValue: "sysadmin",employeeError:"none" });
         console.log(this.state.selectValue);
 	};
     handleSelectedValueSupplierChange = (event) => {
       
-		this.setState({ selectValue: "supplier" });
+		this.setState({ selectValue: "supplier",employeeError:"none" });
         console.log(this.state.selectValue);
 	};
     handleSelectedValueDermathologistChange = (event) => {
        
-		this.setState({ selectValue: "dermathologist" });
+		this.setState({ selectValue: "dermathologist",employeeError:"none" });
         console.log(this.state.selectValue);
 	};
     handleSelectedValuePharmacyAdminChange = (event) => {
       
-		this.setState({ selectValue: "pharmacyadmin" });
+		this.setState({ selectValue: "pharmacyadmin",employeeError:"none" });
         console.log(this.state.selectValue);
 	};
     
 
 	validateForm = (userDTO) => {
-		alert('test')
+		
 		this.setState({
 			emailError: "none",
 			emailNotValid: "none",
@@ -141,6 +128,7 @@ class registerStaff extends Component {
 			surnameError: "none",
 			addressError: "none",
 			phoneError: "none",
+			
 		});
 
 		if (userDTO.email === "") {
@@ -175,20 +163,23 @@ class registerStaff extends Component {
 		console.log(pharmacy, "PHARMACy");
 	
 	};
+
+	validateEmployee = (employee) => {
+
+		this.setState({
+			employeeError: "none"
+		});
+
+		if (employee === "") {
+			this.setState({ employeeError: "initial" });
+			return false;
+		}
+		return true;
+	};
 	
 	handleSignUp = () => {
 
-		if(this.state.surname !== "" &&
-		this.state.name !== "" &&
-		this.state.phoneNumber !== "" &&
-		this.state.email !== ""){
-
-		
-
-		
-			
-			
-			
+	
 				let userDTO = {
 					email: this.state.email,
 					name: this.state.name,
@@ -197,7 +188,7 @@ class registerStaff extends Component {
 					phoneNumber: this.state.phoneNumber,
 					password: this.state.password,
 				};
-				if (this.validateForm(userDTO)) {
+				if (this.validateForm(userDTO) && this.validateEmployee(this.state.selectValue)) {
 					
 					if(this.state.selectValue == "dermathologist"){
 							
@@ -274,11 +265,6 @@ class registerStaff extends Component {
 				
 				};
 			
-		}else{
-			this.setState({
-				openModalData: true,
-			})
-		}
 		
 	};
 	handleCloseAlert = () => {
@@ -296,7 +282,7 @@ render() {
             <Header/>
             
 
-            <div className="container" style={{ marginTop: "8%" }}>
+            <div className="container" style={{ marginTop: "2%" }}>
 
                        
 					
@@ -314,7 +300,7 @@ render() {
 
                                     <div class="dropdown " hidden={this.state.selectValue !== ""}>
                                 <button class="btn btn-secondary dropdown-toggle " type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                    Dropdown button
+                                    Choose employee
                                 </button>
                                 <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                                     <a class="dropdown-item" onClick={this.handleSelectedValueSysAdminChange} >System admin</a>
@@ -325,10 +311,13 @@ render() {
                                 </div>
 
                                      <div className="text" hidden={this.state.selectValue == ""}>
-										Selected: {this.state.selectValue}
+										Selected: <b>{this.state.selectValue}</b>
 									</div>
 
                                     <br />
+									<div className="text-danger" style={{ display: this.state.employeeError }}>
+										You must choose employee.
+									</div>
 
 								<div className="control-group" hidden={this.state.selectValue !== "pharmacyadmin"} >
 									<div className="form-group controls mb-0 pb-2" style={{ color: "#6c757d", opacity: 1 }}>
@@ -362,25 +351,7 @@ render() {
 										Email address is not valid.
 									</div>
 								</div>
-								<div className="control-group">
-									<div className="form-group controls mb-0 pb-2" style={{ color: "#6c757d", opacity: 1 }}>
-										<label>Password:</label>
-										<input
-											placeholder="Password"
-											className="form-control"
-											id="password"
-											type="text"
-											onChange={this.handlePasswordChange}
-											value={this.state.password}
-										/>
-									</div>
-									<div className="text-danger" style={{ display: this.state.passwordError }}>
-										Password must be entered.
-									</div>
-									<div className="text-danger" style={{ display: this.state.emailNotValid }}>
-										Email address is not valid.
-									</div>
-								</div>
+								
 								<div className="control-group">
 									<div className="form-group controls mb-0 pb-2" style={{ color: "#6c757d", opacity: 1 }}>
 										<label>Name:</label>

@@ -151,7 +151,7 @@ class Header extends React.Component{
                    
                     
 
-                    <ReactBootStrap.NavDropdown.Item href="/userProfile" hidden={!this.hasRole("ROLE_PHARMACYADMIN") && !(this.hasRole("ROLE_PATIENT") && !this.hasRole("ROLE_SUPPLIER"))}>My profile</ReactBootStrap.NavDropdown.Item>
+                    <ReactBootStrap.NavDropdown.Item href="/userProfile" hidden={(!this.hasRole("ROLE_PATIENT") && !this.hasRole("ROLE_SUPPLIER") && !this.hasRole("ROLE_PHARMACYADMIN"))}>My profile</ReactBootStrap.NavDropdown.Item>
 
                     <ReactBootStrap.NavDropdown.Divider hidden={!this.IsLogedIn()} />
                     <ReactBootStrap.NavDropdown.Item onClick={this.handleLogout} href="/login" hidden={!this.IsLogedIn("*")}>Log out</ReactBootStrap.NavDropdown.Item>

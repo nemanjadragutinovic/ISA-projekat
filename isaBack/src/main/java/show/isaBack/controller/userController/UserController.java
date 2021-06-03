@@ -340,7 +340,7 @@ public class UserController {
 	@PutMapping("/subscribeToPharmacy") 
 	@CrossOrigin
 	@PreAuthorize("hasRole('PATIENT')")
-	public ResponseEntity<?> subscribeToPharmacy(@RequestBody String pharmacyId ) {
+	public ResponseEntity<?> subscribeToPharmacy(@RequestParam UUID pharmacyId ) {
 		System.out.println("usao");
 	  
 		try {
@@ -356,7 +356,7 @@ public class UserController {
 	@PutMapping("/unsubscribeFromPharmacy") 
 	@CrossOrigin
 	@PreAuthorize("hasRole('PATIENT')")
-	public ResponseEntity<?> unsubscribeToPharmacy(@RequestBody String pharmacyId ) {
+	public ResponseEntity<?> unsubscribeToPharmacy(@RequestParam UUID pharmacyId ) {
 		System.out.println("usao22");
 		try {
 			userService.unsubscribeFromPharmacy(pharmacyId);
@@ -366,6 +366,14 @@ public class UserController {
 		} catch (Exception e) {
 			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR); 
 		}
+	}
+	
+	@CrossOrigin
+	@GetMapping("/getIsPatientSubscribed") 
+	@PreAuthorize("hasRole('ROLE_PATIENT')")
+	public ResponseEntity<?> canPatientUseQR(@RequestParam UUID id) {
+		System.out.println(userService.isPatientSubscribedToPharmacy(id));
+		return new ResponseEntity<>(userService.isPatientSubscribedToPharmacy(id) ,HttpStatus.CREATED);
 	}
 	
 	@GetMapping("/phIdForAdmin")

@@ -39,21 +39,7 @@ class RegisterPharmacies extends Component {
 
 	
 	componentDidMount() {
-		Axios.get("/api/users/sysadmin/auth", { validateStatus: () => true, headers: { Authorization: GetAuthorisation() } })
-		.then((res) => {
-			console.log(res.statusm, "TEST")
-			if (res.status === 401) {
-				this.setState({
-					redirect: true,
-					redirectUrl: "/unauthorized"
-				});
-			} else {
-				console.log(res.data);
-			}
-		})
-		.catch((err) => {
-			console.log(err);
-		});
+		
 	}
 
 	handleModalDataClose = () => {
@@ -62,14 +48,7 @@ class RegisterPharmacies extends Component {
 		});
 	};
 
-	onYmapsLoad = (ymaps) => {
-		this.ymaps = ymaps;
-		new this.ymaps.SuggestView(this.addressInput.current, {
-			provider: {
-				suggest: (request, options) => this.ymaps.suggest(request),
-			},
-		});
-	};
+	
 
 	handleNameChange = (event) => {
 		this.setState({ name: event.target.value });
@@ -164,7 +143,7 @@ class RegisterPharmacies extends Component {
 					Axios.post("http://localhost:8080/pharmacy", pharmacyDTO, {  headers: { Authorization: GetAuthorisation()}})
 						.then((res) => {
 							console.log("Success");
-							this.setState({ openModal: true });
+							this.setState({ openModal: true,redirect : true, redirectUrl : '/' });
 						})
 						.catch((err) => {
 							console.log(err);
@@ -188,7 +167,7 @@ class RegisterPharmacies extends Component {
 				
 				<Header />
 
-				<div className="container" style={{ marginTop: "8%" }}>
+				<div className="container" style={{ marginTop: "2%" }}>
 					<h5 className=" text-center  mb-0 text-uppercase" style={{ marginTop: "2rem" }}>
 						Registrater pharmacy
 					</h5>

@@ -28,7 +28,11 @@ import show.isaBack.model.UserCharacteristics.WorkTime;
 import show.isaBack.model.appointment.Appointment;
 import show.isaBack.model.appointment.AppointmentStatus;
 import show.isaBack.model.appointment.AppointmentType;
+import show.isaBack.model.drugs.DrugReservation;
+import show.isaBack.model.drugs.EReceipt;
 import show.isaBack.repository.AppointmentRepository.AppointmentRepository;
+import show.isaBack.repository.drugsRepository.DrugReservationRepository;
+import show.isaBack.repository.drugsRepository.EReceiptRepository;
 import show.isaBack.repository.userRepository.DermatologistRepository;
 import show.isaBack.repository.userRepository.PatientRepository;
 import show.isaBack.repository.userRepository.PharmacistRepository;
@@ -70,6 +74,12 @@ public class AppointmentService implements IAppointmentService{
 	
 	@Autowired
 	private WorkTimeRepository workTimeRepository;
+	
+	@Autowired
+	private EReceiptRepository eReceiptRepository;
+	
+	@Autowired
+	private DrugReservationRepository drugReservationRepository;
 	
 	
 	
@@ -736,11 +746,22 @@ public class AppointmentService implements IAppointmentService{
 		
 		List<Appointment> appointments = appointmentRepository.findAllFinishedAppointmentsForPatientinPharmacy(patientId,pharmacyId);
 		
-		if(appointments.size()==0) {
-			return false;
-		}else {
+		if(appointments.size()>0) {
 			return true;
 		}
+		List<EReceipt> ereceipts = eReceiptRepository.findAllEReceiptsWithPatientAndPharmacy(patientId, pharmacyId);
+		
+		if(ereceipts.size()>0) {
+			return true;
+		}
+		List<DrugReservation> drugs = drugReservationRepository.findAllhistoryDrugsReservationwithPatientAndPharmacy(patientId, pharmacyId);
+		
+		if(drugs.size()>0) {
+			return true;
+		}
+		
+		return false;
+		
 	}
 	
 	

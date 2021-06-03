@@ -3,6 +3,7 @@ import Axios from "axios";
 import React, { Component } from "react";
 import { withRouter } from "react-router";
 import Header from "../../Components/Header";
+import { Redirect } from "react-router-dom";
 
 
 
@@ -112,21 +113,7 @@ class RegisterDrug extends Component {
                 console.log("USAO U GET DRUG ERROR");
 			});
 
-		Axios.get("/api/users/sysadmin/auth", { validateStatus: () => true, headers: { Authorization: GetAuthorisation() } })
-            .then((res) => {
-				console.log(res.statusm, "TEST")
-                if (res.status === 401) {
-                    this.setState({
-                        redirect: true,
-                        redirectUrl: "/unauthorized"
-                    });
-                } else {
-                    console.log(res.data);
-                }
-            })
-            .catch((err) => {
-                console.log(err);
-            });
+		
 		
     }
 
@@ -331,7 +318,7 @@ class RegisterDrug extends Component {
 		
 		console.log(drugInstanceDTO);
 		
-		Axios.put("http://localhost:8080/drug", drugInstanceDTO, { headers: { Authorization: GetAuthorisation()}})
+		Axios.put("http://localhost:8080/drug/add", drugInstanceDTO, { headers: { Authorization: GetAuthorisation()}})
 			.then((res) => {
 			
 				for (const [index, value] of this.state.ingredients.entries()) {
@@ -340,13 +327,7 @@ class RegisterDrug extends Component {
 						id: res.data,
 					};
 					
-					Axios.post("http://localhost:8080/drug/ingredients", ingredientDTO, { headers: { Authorization: GetAuthorisation()}})
-						.then((res) => {
-							console.log("Success ingredients");
-						})
-						.catch((err) => {
-							console.log(err);
-						});
+
 						
 					Axios.put("http://localhost:8080/drug/ingredient", ingredientDTO, { headers: { Authorization: GetAuthorisation()}})
 						.then((res) => {
@@ -389,6 +370,8 @@ class RegisterDrug extends Component {
 							console.log(err);
 						});
 				}
+
+                this.setState({ redirect: true });
 				
 				
 			})
@@ -409,7 +392,7 @@ class RegisterDrug extends Component {
 	};
 
     render() {
-
+        if (this.state.redirect) return <Redirect push to="/" />;
         return (
             <React.Fragment>
 
