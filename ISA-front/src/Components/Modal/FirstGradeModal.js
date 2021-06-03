@@ -82,7 +82,7 @@ class FirstGradeModal extends Component {
                                     </div>
                                 </div>
 
-                                <div class="container bg-light" style={{marginTop :"3em"}}>
+                                <div class="container bg-light" >
                                     <div class="col-md-12 text-center">
                                         <button hidden={!this.props.showModifyGrade}
                                         onClick={() => this.props.setModifyGrade(this.state.grade)}

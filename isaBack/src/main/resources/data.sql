@@ -200,7 +200,7 @@ insert into pharmacy_grade (id,patient_id, pharmacy_id, grade, date) values ('58
 --pharmacist--grades
 insert into employee_grade (id,patient_id, employee_id, grade, date) values ('ce880dac-bb46-11eb-8529-0242ac130003','22793162-52d3-11eb-ae93-0242ac130002', '80c86094-ba60-11eb-8529-0242ac130003',4, '2021-05-022');
 insert into employee_grade (id,patient_id, employee_id, grade, date) values ('ce880eba-bb46-11eb-8529-0242ac130003','22793162-52d3-11eb-ae93-0242ac130002', '80c862c4-ba60-11eb-8529-0242ac130003',3, '2021-05-022');
-insert into employee_grade (id,patient_id, employee_id, grade, date) values ('56a93678-bd9c-11eb-8529-0242ac130003','22793162-52d3-11eb-ae93-0242ac130002', '56a92e1c-bd9c-11eb-8529-0242ac130003',3, '2021-05-022');
+--insert into employee_grade (id,patient_id, employee_id, grade, date) values ('56a93678-bd9c-11eb-8529-0242ac130003','22793162-52d3-11eb-ae93-0242ac130002', '56a92e1c-bd9c-11eb-8529-0242ac130003',3, '2021-05-022');
 
 --dermatologists--grades
 --insert into employee_grade (id,patient_id, employee_id, grade, date) values ('8d2d65ee-be59-11eb-8529-0242ac130003','22793162-52d3-11eb-ae93-0242ac130002', '07a2c302-b584-11eb-8529-0242ac130003',5, '2021-05-022');
