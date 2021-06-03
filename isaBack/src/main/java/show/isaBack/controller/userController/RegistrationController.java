@@ -42,7 +42,7 @@ public class RegistrationController {
 	
 	@GetMapping("/activeAccountForPatient/{patientId}")
 	public ResponseEntity<?> activatePatient(@PathVariable UUID patientId) {
-		
+		System.out.println("ide gas ide plin" + patientId.toString());
 		try {
 			if (userService.activatingAccountForPatient(patientId))
 				return new ResponseEntity<>(HttpStatus.OK);

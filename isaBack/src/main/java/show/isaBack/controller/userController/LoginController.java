@@ -15,6 +15,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -91,6 +92,11 @@ public class LoginController {
 		} catch (BadCredentialsException e) {
 			System.out.println("bad credentials");
 			return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+		} catch (DisabledException e) {
+			System.out.println("nije aktiviran ");
+			e.printStackTrace();
+			return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+		
 		} catch (Exception e) {
 			System.out.println("neki eksepsn");
 			e.printStackTrace();

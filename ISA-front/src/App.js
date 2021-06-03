@@ -30,6 +30,10 @@ import FutureDrugsReservationsForPatients from "./Pages/FutureDrugsReservationsF
 import qrPharmacieswithDrugs from './Components/qrPharmacieswithDrugs';
 import PatientsEReceipts from "./Pages/PatientsEReceipts"
 import PatientsProccessedDrugsEReceipts from "./Pages/PatientsProccessedDrugsEReceipts"
+import activateAccount from './Components/activateAccount';
+
+
+
 
 
 import {
@@ -80,6 +84,11 @@ function App() {
         <Route to="/qrPharmacieswithDrugs/:id" path ="/qrPharmacieswithDrugs/:id"  component={qrPharmacieswithDrugs}/>
         <Route  to ="/allPatients-E-receipts" path ="/allPatients-E-receipts"  component={PatientsEReceipts}/>
         <Route  to ="/allPatients-processed-drugs-e-receipts" path ="/allPatients-processed-drugs-e-receipts"  component={PatientsProccessedDrugsEReceipts}/>
+
+        <Route to="/activeAccount/:id" path ="/activeAccount/:id"  component={activateAccount}/>
+
+
+
 
 
 
