@@ -6,6 +6,10 @@ import DrugSpecificationModal from "./DrugSpecification";
 import GetAuthorisation from "../../src/Funciton/GetAuthorisation"
 import PharmaciesWithDrugAndPrice from '../Components/Pharmacies/PharmaciesWithDrugAndPrice';
 import ReservationDrugModal from "./Modal/ReservationDrugsModal";
+import FirstGradeModal from "../Components/Modal/FirstGradeModal";
+import UnsuccessfulAlert from "../Components/Alerts/UnsuccessfulAlert";
+import SuccessfulAlert from "../Components/Alerts/SuccessfulAlert";
+
 
 const API_URL="http://localhost:8080";
 
@@ -61,7 +65,19 @@ class Drugs extends Component {
 
 	  hiddenSuccessfulAlert : true,
 	  SuccessfulHeader : "",
-	  SuccessfulMessage : ""
+	  SuccessfulMessage : "",
+	  hiddenUnsuccessfulAlert: true,
+      UnsuccessfulHeader: "",
+      UnsuccessfulMessage: "",	
+
+	  selectedDrug : [],
+		drugIdForGrade : "",
+		drugGrade : 0,
+		drugName : "",
+		showGradeModal: false,
+		showFirstGrade : false,
+		showModifyGrade : false,
+		maxGrade : 5
 	  
 
 
@@ -220,7 +236,12 @@ class Drugs extends Component {
 		this.setState({ hiddenSuccessfulAlert: true });
 	};
 
+	handleCloseUnsuccessfulAlert = () => {
+		this.setState({ hiddenUnsuccessfulAlert: true });
+	};
+
 	
+
 	handleDrugClick = (drug) => {
 		console.log(drug);
 		this.setState({
@@ -372,6 +393,207 @@ class Drugs extends Component {
 		  }
 	
 
+
+
+
+		  handleGetGradeClick = (drug) => {
+			console.log(drug);
+	
+	
+	
+	
+			Axios.get(API_URL + "/grade/drug/" + drug.Id , {
+				validateStatus: () => true,
+				headers: { Authorization: GetAuthorisation() },
+			})
+				.then((res) => {
+					if (res.status === 401) {
+						this.props.history.push('/login');
+					} else if(res.status === 404){
+	
+	
+						console.log("Nema ocenu");
+	
+						let entityDTO = {
+							showGradeModal : true,
+								showFirstGrade : true,	
+								drugId : drug.Id,
+								drugGrade : drug.EntityDTO.avgGrade,
+								drugName : drug.EntityDTO.name,
+							
+						};
+	
+	
+						this.setState({ showGradeModal : true,
+								showFirstGrade : true,	
+								drugIdForGrade : drug.Id,
+							drugGrade : drug.EntityDTO.avgGrade,
+							drugName : drug.EntityDTO.name
+							});
+	
+							console.log(drug.Id);
+							console.log(entityDTO);
+	
+					}else {
+						
+						console.log(res.data);
+
+						this.setState({ showGradeModal : true,
+							showModifyGrade : true,	
+							drugIdForGrade : drug.Id,
+							drugGrade : res.data.grade,
+							drugName : drug.EntityDTO.name
+							});
+	
+							console.log(res.data.grade);
+							console.log(res.data);
+						
+					}
+				})
+				.catch((err) => {
+					console.log(err);
+				});
+	
+	
+		};
+	
+	
+		setFirstGrade = (grade) => {
+			
+			console.log("sou")
+			console.log(this.state.drugIdForGrade )
+	
+			let entityDTO = {
+				drugId: this.state.drugIdForGrade ,
+				grade: grade
+			};
+	
+			console.log(entityDTO);
+	
+			Axios.post(API_URL + "/grade/drug/createGrade",entityDTO , {
+				validateStatus: () => true,
+				headers: { Authorization: GetAuthorisation() },
+			})
+				.then((res) => {
+					if (res.status === 401) {
+						this.props.history.push('/login');
+					} else if(res.status === 404){
+						
+						this.setState({ hiddenUnsuccessfulAlert: false, UnsuccessfulHeader : "Bad request", UnsuccessfulMessage : "You are not allowed to grade this drug",
+						 showGradeModal :false,
+						 showFirstGrade : false,
+						showModifyGrade : false});
+	
+					}else if(res.status === 500){
+						this.setState({ hiddenUnsuccessfulAlert: false, UnsuccessfulHeader : "Error", UnsuccessfulMessage : "internal server error! ",
+						 showGradeModal :false,
+						 showFirstGrade : false,
+						 showModifyGrade : false  });
+	
+					}else {
+							
+						this.setState({ hiddenSuccessfulAlert:  false, successfulHeader:   "Successful", successfulMessage:  "You successful created grade for drug! ",
+						 showGradeModal :false,
+						 showFirstGrade : false,
+						 showModifyGrade : false   });
+	
+						this.componentDidMount();
+						
+					}
+				})
+				.catch((err) => {
+					console.log(err);
+				});
+	
+	
+	
+	
+	
+	
+		};
+	
+		setModifyGrade = (grade) => {
+			
+			console.log("sou")
+	
+			let entityDTO = {
+				drugId: this.state.drugIdForGrade ,
+				grade: grade,
+			};
+	
+			console.log(entityDTO);
+	
+	
+			Axios.post(API_URL + "/grade/drug/updateGrade",entityDTO , {
+				validateStatus: () => true,
+				headers: { Authorization: GetAuthorisation() },
+			})
+				.then((res) => {
+					if (res.status === 401) {
+						this.props.history.push('/login');
+					} else if(res.status === 404){
+						this.setState({ hiddenUnsuccessfulAlert: false, UnsuccessfulHeader : "Bad request", UnsuccessfulMessage : "You are not allowed to grade this drug",
+						 showGradeModal :false,
+						 showFirstGrade : false,
+						showModifyGrade : false});
+	
+					}else if(res.status === 500){
+						this.setState({ hiddenUnsuccessfulAlert: false, UnsuccessfulHeader : "Error", UnsuccessfulMessage : "internal server error! ",
+						 showGradeModal :false,
+						 showFirstGrade : false,
+						 showModifyGrade : false  });
+	
+					}else {
+							
+						this.setState({ hiddenSuccessfulAlert:  false, successfulHeader:   "Successful", successfulMessage:  "You successful update grade for drug! ",
+						 showGradeModal :false,
+						 showFirstGrade : false,
+						 showModifyGrade : false   });
+						
+						 this.componentDidMount();
+						
+					}
+				})
+				.catch((err) => {
+					console.log(err);
+				});
+	
+	
+	
+		};
+		
+		closeFirstGradeModal = () => {
+	
+			this.setState({ showFirstGrade : false,
+				showModifyGrade : false,
+				showGradeModal : false});
+	
+		}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 	render() {
 	
 
@@ -383,7 +605,20 @@ class Drugs extends Component {
       
       <div id="allDrugs" hidden={this.state.showPharmaciesPage}>
 
-            
+			<div className="container" style={{ marginTop: "1em" }} >
+			<SuccessfulAlert
+						hidden={this.state.hiddenSuccessfulAlert}
+						header={this.state.successfulHeader}
+						message={this.state.successfulMessage}
+						handleCloseAlert={this.handleCloseSuccessfulAlert}    
+				/>
+				<UnsuccessfulAlert
+						hidden={this.state.hiddenUnsuccessfulAlert}
+						header={this.state.UnsuccessfulHeader}
+						message={this.state.UnsuccessfulMessage}
+						handleCloseAlert={this.handleCloseUnsuccessfulAlert}
+				/>
+			</div>
            
            
             <div style={{ width: "70%", marginTop: "5em", marginLeft: "auto",marginRight: "auto" }} width="100%">
@@ -495,6 +730,17 @@ class Drugs extends Component {
 											</button>
 										</div>
 										
+										<div style={{ marginLeft: "55%",marginTop: "1em"  }}>
+										<button
+											type="button"
+											onClick={() => this.handleGetGradeClick(drug)}
+											
+											className="btn btn-outline-secondary"
+										>
+											Drug grade
+										</button>
+										</div>	
+										
 									</td>
 								</tr>
 							))}
@@ -562,7 +808,23 @@ class Drugs extends Component {
 			/>					
 
 
+		<FirstGradeModal 
 
+				show={this.state.showGradeModal}
+				showFirstGrade={this.state.showFirstGrade}
+				showModifyGrade={this.state.showModifyGrade}
+				employeeGrade={this.state.drugGrade}							
+				maxGrade={this.state.maxGrade}
+				employeeName={this.state.drugName }
+				employeeSurname={""}
+				header={"Grade"}
+				buttonFirstGradeName={"Grade"}
+				buttonModifyGradeName={" Update grade"}								
+				setFirstGrade={this.setFirstGrade}	
+				setModifyGrade={this.setModifyGrade}
+				onCloseModal={this.closeFirstGradeModal}						
+
+		/>									
    
 	   
 	    </React.Fragment>

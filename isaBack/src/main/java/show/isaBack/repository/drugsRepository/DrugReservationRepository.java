@@ -16,4 +16,7 @@ public interface DrugReservationRepository extends JpaRepository<DrugReservation
 	@Query(value = "SELECT d FROM DrugReservation d WHERE d.patient.id = ?1  AND d.drugReservationStatus = 'PROCESSED' ")
 	List<DrugReservation> findAllhistoryDrugsReservationForPatients(UUID patientId);
 	
+	@Query(value = "SELECT d FROM DrugReservation d WHERE d.patient.id = ?1 AND d.drugInstance.id = ?2  AND d.drugReservationStatus = 'PROCESSED'  ")
+	List<DrugReservation> findAllProccessedDrugsForPatientAndDrugId(UUID patientId, UUID drugId);
+	
 }

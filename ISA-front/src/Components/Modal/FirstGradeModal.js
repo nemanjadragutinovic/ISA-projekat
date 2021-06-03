@@ -77,7 +77,7 @@ class FirstGradeModal extends Component {
                                         <button hidden={!this.props.showFirstGrade} 
                                         onClick={() => this.props.setFirstGrade(this.state.grade)}
                                         type="button" class="btn btn-primary"
-                                        >{this.props.buttonName}</button>
+                                        >{this.props.buttonFirstGradeName}</button>
                                         
                                     </div>
                                 </div>

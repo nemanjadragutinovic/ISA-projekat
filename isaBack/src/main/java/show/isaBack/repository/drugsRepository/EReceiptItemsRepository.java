@@ -24,4 +24,8 @@ public interface EReceiptItemsRepository extends JpaRepository<EReceiptItems, ER
 			+ " e.eReceiptItemsId.eReceipt.status = 'PROCESSED' AND e.eReceiptItemsId.drugInstance.id = ?2")
 	List<EReceiptItems> findAllEreciptsForDrugByPatient(UUID patientId,UUID drugId );
 	
+	
+	@Query(value = "SELECT e FROM EReceiptItems e where e.eReceiptItemsId.eReceipt.patient.id = ?2 AND e.eReceiptItemsId.drugInstance.id = ?1")
+	List<EReceiptItems> findAllEReceiptsByPatiendAndDrug(UUID drugId,UUID patientId);
+	
 }
