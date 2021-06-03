@@ -73,6 +73,8 @@ public interface AppointmentRepository extends PagingAndSortingRepository<Appoin
 			+ " AND a.patient.id = ?1 AND a.pharmacy.id = ?2")
 	List<Appointment> findAllFinishedAppointmentsForPatientinPharmacy(UUID patientId, UUID pharmacyId);
 	
-	
+	@Query(value = "SELECT a FROM Appointment a WHERE a.patient.id = ?1"
+			+ " AND a.employee.id = ?2  AND a.appointmentStatus = 'FINISHED' ")
+	List<Appointment> findAllFinishedAppointmentsForPatientinAndEmployee(UUID patientId, UUID employeeID);
 	
 }

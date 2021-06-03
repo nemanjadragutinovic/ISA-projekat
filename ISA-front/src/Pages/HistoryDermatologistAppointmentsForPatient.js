@@ -7,6 +7,8 @@ import UnsuccessfulAlert from "../Components/Alerts/UnsuccessfulAlert";
 import SuccessfulAlert from "../Components/Alerts/SuccessfulAlert";
 import {NavLink, Redirect } from "react-router-dom";
 import CreateComplaintModal from "../Components/CreateComplaintModal";
+import FirstGradeModal from "../Components/Modal/FirstGradeModal";
+
 
 const API_URL="http://localhost:8080";
 
@@ -34,8 +36,15 @@ class HistoryDermatologistAppointmentsForPatient extends Component {
 		text : "",
 		profession : "",
 
-
-
+		selectedEmployee : [],
+		employeeId : "",
+		employeeGrade : 0,
+		employeeName : "",
+		employeeSurname : "",
+		showGradeModal: false,
+		showFirstGrade : false,
+		showModifyGrade : false,
+		maxGrade : 5
     };
 
     constructor(props) {
@@ -299,6 +308,184 @@ class HistoryDermatologistAppointmentsForPatient extends Component {
 	};
 
 
+	handleGetGradeClick = (employee) => {
+		console.log(employee);
+
+
+
+
+		Axios.get(API_URL + "/grade/employee/" + employee.Id , {
+			validateStatus: () => true,
+			headers: { Authorization: GetAuthorisation() },
+		})
+			.then((res) => {
+				if (res.status === 401) {
+                    this.props.history.push('/login');
+				} else if(res.status === 404){
+
+
+					console.log("Nema ocenu");
+
+					let entityDTO = {
+						showGradeModal : true,
+							showFirstGrade : true,	
+						employeeId : employee.EntityDTO.Id,
+						employeeGrade : employee.EntityDTO.grade,
+						employeeName : employee.EntityDTO.name,
+						employeeSurname : employee.EntityDTO.surname
+					};
+
+
+					this.setState({ showGradeModal : true,
+							showFirstGrade : true,	
+						employeeId : employee.Id,
+						employeeGrade : employee.EntityDTO.grade,
+						employeeName : employee.EntityDTO.name,
+						employeeSurname : employee.EntityDTO.surname});
+
+						console.log(employee.Id);
+						console.log(entityDTO);
+
+				}else {
+						
+					this.setState({ showGradeModal : true,
+						showModifyGrade : true,	
+						employeeId : res.data.employee.id,
+						employeeGrade : res.data.grade,
+						employeeName : res.data.employee.name,
+						employeeSurname : res.data.employee.surname});
+
+						console.log(res.data.grade);
+						console.log(res.data);
+					
+				}
+			})
+			.catch((err) => {
+				console.log(err);
+			});
+
+
+
+
+
+
+	};
+
+	setFirstGrade = (grade) => {
+		
+		console.log("sou")
+
+		let entityDTO = {
+			employeeId: this.state.employeeId ,
+			grade: grade,
+		};
+
+		console.log(entityDTO);
+
+		Axios.post(API_URL + "/grade/employee/createGrade",entityDTO , {
+			validateStatus: () => true,
+			headers: { Authorization: GetAuthorisation() },
+		})
+			.then((res) => {
+				if (res.status === 401) {
+                    this.props.history.push('/login');
+				} else if(res.status === 404){
+					this.setState({ hiddenUnsuccessfulAlert: false, UnsuccessfulHeader : "Bad request", UnsuccessfulMessage : "You are not authorized to create grade! ",
+					 showGradeModal :false,
+					 showFirstGrade : false,
+					showModifyGrade : false});
+
+				}else if(res.status === 500){
+					this.setState({ hiddenUnsuccessfulAlert: false, UnsuccessfulHeader : "Error", UnsuccessfulMessage : "internal server error! ",
+					 showGradeModal :false,
+					 showFirstGrade : false,
+					 showModifyGrade : false  });
+
+				}else {
+						
+					this.setState({ hiddenSuccessfulAlert:  false, successfulHeader:   "Successful", successfulMessage:  "You successful created grade for employee! ",
+					 showGradeModal :false,
+					 showFirstGrade : false,
+					 showModifyGrade : false   });
+
+					this.componentDidMount();
+					
+				}
+			})
+			.catch((err) => {
+				console.log(err);
+			});
+
+
+
+
+
+
+	};
+
+	setModifyGrade = (grade) => {
+		
+		console.log("sou")
+
+		let entityDTO = {
+			employeeId: this.state.employeeId ,
+			grade: grade,
+		};
+
+		console.log(entityDTO);
+
+
+		Axios.post(API_URL + "/grade/employee/updateGrade",entityDTO , {
+			validateStatus: () => true,
+			headers: { Authorization: GetAuthorisation() },
+		})
+			.then((res) => {
+				if (res.status === 401) {
+                    this.props.history.push('/login');
+				} else if(res.status === 404){
+					this.setState({ hiddenUnsuccessfulAlert: false, UnsuccessfulHeader : "Bad request", UnsuccessfulMessage : "You are not authorized to create grade! ",
+					 showGradeModal :false,
+					 showFirstGrade : false,
+					showModifyGrade : false});
+
+				}else if(res.status === 500){
+					this.setState({ hiddenUnsuccessfulAlert: false, UnsuccessfulHeader : "Error", UnsuccessfulMessage : "internal server error! ",
+					 showGradeModal :false,
+					 showFirstGrade : false,
+					 showModifyGrade : false  });
+
+				}else {
+						
+					this.setState({ hiddenSuccessfulAlert:  false, successfulHeader:   "Successful", successfulMessage:  "You successful update grade for employee! ",
+					 showGradeModal :false,
+					 showFirstGrade : false,
+					 showModifyGrade : false   });
+
+					this.componentDidMount();
+					
+				}
+			})
+			.catch((err) => {
+				console.log(err);
+			});
+
+
+
+	};
+	
+	closeFirstGradeModal = () => {
+
+		this.setState({ showFirstGrade : false,
+			showModifyGrade : false,
+			showGradeModal : false});
+
+	}
+
+
+
+
+
+
 
 
 	render() {
@@ -367,7 +554,7 @@ class HistoryDermatologistAppointmentsForPatient extends Component {
    
         <div className="container">
                     
-          <table className="table table-hover" style={{ width: "70%", marginTop: "5em", marginLeft: "auto",marginRight: "auto" }}>
+          <table className="table table-hover" style={{ width: "100%", marginTop: "5em", marginLeft: "auto",marginRight: "auto" }}>
 						<tbody>
 							{this.state.appointments.map((appointment) => (
 								<tr
@@ -436,7 +623,20 @@ class HistoryDermatologistAppointmentsForPatient extends Component {
 										</button>
 										</div>
 										
+										<div style={{ marginLeft: "55%",marginTop: "1em"  }}>
+										<button
+											type="button"
+											onClick={() => this.handleGetGradeClick(appointment.EntityDTO.employee)}
+											
+											className="btn btn-outline-secondary"
+										>
+											Dermatologist grade
+										</button>
+										</div>	
+
 									</td>
+
+									
 
                                     
                                     
@@ -465,8 +665,31 @@ class HistoryDermatologistAppointmentsForPatient extends Component {
 					complaint={this.state.complaint}
 				/>
 		
+
+		<FirstGradeModal 
+
+				show={this.state.showGradeModal}
+				showFirstGrade={this.state.showFirstGrade}
+				showModifyGrade={this.state.showModifyGrade}
+				employeeGrade={this.state.employeeGrade}							
+				maxGrade={this.state.maxGrade}
+				employeeName={this.state.employeeName }
+				employeeSurname={this.state.employeeSurname }
+				header={"Grade"}
+				buttonFirstGradeName={"Grade"}
+				buttonModifyGradeName={"Update grade"}								
+				setFirstGrade={this.setFirstGrade}	
+				setModifyGrade={this.setModifyGrade}
+				onCloseModal={this.closeFirstGradeModal}						
+
+		/>
+
+
+
+
+
         </React.Fragment>
-        
+    
 		);
 	}
 }

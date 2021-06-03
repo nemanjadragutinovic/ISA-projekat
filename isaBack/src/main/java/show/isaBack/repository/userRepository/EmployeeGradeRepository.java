@@ -11,4 +11,7 @@ public interface EmployeeGradeRepository  extends JpaRepository<EmployeeGrade, U
 
 	@Query(value = "SELECT AVG(e.grade) FROM EmployeeGrade e WHERE e.employee.id = ?1")
 	double getAvgGradeForEmployee(UUID employeeId);
+	
+	@Query(value = "SELECT e FROM EmployeeGrade e WHERE e.employee.id = ?1 AND e.patient.id = ?2")
+	EmployeeGrade findPatientGradeForEmployee(UUID employeeId,UUID patientId);
 }
