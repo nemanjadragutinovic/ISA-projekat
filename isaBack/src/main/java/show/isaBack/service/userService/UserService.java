@@ -11,6 +11,7 @@ import javax.persistence.EntityNotFoundException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mail.MailException;
@@ -31,16 +32,18 @@ import show.isaBack.DTO.userDTO.PatientDTO;
 import show.isaBack.DTO.userDTO.PatientsAllergenDTO;
 
 import show.isaBack.DTO.userDTO.PhAdminDTO;
-
+import show.isaBack.DTO.userDTO.DermatologistWithGradeDTO;
+import show.isaBack.DTO.userDTO.EmployeeGradeDTO;
 import show.isaBack.DTO.userDTO.PharmacistForAppointmentPharmacyGadeDTO;
-
 import show.isaBack.DTO.userDTO.UserChangeInfoDTO;
 import show.isaBack.DTO.userDTO.UserDTO;
 import show.isaBack.DTO.userDTO.UserRegistrationDTO;
+import show.isaBack.Mappers.Appointmets.AppointmentsMapper;
 import show.isaBack.emailService.EmailService;
 import show.isaBack.model.Authority;
 import show.isaBack.model.Dermatologist;
 import show.isaBack.model.Patient;
+import show.isaBack.model.Pharmacist;
 import show.isaBack.model.Pharmacy;
 import show.isaBack.model.PharmacyAdmin;
 import show.isaBack.model.Supplier;
@@ -51,7 +54,7 @@ import show.isaBack.repository.drugsRepository.AllergenRepository;
 import show.isaBack.repository.pharmacyRepository.PharmacyRepository;
 import show.isaBack.repository.userRepository.DermatologistRepository;
 import show.isaBack.repository.userRepository.PatientRepository;
-
+import show.isaBack.repository.userRepository.PharmacistRepository;
 import show.isaBack.repository.userRepository.PharmacyAdminRepository;
 
 import show.isaBack.repository.userRepository.SupplierRepository;
@@ -82,13 +85,18 @@ public class UserService implements IUserInterface{
 	private EmailService emailService;
 	@Autowired
     private PharmacyAdminRepository phAdminRepository;	
-	
+	@Autowired
+	private PharmacistRepository pharmacistRepository;
 	@Autowired
 	private AllergenRepository allergenRepository;
 	
+	@Autowired
+	private DermatologistRepository dermatologistRepository;
 	
 	@Autowired
 	private AuthenticationManager authenticationManager;
+	
+	private AppointmentsMapper appointmentsMapper= new AppointmentsMapper();
 	
 	@Autowired
 	private IAppointmentService appointmentService;
@@ -451,6 +459,63 @@ public class UserService implements IUserInterface{
 		
 	}
 	
+	
+	@Override
+	public List<UnspecifiedDTO<EmployeeGradeDTO>> findDermatologistsinPharmacy(UUID phId){
+		
+	
+		List<UnspecifiedDTO<EmployeeGradeDTO>> dermatologistsForPharmacy= new ArrayList<UnspecifiedDTO<EmployeeGradeDTO>>();  
+		List<Dermatologist>  allDermatologists=dermatologistRepository.findAll();
+		
+	
+		
+		for (Dermatologist dermatologist : allDermatologists) {
+			if(isInPharmacy(dermatologist,phId)) {
+			double avgGrade = getAvgGradeForEmployee(dermatologist.getId());
+			
+			dermatologistsForPharmacy.add(appointmentsMapper.MapDermatologistToEmployeeDTO(dermatologist,avgGrade));
+			}
+		}
+		
+		return dermatologistsForPharmacy;
+		
+	}
+
+
+	public boolean isInPharmacy(Dermatologist d,UUID phId) {
+		for(Pharmacy p : d.getPharmacies()) {
+			if(p.getId().equals(phId)) {
+				return true;
+			}
+		}
+		return false;
+		
+	}
+	
+
+	
+	@Override
+	public List<UnspecifiedDTO<EmployeeGradeDTO>> findPharmacistsinPharmacy(UUID phId){
+		
+	
+		List<UnspecifiedDTO<EmployeeGradeDTO>> pharmacistsForPharmacy= new ArrayList<UnspecifiedDTO<EmployeeGradeDTO>>();  
+		
+		List<Pharmacist>  allPharmacists=pharmacistRepository.findAll();
+		
+	
+		
+		for (Pharmacist pharmacist : allPharmacists) {
+			if(pharmacist.getPharmacy().getId().equals(phId)) {
+			double avgGrade = getAvgGradeForEmployee(pharmacist.getId());
+			
+			pharmacistsForPharmacy.add(appointmentsMapper.MapPharmacistsToEmployeeDTO(pharmacist,avgGrade));
+			}
+		}
+		
+		return pharmacistsForPharmacy;
+		
+	}
+
 	
 	
 	public UnspecifiedDTO<PharmacistForAppointmentPharmacyGadeDTO> convertPharmacistToPharmacistWithGradeDTO(User pharmacist){

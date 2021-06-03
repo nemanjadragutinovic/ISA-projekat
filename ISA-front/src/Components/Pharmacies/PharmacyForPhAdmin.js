@@ -1,30 +1,16 @@
-import React, { Component, useState } from "react";
+import React, { Component } from "react";
 import Header from '../Header';
 import Axios from "axios";
-import { YMaps, Map,Placemark,geoObjects } from "react-yandex-maps";
+import { YMaps, Map,Placemark } from "react-yandex-maps";
 
 import { Button, Modal } from "react-bootstrap";
 
-import { NavLink, Redirect } from "react-router-dom";
+
 import GetAuthorisation from "../../Funciton/GetAuthorisation";
 
 const API_URL="http://localhost:8080";
 
-const loadSuggest = ymaps => {
-	const suggestView = new ymaps.SuggestView("suggest");
 
-	
-  };
-
-const markerStyles = {
-    width: '55px',
-    height: '20px',
-    overflow: 'hidden',
-    border: '1px solid orange',
-    background: '#FFF',
-    borderRadius: '15%',
-	textAlign:'center'
-};
 class PharmacyForPhAdmin extends Component {
 	state = {
 		pharmacy: "",

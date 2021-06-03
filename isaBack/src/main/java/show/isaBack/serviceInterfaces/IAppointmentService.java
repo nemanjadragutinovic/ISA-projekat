@@ -5,9 +5,13 @@ import java.util.List;
 import java.util.UUID;
 
 import show.isaBack.DTO.AppointmentDTO.DermatologistAppointmentDTO;
+import show.isaBack.DTO.AppointmentDTO.FormAppointmentDTO;
+import show.isaBack.DTO.AppointmentDTO.FreeAppointmentPeriodDTO;
+import show.isaBack.DTO.AppointmentDTO.ParamsFromAppointmentDTO;
 import show.isaBack.DTO.AppointmentDTO.ReservationConsultationDTO;
 import show.isaBack.model.Pharmacy;
 import show.isaBack.model.User;
+import show.isaBack.model.appointment.Appointment;
 import show.isaBack.model.appointment.AppointmentType;
 
 import show.isaBack.unspecifiedDTO.UnspecifiedDTO;
@@ -59,5 +63,9 @@ public interface IAppointmentService extends IService<DermatologistAppointmentDT
 	public List<UnspecifiedDTO<DermatologistAppointmentDTO>> findAllHistoryPatientsConsultationsSortByDurationDescending(AppointmentType appointmentType) throws Exception;
 	
 	public boolean canPatientReportPharmacy(UUID pharmacyId);
+
+	public boolean createDermatologistsAppointment(FormAppointmentDTO appointmentDTO);
+
+	List<FreeAppointmentPeriodDTO> generateListFreePeriods(ParamsFromAppointmentDTO paramsFromAppointmentDTO);
 	
 }

@@ -14,7 +14,8 @@ import show.isaBack.DTO.userDTO.PhAdminDTO;
 import show.isaBack.DTO.userDTO.PharmacistForAppointmentPharmacyGadeDTO;
 
 import show.isaBack.DTO.userDTO.UserChangeInfoDTO;
-
+import show.isaBack.DTO.userDTO.DermatologistWithGradeDTO;
+import show.isaBack.DTO.userDTO.EmployeeGradeDTO;
 import show.isaBack.DTO.userDTO.UserDTO;
 import show.isaBack.DTO.userDTO.UserRegistrationDTO;
 import show.isaBack.unspecifiedDTO.UnspecifiedDTO;
@@ -54,5 +55,7 @@ public interface IUserInterface extends IService<UserDTO, UnspecifiedDTO<UserDTO
 	
 	public double getAvgGradeForEmployee(UUID employeeID);
 	public UUID getPhIdForPhAdmin();
+	public List<UnspecifiedDTO<EmployeeGradeDTO>> findDermatologistsinPharmacy(UUID pharmacyId);
+	public List<UnspecifiedDTO<EmployeeGradeDTO>> findPharmacistsinPharmacy(UUID phId);
 	
 }

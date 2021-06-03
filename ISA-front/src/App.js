@@ -29,6 +29,7 @@ import QrCode from './Components/QrCode';
 import FutureDrugsReservationsForPatients from "./Pages/FutureDrugsReservationsForPatient"
 import qrPharmacieswithDrugs from './Components/qrPharmacieswithDrugs';
 
+import dermatologistsForPhAdmin from './Components/Pharmacies/DermatologistsForPhAdmin';
 
 
 
@@ -79,7 +80,7 @@ function App() {
         <Route  to ="/futureDrugsReservationForPatient" path ="/futureDrugsReservationForPatient"  component={FutureDrugsReservationsForPatients}/>     
         <Route to="/qrPharmacieswithDrugs/:id" path ="/qrPharmacieswithDrugs/:id"  component={qrPharmacieswithDrugs}/>
 
-
+        <Route to="/dermatologistsForPhAdmin" path ="/dermatologistsForPhAdmin"  component={dermatologistsForPhAdmin}/>
 
 
 

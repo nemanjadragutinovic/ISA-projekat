@@ -27,6 +27,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import show.isaBack.DTO.drugDTO.AllergenDTO;
 import show.isaBack.DTO.userDTO.ChangePasswordDTO;
+import show.isaBack.DTO.userDTO.EmployeeGradeDTO;
 import show.isaBack.DTO.userDTO.PatientDTO;
 import show.isaBack.DTO.userDTO.PatientsAllergenDTO;
 import show.isaBack.DTO.userDTO.PhAdminDTO;
@@ -382,4 +383,47 @@ public class UserController {
 			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR); 
 		}
 	}
+	
+	
+	@GetMapping("/dermatologistsInPharmacy")
+	//@PreAuthorize("hasRole('PHARMACYADMIN')")
+	@CrossOrigin
+	public ResponseEntity<List<UnspecifiedDTO<EmployeeGradeDTO>>> getDermatologists(@RequestParam UUID phId){
+		
+		System.out.println(phId);
+		
+		try {		
+			return new ResponseEntity<>(userService.findDermatologistsinPharmacy(phId),HttpStatus.OK);
+		} catch (IllegalArgumentException e) {
+			e.printStackTrace();
+			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+		} catch (Exception e) {
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+		
+		
+	}
+	
+	
+	@GetMapping("/pharmacistsInPharmacy")
+	//@PreAuthorize("hasRole('PHARMACYADMIN')")
+	@CrossOrigin
+	public ResponseEntity<List<UnspecifiedDTO<EmployeeGradeDTO>>> getPharmacists(@RequestParam UUID phId){
+		
+		System.out.println(phId);
+		
+		try {		
+			return new ResponseEntity<>(userService.findPharmacistsinPharmacy(phId),HttpStatus.OK);
+		} catch (IllegalArgumentException e) {
+			e.printStackTrace();
+			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+		} catch (Exception e) {
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+		
+		
+	}
+	
+	
+	
 }
