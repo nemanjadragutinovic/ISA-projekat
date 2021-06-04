@@ -35,6 +35,7 @@ import show.isaBack.repository.userRepository.PharmacistRepository;
 import show.isaBack.repository.userRepository.UserRepository;
 import show.isaBack.repository.userRepository.WorkTimeRepository;
 import show.isaBack.serviceInterfaces.IAppointmentService;
+import show.isaBack.serviceInterfaces.ILoyaltyService;
 import show.isaBack.serviceInterfaces.IService;
 import show.isaBack.serviceInterfaces.IUserInterface;
 import show.isaBack.unspecifiedDTO.UnspecifiedDTO;
@@ -71,6 +72,9 @@ public class AppointmentService implements IAppointmentService{
 	@Autowired
 	private WorkTimeRepository workTimeRepository;
 	
+	@Autowired
+	private ILoyaltyService loyaltyService;
+	
 	
 	
 	@Override
@@ -79,6 +83,13 @@ public class AppointmentService implements IAppointmentService{
 		
 		List<Appointment> appointments = appointmentRepository.findAllFreeAppointmentsForPharmacyAndForAppointmentType(pharmacyId, appointmentType); 
 		System.out.println(appointments);
+		UUID patientId=userService.getLoggedUserId();
+		
+		for (Appointment appointment : appointments) {
+			appointment.setPrice(loyaltyService.getDiscountPriceForExaminationAppointmentForPatient(patientId,appointment.getPrice()));
+		}
+		
+		
 		List<Dermatologist> allDermatologists= dermatologistRepository.findAll();		
 		
 		List<UnspecifiedDTO<EmployeeGradeDTO>> dermatologistEmployees= new ArrayList<UnspecifiedDTO<EmployeeGradeDTO>>();

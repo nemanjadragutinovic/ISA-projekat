@@ -120,6 +120,27 @@ public class LoyalityProgramService implements ILoyaltyService {
 		return discountPrice;
 	}
 	
+	
+	@Override
+	public double getDiscountPriceForExaminationAppointmentForPatient(UUID patientId, double standardPrice) {
+		
+		Patient patient = patientRepository.getOne(patientId);
+		LoyalityProgramForPatientDTO loyalityProgramForPatientDTO = getLoyalityProgramForPatient(patient);
+		double discountPrice= ((100 - loyalityProgramForPatientDTO.getExaminationDiscount()) / 100.0 ) * standardPrice;
+		
+		return discountPrice;
+	}
+	
+	@Override
+	public double getDiscountPriceForConsultationAppointmentForPatient(UUID patientId, double standardPrice) {
+		
+		Patient patient = patientRepository.getOne(patientId);
+		LoyalityProgramForPatientDTO loyalityProgramForPatientDTO = getLoyalityProgramForPatient(patient);
+		double discountPrice= ((100 - loyalityProgramForPatientDTO.getConsultationDiscount()) / 100.0 ) * standardPrice;
+		
+		return discountPrice;
+	}
+	
 	@Override
 	public List<UnspecifiedDTO<AuthorityDTO>> findAll() {
 		// TODO Auto-generated method stub

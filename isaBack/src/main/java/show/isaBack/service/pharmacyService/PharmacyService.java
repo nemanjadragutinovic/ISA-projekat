@@ -50,6 +50,7 @@ import show.isaBack.repository.userRepository.PatientRepository;
 import show.isaBack.service.loyalityService.LoyalityProgramService;
 
 import show.isaBack.serviceInterfaces.IAppointmentService;
+import show.isaBack.serviceInterfaces.ILoyaltyService;
 import show.isaBack.serviceInterfaces.IPharmacyGradeService;
 import show.isaBack.serviceInterfaces.IPharmacyService;
 import show.isaBack.serviceInterfaces.IUserInterface;
@@ -91,6 +92,9 @@ public class PharmacyService implements IPharmacyService{
 	
 	@Autowired
 	private EReceiptRepository eReceiptRepository;
+	
+	@Autowired
+	private ILoyaltyService loyaltyService;
 	
 	@Autowired
 	private EmailService emailService;
@@ -301,8 +305,10 @@ public class PharmacyService implements IPharmacyService{
 		
 		pharmacies= appointmentService.findAllPharmaciesForAppointmentTypeAndForDateRange(startDate, endDate);
 		
+		UUID patientId=userService.getLoggedUserId();
 		
 		for (Pharmacy pharmacy : pharmacies) {
+			pharmacy.setConsultationPrice(loyaltyService.getDiscountPriceForConsultationAppointmentForPatient(patientId,pharmacy.getConsultationPrice()));
 			pharmaciesDTO.add(convertPharmacyToPharmacyWithGradeAndPriceDTO(pharmacy));
 		}
 		
