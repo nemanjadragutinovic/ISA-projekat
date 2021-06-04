@@ -13,4 +13,4 @@ U projektu je korišćena postre baza podataka koju je potrebno namestiti kao na
 Zatim je potrebno otvoriti Eclipse razvojno okruženje i importovati kao maven projekat isaBack folder koji se nalazi u našem git repozitorijumu.
 Nakon toga pokrenite *IsaBackApplication.java* klasu klikom na *run java application*.
 
-Kada ste se uverili da serverska aplikacija radi, otvorite Visual Studio Code i otvorite folder ISA-front zatim otvorite novi terminal i ukucajte *npm install*, a zatim *npm run*.
+Kada ste se uverili da serverska aplikacija radi, otvorite Visual Studio Code i otvorite folder ISA-front zatim otvorite novi terminal i ukucajte *npm install*, a zatim *npm start*.
