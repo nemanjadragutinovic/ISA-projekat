@@ -380,9 +380,6 @@ class Pharmacies extends Component {
   };
 
 
-
-
-
     closeFirstGradeModal = () => {
     
       this.setState({ showFirstGrade : false,
@@ -390,6 +387,133 @@ class Pharmacies extends Component {
         showGradeModal : false});
 
     }
+
+
+    
+    handleSortByNameAscending = () => {
+    
+      
+
+      Axios.get(API_URL + "/pharmacy/allPharmacies/sortByNameAscending", {
+        validateStatus: () => true,
+        headers: { Authorization: GetAuthorisation() },
+      })
+        .then((res) => {
+          this.setState({ allPharmacies: res.data });
+          console.log(res.data );
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+
+
+
+    }
+
+    handleSortByNameDescending = () => {
+    
+      
+
+      Axios.get(API_URL + "/pharmacy/allPharmacies/sortByNameDescending", {
+        validateStatus: () => true,
+        headers: { Authorization: GetAuthorisation() },
+      })
+        .then((res) => {
+          this.setState({ allPharmacies: res.data });
+          console.log(res.data );
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+
+
+
+    }
+
+
+
+    handleSortByCityAscending = () => {
+    
+      
+
+      Axios.get(API_URL + "/pharmacy/allPharmacies/sortByCityAscending", {
+        validateStatus: () => true,
+        headers: { Authorization: GetAuthorisation() },
+      })
+        .then((res) => {
+          this.setState({ allPharmacies: res.data });
+          console.log(res.data );
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+
+
+
+    }
+
+    handleSortByCityDescending = () => {
+    
+      
+
+      Axios.get(API_URL + "/pharmacy/allPharmacies/sortByCityDescending", {
+        validateStatus: () => true,
+        headers: { Authorization: GetAuthorisation() },
+      })
+        .then((res) => {
+          this.setState({ allPharmacies: res.data });
+          console.log(res.data );
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+
+
+
+    }
+
+
+    handleSortByGradeAscending = () => {
+    
+      
+
+      Axios.get(API_URL + "/pharmacy/allPharmacies/sortByGradeAscending", {
+        validateStatus: () => true,
+        headers: { Authorization: GetAuthorisation() },
+      })
+        .then((res) => {
+          this.setState({ allPharmacies: res.data });
+          console.log(res.data );
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+
+
+
+    }
+
+    handleSortByGradeDescending = () => {
+    
+      
+
+      Axios.get(API_URL + "/pharmacy/allPharmacies/sortByGradeDescending", {
+        validateStatus: () => true,
+        headers: { Authorization: GetAuthorisation() },
+      })
+        .then((res) => {
+          this.setState({ allPharmacies: res.data });
+          console.log(res.data );
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+
+
+
+    }
+
+
 
 	render() {
 	
@@ -418,7 +542,7 @@ class Pharmacies extends Component {
             </div>
            
            
-            <div style={{ width: "70%", marginTop: "5em", marginLeft: "auto",marginRight: "auto" }} width="100%">
+            <div className="container"  style={{ width: "70%", marginTop: "5em", marginLeft: "auto",marginRight: "auto" }} width="100%">
 
             <div className="inline" >
             <button type="button" class="btn btn-primary btn-lg mr-3" onClick={this.handleSearchForm}>
@@ -492,9 +616,40 @@ class Pharmacies extends Component {
           <div className="text-danger" style={{ display: this.state.inputError, fontSize: "17px"}}>
 										Enter something in field!
 					</div>
-          </div>
+        
+        
+        
+        
+             <div style={{  marginTop: "1em" }} hidden={!this.hasRole("ROLE_PATIENT")}>
 
+                <div className="dropdown">
+                  <button className="btn btn-primary btn-lg dropdown-toggle"
+                    type="button" id="dropdownMenu2"
+                    data-toggle="dropdown" 
+                    aria-haspopup="true" 
+                    aria-expanded="false">
+                    Sort
+                  </button>
+                  <div className="dropdown-menu" aria-labelledby="dropdownMenu2">
+                      <button className="dropdown-item" type="button" onClick={this.handleSortByNameAscending} >Sort by name ascending</button>
+                      <button className="dropdown-item" type="button" onClick={this.handleSortByNameDescending} >Sort by name descending</button>
+                      <button className="dropdown-item" type="button" onClick={this.handleSortByCityAscending} >Sort by city ascending</button>
+                      <button className="dropdown-item" type="button" onClick={this.handleSortByCityDescending} >Sort by city descending</button>
+                      <button className="dropdown-item" type="button" onClick={this.handleSortByGradeAscending} >Sort by grade ascending</button>
+                      <button className="dropdown-item" type="button" onClick={this.handleSortByGradeDescending} >Sort by grade descending</button>
+                  </div>
+                </div>
 
+            </div>    
+                
+        
+        
+        
+        
+        
+        </div>
+
+         
 
 
         <div className="container">

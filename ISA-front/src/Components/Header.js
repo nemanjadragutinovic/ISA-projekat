@@ -74,6 +74,10 @@ class Header extends React.Component{
                 <Link to="/pharmacies">
                 <ReactBootStrap.Nav.Link href="#deets" hidden={this.hasRole("ROLE_PHARMACYADMIN")}>Pharmacies</ReactBootStrap.Nav.Link>
                 </Link>
+                
+                <Link to="/pharmacies">
+                <ReactBootStrap.Nav.Link href="#deets" hidden={!this.hasRole("ROLE_PATIENT") || !this.hasRole("ROLE_SYSADMIN")}>Pharmacies</ReactBootStrap.Nav.Link>
+                </Link>
               
                 <Link to="/adminpharmacy">
                 <ReactBootStrap.Nav.Link href="#deets" hidden={!this.hasRole("ROLE_PHARMACYADMIN")}>My Pharmacy</ReactBootStrap.Nav.Link>

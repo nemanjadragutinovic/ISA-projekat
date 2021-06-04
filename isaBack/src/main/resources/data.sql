@@ -17,7 +17,7 @@ insert into authority (id, name) values ('ea16767c-2c1f-49fb-ac98-c7739c0036e8',
 --PHARMACY nemanjaaaa 
 
 insert into pharmacy (id,name, city, street,country, post_code,latitude,longitude,description,consultation_price) values ('775d8e36-9859-11eb-a8b3-0242ac130003','apoteka Jankovic','Novi Sad','Futoski put 54','Serbia', '21000',45.24555195890135, 19.797846045982986, 'Zdravlje je prioritet!',1250);            
-insert into pharmacy (id,name, city, street,country, post_code,latitude,longitude,description,consultation_price) values ('775d9322-9859-11eb-a8b3-0242ac130003','Benu','Novi Sad','Vojvodjanske brigade 30','Serbia', '21000',45.24945171512143, 19.843664046981377, 'U svemu najbolji!',1400);  
+insert into pharmacy (id,name, city, street,country, post_code,latitude,longitude,description,consultation_price) values ('775d9322-9859-11eb-a8b3-0242ac130003','Benu','Beograd','Vojvodjanske brigade 30','Serbia', '21000',45.24945171512143, 19.843664046981377, 'U svemu najbolji!',1400);  
 
 
 --PHADMIN
@@ -284,9 +284,9 @@ insert into ereceipt_items(e_receipt_id, drug_instance_id, amount) values ('f84b
 --DRUGS-RESERVATIONS
 
 insert into drug_reservation(id, count, price_for_one_drug, end_date,start_date, drug_reservation_status, drug_instance_id, patient_id, pharmacy_id) values ('bc3196de-c2e2-11eb-8529-0242ac130003', 4, 250, '2021-04-20 14:44:03','2021-04-28 14:44:03',  'PROCESSED',  'dac2b818-5838-11eb-ae93-0242ac130002', '22793162-52d3-11eb-ae93-0242ac130002','775d8e36-9859-11eb-a8b3-0242ac130003');
-insert into drug_reservation(id, count, price_for_one_drug, end_date,start_date, drug_reservation_status,  drug_instance_id, patient_id, pharmacy_id) values ('bc3198f0-c2e2-11eb-8529-0242ac130003', 2, 280, '2021-02-18 17:04:03', '2021-01-16 17:04:03',  'PROCESSED', 'dac2b818-5838-11eb-ae93-0242ac130002', '22793162-52d3-11eb-ae93-0242ac130002','775d8e36-9859-11eb-a8b3-0242ac130003');
+--insert into drug_reservation(id, count, price_for_one_drug, end_date,start_date, drug_reservation_status,  drug_instance_id, patient_id, pharmacy_id) values ('bc3198f0-c2e2-11eb-8529-0242ac130003', 2, 280, '2021-02-18 17:04:03', '2021-01-16 17:04:03',  'PROCESSED', 'dac2b818-5838-11eb-ae93-0242ac130002', '22793162-52d3-11eb-ae93-0242ac130002','775d8e36-9859-11eb-a8b3-0242ac130003');
 
---insert into drug_reservation(id, count, price_for_one_drug, end_date,start_date, drug_reservation_status,  drug_instance_id, patient_id, pharmacy_id) values ('bc3198f0-c2e2-11eb-8529-0242ac130003', 2, 280, '2021-02-18 17:04:03', '2021-01-16 17:04:03',  'PROCESSED', 'dac2b818-5838-11eb-ae93-0242ac130002', '22793162-52d3-11eb-ae93-0242ac130002','775d9322-9859-11eb-a8b3-0242ac130003');
+insert into drug_reservation(id, count, price_for_one_drug, end_date,start_date, drug_reservation_status,  drug_instance_id, patient_id, pharmacy_id) values ('bc3198f0-c2e2-11eb-8529-0242ac130003', 2, 280, '2021-02-18 17:04:03', '2021-01-16 17:04:03',  'PROCESSED', 'dac2b818-5838-11eb-ae93-0242ac130002', '22793162-52d3-11eb-ae93-0242ac130002','775d9322-9859-11eb-a8b3-0242ac130003');
 
 
 
