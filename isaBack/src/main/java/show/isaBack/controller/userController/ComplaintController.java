@@ -51,7 +51,7 @@ public class ComplaintController {
 	@PreAuthorize("hasRole('PATIENT')")
 	public ResponseEntity<UUID> createComplaintPharmacy(@RequestBody ComplaintPharmacyDTO complaintPharmacyDTO) {
 		System.out.println("usao u complaint pharmacy");
-		
+		System.out.println(appointmentService.canPatientReportPharmacy(complaintPharmacyDTO.getPharmacyId()));
 		if(!appointmentService.canPatientReportPharmacy(complaintPharmacyDTO.getPharmacyId())) {
 			return new ResponseEntity<>(HttpStatus.FORBIDDEN);
 		}

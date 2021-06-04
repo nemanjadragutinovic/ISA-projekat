@@ -134,10 +134,7 @@ class AdminPharmacyComplains extends Component {
                                         <b>Patient's email: </b>{complaint.EntityDTO.patientEmail}
                         
                                         </div>
-                                        <div>  
-                                        <b>Pharmacy name: </b>{complaint.EntityDTO.name}
-                        
-                                        </div> 
+                                        
                                         <div>  
                                         <b>Complaint: </b>{complaint.EntityDTO.text}
                         

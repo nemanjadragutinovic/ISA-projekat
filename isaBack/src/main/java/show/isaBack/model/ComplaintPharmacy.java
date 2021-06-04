@@ -22,9 +22,6 @@ public class ComplaintPharmacy {
     
 	@Column(name="text")
 	private String text;
-
-	@Column(name="name")
-	private String name;
 	
 	@Column(name="reply")
 	private String reply;
@@ -38,18 +35,19 @@ public class ComplaintPharmacy {
 	
 	public ComplaintPharmacy() {}
 	
-	public ComplaintPharmacy(Pharmacy pharmacy, Patient patient, String text, String name) {
-		this(UUID.randomUUID(), pharmacy, "", patient, text, new Date(), name);
+	public ComplaintPharmacy(Pharmacy pharmacy, Patient patient, String text) {
+		this(UUID.randomUUID(), pharmacy, "", patient, text, new Date());
 	}
 	
-	public ComplaintPharmacy(UUID id,Pharmacy pharmacy, String reply, Patient patient,String text, Date date, String name) {
+	public ComplaintPharmacy(UUID id,Pharmacy pharmacy, String reply, Patient patient,String text, Date date) {
 		super();
 		this.id = id;
 		this.complaintPharmacyId = new ComplaintPharmacyId(pharmacy, patient);
 		this.date=date;
 		this.text=text;
 		this.reply = reply;
-		this.name = name;
+		this.active = true;
+		
 	}
 
 	public boolean isActive() {
@@ -116,11 +114,5 @@ public class ComplaintPharmacy {
 		return reply;
 	}
 
-	public String getName() {
-		return name;
-	}
 	
-	public void setName(String name) {
-		this.name = name;
-	}
 }
