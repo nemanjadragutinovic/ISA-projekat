@@ -3,6 +3,12 @@ import Axios from "axios";
 import Header from './Header';
 import PharmacyLogoPicture from "../Images/pharmacyLogo.jpg" ;
 import GetAuthorisation from "../Funciton/GetAuthorisation";
+import UnsuccessfulAlert from "../Components/Alerts/UnsuccessfulAlert";
+import SuccessfulAlert from "../Components/Alerts/SuccessfulAlert";
+import FirstGradeModal from "../Components/Modal/FirstGradeModal";
+
+
+
 const API_URL="http://localhost:8080";
 
 class Pharmacies extends Component {
@@ -21,7 +27,22 @@ class Pharmacies extends Component {
         inputError : "none",
       
 		
+        selectedPharmacy : [],
+        pharmacyId : "",
+        pharmacyGrade : 0,
+        pharmacyName : "",
+        showGradeModal: false,
+        showFirstGrade : false,
+        showModifyGrade : false,
+        maxGrade : 5,
 
+
+        hiddenSuccessfulAlert : true,
+        SuccessfulHeader : "",
+        SuccessfulMessage : "",
+        hiddenUnsuccessfulAlert: true,
+        UnsuccessfulHeader: "",
+        UnsuccessfulMessage: "",
 
   };
 
@@ -44,6 +65,19 @@ class Pharmacies extends Component {
   
          
 	}
+
+
+  hasRole = (requestRole) => {
+    let currentRoles = JSON.parse(localStorage.getItem("keyRole"));
+
+    if (currentRoles === null) return false;
+
+
+    for (let currentRole of currentRoles) {
+      if (currentRole === requestRole) return true;
+    }
+    return false;
+  };
 
 
    handleSearchForm = () => {    
@@ -168,12 +202,194 @@ class Pharmacies extends Component {
 		
 	};
 
+  handleCloseSuccessfulAlert = () => {
+		this.setState({ hiddenSuccessfulAlert: true });
+	};
 
 
-   
+	handleCloseUnsuccessfulAlert = () => {
+		this.setState({ hiddenUnsuccessfulAlert: true });
+	};
+
+  handleGetGradeClick = (pharmacy) => {
+    console.log(pharmacy);
+
+
+    
+	
+			Axios.get(API_URL + "/grade/pharmacy/" + pharmacy.Id , {
+				validateStatus: () => true,
+				headers: { Authorization: GetAuthorisation() },
+			})
+				.then((res) => {
+					if (res.status === 401) {
+						this.props.history.push('/login');
+					} else if(res.status === 404){
+	
+	
+						console.log("Nema ocenu");
+	
+						let entityDTO = {
+							showGradeModal : true,
+								showFirstGrade : true,	
+								pharmacyId  : pharmacy.Id,
+								pharmacyGrade  : pharmacy.EntityDTO.grade,
+								pharmacyName  : pharmacy.EntityDTO.name,
+							
+						};
+	
+	
+						this.setState({ showGradeModal : true,
+								showFirstGrade : true,	
+								pharmacyId  : pharmacy.Id,
+								pharmacyGrade  : pharmacy.EntityDTO.grade,
+								pharmacyName  : pharmacy.EntityDTO.name,
+							});
+	
+							console.log(pharmacy.Id);
+							console.log(entityDTO);
+	
+					}else {
+						
+						console.log(res.data);
+
+						this.setState({ showGradeModal : true,
+							showModifyGrade : true,	
+							pharmacyId : pharmacy.Id,
+							pharmacyGrade : res.data.grade,
+							pharmacyName : pharmacy.EntityDTO.name
+							});
+	
+							console.log(res.data.grade);
+							console.log(res.data);
+						
+					}
+				})
+				.catch((err) => {
+					console.log(err);
+				});
+
+    
+
+
+  };
 
  
+  setFirstGrade = (grade) => {
+		
+    console.log("sou")
+    
 
+    let entityDTO = {
+      pharmacyId : this.state.pharmacyId  ,
+      grade: grade,
+    };
+
+    console.log(entityDTO);
+
+    Axios.post(API_URL + "/grade/pharmacy/createGrade",entityDTO , {
+      validateStatus: () => true,
+      headers: { Authorization: GetAuthorisation() },
+    })
+      .then((res) => {
+        if (res.status === 401) {
+          this.props.history.push('/login');
+        } else if(res.status === 404){
+          console.log(res)
+          this.setState({ hiddenUnsuccessfulAlert: false, UnsuccessfulHeader : "Bad request", UnsuccessfulMessage : "You are not allowed to create grade for pharmacy! ",
+           showGradeModal :false,
+           showFirstGrade : false,
+          showModifyGrade : false});
+
+        }else if(res.status === 500){
+          this.setState({ hiddenUnsuccessfulAlert: false, UnsuccessfulHeader : "Error", UnsuccessfulMessage : "internal server error! ",
+           showGradeModal :false,
+           showFirstGrade : false,
+           showModifyGrade : false  });
+
+        }else {
+            
+          this.setState({ hiddenSuccessfulAlert:  false, successfulHeader:   "Successful", successfulMessage:  "You successful created grade for pharmacy! ",
+           showGradeModal :false,
+           showFirstGrade : false,
+           showModifyGrade : false   });
+
+          this.componentDidMount();
+          
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+
+
+
+
+
+  };
+
+  setModifyGrade = (grade) => {
+    
+    console.log("sou")
+	
+    let entityDTO = {
+      pharmacyId : this.state.pharmacyId  ,
+      grade: grade,
+    };
+
+    console.log(entityDTO);
+
+
+    Axios.post(API_URL + "/grade/pharmacy/updateGrade",entityDTO , {
+      validateStatus: () => true,
+      headers: { Authorization: GetAuthorisation() },
+    })
+      .then((res) => {
+        if (res.status === 401) {
+          this.props.history.push('/login');
+        } else if(res.status === 404){
+          this.setState({ hiddenUnsuccessfulAlert: false, UnsuccessfulHeader : "Bad request", UnsuccessfulMessage : "You are not allowed to create grade for this pharmacy",
+           showGradeModal :false,
+           showFirstGrade : false,
+          showModifyGrade : false});
+
+        }else if(res.status === 500){
+          this.setState({ hiddenUnsuccessfulAlert: false, UnsuccessfulHeader : "Error", UnsuccessfulMessage : "internal server error! ",
+           showGradeModal :false,
+           showFirstGrade : false,
+           showModifyGrade : false  });
+
+        }else {
+            
+          this.setState({ hiddenSuccessfulAlert:  false, successfulHeader:   "Successful", successfulMessage:  "You successful update grade for pharmacy! ",
+           showGradeModal :false,
+           showFirstGrade : false,
+           showModifyGrade : false   });
+          
+           this.componentDidMount();
+          
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+
+
+
+
+  };
+
+
+
+
+
+    closeFirstGradeModal = () => {
+    
+      this.setState({ showFirstGrade : false,
+        showModifyGrade : false,
+        showGradeModal : false});
+
+    }
 
 	render() {
 	
@@ -186,7 +402,20 @@ class Pharmacies extends Component {
       
       <div id="allPharmacies">
 
-            
+            <div className="container" style={{ marginTop: "1em" }} >
+                <SuccessfulAlert
+                      hidden={this.state.hiddenSuccessfulAlert}
+                      header={this.state.successfulHeader}
+                      message={this.state.successfulMessage}
+                      handleCloseAlert={this.handleCloseSuccessfulAlert}    
+                  />
+                  <UnsuccessfulAlert
+                      hidden={this.state.hiddenUnsuccessfulAlert}
+                      header={this.state.UnsuccessfulHeader}
+                      message={this.state.UnsuccessfulMessage}
+                      handleCloseAlert={this.handleCloseUnsuccessfulAlert}
+                  />
+            </div>
            
            
             <div style={{ width: "70%", marginTop: "5em", marginLeft: "auto",marginRight: "auto" }} width="100%">
@@ -270,7 +499,7 @@ class Pharmacies extends Component {
 
         <div className="container">
                     <h1 >All pharmacies</h1>
-                    <table className="table" style={{ width: "70%", marginTop: "5em", marginLeft: "auto",marginRight: "auto" }}>
+                    <table className="table" style={{ width: "100%", marginTop: "5em", marginLeft: "auto",marginRight: "auto" }}>
                         
                         <tbody>
                             {
@@ -311,6 +540,22 @@ class Pharmacies extends Component {
 
                                       </td>
                                      
+                                      <td>
+
+                                          <div style={{ marginLeft: "55%",marginTop: "1em"  }}>
+                                              <button
+                                                type="button"
+                                                onClick={() => this.handleGetGradeClick(pharmacy)}
+                                                hidden={!this.hasRole("ROLE_PATIENT")}
+                                                className="btn btn-outline-secondary"
+                                              >
+                                                Pharmacy grade
+                                              </button>
+                                          </div>	                                     
+
+
+
+                                      </td>
 
 
                                     </tr>
@@ -320,6 +565,33 @@ class Pharmacies extends Component {
                     </table>
                 </div>
         </div>
+
+
+
+
+              <FirstGradeModal 
+
+                show={this.state.showGradeModal}
+                showFirstGrade={this.state.showFirstGrade}
+                showModifyGrade={this.state.showModifyGrade}
+                employeeGrade={this.state.pharmacyGrade }							
+                maxGrade={this.state.maxGrade}
+                employeeName={this.state.pharmacyName  }
+                employeeSurname={""}
+                header={"Grade"}
+                buttonFirstGradeName={"Grade"}
+                buttonModifyGradeName={" Update grade"}								
+                setFirstGrade={this.setFirstGrade}	
+                setModifyGrade={this.setModifyGrade}
+                onCloseModal={this.closeFirstGradeModal}						
+
+              />
+
+
+
+
+
+        
         </React.Fragment>
         
 		);

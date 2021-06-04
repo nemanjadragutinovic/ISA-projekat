@@ -12,6 +12,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.PagingAndSortingRepository;
 
 import show.isaBack.model.appointment.Appointment;
+import show.isaBack.model.appointment.AppointmentStatus;
 import show.isaBack.model.appointment.AppointmentType;
 
 
@@ -76,5 +77,9 @@ public interface AppointmentRepository extends PagingAndSortingRepository<Appoin
 	@Query(value = "SELECT a FROM Appointment a WHERE a.patient.id = ?1"
 			+ " AND a.employee.id = ?2  AND a.appointmentStatus = 'FINISHED' ")
 	List<Appointment> findAllFinishedAppointmentsForPatientinAndEmployee(UUID patientId, UUID employeeID);
+	
+	@Query(value = "SELECT a FROM Appointment a WHERE a.patient.id = ?2"
+			+ " AND a.appointmentStatus = ?4 AND a.pharmacy.id = ?1 AND a.appointmentType = ?3")
+	List<Appointment> findAllFinishedAppointmentsByPatiendAndPharmacy(UUID pharmacyId,UUID patientId,AppointmentType appointmentType,AppointmentStatus appointmentStatus);
 	
 }

@@ -118,16 +118,16 @@ class Drugs extends Component {
 
 
 	hasRole = (requestRole) => {
-        let currentRoles = JSON.parse(localStorage.getItem("keyRole"));
-    
-        if (currentRoles === null) return false;
-    
-    
-        for (let currentRole of currentRoles) {
-          if (currentRole === requestRole) return true;
-        }
-        return false;
-      };
+		let currentRoles = JSON.parse(localStorage.getItem("keyRole"));
+	
+		if (currentRoles === null) return false;
+	
+	
+		for (let currentRole of currentRoles) {
+		  if (currentRole === requestRole) return true;
+		}
+		return false;
+	  };
 
   handleDrugKindChange = (event) => {
 		this.setState({ drugKind: event.target.value });
@@ -396,7 +396,7 @@ class Drugs extends Component {
 
 
 
-		  handleGetGradeClick = (drug) => {
+		handleGetGradeClick = (drug) => {
 			console.log(drug);
 	
 	
@@ -734,7 +734,7 @@ class Drugs extends Component {
 										<button
 											type="button"
 											onClick={() => this.handleGetGradeClick(drug)}
-											
+											hidden={!this.hasRole("ROLE_PATIENT")}
 											className="btn btn-outline-secondary"
 										>
 											Drug grade

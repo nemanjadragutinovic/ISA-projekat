@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import show.isaBack.DTO.drugDTO.DrugGradeDTO;
+import show.isaBack.DTO.pharmacyDTO.PharmacyGradeDTO;
 import show.isaBack.DTO.userDTO.EmployeeForGradeDTO;
 import show.isaBack.DTO.userDTO.EmployeeForGradeRequestDTO;
 import show.isaBack.serviceInterfaces.IDrugGradeService;
@@ -34,6 +35,8 @@ public class GradeController {
 	
 	@Autowired
 	private IDrugGradeService drugGradeService;
+	
+
 	
 	@GetMapping("/employee/{staffId}")
 	@CrossOrigin
@@ -125,5 +128,48 @@ public class GradeController {
 		}
 	}
 	
+	
+	@GetMapping("/pharmacy/{pharmacyId}")
+	@CrossOrigin
+	@PreAuthorize("hasRole('ROLE_PATIENT')")
+	public ResponseEntity<PharmacyGradeDTO> findPatientGradeForPharmacy(@PathVariable UUID pharmacyId) {
+		System.out.println("1");
+		try {
+			return new ResponseEntity<>(pharmacyGradeService.findPatientGradeForPharmacy(pharmacyId) ,HttpStatus.OK);
+		} catch (IllegalArgumentException e) {
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		}  catch (Exception e) {
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+	
+	
+	@PostMapping("/pharmacy/updateGrade")
+	@CrossOrigin
+	@PreAuthorize("hasRole('ROLE_PATIENT')")
+	public ResponseEntity<PharmacyGradeDTO> updatePharmacyGrade(@RequestBody PharmacyGradeDTO pharmacyGradeDTO) {
+		try {
+			pharmacyGradeService.updatePharmacyGrade(pharmacyGradeDTO);
+			return new ResponseEntity<>(HttpStatus.CREATED);
+		} catch (IllegalArgumentException e) {
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		} catch (Exception e) {
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+	
+	@PostMapping("/pharmacy/createGrade")
+	@CrossOrigin
+	@PreAuthorize("hasRole('ROLE_PATIENT')")
+	public ResponseEntity<PharmacyGradeDTO> createPharmacyGrade(@RequestBody PharmacyGradeDTO pharmacyGradeDTO) {
+		try {
+			pharmacyGradeService.createPharmacyGrade(pharmacyGradeDTO);
+			return new ResponseEntity<>(HttpStatus.CREATED);
+		} catch (IllegalArgumentException e) {
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		} catch (Exception e) {
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
 	
 }
