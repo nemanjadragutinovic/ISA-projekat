@@ -6,8 +6,6 @@ import java.util.Date;
 public class ComplaintPharmacyDTO {
 
 	private UUID pharmacyId;
-
-	private String pharmacyName;
 	
 	private String patientEmail;
 	
@@ -27,11 +25,10 @@ public class ComplaintPharmacyDTO {
 
 	public ComplaintPharmacyDTO() {}
 		
-	public ComplaintPharmacyDTO(UUID pharmacyId, Date date, String text, String pharmacyName, String reply, String patientEmail) {
+	public ComplaintPharmacyDTO(UUID pharmacyId, Date date, String text,String reply, String patientEmail) {
 		this.pharmacyId= pharmacyId;
 		this.Date=date;
 		this.text=text;
-		this.pharmacyName = pharmacyName;
 		this.reply = reply;
 		this.patientEmail = patientEmail;
 	}
@@ -68,11 +65,5 @@ public class ComplaintPharmacyDTO {
 		this.reply = reply;
 	}
 	
-	public String getName() {
-		return pharmacyName;
-	}
 
-	public void setName(String pharmacyName) {
-		this.pharmacyName = pharmacyName;
-	}
 }

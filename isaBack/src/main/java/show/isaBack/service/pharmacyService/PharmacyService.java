@@ -500,6 +500,8 @@ UUID patientID = userService.getLoggedUserId();
 		return pharmacies;
 	}
 	
+	
+	
 	@Override
 	public List<UnspecifiedDTO<AuthorityDTO>> findAll() {
 		// TODO Auto-generated method stub
