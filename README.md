@@ -16,3 +16,5 @@ Nakon toga pokrenite *IsaBackApplication.java* klasu klikom na *run java applica
 Kada ste se uverili da serverska aplikacija radi, otvorite Visual Studio Code i otvorite folder ISA-front zatim otvorite novi terminal i ukucajte *npm install*, a zatim *npm start*.
 
 Klijentska aplikacija se vrti na portu 3000.
+
+Početak razvoja fronta smo radili na sledećem repozitorijumu: https://github.com/StefanZec98/ISA-front . Sve smo kasnije prebacili na trenutni i nastavili sa daljom implementacijom projekta na istom.
