@@ -6,8 +6,8 @@ import GetAuthorisation from "../Funciton/GetAuthorisation";
 import UnsuccessfulAlert from "../Components/Alerts/UnsuccessfulAlert";
 import SuccessfulAlert from "../Components/Alerts/SuccessfulAlert";
 import FirstGradeModal from "../Components/Modal/FirstGradeModal";
-
-
+import CreateComplaintModal from "../Components/CreateComplaintModal";
+import ModalDialog from './ModalDialog';
 
 const API_URL="http://localhost:8080";
 
@@ -18,6 +18,7 @@ class Pharmacies extends Component {
     state = {
 	
         allPharmacies: [],
+        subscribedPharmacies: [],
         pharmacySearchName: "",
         searchCountryName: "",
         searchStreetName: "",
@@ -25,6 +26,13 @@ class Pharmacies extends Component {
         showSearchedForm: false,
         showResetSearced: false,
         inputError : "none",
+        pharmacyID : "",
+        text : "",
+        pharmacyName:"",
+        patientEmail:"",
+        showComplaintModal:false,
+        openModal:false,
+        
       
 		
         selectedPharmacy : [],
@@ -46,10 +54,24 @@ class Pharmacies extends Component {
 
   };
 
+  hasRole = (requestRole) => {
+    let currentRoles = JSON.parse(localStorage.getItem("keyRole"));
+
+    if (currentRoles === null) return false;
+
+
+    for (let currentRole of currentRoles) {
+      if (currentRole === requestRole) return true;
+    }
+    return false;
+  };
+
 
   
 
   componentDidMount() {
+
+    
 		
 
 		Axios.get(API_URL + "/pharmacy/allPharmacies")
@@ -60,6 +82,35 @@ class Pharmacies extends Component {
 			.catch((err) => {
 				console.log(err);
 			});
+
+  if(this.hasRole("ROLE_PATIENT")){
+    Axios.get("http://localhost:8080/pharmacy/allPatientsSubscribedPharmacies", {
+    
+     
+    validateStatus: () => true, headers: { Authorization: GetAuthorisation() }
+     })
+
+     .then((res) => {
+      this.setState({ subscribedPharmacies: res.data });
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+  }
+
+  Axios.get("http://localhost:8080/users/patient", { validateStatus: () => true, headers: { Authorization : GetAuthorisation()} })
+				.then((res) => {
+					console.log(res.data);
+              this.setState({
+              patientEmail: res.data.EntityDTO.email,
+						});
+					
+				})
+				.catch((err) => {
+					console.log(err);
+					
+
+				});
 
 
   
@@ -202,8 +253,156 @@ class Pharmacies extends Component {
 		
 	};
 
+
   handleCloseSuccessfulAlert = () => {
 		this.setState({ hiddenSuccessfulAlert: true });
+  }
+
+
+
+  handleSubscribe = (pharmacy) => {
+		console.log(pharmacy);
+    
+		
+
+    Axios.get("http://localhost:8080/users/subscribeToPharmacy/", {
+    
+      params: {
+        pharmacyId: pharmacy.Id
+    },
+    validateStatus: () => true, headers: { Authorization: GetAuthorisation() }
+     })
+    .then((res) => {
+        
+      Axios.get("http://localhost:8080/pharmacy/allPatientsSubscribedPharmacies", {
+    
+     
+              validateStatus: () => true, headers: { Authorization: GetAuthorisation() }
+              })
+
+              .then((res) => {
+                this.setState({ subscribedPharmacies: res.data });
+              })
+              .catch((err) => {
+                console.log(err);
+              });
+        
+    })
+
+	};
+
+
+  handleUnsubscribe = (pharmacy) => {
+		console.log(pharmacy);
+    
+		
+
+    Axios.get("http://localhost:8080/users/unsubscribeFromPharmacy/", {
+    
+      params: {
+        pharmacyId: pharmacy.Id
+    },
+    validateStatus: () => true, headers: { Authorization: GetAuthorisation() }
+     })
+    .then((res) => {
+
+      Axios.get("http://localhost:8080/pharmacy/allPatientsSubscribedPharmacies", {
+    
+     
+          validateStatus: () => true, headers: { Authorization: GetAuthorisation() }
+          })
+
+          .then((res) => {
+            this.setState({ subscribedPharmacies: res.data });
+          })
+          .catch((err) => {
+            console.log(err);
+          });
+        
+        
+        
+    })
+
+	};
+
+  
+
+  isSubscribed = (pharmacy) => {
+		console.log(pharmacy);
+    
+		for (const [index, value] of this.state.subscribedPharmacies.entries()) {
+
+      if(this.state.subscribedPharmacies[index].Id===pharmacy.Id){
+        console.log("usao");
+        return true;
+      }
+
+    }
+
+    return false;
+
+     
+
+	};
+
+  handleComplaintClick = (pharmacy) => {
+		console.log(pharmacy);
+		
+				
+					this.setState({
+						pharmacyID: pharmacy.Id,
+            pharmacyName: pharmacy.EntityDTO.name,
+            showComplaintModal: true,
+					});
+				
+			
+			
+	};
+
+  handleComplaintChange = (event) => {
+		this.setState({ text: event.target.value });
+	};
+
+  handleComplaintModalClose = () => {
+		this.setState({ showComplaintModal: false });
+	};
+
+  handleComaplaint = () => {
+		let ComplaintPharmacyDTO = {
+			pharmacyId: this.state.pharmacyID,
+			patientEmail: this.state.patientEmail,
+			Date: new Date(),
+			text: this.state.text,
+			reply: "",
+		};
+
+		Axios.post("http://localhost:8080/complaint/pharmacy", ComplaintPharmacyDTO, { validateStatus: () => true, headers: { Authorization: GetAuthorisation() } })
+			.then((resp) => {
+				if (resp.status === 500) {
+          this.setState({ hiddenFailAlert: false, failHeader: "Internal server error", failMessage: "Server error." });
+        }else if(resp.status === 403){
+
+          this.setState({
+            openModal: true,
+          });
+					
+				} else if (resp.status === 201) {
+					
+					
+				}
+				this.setState({ showComplaintModal: false });
+			})
+			.catch((err) => {
+				console.log(err);
+			});
+	};
+
+  handleModalCloseCantUse= () => {
+		this.setState({ 
+			openModal: false,
+            
+		});
+
 	};
 
 
@@ -659,7 +858,10 @@ class Pharmacies extends Component {
                         <tbody>
                             {
                                 this.state.allPharmacies.map((pharmacy) => (
+                                  
                                     <tr key={pharmacy.Id} id={pharmacy.Id} >
+
+                                      
                                        
 
                                       <td width="100px">  
@@ -694,23 +896,73 @@ class Pharmacies extends Component {
 
 
                                       </td>
+                                    
+                                      <td className="align-middle"hidden={this.isSubscribed(pharmacy) || !this.hasRole("ROLE_PATIENT")}>
+                                         
+                                          <div style={{ marginLeft: "35%" }}>
+                                            <button
+                                              style={{ background: "#24a0ed" }}
+                                              type="button"
+                                              onClick={() => this.handleSubscribe(pharmacy)}
+                                              className="btn btn-outline-secondary btn-block"
+                                            >
+                                              Subscribe
+                                            </button>
+                                          </div>
+                                      
+                                    </td>
+
+
+                                    <td className="align-middle"hidden={!this.isSubscribed(pharmacy) || !this.hasRole("ROLE_PATIENT")}>
+                                          <div style={{ marginLeft: "25%" }}>
+                                            <button
+                                              style={{ background: "#24a0ed" }}
+                                              
+                                              type="button"
+                                              onClick={() => this.handleUnsubscribe(pharmacy)}
+                                              className="btn btn-outline-secondary btn-block"
+                                            >
+                                              Unsubscribe
+                                            </button>
+                                          </div>
+                                      
+                                    </td>
+
+
+                                    <td className="align-middle">
+
+                                      <div style={{ marginLeft: "5%"  }}>
+                                          <button
+                                            type="button"
+                                            style={{ background: "#24a0ed" }}
+                                            onClick={() => this.handleGetGradeClick(pharmacy)}
+                                            hidden={!this.hasRole("ROLE_PATIENT")}
+                                            className="btn btn-outline-secondary "
+                                          >
+                                            Pharmacy grade
+                                          </button>
+                                      </div>	                                     
+
+
+                                    </td>
+
+
+                                    <td className="align-middle" hidden={!this.hasRole("ROLE_PATIENT")}>
+                                          <div >
+                                            <button
+                                              style={{ background: "#781616" }}
+                                              
+                                              type="button"
+                                              onClick={() => this.handleComplaintClick(pharmacy)}
+                                              className="btn btn-outline-secondary btn-block"
+                                            >
+                                              Report
+                                            </button>
+                                          </div>
+                                      
+                                    </td>
                                      
-                                      <td>
-
-                                          <div style={{ marginLeft: "55%",marginTop: "1em"  }}>
-                                              <button
-                                                type="button"
-                                                onClick={() => this.handleGetGradeClick(pharmacy)}
-                                                hidden={!this.hasRole("ROLE_PATIENT")}
-                                                className="btn btn-outline-secondary"
-                                              >
-                                                Pharmacy grade
-                                              </button>
-                                          </div>	                                     
-
-
-
-                                      </td>
+                                      
 
 
                                     </tr>
@@ -720,6 +972,7 @@ class Pharmacies extends Component {
                     </table>
                 </div>
         </div>
+
 
 
 
@@ -746,11 +999,30 @@ class Pharmacies extends Component {
 
 
 
-        
+        <CreateComplaintModal
+					buttonName="Send complaint"
+					header="Give complaint"
+					handleComplaintChange={this.handleComplaintChange}
+					show={this.state.showComplaintModal}
+					onCloseModal={this.handleComplaintModalClose}
+					giveFeedback={this.handleComaplaint}
+					name={this.state.StaffName + " " + this.state.StaffSurame}
+					forWho="consultant"
+					handleClickIcon={this.handleClickIcon}
+					complaint={this.state.complaint}
+				/>
+        <ModalDialog
+				show={this.state.openModal}
+				onCloseModal={this.handleModalCloseCantUse}
+				header="Error"
+				text="You can't make a complaint on this pharmacy because you never interacted with it."
+			/>
+
         </React.Fragment>
         
 		);
 	}
+
 }
 
 export default Pharmacies;

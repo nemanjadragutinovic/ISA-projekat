@@ -500,12 +500,12 @@ public class UserService implements IUserInterface{
 	}
 	
 	@Override
-	public boolean subscribeToPharmacy(String pharmacyId) {
+	public boolean subscribeToPharmacy(UUID pharmacyId) {
 		try {
 			UUID loggedUser= this.getLoggedUserId();
 
 			Patient patient = patientRepository.getOne(loggedUser);
-			Pharmacy pharmacy = pharmacyRepository.getOne(UUID.fromString(pharmacyId));
+			Pharmacy pharmacy = pharmacyRepository.getOne(pharmacyId);
 			patient.addSubscribeToPharmacy(pharmacy);
 			
 			patientRepository.save(patient);
@@ -516,19 +516,28 @@ public class UserService implements IUserInterface{
 	}
 	
 	@Override
-	public boolean unsubscribeFromPharmacy(String pharmacyId) {
+	public boolean unsubscribeFromPharmacy(UUID pharmacyId) {
 		// TODO Auto-generated method stub
 		try {
 			UUID loggedUser= this.getLoggedUserId();
 
 			Patient patient = patientRepository.getOne(loggedUser);
-			patient.removeSubscribeFromPharmacy(UUID.fromString(pharmacyId));
+			patient.removeSubscribeFromPharmacy(pharmacyId);
 			
 			patientRepository.save(patient);
 			return true;
 		} 
 		catch (EntityNotFoundException e) { return false; } 
 		catch (IllegalArgumentException e) { return false; }	
+	}
+	
+	@Override
+	public boolean isPatientSubscribedToPharmacy(UUID pharmacyId) {
+		
+		UUID loggedUser= this.getLoggedUserId();
+		Patient patient = patientRepository.getOne(loggedUser);
+		
+		return patient.isPatientSubscribedToPharmacy(pharmacyId);
 	}
 	
 	
@@ -589,6 +598,8 @@ public class UserService implements IUserInterface{
 		
 		return pharmacyAdmin.getPharmacy().getId();
 	}
+
+	
 	
 	@Override
 	public void refreshPatientPenalty() {
