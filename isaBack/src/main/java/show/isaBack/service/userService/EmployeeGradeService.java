@@ -88,7 +88,7 @@ public class EmployeeGradeService implements IEmployeeGradeService{
 		appointmentRepository.findAllFinishedAppointmentsForPatientinAndEmployee(patient.getId(),employeeForGradeDTO.getEmployeeId());
 			
 		if(appointments.size()==0)
-			throw new IllegalArgumentException("You can't create a grade for employee, because you don't have appointments in the past by them! ");
+			throw new IllegalArgumentException("You can't create a grade for employee, because you don't have appointments in the past! ");
 		
 		
 	}

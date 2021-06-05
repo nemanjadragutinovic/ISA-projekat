@@ -453,7 +453,7 @@ class FuturePharmaciesConsultationsForPatient extends Component {
 				if (res.status === 401) {
                     this.props.history.push('/login');
 				} else if(res.status === 404){
-					this.setState({ hiddenUnsuccessfulAlert: false, UnsuccessfulHeader : "Bad request", UnsuccessfulMessage : "You are not authorized to create grade! ",
+					this.setState({ hiddenUnsuccessfulAlert: false, UnsuccessfulHeader : "Bad request", UnsuccessfulMessage : res.data,
 					 showGradeModal :false,
 					 showFirstGrade : false,
 					showModifyGrade : false});
@@ -506,7 +506,7 @@ class FuturePharmaciesConsultationsForPatient extends Component {
 				if (res.status === 401) {
                     this.props.history.push('/login');
 				} else if(res.status === 404){
-					this.setState({ hiddenUnsuccessfulAlert: false, UnsuccessfulHeader : "Bad request", UnsuccessfulMessage : "You are not authorized to create grade! ",
+					this.setState({ hiddenUnsuccessfulAlert: false, UnsuccessfulHeader : "Bad request", UnsuccessfulMessage : res.data,
 					 showGradeModal :false,
 					 showFirstGrade : false,
 					showModifyGrade : false});

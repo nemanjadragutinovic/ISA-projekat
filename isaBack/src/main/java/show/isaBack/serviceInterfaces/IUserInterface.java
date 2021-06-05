@@ -54,5 +54,6 @@ public interface IUserInterface extends IService<UserDTO, UnspecifiedDTO<UserDTO
 	
 	public double getAvgGradeForEmployee(UUID employeeID);
 	public UUID getPhIdForPhAdmin();
+	public void refreshPatientPenalty();
 	
 }

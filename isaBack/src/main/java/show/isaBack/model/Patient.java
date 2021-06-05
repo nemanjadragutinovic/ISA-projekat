@@ -26,6 +26,8 @@ public class Patient extends User {
 	
 	private int penalty;
 	
+	private boolean refreshPenalties;
+	
 	private int points;
 	
 	@ManyToMany(fetch = FetchType.LAZY)
@@ -51,7 +53,9 @@ public class Patient extends User {
 		
 		this.penalty = 0;
 		this.points = 0;
+		this.refreshPenalties=false;
 		this.allergens = new ArrayList<Allergen>();
+		
 		
 	}
 	
@@ -75,6 +79,16 @@ public class Patient extends User {
 	}
 	
 	
+	
+	
+	public boolean isRefreshPenalties() {
+		return refreshPenalties;
+	}
+
+	public void setRefreshPenalties(boolean refreshPenalties) {
+		this.refreshPenalties = refreshPenalties;
+	}
+
 	public void setPharmacies(List<Pharmacy> pharmacies) {
 		this.pharmacies = pharmacies;
 	}

@@ -61,7 +61,7 @@ public class GradeController {
 			employeeGradeService.createEmployeeGrade(employeeForGradeDTO);
 			return new ResponseEntity<>(HttpStatus.CREATED);
 		} catch (IllegalArgumentException e) {
-			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+			return new ResponseEntity<>(e.getMessage(),HttpStatus.NOT_FOUND);
 		} catch (Exception e) {
 			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
@@ -76,7 +76,7 @@ public class GradeController {
 			employeeGradeService.updateEmployeeGrade(employeeForGradeDTO);
 			return new ResponseEntity<>(HttpStatus.CREATED);
 		} catch (IllegalArgumentException e) {
-			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+			return new ResponseEntity<>(e.getMessage(),HttpStatus.NOT_FOUND);
 		} catch (Exception e) {
 			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
@@ -108,7 +108,7 @@ public class GradeController {
 			drugGradeService.createDrugGrade(drugGradeDTO);
 			return new ResponseEntity<>(HttpStatus.CREATED);
 		} catch (IllegalArgumentException e) {
-			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+			return new ResponseEntity<>(e.getMessage(),HttpStatus.NOT_FOUND);
 		} catch (Exception e) {
 			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
@@ -122,7 +122,7 @@ public class GradeController {
 			drugGradeService.updateDrugGrade(drugGradeDTO);
 			return new ResponseEntity<>(HttpStatus.CREATED);
 		} catch (IllegalArgumentException e) {
-			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+			return new ResponseEntity<>(e.getMessage(),HttpStatus.NOT_FOUND);
 		} catch (Exception e) {
 			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
@@ -147,12 +147,12 @@ public class GradeController {
 	@PostMapping("/pharmacy/updateGrade")
 	@CrossOrigin
 	@PreAuthorize("hasRole('ROLE_PATIENT')")
-	public ResponseEntity<PharmacyGradeDTO> updatePharmacyGrade(@RequestBody PharmacyGradeDTO pharmacyGradeDTO) {
+	public ResponseEntity<?> updatePharmacyGrade(@RequestBody PharmacyGradeDTO pharmacyGradeDTO) {
 		try {
 			pharmacyGradeService.updatePharmacyGrade(pharmacyGradeDTO);
 			return new ResponseEntity<>(HttpStatus.CREATED);
 		} catch (IllegalArgumentException e) {
-			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+			return new ResponseEntity<>(e.getMessage(),HttpStatus.NOT_FOUND);
 		} catch (Exception e) {
 			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
@@ -161,12 +161,12 @@ public class GradeController {
 	@PostMapping("/pharmacy/createGrade")
 	@CrossOrigin
 	@PreAuthorize("hasRole('ROLE_PATIENT')")
-	public ResponseEntity<PharmacyGradeDTO> createPharmacyGrade(@RequestBody PharmacyGradeDTO pharmacyGradeDTO) {
+	public ResponseEntity<?> createPharmacyGrade(@RequestBody PharmacyGradeDTO pharmacyGradeDTO) {
 		try {
 			pharmacyGradeService.createPharmacyGrade(pharmacyGradeDTO);
 			return new ResponseEntity<>(HttpStatus.CREATED);
 		} catch (IllegalArgumentException e) {
-			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+			return new ResponseEntity<>(e.getMessage(),HttpStatus.NOT_FOUND);
 		} catch (Exception e) {
 			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}

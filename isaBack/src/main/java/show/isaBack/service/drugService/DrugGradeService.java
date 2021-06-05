@@ -89,12 +89,11 @@ public class DrugGradeService implements IDrugGradeService {
 		List<EReceiptItems> eReceipts=
 				eReceiptItemsRepository.findAllEReceiptsByPatiendAndDrug(drugGradeDTO.getDrugId(),patient.getId());
 		
-		if(drugsReservation.size()==0) {
-			 throw new IllegalArgumentException("You can't create a grade for drug, because you don't have any  drugs reservation in the past by them! ");
+		if(drugsReservation.size()==0 && eReceipts.size()==0) {
+			 throw new IllegalArgumentException("You can't create a grade for drug, because you don't have any  drug reservation and any  drug download "
+			 		+ "in the past or you don't have anything about e-receipts for this drug! ");
 		}
-		if(eReceipts.size()==0) {
-			throw new IllegalArgumentException("You can't create a grade for drug, because you don't have anything about e-receipts ");
-		}
+		
 		
 	}
 	

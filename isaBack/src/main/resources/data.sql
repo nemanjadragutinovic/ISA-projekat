@@ -53,9 +53,9 @@ insert into users (id, email, password, name, surname, phone_Number,first_Login,
 
 
 --PATIENTS
-insert into patient (id, points,penalty) values ('22793162-52d3-11eb-ae93-0242ac130002',12,0);
-insert into patient (id, points,penalty) values ('32793162-52d3-11eb-ae93-0242ac130002',0,3);
-insert into patient (id, points,penalty) values ('88dc12eb-6f5a-4f1e-8058-b38f84293574',25,1);
+insert into patient (id, points,penalty,refresh_penalties) values ('22793162-52d3-11eb-ae93-0242ac130002',12,0,false);
+insert into patient (id, points,penalty,refresh_penalties) values ('32793162-52d3-11eb-ae93-0242ac130002',0,3,false);
+insert into patient (id, points,penalty,refresh_penalties) values ('88dc12eb-6f5a-4f1e-8058-b38f84293574',25,1,false);
 
 --PHARMACISTS
 insert into pharmacist (id, pharmacy_id) values ('80c86094-ba60-11eb-8529-0242ac130003','775d8e36-9859-11eb-a8b3-0242ac130003');

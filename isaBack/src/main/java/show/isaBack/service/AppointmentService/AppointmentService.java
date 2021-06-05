@@ -8,6 +8,7 @@ import java.util.UUID;
 
 import javax.mail.MessagingException;
 import javax.persistence.EntityNotFoundException;
+import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -108,12 +109,17 @@ public class AppointmentService implements IAppointmentService{
 	
 	
 	@Override
+	@Transactional
 	public void reserveDermatologistAppointment(UUID appointmentId) {
 		
 		UUID patientId=userService.getLoggedUserId();
 		Patient patient = patientRepository.findById(patientId).get();
 	
+		if(patient.getPenalty()>=3)
+			throw new IllegalArgumentException("You can't reserve appointment because you have 3 and more penalties! ");
+		
 		Appointment appointment = appointmentRepository.findById(appointmentId).get();
+		appointment.setPrice(loyaltyService.getDiscountPriceForExaminationAppointmentForPatient(patientId, appointment.getPrice()));
 		
 		canPatientReserveAppointment(appointment, patient);
 		
@@ -681,6 +687,7 @@ public class AppointmentService implements IAppointmentService{
 	}
 	
 	@Override
+	@Transactional
 	public void reserveConsulationBySelectedPharmacist(ReservationConsultationDTO reservationRequestDTO){
 		
 		Date startDate= new Date(reservationRequestDTO.getStartDate());
@@ -720,10 +727,14 @@ public class AppointmentService implements IAppointmentService{
 	public Appointment createAppointment(ReservationConsultationDTO reservationRequestDTO,Date startDate, Date endDate  ){
 		
 		UUID patientId = userService.getLoggedUserId();
-		Patient patient = patientRepository.findById(patientId).get();	
+		Patient patient = patientRepository.findById(patientId).get();
+		
+		if(patient.getPenalty()>=3)
+			throw new IllegalArgumentException("You can't reserve appointment because you have 3 and more penalties! ");
+		
 		User eployee = userRepository.findById(reservationRequestDTO.getPharmacistId()).get();
 		Pharmacy pharmacy = pharmacistRepository.findPharmacyWhereWorksPharmacist(reservationRequestDTO.getPharmacistId());
-		
+		pharmacy.setConsultationPrice(loyaltyService.getDiscountPriceForConsultationAppointmentForPatient(patientId,pharmacy.getConsultationPrice()));
 		
 		Appointment appointment= new Appointment( eployee,pharmacy, startDate, endDate, pharmacy.getConsultationPrice(),patient, AppointmentType.CONSULTATION, AppointmentStatus.SCHEDULED);
 		

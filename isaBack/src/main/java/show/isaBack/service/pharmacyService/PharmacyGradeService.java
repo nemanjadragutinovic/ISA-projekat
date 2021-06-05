@@ -133,19 +133,12 @@ public class PharmacyGradeService implements IPharmacyGradeService {
 		List<Appointment> appointmentsExaminations=
 				appointmentRepository.findAllFinishedAppointmentsByPatiendAndPharmacy(pharmacyGradeDTO.getPharmacyId(),patient.getId(),AppointmentType.EXAMINATION,AppointmentStatus.FINISHED);
 		
-		if(drugsReservation.size()==0) {
-			System.out.println("prvi");
-			 throw new IllegalArgumentException("You can't create a grade for pharmacy, because you don't have any  drugs reservation in the past by them! ");
-		}
-		if(eReceipts.size()==0) {
-			System.out.println("drugi");
-			throw new IllegalArgumentException("You can't create a grade for pharmacy, because you don't have anything about e-receipts ");
+		if(drugsReservation.size()==0 && eReceipts.size()==0 && appointmentsConsulations.size()==0 && appointmentsExaminations.size()==0) {
+			
+			 throw new IllegalArgumentException("You can't create a grade for pharmacy, because you don't have any  drug reservation and drug download in the past "
+			 		+ "or you don't have anything about e-receipts in this pharmacy or you don't have any finished appointment in this pharmacy  ");
 		}
 		
-		if(appointmentsConsulations.size()==0 && appointmentsExaminations.size()==0 ) {
-			System.out.println("treci");
-			throw new IllegalArgumentException("You can't create a grade for pharmacy, because you don't have any finished appointment in this pharmacy ");
-		}
 		
 	}
 	

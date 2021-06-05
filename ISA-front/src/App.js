@@ -34,15 +34,13 @@ import activateAccount from './Components/activateAccount';
 
 
 
-
-
 import {
   BrowserRouter as Router,
   Route,
   Link,
   Switch
 } from "react-router-dom";
-import PharmacyForAdmin from './Components/Pharmacies/PharmacyForPhAdmin';
+
 
 
 function App() {
@@ -78,7 +76,6 @@ function App() {
         <Route  to ="/patientsSubscribedPharmacies" path ="/patientsSubscribedPharmacies"  component={PatientsSubscribedPharmacies}/>
         <Route  to ="/staffComplains" path ="/staffComplains"  component={AdminStaffComplains}/>
         <Route  to ="/pharmacyComplains" path ="/pharmacyComplains"  component={AdminPharmacyComplains}/>
-        <Route  to ="/adminpharmacy" path ="/adminpharmacy"  component={PharmacyForAdmin}/>
         <Route  to ="/qrCode" path ="/qrCode"  component={QrCode}/>
         <Route  to ="/futureDrugsReservationForPatient" path ="/futureDrugsReservationForPatient"  component={FutureDrugsReservationsForPatients}/>     
         <Route to="/qrPharmacieswithDrugs/:id" path ="/qrPharmacieswithDrugs/:id"  component={qrPharmacieswithDrugs}/>

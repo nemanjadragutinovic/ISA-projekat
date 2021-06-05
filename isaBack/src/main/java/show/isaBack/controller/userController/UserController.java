@@ -339,7 +339,7 @@ public class UserController {
 	
 	@PutMapping("/subscribeToPharmacy") 
 	@CrossOrigin
-	@PreAuthorize("hasRole('PATIENT')")
+	@PreAuthorize("hasRole('ROLE_PATIENT')")
 	public ResponseEntity<?> subscribeToPharmacy(@RequestBody String pharmacyId ) {
 		System.out.println("usao");
 	  
@@ -355,7 +355,7 @@ public class UserController {
 	
 	@PutMapping("/unsubscribeFromPharmacy") 
 	@CrossOrigin
-	@PreAuthorize("hasRole('PATIENT')")
+	@PreAuthorize("hasRole('ROLE_PATIENT')")
 	public ResponseEntity<?> unsubscribeToPharmacy(@RequestBody String pharmacyId ) {
 		System.out.println("usao22");
 		try {
@@ -369,7 +369,7 @@ public class UserController {
 	}
 	
 	@GetMapping("/phIdForAdmin")
-	@PreAuthorize("hasRole('PHARMACYADMIN')") 
+	@PreAuthorize("hasRole('ROLE_PHARMACYADMIN')") 
 	public ResponseEntity<UUID> getPharmacyIdForPharmacyAdmin() {
 		
 		try {
@@ -382,4 +382,21 @@ public class UserController {
 			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR); 
 		}
 	}
+	
+	
+	@GetMapping("/refreshPatientPenalty") 
+	@CrossOrigin
+	@PreAuthorize("hasRole('ROLE_PATIENT')")
+	public ResponseEntity<?> refreshPatientPenalty() {
+		System.out.println("penalii");
+		try {
+			userService.refreshPatientPenalty();
+			return new ResponseEntity<>(HttpStatus.NO_CONTENT);  
+		} catch (Exception e) {
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR); 
+		}
+	}
+	
+	
+	
 }
