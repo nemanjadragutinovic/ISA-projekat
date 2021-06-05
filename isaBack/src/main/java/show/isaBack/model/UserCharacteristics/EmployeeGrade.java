@@ -35,10 +35,10 @@ public class EmployeeGrade {
 		super();
 	}
 
-	public EmployeeGrade(User user, Patient patient, int grade, Date date) {
+	public EmployeeGrade(User employee, Patient patient, int grade, Date date) {
 		super();
 		this.id=UUID.randomUUID();
-		this.employee = user;
+		this.employee = employee;
 		this.patient = patient;
 		this.grade = grade;
 		this.date = date;

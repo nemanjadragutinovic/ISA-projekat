@@ -15,4 +15,7 @@ public interface PharmacyGradeRepository extends JpaRepository<PharmacyGrade, UU
 	@Query(value = "SELECT AVG(p.grade) FROM PharmacyGrade p WHERE p.pharmacy.id = ?1")
 	double getAvgGradeForPharmacy(UUID pharmacyId);
 
+	@Query(value = "SELECT p FROM PharmacyGrade p WHERE p.patient.id = ?1 AND p.pharmacy.id = ?2 ")
+	PharmacyGrade findByPatientAndPharmacy(UUID patientId, UUID pharmacyId);
+	
 }

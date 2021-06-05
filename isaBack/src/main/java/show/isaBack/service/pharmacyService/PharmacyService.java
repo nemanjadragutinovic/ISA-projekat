@@ -50,6 +50,7 @@ import show.isaBack.repository.userRepository.PatientRepository;
 import show.isaBack.service.loyalityService.LoyalityProgramService;
 
 import show.isaBack.serviceInterfaces.IAppointmentService;
+import show.isaBack.serviceInterfaces.ILoyaltyService;
 import show.isaBack.serviceInterfaces.IPharmacyGradeService;
 import show.isaBack.serviceInterfaces.IPharmacyService;
 import show.isaBack.serviceInterfaces.IUserInterface;
@@ -93,6 +94,9 @@ public class PharmacyService implements IPharmacyService{
 	private EReceiptRepository eReceiptRepository;
 	
 	@Autowired
+	private ILoyaltyService loyaltyService;
+	
+	@Autowired
 	private EmailService emailService;
 	
 
@@ -114,7 +118,105 @@ public class PharmacyService implements IPharmacyService{
 		return pharmacyDTOList;
 	}
 	
+	/////////////////////////////////
 	
+	@Override
+	public List<UnspecifiedDTO<PharmacyDTO>> getAllPharmaciesSortByNameAscending() {
+		 	
+		List<Pharmacy> pharmacies = pharmacyRepository.getAllPharmaciesSortByNameAscending();
+		
+		List<UnspecifiedDTO<PharmacyDTO>> pharmacyDTOList = new ArrayList<UnspecifiedDTO<PharmacyDTO>>();
+				
+		for (Pharmacy currentPharmacy : pharmacies) 
+		{	
+			double pharmacyGrade= pharmacyGradeService.getAvgGradeForPharmacy(currentPharmacy.getId());
+			PharmacyDTO pharmacyDTO= new PharmacyDTO(currentPharmacy,pharmacyGrade);	
+			pharmacyDTOList.add(new UnspecifiedDTO<PharmacyDTO>(currentPharmacy.getId(),pharmacyDTO));
+		}
+		
+		return pharmacyDTOList;
+	}
+	
+	@Override
+	public List<UnspecifiedDTO<PharmacyDTO>> getAllPharmaciesSortByNameDescending() {
+		 	
+		List<Pharmacy> pharmacies = pharmacyRepository.getAllPharmaciesSortByNameDescending();
+		
+		List<UnspecifiedDTO<PharmacyDTO>> pharmacyDTOList = new ArrayList<UnspecifiedDTO<PharmacyDTO>>();
+				
+		for (Pharmacy currentPharmacy : pharmacies) 
+		{	
+			double pharmacyGrade= pharmacyGradeService.getAvgGradeForPharmacy(currentPharmacy.getId());
+			PharmacyDTO pharmacyDTO= new PharmacyDTO(currentPharmacy,pharmacyGrade);	
+			pharmacyDTOList.add(new UnspecifiedDTO<PharmacyDTO>(currentPharmacy.getId(),pharmacyDTO));
+		}
+		
+		return pharmacyDTOList;
+	}
+	
+	
+	
+	@Override
+	public List<UnspecifiedDTO<PharmacyDTO>> getAllPharmaciesSortByCityAscending() {
+		 	
+		List<Pharmacy> pharmacies = pharmacyRepository.getAllPharmaciesSortByCityAscending();
+		
+		List<UnspecifiedDTO<PharmacyDTO>> pharmacyDTOList = new ArrayList<UnspecifiedDTO<PharmacyDTO>>();
+				
+		for (Pharmacy currentPharmacy : pharmacies) 
+		{	
+			double pharmacyGrade= pharmacyGradeService.getAvgGradeForPharmacy(currentPharmacy.getId());
+			PharmacyDTO pharmacyDTO= new PharmacyDTO(currentPharmacy,pharmacyGrade);	
+			pharmacyDTOList.add(new UnspecifiedDTO<PharmacyDTO>(currentPharmacy.getId(),pharmacyDTO));
+		}
+		
+		return pharmacyDTOList;
+	}
+	
+	@Override
+	public List<UnspecifiedDTO<PharmacyDTO>> getAllPharmaciesSortByCityDescending() {
+		 	
+		List<Pharmacy> pharmacies = pharmacyRepository.getAllPharmaciesSortByCityDescending();
+		
+		List<UnspecifiedDTO<PharmacyDTO>> pharmacyDTOList = new ArrayList<UnspecifiedDTO<PharmacyDTO>>();
+				
+		for (Pharmacy currentPharmacy : pharmacies) 
+		{	
+			double pharmacyGrade= pharmacyGradeService.getAvgGradeForPharmacy(currentPharmacy.getId());
+			PharmacyDTO pharmacyDTO= new PharmacyDTO(currentPharmacy,pharmacyGrade);	
+			pharmacyDTOList.add(new UnspecifiedDTO<PharmacyDTO>(currentPharmacy.getId(),pharmacyDTO));
+		}
+		
+		return pharmacyDTOList;
+	}
+	
+	
+	@Override
+	public List<UnspecifiedDTO<PharmacyDTO>> getAllPharmaciesSortByGradeAscending() {
+		 	
+		List<UnspecifiedDTO<PharmacyDTO>>pharmacies= new ArrayList<UnspecifiedDTO<PharmacyDTO>>();
+		pharmacies= getAllPharmacies();
+		
+		Collections.sort(pharmacies, (pharmacy1, pharmacy2) -> Double.compare(pharmacy1.EntityDTO.getGrade(), pharmacy2.EntityDTO.getGrade()));
+		
+		return pharmacies;
+		
+	}
+	
+	@Override
+	public List<UnspecifiedDTO<PharmacyDTO>> getAllPharmaciesSortByGradeDescending() {
+		 	
+		List<UnspecifiedDTO<PharmacyDTO>>pharmacies= new ArrayList<UnspecifiedDTO<PharmacyDTO>>();
+		pharmacies= getAllPharmacies();
+		
+		Collections.sort(pharmacies, (pharmacy1, pharmacy2) -> Double.compare(pharmacy1.EntityDTO.getGrade(), pharmacy2.EntityDTO.getGrade()));
+		Collections.reverse(pharmacies);
+		
+		return pharmacies;
+	}
+	
+	
+	//////////////////////////////////
 	
 	@Override
 	public List<UnspecifiedDTO<PharmacyDTO>> getAllPatientSubscribedPharmacies() {
@@ -203,8 +305,10 @@ public class PharmacyService implements IPharmacyService{
 		
 		pharmacies= appointmentService.findAllPharmaciesForAppointmentTypeAndForDateRange(startDate, endDate);
 		
+		UUID patientId=userService.getLoggedUserId();
 		
 		for (Pharmacy pharmacy : pharmacies) {
+			pharmacy.setConsultationPrice(loyaltyService.getDiscountPriceForConsultationAppointmentForPatient(patientId,pharmacy.getConsultationPrice()));
 			pharmaciesDTO.add(convertPharmacyToPharmacyWithGradeAndPriceDTO(pharmacy));
 		}
 		

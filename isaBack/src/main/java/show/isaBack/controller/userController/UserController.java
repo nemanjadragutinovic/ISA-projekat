@@ -12,8 +12,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -33,7 +31,6 @@ import show.isaBack.DTO.userDTO.PhAdminDTO;
 import show.isaBack.DTO.userDTO.PharmacistForAppointmentPharmacyGadeDTO;
 import show.isaBack.DTO.userDTO.UserChangeInfoDTO;
 import show.isaBack.DTO.userDTO.UserDTO;
-import show.isaBack.model.drugs.Allergen;
 import show.isaBack.security.TokenUtils;
 import show.isaBack.service.userService.UserService;
 import show.isaBack.unspecifiedDTO.UnspecifiedDTO;
@@ -57,17 +54,6 @@ public class UserController {
 	@GetMapping("/patient")
 	@PreAuthorize("hasRole('ROLE_PATIENT')")
 	public ResponseEntity<UnspecifiedDTO<PatientDTO>> getLogedPatient(HttpServletRequest request) {
-		
-		/*Authentication currentUser = SecurityContextHolder.getContext().getAuthentication();
-		System.out.println(currentUser.getName() + "trenutni user je");
-		String token = tokenUtils.getToken(request);
-		System.out.println(token);		
-		
-		if (token == null || token.equals("") ) {
-			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR); 
-        }
-		
-		String username  = tokenUtils.getUsernameFromToken(token);*/
 		
 		String authortity = tokenUtils.getAuthHeaderFromHeader(request);
 		System.out.println( "authority je " + authortity );
@@ -341,6 +327,7 @@ public class UserController {
 	@CrossOrigin
 	@PreAuthorize("hasRole('ROLE_PATIENT')")
 	public ResponseEntity<?> subscribeToPharmacy(@RequestParam UUID pharmacyId ) {
+
 		System.out.println("usao");
 	  
 		try {
@@ -357,6 +344,7 @@ public class UserController {
 	@CrossOrigin
 	@PreAuthorize("hasRole('ROLE_PATIENT')")
 	public ResponseEntity<?> unsubscribeToPharmacy(@RequestParam UUID pharmacyId ) {
+
 		System.out.println("usao22");
 		try {
 			userService.unsubscribeFromPharmacy(pharmacyId);
@@ -378,7 +366,7 @@ public class UserController {
 	}
 	
 	@GetMapping("/phIdForAdmin")
-	@PreAuthorize("hasRole('PHARMACYADMIN')") 
+	@PreAuthorize("hasRole('ROLE_PHARMACYADMIN')") 
 	public ResponseEntity<UUID> getPharmacyIdForPharmacyAdmin() {
 		
 		try {
@@ -391,4 +379,21 @@ public class UserController {
 			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR); 
 		}
 	}
+	
+	
+	@GetMapping("/refreshPatientPenalty") 
+	@CrossOrigin
+	@PreAuthorize("hasRole('ROLE_PATIENT')")
+	public ResponseEntity<?> refreshPatientPenalty() {
+		System.out.println("penalii");
+		try {
+			userService.refreshPatientPenalty();
+			return new ResponseEntity<>(HttpStatus.NO_CONTENT);  
+		} catch (Exception e) {
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR); 
+		}
+	}
+	
+	
+	
 }

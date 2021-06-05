@@ -3,8 +3,12 @@ import Axios from "axios";
 import Header from './Header';
 import PharmacyLogoPicture from "../Images/pharmacyLogo.jpg" ;
 import GetAuthorisation from "../Funciton/GetAuthorisation";
+import UnsuccessfulAlert from "../Components/Alerts/UnsuccessfulAlert";
+import SuccessfulAlert from "../Components/Alerts/SuccessfulAlert";
+import FirstGradeModal from "../Components/Modal/FirstGradeModal";
 import CreateComplaintModal from "../Components/CreateComplaintModal";
 import ModalDialog from './ModalDialog';
+
 const API_URL="http://localhost:8080";
 
 class Pharmacies extends Component {
@@ -27,11 +31,26 @@ class Pharmacies extends Component {
         pharmacyName:"",
         patientEmail:"",
         showComplaintModal:false,
-        openModal:false
+        openModal:false,
         
       
 		
+        selectedPharmacy : [],
+        pharmacyId : "",
+        pharmacyGrade : 0,
+        pharmacyName : "",
+        showGradeModal: false,
+        showFirstGrade : false,
+        showModifyGrade : false,
+        maxGrade : 5,
 
+
+        hiddenSuccessfulAlert : true,
+        SuccessfulHeader : "",
+        SuccessfulMessage : "",
+        hiddenUnsuccessfulAlert: true,
+        UnsuccessfulHeader: "",
+        UnsuccessfulMessage: "",
 
   };
 
@@ -97,6 +116,19 @@ class Pharmacies extends Component {
   
          
 	}
+
+
+  hasRole = (requestRole) => {
+    let currentRoles = JSON.parse(localStorage.getItem("keyRole"));
+
+    if (currentRoles === null) return false;
+
+
+    for (let currentRole of currentRoles) {
+      if (currentRole === requestRole) return true;
+    }
+    return false;
+  };
 
 
    handleSearchForm = () => {    
@@ -220,6 +252,13 @@ class Pharmacies extends Component {
 
 		
 	};
+
+
+  handleCloseSuccessfulAlert = () => {
+		this.setState({ hiddenSuccessfulAlert: true });
+  }
+
+
 
   handleSubscribe = (pharmacy) => {
 		console.log(pharmacy);
@@ -363,13 +402,316 @@ class Pharmacies extends Component {
 			openModal: false,
             
 		});
+
 	};
 
 
+	handleCloseUnsuccessfulAlert = () => {
+		this.setState({ hiddenUnsuccessfulAlert: true });
+	};
 
-   
+  handleGetGradeClick = (pharmacy) => {
+    console.log(pharmacy);
+
+
+    
+	
+			Axios.get(API_URL + "/grade/pharmacy/" + pharmacy.Id , {
+				validateStatus: () => true,
+				headers: { Authorization: GetAuthorisation() },
+			})
+				.then((res) => {
+					if (res.status === 401) {
+						this.props.history.push('/login');
+					} else if(res.status === 404){
+	
+	
+						console.log("Nema ocenu");
+	
+						let entityDTO = {
+							showGradeModal : true,
+								showFirstGrade : true,	
+								pharmacyId  : pharmacy.Id,
+								pharmacyGrade  : pharmacy.EntityDTO.grade,
+								pharmacyName  : pharmacy.EntityDTO.name,
+							
+						};
+	
+	
+						this.setState({ showGradeModal : true,
+								showFirstGrade : true,	
+								pharmacyId  : pharmacy.Id,
+								pharmacyGrade  : pharmacy.EntityDTO.grade,
+								pharmacyName  : pharmacy.EntityDTO.name,
+							});
+	
+							console.log(pharmacy.Id);
+							console.log(entityDTO);
+	
+					}else {
+						
+						console.log(res.data);
+
+						this.setState({ showGradeModal : true,
+							showModifyGrade : true,	
+							pharmacyId : pharmacy.Id,
+							pharmacyGrade : res.data.grade,
+							pharmacyName : pharmacy.EntityDTO.name
+							});
+	
+							console.log(res.data.grade);
+							console.log(res.data);
+						
+					}
+				})
+				.catch((err) => {
+					console.log(err);
+				});
+
+    
+
+
+  };
 
  
+  setFirstGrade = (grade) => {
+		
+    console.log("sou")
+    
+
+    let entityDTO = {
+      pharmacyId : this.state.pharmacyId  ,
+      grade: grade,
+    };
+
+    console.log(entityDTO);
+
+    Axios.post(API_URL + "/grade/pharmacy/createGrade",entityDTO , {
+      validateStatus: () => true,
+      headers: { Authorization: GetAuthorisation() },
+    })
+      .then((res) => {
+        if (res.status === 401) {
+          this.props.history.push('/login');
+        } else if(res.status === 404){
+          console.log(res)
+          this.setState({ hiddenUnsuccessfulAlert: false, UnsuccessfulHeader : "Bad request", UnsuccessfulMessage : res.data,
+           showGradeModal :false,
+           showFirstGrade : false,
+          showModifyGrade : false});
+
+        }else if(res.status === 500){
+          this.setState({ hiddenUnsuccessfulAlert: false, UnsuccessfulHeader : "Error", UnsuccessfulMessage : "internal server error! ",
+           showGradeModal :false,
+           showFirstGrade : false,
+           showModifyGrade : false  });
+
+        }else {
+            
+          this.setState({ hiddenSuccessfulAlert:  false, successfulHeader:   "Successful", successfulMessage:  "You successful created grade for pharmacy! ",
+           showGradeModal :false,
+           showFirstGrade : false,
+           showModifyGrade : false   });
+
+          this.componentDidMount();
+          
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+
+
+
+
+
+  };
+
+  setModifyGrade = (grade) => {
+    
+    console.log("sou")
+	
+    let entityDTO = {
+      pharmacyId : this.state.pharmacyId  ,
+      grade: grade,
+    };
+
+    console.log(entityDTO);
+
+
+    Axios.post(API_URL + "/grade/pharmacy/updateGrade",entityDTO , {
+      validateStatus: () => true,
+      headers: { Authorization: GetAuthorisation() },
+    })
+      .then((res) => {
+        if (res.status === 401) {
+          this.props.history.push('/login');
+        } else if(res.status === 404){
+          this.setState({ hiddenUnsuccessfulAlert: false, UnsuccessfulHeader : "Bad request", UnsuccessfulMessage : res.data,
+           showGradeModal :false,
+           showFirstGrade : false,
+          showModifyGrade : false});
+
+        }else if(res.status === 500){
+          this.setState({ hiddenUnsuccessfulAlert: false, UnsuccessfulHeader : "Error", UnsuccessfulMessage : "internal server error! ",
+           showGradeModal :false,
+           showFirstGrade : false,
+           showModifyGrade : false  });
+
+        }else {
+            
+          this.setState({ hiddenSuccessfulAlert:  false, successfulHeader:   "Successful", successfulMessage:  "You successful update grade for pharmacy! ",
+           showGradeModal :false,
+           showFirstGrade : false,
+           showModifyGrade : false   });
+          
+           this.componentDidMount();
+          
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+
+
+
+
+  };
+
+
+    closeFirstGradeModal = () => {
+    
+      this.setState({ showFirstGrade : false,
+        showModifyGrade : false,
+        showGradeModal : false});
+
+    }
+
+
+    
+    handleSortByNameAscending = () => {
+    
+      
+
+      Axios.get(API_URL + "/pharmacy/allPharmacies/sortByNameAscending", {
+        validateStatus: () => true,
+        headers: { Authorization: GetAuthorisation() },
+      })
+        .then((res) => {
+          this.setState({ allPharmacies: res.data });
+          console.log(res.data );
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+
+
+
+    }
+
+    handleSortByNameDescending = () => {
+    
+      
+
+      Axios.get(API_URL + "/pharmacy/allPharmacies/sortByNameDescending", {
+        validateStatus: () => true,
+        headers: { Authorization: GetAuthorisation() },
+      })
+        .then((res) => {
+          this.setState({ allPharmacies: res.data });
+          console.log(res.data );
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+
+
+
+    }
+
+
+
+    handleSortByCityAscending = () => {
+    
+      
+
+      Axios.get(API_URL + "/pharmacy/allPharmacies/sortByCityAscending", {
+        validateStatus: () => true,
+        headers: { Authorization: GetAuthorisation() },
+      })
+        .then((res) => {
+          this.setState({ allPharmacies: res.data });
+          console.log(res.data );
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+
+
+
+    }
+
+    handleSortByCityDescending = () => {
+    
+      
+
+      Axios.get(API_URL + "/pharmacy/allPharmacies/sortByCityDescending", {
+        validateStatus: () => true,
+        headers: { Authorization: GetAuthorisation() },
+      })
+        .then((res) => {
+          this.setState({ allPharmacies: res.data });
+          console.log(res.data );
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+
+
+
+    }
+
+
+    handleSortByGradeAscending = () => {
+    
+      
+
+      Axios.get(API_URL + "/pharmacy/allPharmacies/sortByGradeAscending", {
+        validateStatus: () => true,
+        headers: { Authorization: GetAuthorisation() },
+      })
+        .then((res) => {
+          this.setState({ allPharmacies: res.data });
+          console.log(res.data );
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+
+
+
+    }
+
+    handleSortByGradeDescending = () => {
+    
+      
+
+      Axios.get(API_URL + "/pharmacy/allPharmacies/sortByGradeDescending", {
+        validateStatus: () => true,
+        headers: { Authorization: GetAuthorisation() },
+      })
+        .then((res) => {
+          this.setState({ allPharmacies: res.data });
+          console.log(res.data );
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+
+
+
+    }
+
 
 
 	render() {
@@ -383,10 +725,23 @@ class Pharmacies extends Component {
       
       <div id="allPharmacies">
 
-            
+            <div className="container" style={{ marginTop: "1em" }} >
+                <SuccessfulAlert
+                      hidden={this.state.hiddenSuccessfulAlert}
+                      header={this.state.successfulHeader}
+                      message={this.state.successfulMessage}
+                      handleCloseAlert={this.handleCloseSuccessfulAlert}    
+                  />
+                  <UnsuccessfulAlert
+                      hidden={this.state.hiddenUnsuccessfulAlert}
+                      header={this.state.UnsuccessfulHeader}
+                      message={this.state.UnsuccessfulMessage}
+                      handleCloseAlert={this.handleCloseUnsuccessfulAlert}
+                  />
+            </div>
            
            
-            <div style={{ width: "70%", marginTop: "5em", marginLeft: "auto",marginRight: "auto" }} width="100%">
+            <div className="container"  style={{ width: "70%", marginTop: "5em", marginLeft: "auto",marginRight: "auto" }} width="100%">
 
             <div className="inline" >
             <button type="button" class="btn btn-primary btn-lg mr-3" onClick={this.handleSearchForm}>
@@ -460,9 +815,40 @@ class Pharmacies extends Component {
           <div className="text-danger" style={{ display: this.state.inputError, fontSize: "17px"}}>
 										Enter something in field!
 					</div>
-          </div>
+        
+        
+        
+        
+             <div style={{  marginTop: "1em" }} hidden={!this.hasRole("ROLE_PATIENT")}>
 
+                <div className="dropdown">
+                  <button className="btn btn-primary btn-lg dropdown-toggle"
+                    type="button" id="dropdownMenu2"
+                    data-toggle="dropdown" 
+                    aria-haspopup="true" 
+                    aria-expanded="false">
+                    Sort
+                  </button>
+                  <div className="dropdown-menu" aria-labelledby="dropdownMenu2">
+                      <button className="dropdown-item" type="button" onClick={this.handleSortByNameAscending} >Sort by name ascending</button>
+                      <button className="dropdown-item" type="button" onClick={this.handleSortByNameDescending} >Sort by name descending</button>
+                      <button className="dropdown-item" type="button" onClick={this.handleSortByCityAscending} >Sort by city ascending</button>
+                      <button className="dropdown-item" type="button" onClick={this.handleSortByCityDescending} >Sort by city descending</button>
+                      <button className="dropdown-item" type="button" onClick={this.handleSortByGradeAscending} >Sort by grade ascending</button>
+                      <button className="dropdown-item" type="button" onClick={this.handleSortByGradeDescending} >Sort by grade descending</button>
+                  </div>
+                </div>
 
+            </div>    
+                
+        
+        
+        
+        
+        
+        </div>
+
+         
 
 
         <div className="container">
@@ -528,7 +914,7 @@ class Pharmacies extends Component {
 
 
                                     <td className="align-middle"hidden={!this.isSubscribed(pharmacy) || !this.hasRole("ROLE_PATIENT")}>
-                                          <div style={{ marginLeft: "35%" }}>
+                                          <div style={{ marginLeft: "25%" }}>
                                             <button
                                               style={{ background: "#24a0ed" }}
                                               
@@ -543,8 +929,26 @@ class Pharmacies extends Component {
                                     </td>
 
 
+                                    <td className="align-middle">
+
+                                      <div style={{ marginLeft: "5%"  }}>
+                                          <button
+                                            type="button"
+                                            style={{ background: "#24a0ed" }}
+                                            onClick={() => this.handleGetGradeClick(pharmacy)}
+                                            hidden={!this.hasRole("ROLE_PATIENT")}
+                                            className="btn btn-outline-secondary "
+                                          >
+                                            Pharmacy grade
+                                          </button>
+                                      </div>	                                     
+
+
+                                    </td>
+
+
                                     <td className="align-middle" hidden={!this.hasRole("ROLE_PATIENT")}>
-                                          <div style={{ marginLeft: "45%" }}>
+                                          <div >
                                             <button
                                               style={{ background: "#781616" }}
                                               
@@ -558,6 +962,7 @@ class Pharmacies extends Component {
                                       
                                     </td>
                                      
+                                      
 
 
                                     </tr>
@@ -567,6 +972,32 @@ class Pharmacies extends Component {
                     </table>
                 </div>
         </div>
+
+
+
+
+
+              <FirstGradeModal 
+
+                show={this.state.showGradeModal}
+                showFirstGrade={this.state.showFirstGrade}
+                showModifyGrade={this.state.showModifyGrade}
+                employeeGrade={this.state.pharmacyGrade }							
+                maxGrade={this.state.maxGrade}
+                employeeName={this.state.pharmacyName  }
+                employeeSurname={""}
+                header={"Grade"}
+                buttonFirstGradeName={"Grade"}
+                buttonModifyGradeName={" Update grade"}								
+                setFirstGrade={this.setFirstGrade}	
+                setModifyGrade={this.setModifyGrade}
+                onCloseModal={this.closeFirstGradeModal}						
+
+              />
+
+
+
+
 
         <CreateComplaintModal
 					buttonName="Send complaint"
@@ -586,10 +1017,12 @@ class Pharmacies extends Component {
 				header="Error"
 				text="You can't make a complaint on this pharmacy because you never interacted with it."
 			/>
+
         </React.Fragment>
         
 		);
 	}
+
 }
 
 export default Pharmacies;

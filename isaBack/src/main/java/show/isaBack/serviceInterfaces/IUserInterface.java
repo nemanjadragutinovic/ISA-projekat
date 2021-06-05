@@ -53,8 +53,12 @@ public interface IUserInterface extends IService<UserDTO, UnspecifiedDTO<UserDTO
 	
 	public double getAvgGradeForEmployee(UUID employeeID);
 	public UUID getPhIdForPhAdmin();
+
+	public void refreshPatientPenalty();
+
 	public boolean isPatientSubscribedToPharmacy(UUID pharmacyId);
 	public boolean subscribeToPharmacy(UUID pharmacyId);
 	public boolean unsubscribeFromPharmacy(UUID pharmacyId);
+
 	
 }

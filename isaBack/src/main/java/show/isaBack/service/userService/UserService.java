@@ -601,6 +601,26 @@ public class UserService implements IUserInterface{
 
 	
 	
+	@Override
+	public void refreshPatientPenalty() {
+		UUID patientID=getLoggedUserId();
+		Patient patient = patientRepository.getOne(patientID);
+				
+		int currentDate=new Date().getDate();
+			
+		if(currentDate==1 && !patient.isRefreshPenalties()) {
+			patient.setPenalty(0);
+			patient.setRefreshPenalties(true);
+			
+			
+		}
+			   
+		if(currentDate!=1 ) {
+			patient.setRefreshPenalties(false);
+			
+		}
+		
+	}
 	
 	
 

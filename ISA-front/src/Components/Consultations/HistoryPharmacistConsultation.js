@@ -191,6 +191,17 @@ class HistoryPharmacistConsultation extends Component {
 											Make complaint
 										</button>
 										</div>
+
+										<div style={{ marginLeft: "55%",marginTop: "1em"  }}>
+										<button
+											type="button"
+											onClick={() => this.props.handleGetGradeClick(appointment.EntityDTO.employee)}
+											
+											className="btn btn-outline-secondary"
+										>
+											Pharmacist grade
+										</button>
+										</div>	
 										
 									</td>
 
