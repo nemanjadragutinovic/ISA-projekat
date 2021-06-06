@@ -622,6 +622,20 @@ public class UserService implements IUserInterface{
 		
 	}
 	
+	@Override
+	public void refreshPatientsPenalties() {
+		
+		List<Patient> patients= patientRepository.findAll();
+		
+		for (Patient patient : patients) {
+			patient.setPenalty(0);
+			patientRepository.save(patient);
+		}
+		
+	}
+	
+	
+	
 	
 
 }

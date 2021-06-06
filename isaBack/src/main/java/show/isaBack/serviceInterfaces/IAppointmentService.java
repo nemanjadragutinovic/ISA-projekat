@@ -59,5 +59,6 @@ public interface IAppointmentService extends IService<DermatologistAppointmentDT
 	public List<UnspecifiedDTO<DermatologistAppointmentDTO>> findAllHistoryPatientsConsultationsSortByDurationDescending(AppointmentType appointmentType) throws Exception;
 	
 	public boolean canPatientReportPharmacy(UUID pharmacyId);
+	public void refreshPatientsAppointments();
 	
 }

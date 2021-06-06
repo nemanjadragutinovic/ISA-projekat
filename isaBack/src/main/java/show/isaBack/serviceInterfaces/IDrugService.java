@@ -48,4 +48,6 @@ public interface IDrugService extends IService<DrugInstanceDTO, UnspecifiedDTO<D
 	public List<UnspecifiedDTO<DrugWithEreceiptsDTO>> findAllPatientsPRoccesedDrugsFromEreceipts();
 	public void refreshPatientDrugsReservations();
 	
+
+	
 }

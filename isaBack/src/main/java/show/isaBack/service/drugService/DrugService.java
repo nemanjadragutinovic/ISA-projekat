@@ -712,30 +712,30 @@ public class DrugService implements IDrugService{
 	@Override
 	public void refreshPatientDrugsReservations() {
 		
-		UUID patientId = userService.getLoggedUserId();
-		Patient patient=patientRepository.getOne(patientId);
 		
-		List<DrugReservation> activeDrugReservationListThatHaveExpired= drugReservationRepository.getAllPatientsActiveDrugReservationThatHaveExpired(patientId);
+		
+;		List<DrugReservation> activeDrugReservationListThatHaveExpired= drugReservationRepository.getAllActiveDrugReservationThatHaveExpired();
 	
 		if(activeDrugReservationListThatHaveExpired.size()!=0) {
 			
 			for (DrugReservation drugReservation : activeDrugReservationListThatHaveExpired) {
 				drugReservation.setDrugReservationStatus(DrugReservationStatus.EXPIRED);
-				
+				Patient patient=patientRepository.findById(drugReservation.getPatient().getId()).get();
+				patient.addPenalties(1);
+				patientRepository.save(patient);
 			}
 			
-			patient.addPenalties(activeDrugReservationListThatHaveExpired.size());
-			
-			
+				
 			drugReservationRepository.saveAll(activeDrugReservationListThatHaveExpired);
-			patientRepository.save(patient);
-			
+					
 			addCountOfDrugInPhamracy(activeDrugReservationListThatHaveExpired);
 			
 		}
 		
 		
 	}
+	
+	
 	
 	public void addCountOfDrugInPhamracy(List<DrugReservation> activeDrugReservationListThatHaveExpired) {
 		
@@ -750,6 +750,11 @@ public class DrugService implements IDrugService{
 			
 		}
 	}
+	
+	
+	
+	
+	
 	
 	
 	@Override

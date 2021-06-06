@@ -82,4 +82,8 @@ public interface AppointmentRepository extends PagingAndSortingRepository<Appoin
 			+ " AND a.appointmentStatus = ?4 AND a.pharmacy.id = ?1 AND a.appointmentType = ?3")
 	List<Appointment> findAllFinishedAppointmentsByPatiendAndPharmacy(UUID pharmacyId,UUID patientId,AppointmentType appointmentType,AppointmentStatus appointmentStatus);
 	
+	
+	@Query(value = "SELECT a FROM Appointment a WHERE  a.appointmentStatus = 'SCHEDULED' AND a.endDateTime < CURRENT_TIMESTAMP")
+	List<Appointment> findAllScheduledAppointmentThatHaveExpired();
+	
 }

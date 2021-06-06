@@ -788,6 +788,24 @@ public class AppointmentService implements IAppointmentService{
 	}
 	
 	
+	
+	@Override
+	public void refreshPatientsAppointments(){
+		
+		List<Appointment> appointmentsScheduledThasHaveExpired= appointmentRepository.findAllScheduledAppointmentThatHaveExpired();
+		
+		for (Appointment appointment : appointmentsScheduledThasHaveExpired) {
+				appointment.setAppointmentStatus(AppointmentStatus.EXPIRED);		
+				Patient patient = patientRepository.findById(appointment.getPatient().getId()).get();
+				patient.addPenalties(1);
+				patientRepository.save(patient);
+				appointmentRepository.save(appointment);
+				
+		}
+		
+	}
+	
+	
 	@Override
 	public List<UnspecifiedDTO<AuthorityDTO>> findAll() {
 		// TODO Auto-generated method stub

@@ -15,10 +15,10 @@ class HomePage extends React.Component {
 
   componentDidMount(){
 
-        if(this.hasSpecificRole("ROLE_PATIENT")){
-          this.checkPatientPenalty();
-          this.checkPatientsDrugsReservations()
-        }
+        //if(this.hasSpecificRole("ROLE_PATIENT")){
+         // this.checkPatientPenalty();
+          //this.checkPatientsDrugsReservations()
+      //  }
 
 
   }
