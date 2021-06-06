@@ -61,6 +61,7 @@ import show.isaBack.repository.drugsRepository.DrugFeedbackRepository;
 import show.isaBack.repository.drugsRepository.EReceiptRepository;
 import show.isaBack.repository.pharmacyRepository.PharmacyRepository;
 import show.isaBack.repository.userRepository.PatientRepository;
+import show.isaBack.repository.userRepository.UserRepository;
 import show.isaBack.repository.drugsRepository.DrugInPharmacyRepository;
 import show.isaBack.repository.drugsRepository.DrugReservationRepository;
 import show.isaBack.repository.drugsRepository.EReceiptItemsRepository;
@@ -95,7 +96,7 @@ public class DrugService implements IDrugService{
 
 	
 	@Autowired
-	private UserService userService;
+	private IUserInterface userService;
 
 	
 	@Autowired
@@ -705,6 +706,49 @@ public class DrugService implements IDrugService{
 		
 		return drugsWithEreceipts;
 		
+	}
+	
+	
+	@Override
+	public void refreshPatientDrugsReservations() {
+		
+		UUID patientId = userService.getLoggedUserId();
+		Patient patient=patientRepository.getOne(patientId);
+		
+		List<DrugReservation> activeDrugReservationListThatHaveExpired= drugReservationRepository.getAllPatientsActiveDrugReservationThatHaveExpired(patientId);
+	
+		if(activeDrugReservationListThatHaveExpired.size()!=0) {
+			
+			for (DrugReservation drugReservation : activeDrugReservationListThatHaveExpired) {
+				drugReservation.setDrugReservationStatus(DrugReservationStatus.EXPIRED);
+				
+			}
+			
+			patient.addPenalties(activeDrugReservationListThatHaveExpired.size());
+			
+			
+			drugReservationRepository.saveAll(activeDrugReservationListThatHaveExpired);
+			patientRepository.save(patient);
+			
+			addCountOfDrugInPhamracy(activeDrugReservationListThatHaveExpired);
+			
+		}
+		
+		
+	}
+	
+	public void addCountOfDrugInPhamracy(List<DrugReservation> activeDrugReservationListThatHaveExpired) {
+		
+		for (DrugReservation drugReservation : activeDrugReservationListThatHaveExpired) {
+			
+			DrugInPharmacy drugInPharmacy= drugInPharmacyRepository.getDrugInPharmacy(drugReservation.getDrugInstance().getId(), drugReservation.getPharmacy().getId());
+			System.out.println(drugInPharmacy);
+			drugInPharmacy.addCount(drugReservation.getCount());
+			System.out.println("pred kraj");
+			drugInPharmacyRepository.save(drugInPharmacy);
+			System.out.println("kraj");
+			
+		}
 	}
 	
 	

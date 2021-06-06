@@ -139,7 +139,7 @@ public class Patient extends User {
 		}
 	}
 	
-public void addSubscribeToPharmacy(Pharmacy pharmacy) {
+	public void addSubscribeToPharmacy(Pharmacy pharmacy) {
 		
 		if(pharmacies == null)
 			this.pharmacies = new ArrayList<Pharmacy>();
@@ -178,4 +178,8 @@ public void addSubscribeToPharmacy(Pharmacy pharmacy) {
 		return pharmacies;
 	}
 
+	public void addPenalties(int count) {
+		this.penalty += count;
+	}
+	
 }
