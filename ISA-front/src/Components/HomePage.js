@@ -17,6 +17,7 @@ class HomePage extends React.Component {
 
         if(this.hasSpecificRole("ROLE_PATIENT")){
           this.checkPatientPenalty();
+          this.checkPatientsDrugsReservations()
         }
 
 
@@ -26,6 +27,25 @@ class HomePage extends React.Component {
     checkPatientPenalty(){
 
       Axios.get(API_URL + "/users/refreshPatientPenalty", {
+        validateStatus: () => true,
+        headers: { Authorization: GetAuthorisation() },
+      })
+        .then((res) => {
+          if (res.status === 401) {
+            this.props.history.push('/login');
+          }
+           
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+
+    }
+
+
+    checkPatientsDrugsReservations(){
+
+      Axios.get(API_URL + "/drug/refreshPatientDrugsReservations", {
         validateStatus: () => true,
         headers: { Authorization: GetAuthorisation() },
       })

@@ -46,5 +46,6 @@ public interface IDrugService extends IService<DrugInstanceDTO, UnspecifiedDTO<D
 	public List<UnspecifiedDTO<EreceiptDTO>> findAllPatientsEreceiptsSortByDateDescendingWithStatus(EReceiptStatus searchStatus);
 	public List<UnspecifiedDTO<EreceiptDTO>> findAllPatientsEreceiptsWithStatus(EReceiptStatus searchStatus);
 	public List<UnspecifiedDTO<DrugWithEreceiptsDTO>> findAllPatientsPRoccesedDrugsFromEreceipts();
+	public void refreshPatientDrugsReservations();
 	
 }

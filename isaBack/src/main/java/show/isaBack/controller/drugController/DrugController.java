@@ -231,6 +231,21 @@ public class DrugController {
 	}
 	
 	
+	@GetMapping("/refreshPatientDrugsReservations") 
+	@CrossOrigin
+	@PreAuthorize("hasRole('ROLE_PATIENT')")
+	public ResponseEntity<?> refreshPatientDrugsReservations() {
+		System.out.println("drugRezervacije");
+		try {
+			drugService.refreshPatientDrugsReservations();
+			return new ResponseEntity<>(HttpStatus.NO_CONTENT);  
+		} catch (Exception e) {
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR); 
+		}
+	}
+	
+	
+	
 	@GetMapping("/all-patients-eReceipts")
 	@PreAuthorize("hasRole('ROLE_PATIENT')")
 	public ResponseEntity<List<UnspecifiedDTO<EreceiptDTO>>> findAllPatientsEreceipts() {
