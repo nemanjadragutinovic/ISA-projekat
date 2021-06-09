@@ -7,7 +7,7 @@ Projekat radili:
 3. Savo Tomić
 4. Nemanja Dragutinović
 
-Test podaci se nalaze [ovde](https://github.com/nemanjadragutinovic/ISA-projekat/blob/main/isaBack/src/main/resources/data.sql)
+Test podaci se nalaze [ovde](https://github.com/nemanjadragutinovic/ISA-projekat/blob/main/isaBack/src/main/resources/data.sql), password je 123 za sve uloge
 
 U projektu je korišćena postgre baza podataka koju je potrebno namestiti kao na slici ispod:
 ![baza](https://user-images.githubusercontent.com/57371939/120791868-056e8600-c535-11eb-95a4-0233cd1936b3.png)
