@@ -28,6 +28,7 @@ public interface IUserInterface extends IService<UserDTO, UnspecifiedDTO<UserDTO
 	public UUID getLoggedUserId(); 
 
 	public UUID createDermatologist(UserRegistrationDTO entityDTO);
+	public UUID createPharmacist(UserRegistrationDTO entityDTO);
 	public UUID createAdmin(UserRegistrationDTO entityDTO);
 	public UUID createPharmacyAdmin(UserRegistrationDTO entityDTO, UUID pharmacyId);
 	
@@ -60,6 +61,10 @@ public interface IUserInterface extends IService<UserDTO, UnspecifiedDTO<UserDTO
 	public boolean subscribeToPharmacy(UUID pharmacyId);
 	public boolean unsubscribeFromPharmacy(UUID pharmacyId);
 	public void refreshPatientsPenalties();
+	public void updateDermathologist(UserChangeInfoDTO dermathologistInfoChangeDTO);
+	public UserDTO getLoggedDermathologist();
+	public UserDTO getLoggedPharmacist();
+	public void updatePharmacist(UserChangeInfoDTO pharmacistInfoChangeDTO);
 
 	
 }

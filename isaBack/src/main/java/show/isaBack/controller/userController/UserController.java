@@ -116,7 +116,48 @@ public class UserController {
 		}			
 	}
 	
-
+	@GetMapping("/dermathologist")
+	@PreAuthorize("hasRole('ROLE_DERMATHOLOGIST')")
+	public ResponseEntity<UserDTO> getLoggedDermathologist(HttpServletRequest request) {
+		
+	
+		System.out.println("usao u dermatologa");
+		
+		try {
+			UserDTO derm = userService.getLoggedDermathologist();
+			
+			
+			System.out.println(derm.getName());
+			return new ResponseEntity<>(derm,HttpStatus.OK); 
+		} catch (EntityNotFoundException e) {
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND); 
+		} 
+		catch (Exception e) {
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR); 
+		}			
+	}
+	
+	@GetMapping("/pharmacist")
+	@PreAuthorize("hasRole('ROLE_PHARMACIST')")
+	public ResponseEntity<UserDTO> getLoggedPharmacist(HttpServletRequest request) {
+		
+	
+		System.out.println("usao u farmaceuta");
+		
+		try {
+			UserDTO phar = userService.getLoggedPharmacist();
+			
+			
+			System.out.println(phar.getName());
+			return new ResponseEntity<>(phar,HttpStatus.OK); 
+		} catch (EntityNotFoundException e) {
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND); 
+		} 
+		catch (Exception e) {
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR); 
+		}			
+	}
+	
 	@PutMapping("/phadmin") 
 	@CrossOrigin
 	@PreAuthorize("hasRole('ROLE_PHARMACYADMIN')")
@@ -164,6 +205,35 @@ public class UserController {
 		}
 	}
 	
+	@PutMapping("/dermathologist") 
+	@CrossOrigin
+	@PreAuthorize("hasRole('ROLE_DERMATHOLOGIST')")
+	public ResponseEntity<?> updateDermathologistInformation(@RequestBody UserChangeInfoDTO userInfoChangeDTO ) {
+	  
+		try {
+			userService.updateDermathologist(userInfoChangeDTO);
+			return new ResponseEntity<>(HttpStatus.NO_CONTENT); 
+		} catch (IllegalArgumentException e) {
+			return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+		} catch (Exception e) {
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR); 
+		}
+	}
+	
+	@PutMapping("/pharmacist") 
+	@CrossOrigin
+	@PreAuthorize("hasRole('ROLE_PHARMACIST')")
+	public ResponseEntity<?> updatePharmacistInformation(@RequestBody UserChangeInfoDTO userInfoChangeDTO ) {
+	  
+		try {
+			userService.updatePharmacist(userInfoChangeDTO);
+			return new ResponseEntity<>(HttpStatus.NO_CONTENT); 
+		} catch (IllegalArgumentException e) {
+			return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+		} catch (Exception e) {
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR); 
+		}
+	}
 	
 	@PostMapping("/changePassword")
 	@PreAuthorize("hasRole('ROLE_PATIENT') or hasRole('ROLE_SUPPLIER')")

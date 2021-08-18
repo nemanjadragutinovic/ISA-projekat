@@ -143,7 +143,13 @@ class Header extends React.Component{
                 <ReactBootStrap.Nav.Link href="#deets" hidden={!this.hasRole("ROLE_SUPPLIER")} >Offers</ReactBootStrap.Nav.Link>
                 </Link>
 
-                
+                <Link to="/dermCalendar">
+                <ReactBootStrap.Nav.Link href="#deets" hidden={!this.hasRole("ROLE_DERMATHOLOGIST")} >Calendar</ReactBootStrap.Nav.Link>
+                </Link>
+
+                <Link to="/pharmCalendar">
+                <ReactBootStrap.Nav.Link href="#deets" hidden={!this.hasRole("ROLE_PHARMACIST")} >Calendar</ReactBootStrap.Nav.Link>
+                </Link>
 
                   
                 <ReactBootStrap.NavDropdown alignRight title="User" id="collasible-nav-dropdown">
@@ -155,7 +161,7 @@ class Header extends React.Component{
                    
                     
 
-                    <ReactBootStrap.NavDropdown.Item href="/userProfile" hidden={(!this.hasRole("ROLE_PATIENT") && !this.hasRole("ROLE_SUPPLIER") && !this.hasRole("ROLE_PHARMACYADMIN"))}>My profile</ReactBootStrap.NavDropdown.Item>
+                    <ReactBootStrap.NavDropdown.Item href="/userProfile" hidden={(!this.hasRole("ROLE_DERMATHOLOGIST") && !this.hasRole("ROLE_PHARMACIST") && !this.hasRole("ROLE_PATIENT") && !this.hasRole("ROLE_SUPPLIER") && !this.hasRole("ROLE_PHARMACYADMIN"))}>My profile</ReactBootStrap.NavDropdown.Item>
 
                     <ReactBootStrap.NavDropdown.Divider hidden={!this.IsLogedIn()} />
                     <ReactBootStrap.NavDropdown.Item onClick={this.handleLogout} href="/login" hidden={!this.IsLogedIn("*")}>Log out</ReactBootStrap.NavDropdown.Item>

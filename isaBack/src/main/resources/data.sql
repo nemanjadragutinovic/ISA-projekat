@@ -78,6 +78,7 @@ insert into user_authority (user_id, authority_id) values ('44444d47-1a8a-4ae1-b
 insert into user_authority (user_id, authority_id) values ('17a2c302-b584-11eb-8529-0242ac130003', 'ea16767c-2c1f-49fb-ac98-c7739c0036e8');
 insert into user_authority (user_id, authority_id) values ('54444d47-1a8a-4ae1-b109-af7b56e94788', 'ef9a3723-a72e-44ec-83ac-9d748fd0240f');
 insert into user_authority (user_id, authority_id) values ('64444d47-1a8a-4ae1-b109-af7b56e94788', 'ef9a3723-a72e-44ec-83ac-9d748fd0240f');
+insert into user_authority (user_id, authority_id) values ('80c86094-ba60-11eb-8529-0242ac130003', 'a1e3bac1-6093-4705-b835-eed75c3e5f21');
 
 --SUPLIER
 insert into supplier(id) values ('54444d47-1a8a-4ae1-b109-af7b56e94788');
