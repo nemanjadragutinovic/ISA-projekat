@@ -40,6 +40,7 @@ import show.isaBack.DTO.userDTO.UserRegistrationDTO;
 import show.isaBack.emailService.EmailService;
 import show.isaBack.model.Authority;
 import show.isaBack.model.Dermatologist;
+import show.isaBack.model.Pharmacist;
 import show.isaBack.model.Patient;
 import show.isaBack.model.Pharmacy;
 import show.isaBack.model.PharmacyAdmin;
@@ -50,6 +51,7 @@ import show.isaBack.model.drugs.Allergen;
 import show.isaBack.repository.drugsRepository.AllergenRepository;
 import show.isaBack.repository.pharmacyRepository.PharmacyRepository;
 import show.isaBack.repository.userRepository.DermatologistRepository;
+import show.isaBack.repository.userRepository.PharmacistRepository;
 import show.isaBack.repository.userRepository.PatientRepository;
 
 import show.isaBack.repository.userRepository.PharmacyAdminRepository;
@@ -98,6 +100,12 @@ public class UserService implements IUserInterface{
 	
 	@Autowired
 	private SupplierRepository supplierRepository;
+	
+	@Autowired
+	private DermatologistRepository dermathologistRepository;
+	
+	@Autowired
+	private PharmacistRepository pharmacistRepository;
 	
 	@Autowired
 	private ILoyaltyService loyaltyProgramService;
@@ -225,6 +233,34 @@ public class UserService implements IUserInterface{
 		return true;
 	}
 	
+	public UserDTO getLoggedDermathologist() {	
+		
+		
+		
+		UUID suppID = getLoggedUserId();
+		Dermatologist derm= dermathologistRepository.getOne(suppID);
+		
+		if(derm==null) {
+			System.out.println("dermatolog je null");
+		}
+
+		return new UserDTO(derm.getEmail(), derm.getName(), derm.getSurname(), derm.getAddress(), derm.getPhoneNumber(), false, null);
+	}
+	
+	public UserDTO getLoggedPharmacist() {	
+		
+		
+		
+		UUID suppID = getLoggedUserId();
+		Pharmacist phar= pharmacistRepository.getOne(suppID);
+		
+		if(phar==null) {
+			System.out.println("farmaceut je null");
+		}
+
+		return new UserDTO(phar.getEmail(), phar.getName(), phar.getSurname(), phar.getAddress(), phar.getPhoneNumber(), false, null);
+	}
+	
 	@Override
 	public UUID createDermatologist(UserRegistrationDTO entityDTO) {
 		Dermatologist dermatologist = CreateDermathologistFromDTO(entityDTO);
@@ -245,6 +281,25 @@ public class UserService implements IUserInterface{
 		return new Dermatologist(patientDTO.getEmail(), passwordEncoder.encode(patientDTO.getPassword()), patientDTO.getName(), patientDTO.getSurname(), patientDTO.getAddress(), patientDTO.getPhoneNumber(),pharmacies);
 	}
 	
+	@Override
+	public UUID createPharmacist(UserRegistrationDTO entityDTO) {
+		Pharmacist pharmacist = CreatePharmacistFromDTO(entityDTO);
+		pharmacist.setPassword(passwordEncoder.encode(pharmacist.getId().toString()));
+		pharmacist.setFirstLogin(true);
+		UnspecifiedDTO<AuthorityDTO> authority = authorityService.findByName("ROLE_PHARMACIST");
+		List<Authority> authorities = new ArrayList<Authority>();
+		authorities.add(new Authority(authority.Id,authority.EntityDTO.getName()));
+		pharmacist.setUserAuthorities(authorities);
+		
+		userRepository.save(pharmacist);
+		
+		return pharmacist.getId();
+	}
+	
+	private Pharmacist CreatePharmacistFromDTO(UserRegistrationDTO patientDTO) {
+		Pharmacy pharmacy= new Pharmacy();
+		return new Pharmacist(patientDTO.getEmail(), passwordEncoder.encode(patientDTO.getPassword()), patientDTO.getName(), patientDTO.getSurname(), patientDTO.getAddress(), patientDTO.getPhoneNumber(),pharmacy);
+	}
 
 	@Override
 	public UUID createAdmin(UserRegistrationDTO entityDTO) {
@@ -327,7 +382,33 @@ public class UserService implements IUserInterface{
 		supplierRepository.save(supp);
 	}
 	
+	@Override
+	public void updateDermathologist(UserChangeInfoDTO dermathologistInfoChangeDTO) {
+		
+		UUID logedId= getLoggedUserId();
+		Dermatologist derm = dermathologistRepository.getOne(logedId);		
+		
+		derm.setName(dermathologistInfoChangeDTO.getName());
+		derm.setSurname(dermathologistInfoChangeDTO.getSurname());
+		derm.setAddress(dermathologistInfoChangeDTO.getAddress());
+		derm.setPhoneNumber(dermathologistInfoChangeDTO.getPhoneNumber());
+			
+		dermathologistRepository.save(derm);
+	}
 
+	@Override
+	public void updatePharmacist(UserChangeInfoDTO pharmacistInfoChangeDTO) {
+		
+		UUID logedId= getLoggedUserId();
+		Pharmacist phar = pharmacistRepository.getOne(logedId);		
+		
+		phar.setName(pharmacistInfoChangeDTO.getName());
+		phar.setSurname(pharmacistInfoChangeDTO.getSurname());
+		phar.setAddress(pharmacistInfoChangeDTO.getAddress());
+		phar.setPhoneNumber(pharmacistInfoChangeDTO.getPhoneNumber());
+			
+		pharmacistRepository.save(phar);
+	}
 	
 	@Override
 	public void changePassword(ChangePasswordDTO changePasswordDTO) {
