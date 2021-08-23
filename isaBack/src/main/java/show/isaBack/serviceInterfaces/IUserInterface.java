@@ -29,6 +29,7 @@ public interface IUserInterface extends IService<UserDTO, UnspecifiedDTO<UserDTO
 	public UUID getLoggedUserId(); 
 
 	public UUID createDermatologist(UserRegistrationDTO entityDTO);
+	public UUID createPharmacist(UserRegistrationDTO entityDTO);
 	public UUID createAdmin(UserRegistrationDTO entityDTO);
 	public UUID createPharmacyAdmin(UserRegistrationDTO entityDTO, UUID pharmacyId);
 	
@@ -50,12 +51,25 @@ public interface IUserInterface extends IService<UserDTO, UnspecifiedDTO<UserDTO
 	public List<UnspecifiedDTO<PharmacistForAppointmentPharmacyGadeDTO>> fidnAllFreePharmacistsForSelectedPharmacyInDataRangeSortByGradeDescending(Date startDate, UUID pharmacyId);
 	public UserDTO getLoggedSupplier();
 	public void updateSupplier(UserChangeInfoDTO supplierInfoChangeDTO);
-	public boolean subscribeToPharmacy(String pharmacyIdDTO) ;
-	public boolean unsubscribeFromPharmacy(String pharmacyId) ;
+	
 	
 	public double getAvgGradeForEmployee(UUID employeeID);
 	public UUID getPhIdForPhAdmin();
+
 	public List<UnspecifiedDTO<EmployeeGradeDTO>> findDermatologistsinPharmacy(UUID pharmacyId);
 	public List<UnspecifiedDTO<EmployeeGradeDTO>> findPharmacistsinPharmacy(UUID phId);
+
+	public void refreshPatientPenalty();
+
+	public boolean isPatientSubscribedToPharmacy(UUID pharmacyId);
+	public boolean subscribeToPharmacy(UUID pharmacyId);
+	public boolean unsubscribeFromPharmacy(UUID pharmacyId);
+	public void refreshPatientsPenalties();
+	public void updateDermathologist(UserChangeInfoDTO dermathologistInfoChangeDTO);
+	public UserDTO getLoggedDermathologist();
+	public UserDTO getLoggedPharmacist();
+	public void updatePharmacist(UserChangeInfoDTO pharmacistInfoChangeDTO);
+
+
 	
 }

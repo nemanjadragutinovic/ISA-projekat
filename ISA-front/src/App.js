@@ -28,8 +28,14 @@ import AdminPharmacyComplains from './Components/AdminPharmacyComplains';
 import QrCode from './Components/QrCode';
 import FutureDrugsReservationsForPatients from "./Pages/FutureDrugsReservationsForPatient"
 import qrPharmacieswithDrugs from './Components/qrPharmacieswithDrugs';
+<<<<<<< HEAD
 
 import dermatologistsForPhAdmin from './Components/Pharmacies/DermatologistsForPhAdmin';
+=======
+import PatientsEReceipts from "./Pages/PatientsEReceipts"
+import PatientsProccessedDrugsEReceipts from "./Pages/PatientsProccessedDrugsEReceipts"
+import activateAccount from './Components/activateAccount';
+>>>>>>> beec351405377aad5bda44a650aaef3e73b44461
 
 
 
@@ -39,7 +45,7 @@ import {
   Link,
   Switch
 } from "react-router-dom";
-import PharmacyForAdmin from './Components/Pharmacies/PharmacyForPhAdmin';
+
 
 
 function App() {
@@ -75,10 +81,14 @@ function App() {
         <Route  to ="/patientsSubscribedPharmacies" path ="/patientsSubscribedPharmacies"  component={PatientsSubscribedPharmacies}/>
         <Route  to ="/staffComplains" path ="/staffComplains"  component={AdminStaffComplains}/>
         <Route  to ="/pharmacyComplains" path ="/pharmacyComplains"  component={AdminPharmacyComplains}/>
-        <Route  to ="/adminpharmacy" path ="/adminpharmacy"  component={PharmacyForAdmin}/>
         <Route  to ="/qrCode" path ="/qrCode"  component={QrCode}/>
         <Route  to ="/futureDrugsReservationForPatient" path ="/futureDrugsReservationForPatient"  component={FutureDrugsReservationsForPatients}/>     
         <Route to="/qrPharmacieswithDrugs/:id" path ="/qrPharmacieswithDrugs/:id"  component={qrPharmacieswithDrugs}/>
+        <Route  to ="/allPatients-E-receipts" path ="/allPatients-E-receipts"  component={PatientsEReceipts}/>
+        <Route  to ="/allPatients-processed-drugs-e-receipts" path ="/allPatients-processed-drugs-e-receipts"  component={PatientsProccessedDrugsEReceipts}/>
+
+        <Route to="/activeAccount/:id" path ="/activeAccount/:id"  component={activateAccount}/>
+
 
         <Route to="/dermatologistsForPhAdmin" path ="/dermatologistsForPhAdmin"  component={dermatologistsForPhAdmin}/>
 

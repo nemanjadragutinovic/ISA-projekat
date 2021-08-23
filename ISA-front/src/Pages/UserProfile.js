@@ -153,7 +153,7 @@ class UserProfile extends Component {
 
 
 	componentDidMount() {
-		if (!this.hasRole("ROLE_PATIENT") && !this.hasRole("ROLE_SUPPLIER") && !this.hasRole("ROLE_PHARMACYADMIN")) {
+		if (!this.hasRole("ROLE_PHARMACIST") && !this.hasRole("ROLE_DERMATHOLOGIST") && !this.hasRole("ROLE_PATIENT") && !this.hasRole("ROLE_SUPPLIER") && !this.hasRole("ROLE_PHARMACYADMIN")) {
 			this.setState({ redirect: true });
 			this.props.history.push('/login')
 		
@@ -272,7 +272,7 @@ class UserProfile extends Component {
 							
 						});
 						
-						
+			
 
 						
 
@@ -281,6 +281,47 @@ class UserProfile extends Component {
 				.catch((err) => {
 					console.log(err);
 					console.log("erradminapoteke");
+
+				});
+
+
+			}else if(this.hasRole("ROLE_DERMATHOLOGIST")){
+
+				console.log("usao u dermatologa");
+
+				Axios.get(API_URL + "/users/dermathologist", { validateStatus: () => true, headers: { Authorization : GetAuthorisation()} })
+				.then((res) => {
+					console.log(res.data);
+					if (res.status === 401) {                       
+                        this.setState({ redirect: true });				
+					} else {
+
+						//console.log(res.data.EntityDTO.email)
+						//console.log(res.data.EntityDTO.name)
+						
+					
+                        this.setState({
+							
+							email: res.data.email,
+							name: res.data.name,
+							surname: res.data.surname,
+							address: res.data.address,
+							phoneNumber: res.data.phoneNumber,
+							
+							
+
+							
+						});
+						
+						
+
+						
+
+					}
+				})
+				.catch((err) => {
+					console.log(err);
+					console.log("ovaj eror je u pitanju");
 
 				});
 
@@ -418,7 +459,42 @@ class UserProfile extends Component {
 					
 					});
 
-			}
+			}else if(this.hasRole("ROLE_DERMATHOLOGIST")){
+
+				Axios.put(API_URL + "/users/dermathologist", userDTO, {
+					validateStatus: () => true,
+					headers: { Authorization: GetAuthorisation() },
+				})
+					.then((res) => {
+						if (res.status === 400) {
+							this.setState({ hiddenUnsuccessfulAlert: false,
+								UnsuccessfulHeader: "Bad request", 
+								UnsuccessfulMessage: "Invalid argument." });
+	
+						} else if (res.status === 500) {
+	
+							this.setState({ hiddenUnsuccessfulAlert: false, 
+								UnsuccessfulHeader: "Internal server error", 
+								UnsuccessfulMessage: "Server error." });
+	
+						} else if (res.status === 204) {
+							console.log("Success");
+							this.setState({
+								hiddenSuccessfulAlert: false,
+								successfulHeader: "Success",
+								successfulMessage: "You updated your information.",
+								hiddenEditInfo: true,
+							});
+						}
+					})
+					.catch((err) => {
+						console.log(err);
+						this.setState({ hiddenUnsuccessfulAlert: false,
+							UnsuccessfulHeader: "Error", 
+							UnsuccessfulMessage: "Something was wrong" });
+					
+					});
+                }
 
 		}
 
@@ -704,7 +780,7 @@ class UserProfile extends Component {
 
 		<button type="button" class="btn btn-outline-primary "
          onClick={() => this.handleClickAnotherInformation()}
-		 hidden={this.state.hideButtonForAnotherInformation}
+		 hidden={this.state.hideButtonForAnotherInformation} hidden={this.hasRole("ROLE_DERMATHOLOGIST")}
          style={{  marginTop: "2em", marginLeft: "auto",marginRight: "auto" }}
          >
 
@@ -859,7 +935,7 @@ class UserProfile extends Component {
 											</div>
 											
 
-											<div className="mr-2" hidden={!this.state.hiddenEditInfo} hidden={this.hasRole("ROLE_SUPPLIER")} >
+											<div className="mr-2" hidden={!this.state.hiddenEditInfo} hidden={this.hasRole("ROLE_DERMATHOLOGIST")} >
 												<button
 													onClick={this.handleAllergenModal}
 													className="btn btn-outline-primary btn-xl"
@@ -879,6 +955,25 @@ class UserProfile extends Component {
 
 					</form>
 					
+
+
+
+					<form>
+				<div class="form-group row">
+					<label for="staticEmail" class="col-sm-2 col-form-label">Email</label>
+					<div class="col-sm-10">
+					<input type="text" readonly class="form-control-plaintext" id="staticEmail" value="email@example.com"/>
+					</div>
+				</div>
+				<div class="form-group row">
+					<label for="inputPassword" class="col-sm-2 col-form-label">Password</label>
+					<div class="col-sm-10">
+					<input type="password" class="form-control" id="inputPassword" placeholder="Password"/>
+					</div>
+				</div>
+			</form>
+
+
 
                     </div>
 

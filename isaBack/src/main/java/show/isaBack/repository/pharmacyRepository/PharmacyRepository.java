@@ -28,4 +28,8 @@ public interface PharmacyRepository extends JpaRepository<Pharmacy, UUID>{
 	@Query(value = "SELECT p from Pharmacy p ORDER BY p.address.city DESC")
 	List<Pharmacy> getAllPharmaciesSortByCityDescending();
 	
+
 }
+
+
+

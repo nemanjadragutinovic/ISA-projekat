@@ -104,7 +104,7 @@ public class ComplaintService implements IComplaintService{
 		
 		Pharmacy pharmacy = pharmacyRepository.findById(entityDTO.getPharmacyId()).get();
 		
-		ComplaintPharmacy complaintPharmacy = new ComplaintPharmacy(pharmacy,patient,entityDTO.getText(),entityDTO.getName());
+		ComplaintPharmacy complaintPharmacy = new ComplaintPharmacy(pharmacy,patient,entityDTO.getText());
 		
 		complaintPharmacyRepository.save(complaintPharmacy);
 		
@@ -161,8 +161,9 @@ public class ComplaintService implements IComplaintService{
 		for (ComplaintPharmacy pharmacy : complaintPharmacyRepository.findAll()) {
 			
 			if(pharmacy.isActive()==true) {
+				
 			
-				ComplaintPharmacyDTO pharmacyDTO = new ComplaintPharmacyDTO(pharmacy.getId(),pharmacy.getDate(),pharmacy.getText(),pharmacy.getName(),pharmacy.getReply(),pharmacy.getPatient().getEmail());
+				ComplaintPharmacyDTO pharmacyDTO = new ComplaintPharmacyDTO(pharmacy.getId(),pharmacy.getDate(),pharmacy.getText(),pharmacy.getReply(),pharmacy.getPatient().getEmail());
 				pharmacyList.add(new UnspecifiedDTO<ComplaintPharmacyDTO>(pharmacy.getId(),pharmacyDTO));
 				}
 			}

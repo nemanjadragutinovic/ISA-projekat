@@ -8,10 +8,13 @@ import show.isaBack.DTO.drugDTO.DrugDTO;
 import show.isaBack.DTO.drugDTO.DrugInstanceDTO;
 import show.isaBack.DTO.drugDTO.DrugReservationDTO;
 import show.isaBack.DTO.drugDTO.DrugReservationResponseDTO;
+import show.isaBack.DTO.drugDTO.DrugWithEreceiptsDTO;
 import show.isaBack.DTO.drugDTO.DrugsWithGradesDTO;
+import show.isaBack.DTO.drugDTO.EreceiptDTO;
 import show.isaBack.DTO.drugDTO.IngredientDTO;
 import show.isaBack.DTO.drugDTO.ManufacturerDTO;
 import show.isaBack.DTO.pharmacyDTO.UnspecifiedPharmacyWithDrugAndPrice;
+import show.isaBack.model.drugs.EReceiptStatus;
 import show.isaBack.unspecifiedDTO.UnspecifiedDTO;
 
 
@@ -36,4 +39,15 @@ public interface IDrugService extends IService<DrugInstanceDTO, UnspecifiedDTO<D
 	public List<UnspecifiedDTO<DrugReservationResponseDTO>> findAllFuturePatientsDrugReservation();
 	public void cancelPatientDrugReservation(IdDTO drugIdObject);
 	public List<UnspecifiedDTO<DrugReservationResponseDTO>> findAllhistoryPatientsDrugReservation();
+	public List<UnspecifiedDTO<EreceiptDTO>> findAllPatientsEreceipts();
+	public List<UnspecifiedDTO<EreceiptDTO>> findAllPatientsEreceiptsSortByDateAscending();
+	public List<UnspecifiedDTO<EreceiptDTO>> findAllPatientsEreceiptsSortByDateDescending();
+	public List<UnspecifiedDTO<EreceiptDTO>> findAllPatientsEreceiptsSortByDateAscendingWithStatus(EReceiptStatus searchStatus);
+	public List<UnspecifiedDTO<EreceiptDTO>> findAllPatientsEreceiptsSortByDateDescendingWithStatus(EReceiptStatus searchStatus);
+	public List<UnspecifiedDTO<EreceiptDTO>> findAllPatientsEreceiptsWithStatus(EReceiptStatus searchStatus);
+	public List<UnspecifiedDTO<DrugWithEreceiptsDTO>> findAllPatientsPRoccesedDrugsFromEreceipts();
+	public void refreshPatientDrugsReservations();
+	
+
+	
 }

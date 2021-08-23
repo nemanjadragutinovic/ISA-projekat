@@ -9,8 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.orm.ObjectOptimisticLockingFailureException;
-import org.springframework.security.access.AuthorizationServiceException;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -22,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+
 import show.isaBack.DTO.AppointmentDTO.IdDTO;
 import show.isaBack.DTO.drugDTO.DrugDTO;
 import show.isaBack.DTO.drugDTO.DrugFormatIdDTO;
@@ -30,15 +30,17 @@ import show.isaBack.DTO.drugDTO.DrugKindIdDTO;
 import show.isaBack.DTO.drugDTO.DrugManufacturerDTO;
 import show.isaBack.DTO.drugDTO.DrugReservationDTO;
 import show.isaBack.DTO.drugDTO.DrugReservationResponseDTO;
+import show.isaBack.DTO.drugDTO.DrugWithEreceiptsDTO;
 import show.isaBack.DTO.drugDTO.DrugsWithGradesDTO;
+import show.isaBack.DTO.drugDTO.EreceiptDTO;
 import show.isaBack.DTO.drugDTO.IngredientDTO;
 import show.isaBack.DTO.drugDTO.ManufacturerDTO;
 import show.isaBack.DTO.drugDTO.ReplaceDrugIdDTO;
+import show.isaBack.model.drugs.EReceiptStatus;
 import show.isaBack.serviceInterfaces.IDrugFormatService;
 import show.isaBack.serviceInterfaces.IDrugKindIdService;
 import show.isaBack.serviceInterfaces.IDrugService;
 import show.isaBack.unspecifiedDTO.UnspecifiedDTO;
-
 
 
 @RestController
@@ -80,11 +82,11 @@ public class DrugController {
 		}
 	} */
 	
-	@PutMapping
+	@PutMapping("/add")
 	@CrossOrigin
-	@PreAuthorize("hasRole('SYSADMIN')")
+	@PreAuthorize("hasRole('ROLE_SYSADMIN')")
 	public ResponseEntity<UUID> addDrugInstance(@RequestBody DrugInstanceDTO drugInstanceDTO) {
-		
+		System.out.println("usao u kontroler1");
 		UUID drugInstanceId = drugService.create(drugInstanceDTO);
 		
 		return new ResponseEntity<>(drugInstanceId ,HttpStatus.CREATED);
@@ -94,7 +96,7 @@ public class DrugController {
 	
 	@PutMapping("/replacement") 
 	@CrossOrigin
-	@PreAuthorize("hasRole('SYSADMIN')")
+	@PreAuthorize("hasRole('ROLE_SYSADMIN')")
 	public ResponseEntity<UUID> addDrugReplacement(@RequestBody ReplaceDrugIdDTO replaceDrugIdDTO) {
 		
 		
@@ -111,7 +113,7 @@ public class DrugController {
 	
 	@PutMapping("/manufacturer") 
 	@CrossOrigin
-	@PreAuthorize("hasRole('SYSADMIN')")
+	@PreAuthorize("hasRole('ROLE_SYSADMIN')")
 	public ResponseEntity<UUID> addDrugManufacturer(@RequestBody DrugManufacturerDTO drugManufacturerDTO) {
 		
 		UUID drugInstanceId = drugService.addDrugManufacturer(drugManufacturerDTO.getDrug_id(), drugManufacturerDTO.getManufacturer_id());
@@ -121,7 +123,7 @@ public class DrugController {
 	
 	@PutMapping("/ingredient") 
 	@CrossOrigin
-	@PreAuthorize("hasRole('SYSADMIN')")
+	@PreAuthorize("hasRole('ROLE_SYSADMIN')")
 	public ResponseEntity<UUID> addDrugIngredient(@RequestBody IngredientDTO ingredientDTO) {
 		
 		UUID drugInstanceId = drugService.addDrugIngredients(ingredientDTO.getId(), ingredientDTO);
@@ -224,6 +226,101 @@ public class DrugController {
 		}	
 			
 		
+	}
+	
+	
+	@GetMapping("/refreshPatientDrugsReservations") 
+	@CrossOrigin
+	@PreAuthorize("hasRole('ROLE_PATIENT')")
+	public ResponseEntity<?> refreshPatientDrugsReservations() {
+		System.out.println("drugRezervacije");
+		try {
+			drugService.refreshPatientDrugsReservations();
+			return new ResponseEntity<>(HttpStatus.NO_CONTENT);  
+		} catch (Exception e) {
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR); 
+		}
+	}
+	
+	
+	
+	@GetMapping("/all-patients-eReceipts")
+	@PreAuthorize("hasRole('ROLE_PATIENT')")
+	public ResponseEntity<List<UnspecifiedDTO<EreceiptDTO>>> findAllPatientsEreceipts() {
+		
+		return new ResponseEntity<>(drugService.findAllPatientsEreceipts() ,HttpStatus.OK);
+	}
+	
+	@GetMapping("/all-patients-eReceipts/SortByDateAscending")
+	@PreAuthorize("hasRole('ROLE_PATIENT')")
+	public ResponseEntity<List<UnspecifiedDTO<EreceiptDTO>>> findAllPatientsEreceiptsSortByDateAscending() {
+		
+		return new ResponseEntity<>(drugService.findAllPatientsEreceiptsSortByDateAscending() ,HttpStatus.OK);
+	}
+	
+	
+	@GetMapping("/all-patients-eReceipts/SortByDateDescending")
+	@PreAuthorize("hasRole('ROLE_PATIENT')")
+	public ResponseEntity<List<UnspecifiedDTO<EreceiptDTO>>> findAllPatientsEreceiptsSortByDateDescending() {
+		
+		return new ResponseEntity<>(drugService.findAllPatientsEreceiptsSortByDateDescending() ,HttpStatus.OK);
+	}
+	
+	
+	@GetMapping("/all-patients-eReceipts/SortByDateAscending/search/{searchStatus}")
+	@PreAuthorize("hasRole('ROLE_PATIENT')")
+	public ResponseEntity<List<UnspecifiedDTO<EreceiptDTO>>> findAllPatientsEreceiptsSortByDateAscendingWithStatus(@PathVariable String searchStatus) {
+		
+		if(searchStatus.equals(EReceiptStatus.NEW.toString())){
+			
+			return new ResponseEntity<>(drugService.findAllPatientsEreceiptsSortByDateAscendingWithStatus(EReceiptStatus.NEW) ,HttpStatus.OK);     
+		}else if(searchStatus.equals(EReceiptStatus.REJECTED.toString())){
+			return new ResponseEntity<>(drugService.findAllPatientsEreceiptsSortByDateAscendingWithStatus(EReceiptStatus.REJECTED) ,HttpStatus.OK);   
+		}else {
+			return new ResponseEntity<>(drugService.findAllPatientsEreceiptsSortByDateAscendingWithStatus(EReceiptStatus.PROCESSED) ,HttpStatus.OK);
+		}
+		
+			
+	}
+	
+	@GetMapping("/all-patients-eReceipts/SortByDateDescending/search/{searchStatus}")
+	@PreAuthorize("hasRole('ROLE_PATIENT')")
+	public ResponseEntity<List<UnspecifiedDTO<EreceiptDTO>>> findAllPatientsEreceiptsSortByDateDescendingWithStatus(@PathVariable String searchStatus) {
+		
+		if(searchStatus.equals(EReceiptStatus.NEW.toString())){
+			
+			return new ResponseEntity<>(drugService.findAllPatientsEreceiptsSortByDateDescendingWithStatus(EReceiptStatus.NEW) ,HttpStatus.OK);     
+		}else if(searchStatus.equals(EReceiptStatus.REJECTED.toString())){
+			return new ResponseEntity<>(drugService.findAllPatientsEreceiptsSortByDateDescendingWithStatus(EReceiptStatus.REJECTED) ,HttpStatus.OK);   
+		}else {
+			return new ResponseEntity<>(drugService.findAllPatientsEreceiptsSortByDateDescendingWithStatus(EReceiptStatus.PROCESSED) ,HttpStatus.OK);
+		}
+		
+			
+	}
+	
+	@GetMapping("/all-patients-eReceipts/search/{searchStatus}")
+	@PreAuthorize("hasRole('ROLE_PATIENT')")
+	public ResponseEntity<List<UnspecifiedDTO<EreceiptDTO>>> findAllPatientsEreceiptsWithStatus(@PathVariable String searchStatus) {
+		
+		if(searchStatus.equals(EReceiptStatus.NEW.toString())){
+			
+			return new ResponseEntity<>(drugService.findAllPatientsEreceiptsWithStatus(EReceiptStatus.NEW) ,HttpStatus.OK);     
+		}else if(searchStatus.equals(EReceiptStatus.REJECTED.toString())){
+			return new ResponseEntity<>(drugService.findAllPatientsEreceiptsWithStatus(EReceiptStatus.REJECTED) ,HttpStatus.OK);   
+		}else {
+			return new ResponseEntity<>(drugService.findAllPatientsEreceiptsWithStatus(EReceiptStatus.PROCESSED) ,HttpStatus.OK);
+		}
+		
+			
+	}
+	
+	
+	@GetMapping("/patientsProccessedDrugs-eReceipts")
+	@PreAuthorize("hasRole('ROLE_PATIENT')")
+	public ResponseEntity<List<UnspecifiedDTO<DrugWithEreceiptsDTO>>> findAllPatientsPRoccesedDrugsFromEreceipts() {
+		
+		return new ResponseEntity<>(drugService.findAllPatientsPRoccesedDrugsFromEreceipts() ,HttpStatus.OK);
 	}
 	
 	

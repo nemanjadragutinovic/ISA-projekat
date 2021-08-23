@@ -26,6 +26,8 @@ public class Patient extends User {
 	
 	private int penalty;
 	
+	private boolean refreshPenalties;
+	
 	private int points;
 	
 	@ManyToMany(fetch = FetchType.LAZY)
@@ -46,12 +48,14 @@ public class Patient extends User {
 	}
 
 	public Patient(String email, String password, String name, String surname, String address, String phoneNumber) {
-		super(email, password, name, surname, address, phoneNumber, true);
+		super(email, password, name, surname, address, phoneNumber, false);
 		//OVO TREBA IZMENITI KADA SE NAMESTI AKTIVACIJA!!!!!!!!!!!!!!!!!!!!
 		
 		this.penalty = 0;
 		this.points = 0;
+		this.refreshPenalties=false;
 		this.allergens = new ArrayList<Allergen>();
+		
 		
 	}
 	
@@ -75,6 +79,16 @@ public class Patient extends User {
 	}
 	
 	
+	
+	
+	public boolean isRefreshPenalties() {
+		return refreshPenalties;
+	}
+
+	public void setRefreshPenalties(boolean refreshPenalties) {
+		this.refreshPenalties = refreshPenalties;
+	}
+
 	public void setPharmacies(List<Pharmacy> pharmacies) {
 		this.pharmacies = pharmacies;
 	}
@@ -125,7 +139,7 @@ public class Patient extends User {
 		}
 	}
 	
-public void addSubscribeToPharmacy(Pharmacy pharmacy) {
+	public void addSubscribeToPharmacy(Pharmacy pharmacy) {
 		
 		if(pharmacies == null)
 			this.pharmacies = new ArrayList<Pharmacy>();
@@ -164,4 +178,8 @@ public void addSubscribeToPharmacy(Pharmacy pharmacy) {
 		return pharmacies;
 	}
 
+	public void addPenalties(int count) {
+		this.penalty += count;
+	}
+	
 }

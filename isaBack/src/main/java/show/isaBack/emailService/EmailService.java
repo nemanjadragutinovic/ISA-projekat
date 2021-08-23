@@ -30,7 +30,7 @@ public class EmailService {
 	@Autowired
 	private JavaMailSender javaMailSender;
 	
-	private final String LOCAL_URL = "http://localhost:8081";
+	private final String LOCAL_URL = "http://localhost:3000";
 	
 	
 	
@@ -46,7 +46,7 @@ public class EmailService {
 		
 		System.out.println("usao 1");
 		
-		String url = LOCAL_URL + "/reg/activeAccountForPatient/" + patient.getId();
+		String url = LOCAL_URL + "/activeAccount/" + patient.getId();
 		
 		MimeMessage mimeMessage = javaMailSender.createMimeMessage();
 		MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, "utf-8");

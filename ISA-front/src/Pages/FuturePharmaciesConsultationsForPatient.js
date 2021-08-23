@@ -7,6 +7,10 @@ import UnsuccessfulAlert from "../Components/Alerts/UnsuccessfulAlert";
 import SuccessfulAlert from "../Components/Alerts/SuccessfulAlert";
 import {NavLink, Redirect } from "react-router-dom";
 import HistoryPharmacistConsultation from "../Components/Consultations/HistoryPharmacistConsultation"
+import FirstGradeModal from "../Components/Modal/FirstGradeModal";
+
+
+
 const API_URL="http://localhost:8080";
 
 class FuturePharmaciesConsultationsForPatient extends Component {
@@ -29,6 +33,16 @@ class FuturePharmaciesConsultationsForPatient extends Component {
         hideFutureConsultations : false,
         hideHistoryConsultations : true,
 
+
+		selectedEmployee : [],
+		employeeId : "",
+		employeeGrade : 0,
+		employeeName : "",
+		employeeSurname : "",
+		showGradeModal: false,
+		showFirstGrade : false,
+		showModifyGrade : false,
+		maxGrade : 5
 
     };
 
@@ -359,6 +373,180 @@ class FuturePharmaciesConsultationsForPatient extends Component {
         
     }
 
+	
+	handleGetGradeClick = (employee) => {
+		console.log(employee);
+
+
+
+
+		Axios.get(API_URL + "/grade/employee/" + employee.Id , {
+			validateStatus: () => true,
+			headers: { Authorization: GetAuthorisation() },
+		})
+			.then((res) => {
+				if (res.status === 401) {
+                    this.props.history.push('/login');
+				} else if(res.status === 404){
+
+
+					console.log("Nema ocenu");
+
+					let entityDTO = {
+						showGradeModal : true,
+							showFirstGrade : true,	
+						employeeId : employee.EntityDTO.Id,
+						employeeGrade : employee.EntityDTO.grade,
+						employeeName : employee.EntityDTO.name,
+						employeeSurname : employee.EntityDTO.surname
+					};
+
+
+					this.setState({ showGradeModal : true,
+							showFirstGrade : true,	
+						employeeId : employee.Id,
+						employeeGrade : employee.EntityDTO.grade,
+						employeeName : employee.EntityDTO.name,
+						employeeSurname : employee.EntityDTO.surname});
+
+						console.log(employee.Id);
+						console.log(entityDTO);
+
+				}else {
+						
+					this.setState({ showGradeModal : true,
+						showModifyGrade : true,	
+						employeeId : res.data.employee.id,
+						employeeGrade : res.data.grade,
+						employeeName : res.data.employee.name,
+						employeeSurname : res.data.employee.surname});
+
+						console.log(res.data.grade);
+						console.log(res.data);
+					
+				}
+			})
+			.catch((err) => {
+				console.log(err);
+			});
+
+
+	};
+
+
+	setFirstGrade = (grade) => {
+		
+		console.log("sou")
+
+		let entityDTO = {
+			employeeId: this.state.employeeId ,
+			grade: grade,
+		};
+
+		console.log(entityDTO);
+
+		Axios.post(API_URL + "/grade/employee/createGrade",entityDTO , {
+			validateStatus: () => true,
+			headers: { Authorization: GetAuthorisation() },
+		})
+			.then((res) => {
+				if (res.status === 401) {
+                    this.props.history.push('/login');
+				} else if(res.status === 404){
+					this.setState({ hiddenUnsuccessfulAlert: false, UnsuccessfulHeader : "Bad request", UnsuccessfulMessage : res.data,
+					 showGradeModal :false,
+					 showFirstGrade : false,
+					showModifyGrade : false});
+
+				}else if(res.status === 500){
+					this.setState({ hiddenUnsuccessfulAlert: false, UnsuccessfulHeader : "Error", UnsuccessfulMessage : "internal server error! ",
+					 showGradeModal :false,
+					 showFirstGrade : false,
+					 showModifyGrade : false  });
+
+				}else {
+						
+					this.setState({ hiddenSuccessfulAlert:  false, successfulHeader:   "Successful", successfulMessage:  "You successful created grade for employee! ",
+					 showGradeModal :false,
+					 showFirstGrade : false,
+					 showModifyGrade : false   });
+
+					this.moveToHistoryConsultation();
+					
+				}
+			})
+			.catch((err) => {
+				console.log(err);
+			});
+
+
+
+
+
+
+	};
+
+	setModifyGrade = (grade) => {
+		
+		console.log("sou")
+
+		let entityDTO = {
+			employeeId: this.state.employeeId ,
+			grade: grade,
+		};
+
+		console.log(entityDTO);
+
+
+		Axios.post(API_URL + "/grade/employee/updateGrade",entityDTO , {
+			validateStatus: () => true,
+			headers: { Authorization: GetAuthorisation() },
+		})
+			.then((res) => {
+				if (res.status === 401) {
+                    this.props.history.push('/login');
+				} else if(res.status === 404){
+					this.setState({ hiddenUnsuccessfulAlert: false, UnsuccessfulHeader : "Bad request", UnsuccessfulMessage : res.data,
+					 showGradeModal :false,
+					 showFirstGrade : false,
+					showModifyGrade : false});
+
+				}else if(res.status === 500){
+					this.setState({ hiddenUnsuccessfulAlert: false, UnsuccessfulHeader : "Error", UnsuccessfulMessage : "internal server error! ",
+					 showGradeModal :false,
+					 showFirstGrade : false,
+					 showModifyGrade : false  });
+
+				}else {
+						
+					this.setState({ hiddenSuccessfulAlert:  false, successfulHeader:   "Successful", successfulMessage:  "You successful update grade for employee! ",
+					 showGradeModal :false,
+					 showFirstGrade : false,
+					 showModifyGrade : false   });
+
+					this.moveToHistoryConsultation();
+					
+				}
+			})
+			.catch((err) => {
+				console.log(err);
+			});
+
+
+
+	};
+	
+	closeFirstGradeModal = () => {
+
+		this.setState({ showFirstGrade : false,
+			showModifyGrade : false,
+			showGradeModal : false});
+
+	}
+
+
+
+
 
 
 
@@ -511,11 +699,28 @@ class FuturePharmaciesConsultationsForPatient extends Component {
 			handleSortByDateAscending={this.handleSortByDateAscending}
 			handleSortByDateDescending={this.handleSortByDateDescending}
 			handleSortByDurationAppointmentAscending={this.handleSortByDurationAppointmentAscending}
-			handleSortByDurationAppointmentDescending={this.handleSortByDurationAppointmentDescending}								
+			handleSortByDurationAppointmentDescending={this.handleSortByDurationAppointmentDescending}
+			handleGetGradeClick={this.handleGetGradeClick}								
 		/>
 
 								
+		<FirstGradeModal 
 
+				show={this.state.showGradeModal}
+				showFirstGrade={this.state.showFirstGrade}
+				showModifyGrade={this.state.showModifyGrade}
+				employeeGrade={this.state.employeeGrade}							
+				maxGrade={this.state.maxGrade}
+				employeeName={this.state.employeeName }
+				employeeSurname={this.state.employeeSurname }
+				header={"Grade"}
+				buttonFirstGradeName={"Grade"}
+				buttonModifyGradeName={" Update grade"}								
+				setFirstGrade={this.setFirstGrade}	
+				setModifyGrade={this.setModifyGrade}
+				onCloseModal={this.closeFirstGradeModal}						
+
+		/>											
 
 
         </React.Fragment>

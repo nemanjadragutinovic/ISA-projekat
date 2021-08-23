@@ -42,7 +42,7 @@ public class RegistrationController {
 	
 	@GetMapping("/activeAccountForPatient/{patientId}")
 	public ResponseEntity<?> activatePatient(@PathVariable UUID patientId) {
-		
+		System.out.println("ide gas ide plin" + patientId.toString());
 		try {
 			if (userService.activatingAccountForPatient(patientId))
 				return new ResponseEntity<>(HttpStatus.OK);
@@ -55,7 +55,7 @@ public class RegistrationController {
 	
 	@PostMapping("/signup-dermathologist")
 	@PreAuthorize("hasRole('SYSADMIN')")
-	public ResponseEntity<UUID> addDermathologist(@RequestBody UserRegistrationDTO userRequest, UriComponentsBuilder ucBuilder) {
+	public ResponseEntity<UUID> addDermathologist(@RequestBody UserRegistrationDTO userRequest) {
 
 		
 		if (this.userService.existByEmail(userRequest.getEmail())) {
@@ -69,7 +69,7 @@ public class RegistrationController {
 	
 	@PostMapping("/signup-sysadmin")
 	@PreAuthorize("hasRole('SYSADMIN')")
-	public ResponseEntity<UUID> addSysadmin(@RequestBody UserRegistrationDTO userRequest, UriComponentsBuilder ucBuilder) {
+	public ResponseEntity<UUID> addSysadmin(@RequestBody UserRegistrationDTO userRequest) {
 
 		if (this.userService.existByEmail(userRequest.getEmail())) {
 			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -82,7 +82,7 @@ public class RegistrationController {
 	
 	@PostMapping("/signup-pharmacyadmin/{pharmacyId}")
 	@PreAuthorize("hasRole('SYSADMIN')")
-	public ResponseEntity<UUID> addPharmacyAdmin(@PathVariable UUID pharmacyId, @RequestBody UserRegistrationDTO userRequest, UriComponentsBuilder ucBuilder) {
+	public ResponseEntity<UUID> addPharmacyAdmin(@PathVariable UUID pharmacyId, @RequestBody UserRegistrationDTO userRequest) {
 
 		if (this.userService.existByEmail(userRequest.getEmail())) {
 			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -95,7 +95,7 @@ public class RegistrationController {
 	
 	@PostMapping("/signup-supplier")
 	@PreAuthorize("hasRole('SYSADMIN')")
-	public ResponseEntity<UUID> addSupplier(@RequestBody UserRegistrationDTO userRequest, UriComponentsBuilder ucBuilder) {
+	public ResponseEntity<UUID> addSupplier(@RequestBody UserRegistrationDTO userRequest) {
 
 		if (this.userService.existByEmail(userRequest.getEmail())) {
 			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);

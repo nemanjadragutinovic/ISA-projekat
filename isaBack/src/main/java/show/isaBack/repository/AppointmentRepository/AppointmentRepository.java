@@ -12,6 +12,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.PagingAndSortingRepository;
 
 import show.isaBack.model.appointment.Appointment;
+import show.isaBack.model.appointment.AppointmentStatus;
 import show.isaBack.model.appointment.AppointmentType;
 
 
@@ -73,8 +74,22 @@ public interface AppointmentRepository extends PagingAndSortingRepository<Appoin
 			+ " AND a.patient.id = ?1 AND a.pharmacy.id = ?2")
 	List<Appointment> findAllFinishedAppointmentsForPatientinPharmacy(UUID patientId, UUID pharmacyId);
 	
+
 	@Query(value = "SELECT a FROM Appointment a WHERE a.employee.id = ?1  AND a.pharmacy.id = ?2 AND (CAST(a.startDateTime as date) = CAST(?3 as date))"
 			+ " AND (a.appointmentStatus = 'FREE' OR a.appointmentStatus = 'SCHEDULED')")
 	List<Appointment> getCreatedAppoitntmentsByDermatologistByDate(UUID dermatologistId, UUID pharmacyId,Date date);
+
+	@Query(value = "SELECT a FROM Appointment a WHERE a.patient.id = ?1"
+			+ " AND a.employee.id = ?2  AND a.appointmentStatus = 'FINISHED' ")
+	List<Appointment> findAllFinishedAppointmentsForPatientinAndEmployee(UUID patientId, UUID employeeID);
+	
+	@Query(value = "SELECT a FROM Appointment a WHERE a.patient.id = ?2"
+			+ " AND a.appointmentStatus = ?4 AND a.pharmacy.id = ?1 AND a.appointmentType = ?3")
+	List<Appointment> findAllFinishedAppointmentsByPatiendAndPharmacy(UUID pharmacyId,UUID patientId,AppointmentType appointmentType,AppointmentStatus appointmentStatus);
+	
+	
+	@Query(value = "SELECT a FROM Appointment a WHERE  a.appointmentStatus = 'SCHEDULED' AND a.endDateTime < CURRENT_TIMESTAMP")
+	List<Appointment> findAllScheduledAppointmentThatHaveExpired();
+
 	
 }

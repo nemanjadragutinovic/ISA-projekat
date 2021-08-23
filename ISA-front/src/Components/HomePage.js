@@ -3,9 +3,65 @@ import * as ReactBootStrap from "react-bootstrap";
 import Header from './Header';
 import TopBar from './TopBar';
 import { Link } from "react-router-dom";
+import GetAuthorisation from "../../src/Funciton/GetAuthorisation"
+import Axios from "axios";
+
+const API_URL="http://localhost:8080";
 
 
 class HomePage extends React.Component {
+
+
+
+  componentDidMount(){
+
+        //if(this.hasSpecificRole("ROLE_PATIENT")){
+         // this.checkPatientPenalty();
+          //this.checkPatientsDrugsReservations()
+      //  }
+
+
+  }
+
+
+    checkPatientPenalty(){
+
+      Axios.get(API_URL + "/users/refreshPatientPenalty", {
+        validateStatus: () => true,
+        headers: { Authorization: GetAuthorisation() },
+      })
+        .then((res) => {
+          if (res.status === 401) {
+            this.props.history.push('/login');
+          }
+           
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+
+    }
+
+
+    checkPatientsDrugsReservations(){
+
+      Axios.get(API_URL + "/drug/refreshPatientDrugsReservations", {
+        validateStatus: () => true,
+        headers: { Authorization: GetAuthorisation() },
+      })
+        .then((res) => {
+          if (res.status === 401) {
+            this.props.history.push('/login');
+          }
+           
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+
+    }
+
+
 
 
       hasSpecificRole = (reqRole) => {
@@ -28,6 +84,9 @@ class HomePage extends React.Component {
         };
 
     
+
+
+
     
     render() {
       console.log(`Bearer ${localStorage.getItem("keyToken")}`);

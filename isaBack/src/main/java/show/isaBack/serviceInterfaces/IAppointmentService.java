@@ -64,8 +64,12 @@ public interface IAppointmentService extends IService<DermatologistAppointmentDT
 	
 	public boolean canPatientReportPharmacy(UUID pharmacyId);
 
+
 	public boolean createDermatologistsAppointment(FormAppointmentDTO appointmentDTO);
 
 	List<FreeAppointmentPeriodDTO> generateListFreePeriods(ParamsFromAppointmentDTO paramsFromAppointmentDTO);
+
+	public void refreshPatientsAppointments();
+
 	
 }

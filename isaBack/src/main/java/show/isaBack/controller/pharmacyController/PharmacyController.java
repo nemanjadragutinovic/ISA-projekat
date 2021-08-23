@@ -64,7 +64,87 @@ public class PharmacyController {
 		}
 	}
 	
+////////////////////////////////////////////////////////	
+	@CrossOrigin
+	@PreAuthorize("hasRole('ROLE_PATIENT')")
+	@GetMapping("/allPharmacies/sortByNameAscending") 
+	public ResponseEntity<List<UnspecifiedDTO<PharmacyDTO>>> getAllPharmaciesSortByNameAscending() {
+		
+		try {
+		return new ResponseEntity<>(pharmacyService.getAllPharmaciesSortByNameAscending() ,HttpStatus.OK);
+		} catch (Exception e) {
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
 	
+	
+	@CrossOrigin
+	@PreAuthorize("hasRole('ROLE_PATIENT')")
+	@GetMapping("/allPharmacies/sortByNameDescending") 
+	public ResponseEntity<List<UnspecifiedDTO<PharmacyDTO>>> getAllPharmaciesSortByNameDescending() {
+		
+		try {
+		return new ResponseEntity<>(pharmacyService.getAllPharmaciesSortByNameDescending() ,HttpStatus.OK);
+		} catch (Exception e) {
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+	
+	
+	@CrossOrigin
+	@PreAuthorize("hasRole('ROLE_PATIENT')")
+	@GetMapping("/allPharmacies/sortByCityAscending") 
+	public ResponseEntity<List<UnspecifiedDTO<PharmacyDTO>>> getAllPharmaciesSortByCityAscending() {
+		
+		try {
+		return new ResponseEntity<>(pharmacyService.getAllPharmaciesSortByCityAscending() ,HttpStatus.OK);
+		} catch (Exception e) {
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+	
+	
+	@CrossOrigin
+	@PreAuthorize("hasRole('ROLE_PATIENT')")
+	@GetMapping("/allPharmacies/sortByCityDescending") 
+	public ResponseEntity<List<UnspecifiedDTO<PharmacyDTO>>> getAllPharmaciesSortByCityDescending() {
+		
+		try {
+		return new ResponseEntity<>(pharmacyService.getAllPharmaciesSortByCityDescending() ,HttpStatus.OK);
+		} catch (Exception e) {
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+	
+	@CrossOrigin
+	@PreAuthorize("hasRole('ROLE_PATIENT')")
+	@GetMapping("/allPharmacies/sortByGradeAscending") 
+	public ResponseEntity<List<UnspecifiedDTO<PharmacyDTO>>> getAllPharmaciesSortByGradeAscending() {
+		
+		try {
+		return new ResponseEntity<>(pharmacyService.getAllPharmaciesSortByGradeAscending() ,HttpStatus.OK);
+		} catch (Exception e) {
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+	
+	
+	@CrossOrigin
+	@PreAuthorize("hasRole('ROLE_PATIENT')")
+	@GetMapping("/allPharmacies/sortByGradeDescending") 
+	public ResponseEntity<List<UnspecifiedDTO<PharmacyDTO>>> getAllPharmaciesSortByGradeDescending() {
+		
+		try {
+		return new ResponseEntity<>(pharmacyService.getAllPharmaciesSortByGradeDescending() ,HttpStatus.OK);
+		} catch (Exception e) {
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+	
+	
+	
+	
+	/////////////////////////////////////////////////
 	@CrossOrigin
 	@PreAuthorize("hasRole('ROLE_PATIENT')")
 	@GetMapping("/allPatientsSubscribedPharmacies") 

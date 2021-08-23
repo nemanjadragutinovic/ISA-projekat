@@ -14,6 +14,7 @@ import java.util.UUID;
 
 import javax.mail.MessagingException;
 import javax.persistence.EntityNotFoundException;
+import javax.transaction.Transactional;
 
 import org.hibernate.boot.registry.classloading.spi.ClassLoaderService.Work;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,14 +39,22 @@ import show.isaBack.model.UserCharacteristics.WorkTime;
 import show.isaBack.model.appointment.Appointment;
 import show.isaBack.model.appointment.AppointmentStatus;
 import show.isaBack.model.appointment.AppointmentType;
+import show.isaBack.model.drugs.DrugReservation;
+import show.isaBack.model.drugs.EReceipt;
 import show.isaBack.repository.AppointmentRepository.AppointmentRepository;
+
 import show.isaBack.repository.pharmacyRepository.PharmacyRepository;
+
+import show.isaBack.repository.drugsRepository.DrugReservationRepository;
+import show.isaBack.repository.drugsRepository.EReceiptRepository;
+
 import show.isaBack.repository.userRepository.DermatologistRepository;
 import show.isaBack.repository.userRepository.PatientRepository;
 import show.isaBack.repository.userRepository.PharmacistRepository;
 import show.isaBack.repository.userRepository.UserRepository;
 import show.isaBack.repository.userRepository.WorkTimeRepository;
 import show.isaBack.serviceInterfaces.IAppointmentService;
+import show.isaBack.serviceInterfaces.ILoyaltyService;
 import show.isaBack.serviceInterfaces.IService;
 import show.isaBack.serviceInterfaces.IUserInterface;
 import show.isaBack.unspecifiedDTO.UnspecifiedDTO;
@@ -84,6 +93,16 @@ public class AppointmentService implements IAppointmentService{
 	@Autowired
 	private WorkTimeRepository workTimeRepository;
 	
+	@Autowired
+	private ILoyaltyService loyaltyService;
+
+	@Autowired
+	private EReceiptRepository eReceiptRepository;
+	
+	@Autowired
+	private DrugReservationRepository drugReservationRepository;
+
+	
 	
 	
 	@Override
@@ -92,6 +111,13 @@ public class AppointmentService implements IAppointmentService{
 		
 		List<Appointment> appointments = appointmentRepository.findAllFreeAppointmentsForPharmacyAndForAppointmentType(pharmacyId, appointmentType); 
 		System.out.println(appointments);
+		UUID patientId=userService.getLoggedUserId();
+		
+		for (Appointment appointment : appointments) {
+			appointment.setPrice(loyaltyService.getDiscountPriceForExaminationAppointmentForPatient(patientId,appointment.getPrice()));
+		}
+		
+		
 		List<Dermatologist> allDermatologists= dermatologistRepository.findAll();		
 		
 		List<UnspecifiedDTO<EmployeeGradeDTO>> dermatologistEmployees= new ArrayList<UnspecifiedDTO<EmployeeGradeDTO>>();
@@ -110,12 +136,17 @@ public class AppointmentService implements IAppointmentService{
 	
 	
 	@Override
+	@Transactional
 	public void reserveDermatologistAppointment(UUID appointmentId) {
 		
 		UUID patientId=userService.getLoggedUserId();
 		Patient patient = patientRepository.findById(patientId).get();
 	
+		if(patient.getPenalty()>=3)
+			throw new IllegalArgumentException("You can't reserve appointment because you have 3 and more penalties! ");
+		
 		Appointment appointment = appointmentRepository.findById(appointmentId).get();
+		appointment.setPrice(loyaltyService.getDiscountPriceForExaminationAppointmentForPatient(patientId, appointment.getPrice()));
 		
 		canPatientReserveAppointment(appointment, patient);
 		
@@ -683,6 +714,7 @@ public class AppointmentService implements IAppointmentService{
 	}
 	
 	@Override
+	@Transactional
 	public void reserveConsulationBySelectedPharmacist(ReservationConsultationDTO reservationRequestDTO){
 		
 		Date startDate= new Date(reservationRequestDTO.getStartDate());
@@ -722,10 +754,14 @@ public class AppointmentService implements IAppointmentService{
 	public Appointment createAppointment(ReservationConsultationDTO reservationRequestDTO,Date startDate, Date endDate  ){
 		
 		UUID patientId = userService.getLoggedUserId();
-		Patient patient = patientRepository.findById(patientId).get();	
+		Patient patient = patientRepository.findById(patientId).get();
+		
+		if(patient.getPenalty()>=3)
+			throw new IllegalArgumentException("You can't reserve appointment because you have 3 and more penalties! ");
+		
 		User eployee = userRepository.findById(reservationRequestDTO.getPharmacistId()).get();
 		Pharmacy pharmacy = pharmacistRepository.findPharmacyWhereWorksPharmacist(reservationRequestDTO.getPharmacistId());
-		
+		pharmacy.setConsultationPrice(loyaltyService.getDiscountPriceForConsultationAppointmentForPatient(patientId,pharmacy.getConsultationPrice()));
 		
 		Appointment appointment= new Appointment( eployee,pharmacy, startDate, endDate, pharmacy.getConsultationPrice(),patient, AppointmentType.CONSULTATION, AppointmentStatus.SCHEDULED);
 		
@@ -749,11 +785,40 @@ public class AppointmentService implements IAppointmentService{
 		
 		List<Appointment> appointments = appointmentRepository.findAllFinishedAppointmentsForPatientinPharmacy(patientId,pharmacyId);
 		
-		if(appointments.size()==0) {
-			return false;
-		}else {
+		if(appointments.size()>0) {
 			return true;
 		}
+		List<EReceipt> ereceipts = eReceiptRepository.findAllEReceiptsWithPatientAndPharmacy(patientId, pharmacyId);
+		
+		if(ereceipts.size()>0) {
+			return true;
+		}
+		List<DrugReservation> drugs = drugReservationRepository.findAllhistoryDrugsReservationwithPatientAndPharmacy(patientId, pharmacyId);
+		
+		if(drugs.size()>0) {
+			return true;
+		}
+		
+		return false;
+		
+	}
+	
+	
+	
+	@Override
+	public void refreshPatientsAppointments(){
+		
+		List<Appointment> appointmentsScheduledThasHaveExpired= appointmentRepository.findAllScheduledAppointmentThatHaveExpired();
+		
+		for (Appointment appointment : appointmentsScheduledThasHaveExpired) {
+				appointment.setAppointmentStatus(AppointmentStatus.EXPIRED);		
+				Patient patient = patientRepository.findById(appointment.getPatient().getId()).get();
+				patient.addPenalties(1);
+				patientRepository.save(patient);
+				appointmentRepository.save(appointment);
+				
+		}
+		
 	}
 	
 	@Override

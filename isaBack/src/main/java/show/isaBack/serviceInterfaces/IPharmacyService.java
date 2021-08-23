@@ -48,4 +48,11 @@ public interface IPharmacyService extends IService<PharmacyDTO, UnspecifiedDTO<P
 	public List<UnspecifiedDTO<PharmacyDrugPriceDTO>> sortQrPharmaciesByAddress(UUID id);
 	public List<UnspecifiedDTO<PharmacyDrugPriceDTO>> sortQrPharmaciesByAddressReverse(UUID id);
 
+	public List<UnspecifiedDTO<PharmacyDTO>> getAllPharmaciesSortByNameAscending();
+	public List<UnspecifiedDTO<PharmacyDTO>> getAllPharmaciesSortByNameDescending();
+	public List<UnspecifiedDTO<PharmacyDTO>> getAllPharmaciesSortByCityAscending();
+	public List<UnspecifiedDTO<PharmacyDTO>> getAllPharmaciesSortByCityDescending();
+	public List<UnspecifiedDTO<PharmacyDTO>> getAllPharmaciesSortByGradeAscending();
+	public List<UnspecifiedDTO<PharmacyDTO>> getAllPharmaciesSortByGradeDescending();
+
 }
