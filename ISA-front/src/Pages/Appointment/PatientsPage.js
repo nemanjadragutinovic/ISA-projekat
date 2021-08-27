@@ -4,6 +4,7 @@ import Header from '../../Components/Header';
 import Axios from 'axios';
 import GetAuthorisation from '../../Funciton/GetAuthorisation';
 import { Redirect } from "react-router-dom";
+import { ButtonDropdown, DropdownToggle, Dropdown, DropdownItem } from 'reactstrap';
 const API_URL="http://localhost:8080";
 class PatientsPage extends Component {
     state = {
@@ -54,6 +55,14 @@ class PatientsPage extends Component {
             .catch((err) => {
                 console.log(err);
             });
+
+            /*if(this.handleSearch == null){
+                this.setState({
+                    redirect:true,
+                    redirectUrl: "/drugs"
+                });
+                
+            }*/
     };
 
 
@@ -122,9 +131,11 @@ class PatientsPage extends Component {
                             <form className="form-inline mt-3" width="100%">
                                  <div className="form-group mb-2" width="100%">
                                     <div className="dropdown mr-3">
-										<button
+                                        
+                                        <button
 											className="btn btn-primary dropdown-toggle"
 											type="button"
+                                            style={{width:"12.5em"}}
 											data-toggle="dropdown"
 											aria-haspopup="true"
 											aria-expanded="false"
@@ -171,7 +182,10 @@ class PatientsPage extends Component {
                                     >
                                         <i className="icofont-search mr-1"></i>
                                         Search
+                                        
                                     </button>
+                                    
+                                    
                                 </div>
                             </form>
                             
