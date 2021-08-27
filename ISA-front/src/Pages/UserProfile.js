@@ -258,23 +258,24 @@ class UserProfile extends Component {
                         this.setState({ redirect: true });				
 					} else {
 
-						
-                        this.setState({
+						console.log(res.data.email)
+						console.log(res.data.name)
+						this.setState({
 							
-							email: res.data.email,
-							name: res.data.name,
-							surname: res.data.surname,
-							address: res.data.address,
-							phoneNumber: res.data.phoneNumber,
-							
+							email: res.data.EntityDTO.email,
+							name: res.data.EntityDTO.name,
+							surname: res.data.EntityDTO.surname,
+							address: res.data.EntityDTO.address,
+							phoneNumber: res.data.EntityDTO.phoneNumber
 							
 
 							
 						});
 						
+						
 			
 
-						
+						console.log(this.state.email);
 
 					}
 				})
@@ -780,7 +781,7 @@ class UserProfile extends Component {
 
 		<button type="button" class="btn btn-outline-primary "
          onClick={() => this.handleClickAnotherInformation()}
-		 hidden={this.state.hideButtonForAnotherInformation} hidden={this.hasRole("ROLE_DERMATHOLOGIST")}
+		 hidden={this.state.hideButtonForAnotherInformation} hidden={this.hasRole("ROLE_DERMATHOLOGIST") || this.hasRole("ROLE_PHARMACYADMIN")}
          style={{  marginTop: "2em", marginLeft: "auto",marginRight: "auto" }}
          >
 
@@ -935,7 +936,7 @@ class UserProfile extends Component {
 											</div>
 											
 
-											<div className="mr-2" hidden={!this.state.hiddenEditInfo} hidden={this.hasRole("ROLE_DERMATHOLOGIST")} >
+											<div className="mr-2" hidden={!this.state.hiddenEditInfo} hidden={this.hasRole("ROLE_DERMATHOLOGIST")|| this.hasRole("ROLE_PHARMACYADMIN")} >
 												<button
 													onClick={this.handleAllergenModal}
 													className="btn btn-outline-primary btn-xl"
@@ -958,20 +959,7 @@ class UserProfile extends Component {
 
 
 
-					<form>
-				<div class="form-group row">
-					<label for="staticEmail" class="col-sm-2 col-form-label">Email</label>
-					<div class="col-sm-10">
-					<input type="text" readonly class="form-control-plaintext" id="staticEmail" value="email@example.com"/>
-					</div>
-				</div>
-				<div class="form-group row">
-					<label for="inputPassword" class="col-sm-2 col-form-label">Password</label>
-					<div class="col-sm-10">
-					<input type="password" class="form-control" id="inputPassword" placeholder="Password"/>
-					</div>
-				</div>
-			</form>
+				
 
 
 

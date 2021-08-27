@@ -38,6 +38,7 @@ import show.isaBack.DTO.userDTO.PharmacistForAppointmentPharmacyGadeDTO;
 import show.isaBack.DTO.userDTO.UserChangeInfoDTO;
 import show.isaBack.DTO.userDTO.UserDTO;
 import show.isaBack.DTO.userDTO.UserRegistrationDTO;
+import show.isaBack.DTO.userDTO.WorkTimeDTO;
 import show.isaBack.Mappers.Appointmets.AppointmentsMapper;
 import show.isaBack.emailService.EmailService;
 import show.isaBack.model.Authority;
@@ -50,6 +51,7 @@ import show.isaBack.model.PharmacyAdmin;
 import show.isaBack.model.Supplier;
 import show.isaBack.model.SystemAdmin;
 import show.isaBack.model.User;
+import show.isaBack.model.UserCharacteristics.WorkTime;
 import show.isaBack.model.drugs.Allergen;
 import show.isaBack.repository.drugsRepository.AllergenRepository;
 import show.isaBack.repository.pharmacyRepository.PharmacyRepository;
@@ -62,6 +64,7 @@ import show.isaBack.repository.userRepository.PharmacyAdminRepository;
 import show.isaBack.repository.userRepository.SupplierRepository;
 
 import show.isaBack.repository.userRepository.UserRepository;
+import show.isaBack.repository.userRepository.WorkTimeRepository;
 import show.isaBack.serviceInterfaces.IAppointmentService;
 import show.isaBack.serviceInterfaces.IEmployeeGradeService;
 import show.isaBack.serviceInterfaces.ILoyaltyService;
@@ -91,7 +94,8 @@ public class UserService implements IUserInterface{
 	private PharmacistRepository pharmacistRepository;
 	@Autowired
 	private AllergenRepository allergenRepository;
-	
+	@Autowired
+	private WorkTimeRepository workTimeRepository;
 	@Autowired
 	private DermatologistRepository dermatologistRepository;
 	
@@ -547,7 +551,7 @@ public class UserService implements IUserInterface{
 		List<UnspecifiedDTO<EmployeeGradeDTO>> dermatologistsForPharmacy= new ArrayList<UnspecifiedDTO<EmployeeGradeDTO>>();  
 		List<Dermatologist>  allDermatologists=dermatologistRepository.findAll();
 		
-	
+	 System.out.println("sassssssss: "+phId);
 		
 		for (Dermatologist dermatologist : allDermatologists) {
 			if(isInPharmacy(dermatologist,phId)) {
@@ -780,7 +784,17 @@ public class UserService implements IUserInterface{
 	}
 	
 	
-	
+	@Override
+	public List<UnspecifiedDTO<WorkTimeDTO>> getScheduleForEmployee(UUID id) {
+		List<UnspecifiedDTO<WorkTimeDTO>> retWorkTimes = new ArrayList<UnspecifiedDTO<WorkTimeDTO>>();
+		List <WorkTime> workTimes=workTimeRepository.findAll();
+		for(WorkTime workTime : workTimes) {
+			if(workTime.getEmployee().getId().equals(id))
+				retWorkTimes.add(new UnspecifiedDTO<WorkTimeDTO>(workTime.getId(), new WorkTimeDTO(workTime.getPharmacy().getId(),workTime.getEmployee().getId(), workTime.getStartDate(), workTime.getEndDate(), workTime.getStartTime(),workTime.getEndTime(),workTime.getPharmacy().getName())));
+		}
+		
+		return retWorkTimes;
+	}
 	
 
 }

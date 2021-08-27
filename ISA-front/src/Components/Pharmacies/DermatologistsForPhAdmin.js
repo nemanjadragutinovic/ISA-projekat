@@ -1,23 +1,42 @@
 import React, { Component } from "react";
-
+import { Button, Modal } from "react-bootstrap";
 import Header from '../Header';
 import Axios from "axios";
 import GetAuthorisation from "../../Funciton/GetAuthorisation";
-
+import { CardList } from "../card-components/card-list.component";
 const API_URL="http://localhost:8080";
 
-class DermatologistsPage extends Component {
+
+class DermatologistsForPhAdmin extends Component {
 	state = {
-        dermatologistsInPharmacy: [],
-      
+        dermatologists: [],
+       
+       
+        
+        workTimes:[],
+        forStaff:'',
+        formShowed:false,
+       
     };
 
+    handleCloseAlertSuccess = () => {
+		this.setState({ hiddenSuccessAlert: true });
+    };
+    
+    handleCloseAlertFail = () => {
+		this.setState({ hiddenFailAlert: true });
+	};
 
+     
     componentDidMount() {
 
-		Axios.get(API_URL + "pharmacy/dermatologist-for-pharmacy/", {
-            params: { phId : localStorage.getItem("keyPharmacyId")},
-			headers: { Authorization: GetAuthorisation() },
+        let pharmacyId=localStorage.getItem("keyPharmacyId")
+		this.setState({
+			pharmacyId: pharmacyId
+		})
+
+		Axios.get(API_URL + "/users/dermatologistsInPharmacy/" +localStorage.getItem("keyPharmacyId"), {
+			headers: { Authorization:  GetAuthorisation() },
 		})
 			.then((res) => {
 				this.setState({ dermatologists: res.data });
@@ -30,6 +49,23 @@ class DermatologistsPage extends Component {
     }
 
 
+
+
+ 
+    handleModalClose = () => {
+        this.setState({showWorkTimesModal: false});
+    }
+
+   
+
+    handleFormShow = () => {
+		this.setState({ formShowed: !this.state.formShowed });
+    };
+    
+ 
+    
+
+    
     render() {
         const myStyle = {
 			color: "white",
@@ -37,9 +73,7 @@ class DermatologistsPage extends Component {
 		};
 		return (
         <React.Fragment>
-            <div>
-
-            </div>
+            
 
                    
                     <Header />
@@ -47,8 +81,18 @@ class DermatologistsPage extends Component {
                 
 
                     
-                    <div className="container" style={{ marginTop: "10%" }} >
-                   
+                    <div className="container" style={{ marginTop: "5%" , marginBottom:"5%",marginLeft:"6%"}} >
+                  
+                       
+
+                        <button
+                            className="btn btn-outline-primary btn-xl"
+                            type="button"
+                            onClick={this.handleFormShow}
+                        >
+                            
+                            Search dermatologists
+                        </button>
                         <form
                             className={
                                 this.state.formShowed ? "form-inline mt-3" : "form-inline mt-3 collapse"
@@ -59,121 +103,71 @@ class DermatologistsPage extends Component {
                             <div className="form-group mb-2" width="100%">
                                 <input
                                     placeholder="Name"
-                                    className="form-control mr-3"
+                                    className="form-control mr-2"
                                     style={{ width: "9em" }}
                                     type="text"
-                                    onChange={this.handleNameChange}
-                                    value={this.state.searchName}
+                                    
                                 />
 
                                 <input
                                     placeholder="LastName"
-                                    className="form-control mr-3"
+                                    className="form-control mr-2"
                                     style={{ width: "9em" }}
                                     type="text"
-                                    onChange={this.handleSurnameChange}
-                                    value={this.state.searchSurname}
+                                   
                                 />
 
                                 <input
                                     placeholder="Grade from"
-                                    className="form-control mr-3"
+                                    className="form-control mr-2"
                                     style={{ width: "9em" }}
                                     type="number"
                                     min="1"
                                     max="5"
-                                    onChange={this.handleGradeFromChange}
-                                    value={this.state.searchGradeFrom}
+                                    
                                 />
                                 <input
                                     placeholder="Grade to"
-                                    className="form-control"
+                                    className="form-control mr-2"
                                     style={{ width: "9em" }}
                                     type="number"
                                     min="1"
                                     max="5"
-                                    onChange={this.handleGradeToChange}
-                                    value={this.state.searchGradeTo}
+                                  
                                 />
-                                
+
+                           
                             </div>
                             <div style={{marginLeft:'1%'}}>
 
                                 <button
                                     style={{ background: "#1977cc" },{marginLeft:'15%'},{marginBottom:'8%'}}
-                                    onClick={this.handleSearchClick}
-                                    className="btn btn-primary btn-x2"
+                                   
+                                    className="btn btn-primary"
                                     type="button"
                                         >
-                                    <i className="icofont-search mr-1"></i>
+                                    
                                     Search
                                 </button>
                             </div>
 
                         </form>
+                        <Button style={{marginLeft:"1%"}} >
+							Add dermatologist
+						</Button>
+                       
 
-                        
-
-                        <table className="table" style={{ width: "100%", marginTop: "3rem" }}>
-                            <tbody>
-                                {this.state.dermatologists.map((dermatologist) => (
-                                    <tr id={dermatologist.Id} key={dermatologist.Id}>
-                                        <td width="130em">
-                                            <img
-                                                className="img-fluid"
-                                               
-                                                width="70em"
-                                            />
-                                        </td>
-
-                                        <td>
-                                            <div>
-                                                <b>Name: </b> {dermatologist.EntityDTO.name}
-                                            </div>
-                                            <div>
-                                                <b>Surname: </b> {dermatologist.EntityDTO.surname}
-                                            </div>
-                                            <div>
-                                                <b>Email: </b> {dermatologist.EntityDTO.email}
-                                            </div>
-                                            <div>
-                                                <b>Phone number: </b> {dermatologist.EntityDTO.phoneNumber}
-                                            </div>
-                                            <div>
-                                                <b>Grade: </b> {dermatologist.EntityDTO.grade}
-                                                <i
-                                                    className="icofont-star"
-                                                    style={{ color: "#1977cc" }}
-                                                ></i>
-                                            </div>
-                                        </td>
-                                        <td >
-                                            <div style={{marginLeft:'55%'}}>
-                                                <button style={{height:'30px'},{verticalAlign:'center'}} className="btn btn-outline-secondary" onClick={() => this.onWorkTimeClick(dermatologist.Id)} type="button"><i className="icofont-subscribe mr-1"></i>WorkTimes</button>
-                                                <br></br>
-                                                <button style={{height:'30px'},{verticalAlign:'center'},{marginTop:'2%'}} className="btn btn-outline-secondary mt-1" onClick={() => this.showPharmacies(dermatologist.Id)} type="button"><i className="icofont-subscribe mr-1"></i>Pharmacies</button>
-                                                <br></br>
-                                                <button style={{height:'30px'},{verticalAlign:'center'},{marginTop:'2%'}} className="btn btn-outline-secondary mt-1" onClick={() => this.removeDermatologistClick(dermatologist.Id)} type="button"><i className="icofont-subscribe mr-1"></i>Remove dermatologist</button>
-                                            </div>
-                                               
-                                        </td>
-                                    </tr>
-
-                                ))}
-                                <tr>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-
-                                </tr>
-                            </tbody>
-                        </table>
-
+                         
+                    </div>
+                    <div className="container">
+                    <CardList dermatologists={this.state.dermatologists} pharmacyId={this.state.pharmacyId} /> 
+           
                     </div>
                     
+ 
                 </React.Fragment>
 		);
 	}
 }
 
-export default DermatologistsPage
+export default DermatologistsForPhAdmin

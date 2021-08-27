@@ -32,6 +32,7 @@ import show.isaBack.DTO.userDTO.PhAdminDTO;
 import show.isaBack.DTO.userDTO.PharmacistForAppointmentPharmacyGadeDTO;
 import show.isaBack.DTO.userDTO.UserChangeInfoDTO;
 import show.isaBack.DTO.userDTO.UserDTO;
+import show.isaBack.DTO.userDTO.WorkTimeDTO;
 import show.isaBack.security.TokenUtils;
 import show.isaBack.service.userService.UserService;
 import show.isaBack.unspecifiedDTO.UnspecifiedDTO;
@@ -451,10 +452,10 @@ public class UserController {
 		}
 	}
 	
-	@GetMapping("/dermatologistsInPharmacy")
+	@GetMapping("/dermatologistsInPharmacy/{phId}")
 	//@PreAuthorize("hasRole('PHARMACYADMIN')")
 	@CrossOrigin
-	public ResponseEntity<List<UnspecifiedDTO<EmployeeGradeDTO>>> getDermatologists(@RequestParam UUID phId){
+	public ResponseEntity<List<UnspecifiedDTO<EmployeeGradeDTO>>> getDermatologists(@PathVariable UUID phId){
 		
 		System.out.println(phId);
 		
@@ -500,6 +501,21 @@ public class UserController {
 				try {
 					userService.refreshPatientPenalty();
 					return new ResponseEntity<>(HttpStatus.NO_CONTENT);  
+				} catch (Exception e) {
+					return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR); 
+				}
+			}
+			
+			@GetMapping("/scheduleForEmployee/{id}") 	
+			@PreAuthorize("hasRole('PHARMACYADMIN')")
+			@CrossOrigin
+			public ResponseEntity<List<UnspecifiedDTO<WorkTimeDTO>>> getWorkTimeForStaff(@PathVariable UUID id) {
+			  
+				try {
+					List<UnspecifiedDTO<WorkTimeDTO>> schedule = userService.getScheduleForEmployee(id);
+					return new ResponseEntity<>(schedule,HttpStatus.OK); 
+				} catch (EntityNotFoundException e) {
+					return new ResponseEntity<>(HttpStatus.NOT_FOUND); 
 				} catch (Exception e) {
 					return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR); 
 				}
