@@ -74,6 +74,11 @@ public interface AppointmentRepository extends PagingAndSortingRepository<Appoin
 			+ " AND a.patient.id = ?1 AND a.pharmacy.id = ?2")
 	List<Appointment> findAllFinishedAppointmentsForPatientinPharmacy(UUID patientId, UUID pharmacyId);
 	
+
+	@Query(value = "SELECT a FROM Appointment a WHERE a.employee.id = ?1  AND a.pharmacy.id = ?2 AND (CAST(a.startDateTime as date) = CAST(?3 as date))"
+			+ " AND (a.appointmentStatus = 'FREE' OR a.appointmentStatus = 'SCHEDULED')")
+	List<Appointment> getCreatedAppoitntmentsByDermatologistByDate(UUID dermatologistId, UUID pharmacyId,Date date);
+
 	@Query(value = "SELECT a FROM Appointment a WHERE a.patient.id = ?1"
 			+ " AND a.employee.id = ?2  AND a.appointmentStatus = 'FINISHED' ")
 	List<Appointment> findAllFinishedAppointmentsForPatientinAndEmployee(UUID patientId, UUID employeeID);
@@ -85,5 +90,6 @@ public interface AppointmentRepository extends PagingAndSortingRepository<Appoin
 	
 	@Query(value = "SELECT a FROM Appointment a WHERE  a.appointmentStatus = 'SCHEDULED' AND a.endDateTime < CURRENT_TIMESTAMP")
 	List<Appointment> findAllScheduledAppointmentThatHaveExpired();
+
 	
 }
