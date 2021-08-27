@@ -9,8 +9,6 @@ import UserProfilePage from "./Pages/UserProfile"
 import registerStaff from "./Components/adminRegistration/registerStaff"
 import RegisterDrug from './Components/adminRegistration/RegisterDrug';
 
-
-
 import LoyalityProgram from "./Components/LoyalityProgram/LoyalityProgram"
 import RegisterPharmacies from './Components/adminRegistration/RegisterPharmacies';
 import OrdersPage from './Components/SupplierPages/OrdersPage';
@@ -31,7 +29,7 @@ import qrPharmacieswithDrugs from './Components/qrPharmacieswithDrugs';
 import PatientsEReceipts from "./Pages/PatientsEReceipts"
 import PatientsProccessedDrugsEReceipts from "./Pages/PatientsProccessedDrugsEReceipts"
 import activateAccount from './Components/activateAccount';
-
+import PatientsPage from './Pages/Appointment/PatientsPage';
 
 
 import {
@@ -83,10 +81,7 @@ function App() {
         <Route  to ="/allPatients-processed-drugs-e-receipts" path ="/allPatients-processed-drugs-e-receipts"  component={PatientsProccessedDrugsEReceipts}/>
 
         <Route to="/activeAccount/:id" path ="/activeAccount/:id"  component={activateAccount}/>
-
-
-
-
+        <Route to="/patients" path ="/patients"  component={PatientsPage}/>
 
 
 

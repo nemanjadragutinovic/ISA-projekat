@@ -40,7 +40,6 @@ public class AppointmentController {
 	private IAppointmentService appointmentService;
 	
 	
-	
 	@PreAuthorize("hasRole('ROLE_PATIENT')")
 	@CrossOrigin
 	@GetMapping("/dermatologist/allAppointmentsForchosenPharmacy/{pharmacyId}")

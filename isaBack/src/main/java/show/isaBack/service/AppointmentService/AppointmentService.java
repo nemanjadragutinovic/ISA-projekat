@@ -39,6 +39,7 @@ import show.isaBack.repository.userRepository.PatientRepository;
 import show.isaBack.repository.userRepository.PharmacistRepository;
 import show.isaBack.repository.userRepository.UserRepository;
 import show.isaBack.repository.userRepository.WorkTimeRepository;
+import show.isaBack.service.loyalityService.LoyalityProgramService;
 import show.isaBack.serviceInterfaces.IAppointmentService;
 import show.isaBack.serviceInterfaces.ILoyaltyService;
 import show.isaBack.serviceInterfaces.IService;
@@ -86,7 +87,8 @@ public class AppointmentService implements IAppointmentService{
 	@Autowired
 	private DrugReservationRepository drugReservationRepository;
 
-	
+	@Autowired
+	private LoyalityProgramService loyalityProgramService;
 	
 	
 	@Override
@@ -144,6 +146,10 @@ public class AppointmentService implements IAppointmentService{
 		} catch (MessagingException e) {}
 		
 	}
+	
+	
+	
+	
 	
 	public void canPatientReserveAppointment(Appointment appointment, Patient patient) {
 		if(doesPatientHaveAppointmentInChosenTime(appointment,patient))

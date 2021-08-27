@@ -17,6 +17,7 @@ import show.isaBack.DTO.userDTO.UserChangeInfoDTO;
 
 import show.isaBack.DTO.userDTO.UserDTO;
 import show.isaBack.DTO.userDTO.UserRegistrationDTO;
+import show.isaBack.model.Pharmacy;
 import show.isaBack.unspecifiedDTO.UnspecifiedDTO;
 
 public interface IUserInterface extends IService<UserDTO, UnspecifiedDTO<UserDTO>> { 
@@ -65,6 +66,8 @@ public interface IUserInterface extends IService<UserDTO, UnspecifiedDTO<UserDTO
 	public UserDTO getLoggedDermathologist();
 	public UserDTO getLoggedPharmacist();
 	public void updatePharmacist(UserChangeInfoDTO pharmacistInfoChangeDTO);
+	Pharmacy getPharmacyForLoggedDermatologist();
+	public List<UnspecifiedDTO<UserDTO>> findPatientByNameAndSurname(String name, String surname);
 
 	
 }

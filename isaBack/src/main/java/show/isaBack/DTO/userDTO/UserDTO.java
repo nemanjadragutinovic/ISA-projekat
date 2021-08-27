@@ -2,9 +2,10 @@ package show.isaBack.DTO.userDTO;
 
 import java.util.List;
 
+
 import show.isaBack.model.Authority;
 
-public class UserDTO {
+public class UserDTO{
 	
 	private String email;
 

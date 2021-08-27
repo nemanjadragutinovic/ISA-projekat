@@ -60,5 +60,7 @@ public interface IAppointmentService extends IService<DermatologistAppointmentDT
 	
 	public boolean canPatientReportPharmacy(UUID pharmacyId);
 	public void refreshPatientsAppointments();
+
+
 	
 }

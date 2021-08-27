@@ -143,12 +143,12 @@ class Header extends React.Component{
                 <ReactBootStrap.Nav.Link href="#deets" hidden={!this.hasRole("ROLE_SUPPLIER")} >Offers</ReactBootStrap.Nav.Link>
                 </Link>
 
-                <Link to="/dermCalendar">
-                <ReactBootStrap.Nav.Link href="#deets" hidden={!this.hasRole("ROLE_DERMATHOLOGIST")} >Calendar</ReactBootStrap.Nav.Link>
+                <Link to="/calendar">
+                <ReactBootStrap.Nav.Link href="#deets" hidden={!this.hasRole("ROLE_DERMATHOLOGIST") && !this.hasRole("ROLE_PHARMACIST")} >Calendar</ReactBootStrap.Nav.Link>
                 </Link>
 
-                <Link to="/pharmCalendar">
-                <ReactBootStrap.Nav.Link href="#deets" hidden={!this.hasRole("ROLE_PHARMACIST")} >Calendar</ReactBootStrap.Nav.Link>
+                <Link to="/patients">
+                <ReactBootStrap.Nav.Link href="#deets" hidden={!this.hasRole("ROLE_DERMATHOLOGIST") && !this.hasRole("ROLE_PHARMACIST")} >Patients</ReactBootStrap.Nav.Link>
                 </Link>
 
                   

@@ -37,6 +37,7 @@ import show.isaBack.DTO.userDTO.PharmacistForAppointmentPharmacyGadeDTO;
 import show.isaBack.DTO.userDTO.UserChangeInfoDTO;
 import show.isaBack.DTO.userDTO.UserDTO;
 import show.isaBack.DTO.userDTO.UserRegistrationDTO;
+import show.isaBack.Mappers.Pharmacy.UserMapper;
 import show.isaBack.emailService.EmailService;
 import show.isaBack.model.Authority;
 import show.isaBack.model.Dermatologist;
@@ -47,6 +48,7 @@ import show.isaBack.model.PharmacyAdmin;
 import show.isaBack.model.Supplier;
 import show.isaBack.model.SystemAdmin;
 import show.isaBack.model.User;
+import show.isaBack.model.UserCharacteristics.WorkTime;
 import show.isaBack.model.drugs.Allergen;
 import show.isaBack.repository.drugsRepository.AllergenRepository;
 import show.isaBack.repository.pharmacyRepository.PharmacyRepository;
@@ -59,6 +61,7 @@ import show.isaBack.repository.userRepository.PharmacyAdminRepository;
 import show.isaBack.repository.userRepository.SupplierRepository;
 
 import show.isaBack.repository.userRepository.UserRepository;
+import show.isaBack.repository.userRepository.WorkTimeRepository;
 import show.isaBack.serviceInterfaces.IAppointmentService;
 import show.isaBack.serviceInterfaces.IEmployeeGradeService;
 import show.isaBack.serviceInterfaces.ILoyaltyService;
@@ -106,6 +109,9 @@ public class UserService implements IUserInterface{
 	
 	@Autowired
 	private PharmacistRepository pharmacistRepository;
+	
+	@Autowired
+	private WorkTimeRepository workTimeRepository;
 	
 	@Autowired
 	private ILoyaltyService loyaltyProgramService;
@@ -715,7 +721,30 @@ public class UserService implements IUserInterface{
 		
 	}
 	
+	public Pharmacy getPharmacyForLoggedDermatologist() {
+		UUID dermatologistId = getLoggedUserId();
+		Pharmacy pharmacy = null;
+		List<WorkTime> workTimes = workTimeRepository.findWorkTimesForDeramtologistAndCurrentDate(dermatologistId);
+		Date currentDateTime = new Date();
+		int currentHours = currentDateTime.getHours();
+		for(WorkTime wt : workTimes){
+			if(wt.getStartTime() <= currentHours && wt.getEndTime() >= currentHours)
+				pharmacy = wt.getPharmacy();
+		}
+		if(pharmacy == null)
+			for(WorkTime wt : workTimes)
+					pharmacy = wt.getPharmacy();
+		if(pharmacy == null)
+			throw new IllegalArgumentException("Dermatologist doesn't work in any pharamcy at current hours");
+		return pharmacy;
+	}
 	
+	@Override
+	public List<UnspecifiedDTO<UserDTO>> findPatientByNameAndSurname(String name, String surname) {
+		List<UnspecifiedDTO<UserDTO>> users = new ArrayList<UnspecifiedDTO<UserDTO>>();
+		patientRepository.findPatientByNameAndSurname(name.toLowerCase(), surname.toLowerCase()).forEach((u) -> users.add(UserMapper.MapUserPersistenceToUserUnspecifiedDTO(u)));
+		return users;
+	}
 	
 	
 
