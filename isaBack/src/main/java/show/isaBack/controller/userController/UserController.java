@@ -492,6 +492,20 @@ public class UserController {
 		
 	}
 	
+	@GetMapping("/search") 
+	@CrossOrigin
+	//@PreAuthorize("hasRole('PHARMACIST') or hasRole('DERMATHOLOGIST')")
+	public ResponseEntity<List<UnspecifiedDTO<UserDTO>>> findPatientByNameAndSurname(@RequestParam String name,@RequestParam String surname) {
+		try {
+			List<UnspecifiedDTO<UserDTO>> users = userService.findPatientByNameAndSurname(name, surname);
+			return new ResponseEntity<>(users,HttpStatus.OK); 
+		} catch (EntityNotFoundException e) {
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND); 
+		} catch (Exception e) {
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR); 
+		}
+	}
+	
 	
 
 			@GetMapping("/refreshPatientPenalty") 

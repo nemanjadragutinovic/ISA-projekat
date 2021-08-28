@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.UUID;
 
 import show.isaBack.DTO.userDTO.AuthorityDTO;
+import show.isaBack.DTO.userDTO.UserDTO;
 import show.isaBack.unspecifiedDTO.UnspecifiedDTO;
 
 public interface IService<T, IdentifiableT> {
