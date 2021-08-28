@@ -4,7 +4,6 @@ import Header from '../../Components/Header';
 import Axios from 'axios';
 import GetAuthorisation from '../../Funciton/GetAuthorisation';
 import { Redirect } from "react-router-dom";
-import { ButtonDropdown, DropdownToggle, Dropdown, DropdownItem } from 'reactstrap';
 const API_URL="http://localhost:8080";
 class PatientsPage extends Component {
     state = {
@@ -30,7 +29,7 @@ class PatientsPage extends Component {
         console.log(this.state);
         const SEARCH_PATIENT_URL =
         API_URL +
-            "/api/users/search?name=" +
+            "/users/search?name=" +
             this.state.name +
             "&surname=" +
             this.state.surname;

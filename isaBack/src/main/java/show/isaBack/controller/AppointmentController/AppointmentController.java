@@ -18,12 +18,17 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 
 import show.isaBack.DTO.AppointmentDTO.DermatologistAppointmentDTO;
+import show.isaBack.DTO.AppointmentDTO.FormAppointmentDTO;
+import show.isaBack.DTO.AppointmentDTO.FreeAppointmentPeriodDTO;
 import show.isaBack.DTO.AppointmentDTO.IdDTO;
+import show.isaBack.DTO.AppointmentDTO.ParamsFromAppointmentDTO;
 import show.isaBack.DTO.AppointmentDTO.ReservationConsultationDTO;
+import show.isaBack.model.appointment.Appointment;
 import show.isaBack.model.appointment.AppointmentType;
 import show.isaBack.serviceInterfaces.IAppointmentService;
 import show.isaBack.unspecifiedDTO.UnspecifiedDTO;
@@ -438,8 +443,32 @@ public class AppointmentController {
 	
 	
 	
+	@PostMapping("/createDermatologistsExaminatoin")
+	@CrossOrigin
+	//@PreAuthorize("hasRole('PHARMACYADMIN')")
+	public ResponseEntity<Boolean> createDermatologistsExamination(@RequestBody FormAppointmentDTO appointmentDTO) {
+		System.out.println("dfsadfsdfsdafsdfsdfsd");
+		try {
+		    return new ResponseEntity<>(appointmentService.createDermatologistsAppointment(appointmentDTO),HttpStatus.OK);
+			
+		}catch(Exception e) {
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
 	
 	
+	@GetMapping("/generateSuggestionsForTimePeriod")
+	//@PreAuthorize("hasRole('PHARMACYADMIN')")
+	@CrossOrigin
+	public ResponseEntity<List<FreeAppointmentPeriodDTO>> getFreePeriods(@RequestBody ParamsFromAppointmentDTO paramsAAA) {
+		try {
+			System.out.println("aa"+paramsAAA.getDate());
+			return new ResponseEntity<>(appointmentService.generateListFreePeriods(paramsAAA),HttpStatus.OK);
+		}catch (Exception e) {
+			e.printStackTrace();
+			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+		}
+	}
 	
 	
 }

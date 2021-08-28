@@ -1,4 +1,3 @@
-import logo from './logo.svg';
 import './App.css';
 import HomePage from "./Components/HomePage"
 import Drugs from "./Components/Drugs"
@@ -26,10 +25,13 @@ import AdminPharmacyComplains from './Components/AdminPharmacyComplains';
 import QrCode from './Components/QrCode';
 import FutureDrugsReservationsForPatients from "./Pages/FutureDrugsReservationsForPatient"
 import qrPharmacieswithDrugs from './Components/qrPharmacieswithDrugs';
+import dermatologistsForPhAdmin from './Components/Pharmacies/DermatologistsForPhAdmin';
 import PatientsEReceipts from "./Pages/PatientsEReceipts"
 import PatientsProccessedDrugsEReceipts from "./Pages/PatientsProccessedDrugsEReceipts"
 import activateAccount from './Components/activateAccount';
 import PatientsPage from './Pages/Appointment/PatientsPage';
+import PharmacyForAdmin from './Components/Pharmacies/PharmacyForPhAdmin';
+
 
 
 import {
@@ -79,9 +81,13 @@ function App() {
         <Route to="/qrPharmacieswithDrugs/:id" path ="/qrPharmacieswithDrugs/:id"  component={qrPharmacieswithDrugs}/>
         <Route  to ="/allPatients-E-receipts" path ="/allPatients-E-receipts"  component={PatientsEReceipts}/>
         <Route  to ="/allPatients-processed-drugs-e-receipts" path ="/allPatients-processed-drugs-e-receipts"  component={PatientsProccessedDrugsEReceipts}/>
-
+        <Route  to ="/adminpharmacy" path ="/adminpharmacy"  component={PharmacyForAdmin}/>
         <Route to="/activeAccount/:id" path ="/activeAccount/:id"  component={activateAccount}/>
         <Route to="/patients" path ="/patients"  component={PatientsPage}/>
+
+
+        <Route to="/dermatologistsForPhAdmin" path ="/dermatologistsForPhAdmin"  component={dermatologistsForPhAdmin}/>
+
 
 
 

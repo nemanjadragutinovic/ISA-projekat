@@ -14,10 +14,15 @@ import show.isaBack.DTO.userDTO.PhAdminDTO;
 import show.isaBack.DTO.userDTO.PharmacistForAppointmentPharmacyGadeDTO;
 
 import show.isaBack.DTO.userDTO.UserChangeInfoDTO;
-
+import show.isaBack.DTO.userDTO.DermatologistWithGradeDTO;
+import show.isaBack.DTO.userDTO.EmployeeGradeDTO;
 import show.isaBack.DTO.userDTO.UserDTO;
 import show.isaBack.DTO.userDTO.UserRegistrationDTO;
+
 import show.isaBack.model.Pharmacy;
+
+import show.isaBack.DTO.userDTO.WorkTimeDTO;
+
 import show.isaBack.unspecifiedDTO.UnspecifiedDTO;
 
 public interface IUserInterface extends IService<UserDTO, UnspecifiedDTO<UserDTO>> { 
@@ -56,6 +61,9 @@ public interface IUserInterface extends IService<UserDTO, UnspecifiedDTO<UserDTO
 	public double getAvgGradeForEmployee(UUID employeeID);
 	public UUID getPhIdForPhAdmin();
 
+	public List<UnspecifiedDTO<EmployeeGradeDTO>> findDermatologistsinPharmacy(UUID pharmacyId);
+	public List<UnspecifiedDTO<EmployeeGradeDTO>> findPharmacistsinPharmacy(UUID phId);
+
 	public void refreshPatientPenalty();
 
 	public boolean isPatientSubscribedToPharmacy(UUID pharmacyId);
@@ -66,8 +74,13 @@ public interface IUserInterface extends IService<UserDTO, UnspecifiedDTO<UserDTO
 	public UserDTO getLoggedDermathologist();
 	public UserDTO getLoggedPharmacist();
 	public void updatePharmacist(UserChangeInfoDTO pharmacistInfoChangeDTO);
+
 	Pharmacy getPharmacyForLoggedDermatologist();
 	public List<UnspecifiedDTO<UserDTO>> findPatientByNameAndSurname(String name, String surname);
+
+	List<UnspecifiedDTO<WorkTimeDTO>>getScheduleForEmployee(UUID id);
+
+
 
 	
 }

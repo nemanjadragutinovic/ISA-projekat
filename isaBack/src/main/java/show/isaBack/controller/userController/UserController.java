@@ -25,12 +25,14 @@ import org.springframework.web.bind.annotation.RestController;
 
 import show.isaBack.DTO.drugDTO.AllergenDTO;
 import show.isaBack.DTO.userDTO.ChangePasswordDTO;
+import show.isaBack.DTO.userDTO.EmployeeGradeDTO;
 import show.isaBack.DTO.userDTO.PatientDTO;
 import show.isaBack.DTO.userDTO.PatientsAllergenDTO;
 import show.isaBack.DTO.userDTO.PhAdminDTO;
 import show.isaBack.DTO.userDTO.PharmacistForAppointmentPharmacyGadeDTO;
 import show.isaBack.DTO.userDTO.UserChangeInfoDTO;
 import show.isaBack.DTO.userDTO.UserDTO;
+import show.isaBack.DTO.userDTO.WorkTimeDTO;
 import show.isaBack.security.TokenUtils;
 import show.isaBack.service.userService.UserService;
 import show.isaBack.unspecifiedDTO.UnspecifiedDTO;
@@ -450,23 +452,48 @@ public class UserController {
 		}
 	}
 	
-	
-	@GetMapping("/refreshPatientPenalty") 
+	@GetMapping("/dermatologistsInPharmacy/{phId}")
+	//@PreAuthorize("hasRole('PHARMACYADMIN')")
 	@CrossOrigin
-	@PreAuthorize("hasRole('ROLE_PATIENT')")
-	public ResponseEntity<?> refreshPatientPenalty() {
-		System.out.println("penalii");
-		try {
-			userService.refreshPatientPenalty();
-			return new ResponseEntity<>(HttpStatus.NO_CONTENT);  
+	public ResponseEntity<List<UnspecifiedDTO<EmployeeGradeDTO>>> getDermatologists(@PathVariable UUID phId){
+		
+		System.out.println(phId);
+		
+		try {		
+			return new ResponseEntity<>(userService.findDermatologistsinPharmacy(phId),HttpStatus.OK);
+		} catch (IllegalArgumentException e) {
+			e.printStackTrace();
+			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 		} catch (Exception e) {
-			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR); 
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
+		
+		
+	}
+	
+	
+	@GetMapping("/pharmacistsInPharmacy")
+	//@PreAuthorize("hasRole('PHARMACYADMIN')")
+	@CrossOrigin
+	public ResponseEntity<List<UnspecifiedDTO<EmployeeGradeDTO>>> getPharmacists(@RequestParam UUID phId){
+		
+		System.out.println(phId);
+		
+		try {		
+			return new ResponseEntity<>(userService.findPharmacistsinPharmacy(phId),HttpStatus.OK);
+		} catch (IllegalArgumentException e) {
+			e.printStackTrace();
+			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+		} catch (Exception e) {
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+		
+		
 	}
 	
 	@GetMapping("/search") 
 	@CrossOrigin
-	@PreAuthorize("hasRole('PHARMACIST') or hasRole('DERMATHOLOGIST')")
+	//@PreAuthorize("hasRole('PHARMACIST') or hasRole('DERMATHOLOGIST')")
 	public ResponseEntity<List<UnspecifiedDTO<UserDTO>>> findPatientByNameAndSurname(@RequestParam String name,@RequestParam String surname) {
 		try {
 			List<UnspecifiedDTO<UserDTO>> users = userService.findPatientByNameAndSurname(name, surname);
@@ -478,6 +505,35 @@ public class UserController {
 		}
 	}
 	
+	
+
+			@GetMapping("/refreshPatientPenalty") 
+			@CrossOrigin
+			@PreAuthorize("hasRole('ROLE_PATIENT')")
+			public ResponseEntity<?> refreshPatientPenalty() {
+				System.out.println("penalii");
+				try {
+					userService.refreshPatientPenalty();
+					return new ResponseEntity<>(HttpStatus.NO_CONTENT);  
+				} catch (Exception e) {
+					return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR); 
+				}
+			}
+			
+			@GetMapping("/scheduleForEmployee/{id}") 	
+			@PreAuthorize("hasRole('PHARMACYADMIN')")
+			@CrossOrigin
+			public ResponseEntity<List<UnspecifiedDTO<WorkTimeDTO>>> getWorkTimeForStaff(@PathVariable UUID id) {
+			  
+				try {
+					List<UnspecifiedDTO<WorkTimeDTO>> schedule = userService.getScheduleForEmployee(id);
+					return new ResponseEntity<>(schedule,HttpStatus.OK); 
+				} catch (EntityNotFoundException e) {
+					return new ResponseEntity<>(HttpStatus.NOT_FOUND); 
+				} catch (Exception e) {
+					return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR); 
+				}
+			}
 	
 	
 }

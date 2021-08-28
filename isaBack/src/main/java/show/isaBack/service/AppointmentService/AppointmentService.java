@@ -1,7 +1,13 @@
 package show.isaBack.service.AppointmentService;
 
+import java.time.Duration;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.chrono.ChronoLocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
@@ -10,11 +16,15 @@ import javax.mail.MessagingException;
 import javax.persistence.EntityNotFoundException;
 import javax.transaction.Transactional;
 
+import org.hibernate.boot.registry.classloading.spi.ClassLoaderService.Work;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import show.isaBack.DTO.AppointmentDTO.DermatologistAppointmentDTO;
+import show.isaBack.DTO.AppointmentDTO.FormAppointmentDTO;
+import show.isaBack.DTO.AppointmentDTO.FreeAppointmentPeriodDTO;
 import show.isaBack.DTO.AppointmentDTO.IdDTO;
+import show.isaBack.DTO.AppointmentDTO.ParamsFromAppointmentDTO;
 import show.isaBack.DTO.AppointmentDTO.ReservationConsultationDTO;
 import show.isaBack.DTO.userDTO.AuthorityDTO;
 import show.isaBack.DTO.userDTO.EmployeeGradeDTO;
@@ -32,8 +42,12 @@ import show.isaBack.model.appointment.AppointmentType;
 import show.isaBack.model.drugs.DrugReservation;
 import show.isaBack.model.drugs.EReceipt;
 import show.isaBack.repository.AppointmentRepository.AppointmentRepository;
+
+import show.isaBack.repository.pharmacyRepository.PharmacyRepository;
+
 import show.isaBack.repository.drugsRepository.DrugReservationRepository;
 import show.isaBack.repository.drugsRepository.EReceiptRepository;
+
 import show.isaBack.repository.userRepository.DermatologistRepository;
 import show.isaBack.repository.userRepository.PatientRepository;
 import show.isaBack.repository.userRepository.PharmacistRepository;
@@ -62,7 +76,9 @@ public class AppointmentService implements IAppointmentService{
 	@Autowired
 	private IUserInterface userService;
 	
-
+	@Autowired
+	private PharmacyRepository pharmacyRepository;
+	
 	@Autowired
 	private PatientRepository patientRepository;
 	
@@ -811,6 +827,77 @@ public class AppointmentService implements IAppointmentService{
 		
 	}
 	
+	@Override
+	public boolean createDermatologistsAppointment(FormAppointmentDTO appointmentDTO) {
+		
+			User dermatologist = userRepository.getOne(appointmentDTO.getDermatologistId());
+			Pharmacy pharmacy = pharmacyRepository.getOne(appointmentDTO.getPhId());
+			
+			Appointment appointment= new Appointment( dermatologist,pharmacy, appointmentDTO.getStartDateTime(), appointmentDTO.getEndDateTime(), appointmentDTO.getPrice(),null, AppointmentType.EXAMINATION, AppointmentStatus.FREE);
+			appointmentRepository.save(appointment);
+			if(appointment.getId() !=null) {
+				return true;
+			}else {
+				return false;
+			}
+			
+			
+		
+	}
+	
+	
+	@Override
+	public List<FreeAppointmentPeriodDTO> generateListFreePeriods(ParamsFromAppointmentDTO paramsFromAppointmentDTO) {
+		WorkTime workTime = workTimeRepository.getDermatologistsWorkTimeForPharmacy(paramsFromAppointmentDTO.getDermatologistId(),paramsFromAppointmentDTO.getPhId(),paramsFromAppointmentDTO.getDate());
+		List<Appointment> existingAppointments = appointmentRepository.getCreatedAppoitntmentsByDermatologistByDate(paramsFromAppointmentDTO.getDermatologistId(),paramsFromAppointmentDTO.getPhId(),paramsFromAppointmentDTO.getDate());
+		List<FreeAppointmentPeriodDTO> suggestionsForAppointment = new ArrayList<FreeAppointmentPeriodDTO>();
+		Date startWorkTime = paramsFromAppointmentDTO.getDate();
+		startWorkTime.setHours(workTime.getStartTime());
+		LocalDateTime startTime=startWorkTime.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
+		Date endWorkTime =  paramsFromAppointmentDTO.getDate();
+		endWorkTime.setHours(workTime.getEndTime());
+		LocalDateTime endTime;
+		int duration=paramsFromAppointmentDTO.getDuration();
+		
+		if(workTime==null) {System.out.println("null jjjeee");}
+		Collections.sort(existingAppointments, (o1,o2)-> {return o1.getStartDateTime().compareTo(o2.getStartDateTime());});
+		
+		for(Appointment a: existingAppointments) {
+			System.out.println("id termina "+a.getEndDateTime());
+		}
+		
+		
+		if(existingAppointments!=null) {
+        	for (Appointment appointment : existingAppointments)
+            {
+                 endTime = appointment.getStartDateTime().toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
+                 suggestionsForAppointment.addAll(generateIntervals(startTime, endTime,duration));
+                 startTime = appointment.getEndDateTime().toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
+                
+            }
+        }
+        
+        endTime = endWorkTime.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
+        suggestionsForAppointment.addAll(generateIntervals(startTime, endTime,duration));
+		
+		
+		return suggestionsForAppointment;
+			
+		}
+	
+
+	private List<FreeAppointmentPeriodDTO>generateIntervals(LocalDateTime startTime, LocalDateTime endTime,int durationOfFreeAppointment) {
+		List<FreeAppointmentPeriodDTO> suggestionsForAppointment = new ArrayList<FreeAppointmentPeriodDTO>();
+		
+		while (Duration.between(startTime, endTime).toMinutes() >= Duration.ofMinutes(durationOfFreeAppointment).toMinutes())
+        {
+            FreeAppointmentPeriodDTO freePeriod = new FreeAppointmentPeriodDTO(startTime,startTime.plusMinutes(durationOfFreeAppointment));
+            startTime = freePeriod.getEndDate();
+            suggestionsForAppointment.add(freePeriod);
+        }
+        return suggestionsForAppointment;
+	}
+
 	
 	@Override
 	public List<UnspecifiedDTO<AuthorityDTO>> findAll() {
