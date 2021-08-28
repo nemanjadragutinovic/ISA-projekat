@@ -38,8 +38,12 @@ import show.isaBack.DTO.userDTO.PharmacistForAppointmentPharmacyGadeDTO;
 import show.isaBack.DTO.userDTO.UserChangeInfoDTO;
 import show.isaBack.DTO.userDTO.UserDTO;
 import show.isaBack.DTO.userDTO.UserRegistrationDTO;
+
+import show.isaBack.Mappers.Pharmacy.UserMapper;
+
 import show.isaBack.DTO.userDTO.WorkTimeDTO;
 import show.isaBack.Mappers.Appointmets.AppointmentsMapper;
+
 import show.isaBack.emailService.EmailService;
 import show.isaBack.model.Authority;
 import show.isaBack.model.Dermatologist;
@@ -94,8 +98,7 @@ public class UserService implements IUserInterface{
 	private PharmacistRepository pharmacistRepository;
 	@Autowired
 	private AllergenRepository allergenRepository;
-	@Autowired
-	private WorkTimeRepository workTimeRepository;
+	
 	@Autowired
 	private DermatologistRepository dermatologistRepository;
 	
@@ -117,6 +120,9 @@ public class UserService implements IUserInterface{
 	private DermatologistRepository dermathologistRepository;
 	
 	
+	
+	@Autowired
+	private WorkTimeRepository workTimeRepository;
 	
 	@Autowired
 	private ILoyaltyService loyaltyProgramService;
@@ -783,8 +789,33 @@ public class UserService implements IUserInterface{
 		
 	}
 	
+	public Pharmacy getPharmacyForLoggedDermatologist() {
+		UUID dermatologistId = getLoggedUserId();
+		Pharmacy pharmacy = null;
+		List<WorkTime> workTimes = workTimeRepository.findWorkTimesForDeramtologistAndCurrentDate(dermatologistId);
+		Date currentDateTime = new Date();
+		int currentHours = currentDateTime.getHours();
+		for(WorkTime wt : workTimes){
+			if(wt.getStartTime() <= currentHours && wt.getEndTime() >= currentHours)
+				pharmacy = wt.getPharmacy();
+		}
+		if(pharmacy == null)
+			for(WorkTime wt : workTimes)
+					pharmacy = wt.getPharmacy();
+		if(pharmacy == null)
+			throw new IllegalArgumentException("Dermatologist doesn't work in any pharamcy at current hours");
+		return pharmacy;
+	}
 	
 	@Override
+
+	public List<UnspecifiedDTO<UserDTO>> findPatientByNameAndSurname(String name, String surname) {
+		List<UnspecifiedDTO<UserDTO>> users = new ArrayList<UnspecifiedDTO<UserDTO>>();
+		patientRepository.findPatientByNameAndSurname(name.toLowerCase(), surname.toLowerCase()).forEach((u) -> users.add(UserMapper.MapUserPersistenceToUserUnspecifiedDTO(u)));
+		return users;
+	}
+	
+
 	public List<UnspecifiedDTO<WorkTimeDTO>> getScheduleForEmployee(UUID id) {
 		List<UnspecifiedDTO<WorkTimeDTO>> retWorkTimes = new ArrayList<UnspecifiedDTO<WorkTimeDTO>>();
 		List <WorkTime> workTimes=workTimeRepository.findAll();
@@ -795,6 +826,7 @@ public class UserService implements IUserInterface{
 		
 		return retWorkTimes;
 	}
+
 	
 
 }

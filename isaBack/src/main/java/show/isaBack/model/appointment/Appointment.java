@@ -73,6 +73,20 @@ public class Appointment {
 		this.appointmentStatus = appointmentStatus;
 	}
 
+	
+	public Appointment(User employee,Pharmacy pharmacy, Date startDateTime, Date endDateTime, Patient patient,
+			AppointmentType appointmentType, AppointmentStatus appointmentStatus) {
+		super();
+		this.id = UUID.randomUUID();
+		this.employee = employee;
+		this.pharmacy=pharmacy;
+		this.startDateTime = startDateTime;
+		this.endDateTime = endDateTime;
+		this.patient = patient;
+		this.appointmentType = appointmentType;
+		this.appointmentStatus = appointmentStatus;
+	}
+
 
 
 

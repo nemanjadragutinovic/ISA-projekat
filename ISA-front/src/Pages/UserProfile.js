@@ -325,6 +325,45 @@ class UserProfile extends Component {
 					console.log("ovaj eror je u pitanju");
 
 				});
+			}else if(this.hasRole("ROLE_PHARMACIST")){
+
+				console.log("usao u farmaceuta");
+
+				Axios.get(API_URL + "/users/pharmacist", { validateStatus: () => true, headers: { Authorization : GetAuthorisation()} })
+				.then((res) => {
+					console.log(res.data);
+					if (res.status === 401) {                       
+                        this.setState({ redirect: true });				
+					} else {
+
+						//console.log(res.data.EntityDTO.email)
+						//console.log(res.data.EntityDTO.name)
+						
+					
+                        this.setState({
+							
+							email: res.data.email,
+							name: res.data.name,
+							surname: res.data.surname,
+							address: res.data.address,
+							phoneNumber: res.data.phoneNumber,
+							
+							
+
+							
+						});
+						
+						
+
+						
+
+					}
+				})
+				.catch((err) => {
+					console.log(err);
+					console.log("ovaj eror je u pitanju");
+
+				});
 
 			}
 
@@ -495,6 +534,41 @@ class UserProfile extends Component {
 							UnsuccessfulMessage: "Something was wrong" });
 					
 					});
+				}else if(this.hasRole("ROLE_PHARMACIST")){
+
+					Axios.put(API_URL + "/users/pharmacist", userDTO, {
+						validateStatus: () => true,
+						headers: { Authorization: GetAuthorisation() },
+					})
+						.then((res) => {
+							if (res.status === 400) {
+								this.setState({ hiddenUnsuccessfulAlert: false,
+									UnsuccessfulHeader: "Bad request", 
+									UnsuccessfulMessage: "Invalid argument." });
+		
+							} else if (res.status === 500) {
+		
+								this.setState({ hiddenUnsuccessfulAlert: false, 
+									UnsuccessfulHeader: "Internal server error", 
+									UnsuccessfulMessage: "Server error." });
+		
+							} else if (res.status === 204) {
+								console.log("Success");
+								this.setState({
+									hiddenSuccessfulAlert: false,
+									successfulHeader: "Success",
+									successfulMessage: "You updated your information.",
+									hiddenEditInfo: true,
+								});
+							}
+						})
+						.catch((err) => {
+							console.log(err);
+							this.setState({ hiddenUnsuccessfulAlert: false,
+								UnsuccessfulHeader: "Error", 
+								UnsuccessfulMessage: "Something was wrong" });
+						
+						});
                 }
 
 		}

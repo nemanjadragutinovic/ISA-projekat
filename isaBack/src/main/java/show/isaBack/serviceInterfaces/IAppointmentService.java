@@ -71,5 +71,6 @@ public interface IAppointmentService extends IService<DermatologistAppointmentDT
 
 	public void refreshPatientsAppointments();
 
+
 	
 }
