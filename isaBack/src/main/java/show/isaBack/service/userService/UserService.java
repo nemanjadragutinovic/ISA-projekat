@@ -24,6 +24,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PathVariable;
 
 import show.isaBack.DTO.drugDTO.AllergenDTO;
+import show.isaBack.DTO.pharmacyDTO.PharmacyDTO;
 import show.isaBack.DTO.pharmacyDTO.PharmacyWithGradeAndPriceDTO;
 import show.isaBack.DTO.userDTO.AuthorityDTO;
 import show.isaBack.DTO.userDTO.ChangePasswordDTO;
@@ -38,7 +39,7 @@ import show.isaBack.DTO.userDTO.PharmacistForAppointmentPharmacyGadeDTO;
 import show.isaBack.DTO.userDTO.UserChangeInfoDTO;
 import show.isaBack.DTO.userDTO.UserDTO;
 import show.isaBack.DTO.userDTO.UserRegistrationDTO;
-
+import show.isaBack.Mappers.Pharmacy.PharmacyMapper;
 import show.isaBack.Mappers.Pharmacy.UserMapper;
 
 import show.isaBack.DTO.userDTO.WorkTimeDTO;
@@ -827,6 +828,25 @@ public class UserService implements IUserInterface{
 		return retWorkTimes;
 	}
 
+	@Override
+	public List<UnspecifiedDTO<PharmacyDTO>> getPharmacies() {
+		try {
+			UUID dermatologistId = getLoggedUserId();
+			Dermatologist dermatologist = dermatologistRepository.getOne(dermatologistId);
+			List<UnspecifiedDTO<PharmacyDTO>> pharmacies = new ArrayList<UnspecifiedDTO<PharmacyDTO>>();
+			dermatologist.getPharmacies().forEach((p) -> pharmacies.add(PharmacyMapper.MapPharmacyPersistenceToPharmacyUnspecifiedDTO(p)));
+			return pharmacies;
+		}catch(Exception e) {
+			return null;
+		}
+	}
 	
+	@Override
+	public UnspecifiedDTO<PharmacyDTO> getPharmacy() {
+			UUID pharmacistId = getLoggedUserId();
+			Pharmacist pharmacist = pharmacistRepository.getOne(pharmacistId);
+			return PharmacyMapper.MapPharmacyPersistenceToPharmacyUnspecifiedDTO(pharmacist.getPharmacy());
+	}
+
 
 }

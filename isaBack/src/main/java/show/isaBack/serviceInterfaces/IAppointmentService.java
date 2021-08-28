@@ -13,7 +13,7 @@ import show.isaBack.model.Pharmacy;
 import show.isaBack.model.User;
 import show.isaBack.model.appointment.Appointment;
 import show.isaBack.model.appointment.AppointmentType;
-
+import show.isaBack.DTO.AppointmentDTO.AppointmentDTO;
 import show.isaBack.unspecifiedDTO.UnspecifiedDTO;
 
 public interface IAppointmentService extends IService<DermatologistAppointmentDTO, UnspecifiedDTO<DermatologistAppointmentDTO>> {
@@ -70,6 +70,10 @@ public interface IAppointmentService extends IService<DermatologistAppointmentDT
 	List<FreeAppointmentPeriodDTO> generateListFreePeriods(ParamsFromAppointmentDTO paramsFromAppointmentDTO);
 
 	public void refreshPatientsAppointments();
+
+	public List<UnspecifiedDTO<AppointmentDTO>> getCalendarAppointmentsByDermatologist(UUID pharmacyId);
+
+	public List<UnspecifiedDTO<AppointmentDTO>> getCalendarAppointmentsByPharmacist(UUID pharmacyId);
 
 
 	
