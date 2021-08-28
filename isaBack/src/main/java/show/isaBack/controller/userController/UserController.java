@@ -472,7 +472,8 @@ public class UserController {
 	}
 	
 	
-	@GetMapping("/pharmacistsInPharmacy")
+	
+	@GetMapping("/pharmacistsInPharmacy/{phId}")
 	//@PreAuthorize("hasRole('PHARMACYADMIN')")
 	@CrossOrigin
 	public ResponseEntity<List<UnspecifiedDTO<EmployeeGradeDTO>>> getPharmacists(@RequestParam UUID phId){

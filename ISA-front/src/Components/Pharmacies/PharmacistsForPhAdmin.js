@@ -7,9 +7,9 @@ import { CardList } from "../card-components/card-list.component";
 const API_URL="http://localhost:8080";
 
 
-class DermatologistsForPhAdmin extends Component {
+class PharmacistisForPhAdmin extends Component {
 	state = {
-        dermatologists: [],
+        pharmacists: [],
        
        
         
@@ -35,11 +35,11 @@ class DermatologistsForPhAdmin extends Component {
 			pharmacyId: pharmacyId
 		})
 
-		Axios.get(API_URL + "/users/dermatologistsInPharmacy/" +localStorage.getItem("keyPharmacyId"), {
+		Axios.get(API_URL + "/users/pharmacistsInPharmacy/" +localStorage.getItem("keyPharmacyId"), {
 			headers: { Authorization:  GetAuthorisation() },
 		})
 			.then((res) => {
-				this.setState({ dermatologists: res.data });
+				this.setState({ pharmacists: res.data });
                 console.log(res.data);
             
 			})
@@ -50,11 +50,6 @@ class DermatologistsForPhAdmin extends Component {
 
 
 
-
- 
-    handleModalClose = () => {
-        this.setState({showWorkTimesModal: false});
-    }
 
    
 
@@ -82,7 +77,8 @@ class DermatologistsForPhAdmin extends Component {
 
                     
                     <div className="container" style={{ marginTop: "5%" , marginBottom:"5%",marginLeft:"6%"}} >
-                   
+                  
+                       
 
                         <button
                             className="btn btn-outline-primary btn-xl"
@@ -90,7 +86,7 @@ class DermatologistsForPhAdmin extends Component {
                             onClick={this.handleFormShow}
                         >
                             
-                            Search dermatologists
+                            Search pharmacists
                         </button>
                         <form
                             className={
@@ -152,14 +148,14 @@ class DermatologistsForPhAdmin extends Component {
 
                         </form>
                         <Button style={{marginLeft:"1%"}} >
-							Add dermatologist
+							Add pharmacist
 						</Button>
                        
 
                          
                     </div>
                     <div className="container">
-                    <CardList dermatologists={this.state.dermatologists} pharmacyId={this.state.pharmacyId} /> 
+                    <CardList pharmacists={this.state.pharmacists} pharmacyId={this.state.pharmacyId} /> 
            
                     </div>
                     
@@ -169,4 +165,4 @@ class DermatologistsForPhAdmin extends Component {
 	}
 }
 
-export default DermatologistsForPhAdmin
+export default PharmacistisForPhAdmin
