@@ -24,7 +24,24 @@ class Card extends React.Component {
 
 
   
-
+  handleUpdateScheduleModal = () => {
+        
+    console.log("aaaaaaaaaaaaaa");
+    
+    Axios.get(API_URL + "/users/scheduleForEmployee/" + this.props.dermatologist.Id, {
+        headers: { Authorization: GetAuthorisation() },
+    })
+    .then((res) => {
+     
+        this.setState({ workTimes: res.data});
+        
+        console.log(res.data);
+       
+    })
+    .catch((err) => {
+        console.log(err);
+    });
+    };
 
     handleScheduleModal = (id) => {
         
@@ -53,6 +70,7 @@ class Card extends React.Component {
 	render() {
 	
         console.log(this.employee);
+        console.log(this.props.pharmacyId)
 		return (
       
       <React.Fragment>
@@ -66,7 +84,7 @@ class Card extends React.Component {
         
         </button>
         
-        <ScheduleModal show={this.state.openScheduleModal}  onCloseModal={this.handleModalClose} workTimes={this.state.workTimes}  employee={this.props.dermatologist.Id} header="WorkTimes" />
+        <ScheduleModal show={this.state.openScheduleModal} update={this.handleUpdateScheduleModal} onCloseModal={this.handleModalClose} workTimes={this.state.workTimes}  employee ={this.props.dermatologist.Id} pharmacyId={this.props.pharmacyId} header="WorkTimes" />
 	    </React.Fragment>
         
 

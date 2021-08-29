@@ -16,6 +16,7 @@ import show.isaBack.DTO.userDTO.PharmacistForAppointmentPharmacyGadeDTO;
 import show.isaBack.DTO.userDTO.UserChangeInfoDTO;
 import show.isaBack.DTO.userDTO.DermatologistWithGradeDTO;
 import show.isaBack.DTO.userDTO.EmployeeGradeDTO;
+import show.isaBack.DTO.userDTO.NewDermatologistInPharmacyDTO;
 import show.isaBack.DTO.userDTO.UserDTO;
 import show.isaBack.DTO.userDTO.UserRegistrationDTO;
 
@@ -79,6 +80,9 @@ public interface IUserInterface extends IService<UserDTO, UnspecifiedDTO<UserDTO
 	public List<UnspecifiedDTO<UserDTO>> findPatientByNameAndSurname(String name, String surname);
 
 	List<UnspecifiedDTO<WorkTimeDTO>>getScheduleForEmployee(UUID id);
+	List<UnspecifiedDTO<EmployeeGradeDTO>> findDermatologistsWhoDontWorkInPharmacy(UUID phId);
+	UUID addWorkTimeForEmployee(WorkTimeDTO workTimeDTO);
+	boolean addDermatologistInPharmacy(NewDermatologistInPharmacyDTO addDermatologistToPharmacyDTO);
 
 
 

@@ -30,6 +30,17 @@ public class WorkTimeDTO {
 		this.endTime=endTime;
 		this.pharmacyName=pharmacyName;
 	}
+    
+    public WorkTimeDTO(UUID pharmacyId,UUID employee, Date startDate, Date endDate, int startTime, int endTime) {
+		super();
+		this.pharmacyId= pharmacyId;
+		this.employee= employee;
+		this.startDate= startDate;
+		this.endDate= endDate;
+		this.startTime=startTime;
+		this.endTime=endTime;
+		this.pharmacyName="";
+	}
 
 
 	public UUID getPharmacyId() {

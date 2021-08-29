@@ -37,6 +37,8 @@ insert into users (id, email, password, name, surname, phone_Number,first_Login,
 --dermatologist-users
 insert into users (id, email, password, name, surname, phone_Number,first_Login, active, address,user_type) values ('07a2c302-b584-11eb-8529-0242ac130003','dermatolog1@gmail.com', '$2a$10$TyNl6ipLWyDE/TfFM3uRse0SVPP4Rz7.mdZdDK3zqjKZqtKtJ3pf2','Marija','Jovanovic','064555787',false,true,'Partizanska 11','DERMATOLOGIST');                                
 insert into users (id, email, password, name, surname, phone_Number,first_Login, active, address,user_type) values ('aef9fa80-b584-11eb-8529-0242ac130003','dermatolog2@gmail.com', '$2a$10$TyNl6ipLWyDE/TfFM3uRse0SVPP4Rz7.mdZdDK3zqjKZqtKtJ3pf2','Milica','Peric','06388929',false,true,'Nikolajevska 12','DERMATOLOGIST'); 
+insert into users (id, email, password, name, surname, phone_Number,first_Login, active, address,user_type) values ('b4db0d1e-0826-11ec-9a03-0242ac130003','dermatolog3@gmail.com', '$2a$10$TyNl6ipLWyDE/TfFM3uRse0SVPP4Rz7.mdZdDK3zqjKZqtKtJ3pf2','Petar','Jovanovic','064555787',false,true,'Partizanska 11','DERMATOLOGIST');                                
+insert into users (id, email, password, name, surname, phone_Number,first_Login, active, address,user_type) values ('c417fca6-0826-11ec-9a03-0242ac130003','dermatolog4@gmail.com', '$2a$10$TyNl6ipLWyDE/TfFM3uRse0SVPP4Rz7.mdZdDK3zqjKZqtKtJ3pf2','Milan','Peric','06388929',false,true,'Nikolajevska 12','DERMATOLOGIST'); 
 
 --pharmacist-users
 insert into users (id, email, password, name, surname, phone_Number,first_Login, active, address,user_type) values ('80c86094-ba60-11eb-8529-0242ac130003','pharmacist1@gmail.com', '$2a$10$TyNl6ipLWyDE/TfFM3uRse0SVPP4Rz7.mdZdDK3zqjKZqtKtJ3pf2','Nikola','Jovic','064555787',false,true,'Skolska 12','PHARMACIST');                                
@@ -87,6 +89,8 @@ insert into supplier(id) values ('64444d47-1a8a-4ae1-b109-af7b56e94788');
 --DERMATOLOGIST
 insert into dermatologist (id) values ('07a2c302-b584-11eb-8529-0242ac130003');
 insert into dermatologist (id) values ('aef9fa80-b584-11eb-8529-0242ac130003');
+insert into dermatologist (id) values ('b4db0d1e-0826-11ec-9a03-0242ac130003');
+insert into dermatologist (id) values ('c417fca6-0826-11ec-9a03-0242ac130003');
 --PHARMACY ADMIN
 insert into pharmacy_admin(id, pharmacy_id) values ('17a2c302-b584-11eb-8529-0242ac130003', '775d8e36-9859-11eb-a8b3-0242ac130003');
 

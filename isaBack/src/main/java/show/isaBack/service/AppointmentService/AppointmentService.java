@@ -829,7 +829,7 @@ public class AppointmentService implements IAppointmentService{
 	
 	@Override
 	public boolean createDermatologistsAppointment(FormAppointmentDTO appointmentDTO) {
-		
+		System.out.println("ALO BIDIBOU");
 			User dermatologist = userRepository.getOne(appointmentDTO.getDermatologistId());
 			Pharmacy pharmacy = pharmacyRepository.getOne(appointmentDTO.getPhId());
 			
@@ -853,9 +853,14 @@ public class AppointmentService implements IAppointmentService{
 		List<FreeAppointmentPeriodDTO> suggestionsForAppointment = new ArrayList<FreeAppointmentPeriodDTO>();
 		Date startWorkTime = paramsFromAppointmentDTO.getDate();
 		startWorkTime.setHours(workTime.getStartTime());
+		startWorkTime.setMinutes(0);
+		startWorkTime.setSeconds(0);
+		
 		LocalDateTime startTime=startWorkTime.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
 		Date endWorkTime =  paramsFromAppointmentDTO.getDate();
 		endWorkTime.setHours(workTime.getEndTime());
+		startWorkTime.setMinutes(0);
+		endWorkTime.setSeconds(0);
 		LocalDateTime endTime;
 		int duration=paramsFromAppointmentDTO.getDuration();
 		
@@ -891,12 +896,24 @@ public class AppointmentService implements IAppointmentService{
 		
 		while (Duration.between(startTime, endTime).toMinutes() >= Duration.ofMinutes(durationOfFreeAppointment).toMinutes())
         {
-            FreeAppointmentPeriodDTO freePeriod = new FreeAppointmentPeriodDTO(startTime,startTime.plusMinutes(durationOfFreeAppointment));
-            startTime = freePeriod.getEndDate();
+            FreeAppointmentPeriodDTO freePeriod = new FreeAppointmentPeriodDTO(convertToDateViaInstant(startTime),convertToDateViaInstant(startTime.plusMinutes(durationOfFreeAppointment)));
+            startTime = convertToLocalDateTimeViaInstant(freePeriod.getEndDate());
             suggestionsForAppointment.add(freePeriod);
         }
         return suggestionsForAppointment;
 	}
+
+	private LocalDateTime convertToLocalDateTimeViaInstant(Date dateToConvert) {
+	    return dateToConvert.toInstant()
+	      .atZone(ZoneId.systemDefault())
+	      .toLocalDateTime();
+	}
+	
+	private Date convertToDateViaInstant(LocalDateTime dateToConvert) {
+	    return java.util.Date
+	    	      .from(dateToConvert.atZone(ZoneId.systemDefault())
+	    	      .toInstant());
+	    }
 
 	
 	@Override

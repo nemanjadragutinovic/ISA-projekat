@@ -26,6 +26,7 @@ import org.springframework.web.bind.annotation.RestController;
 import show.isaBack.DTO.drugDTO.AllergenDTO;
 import show.isaBack.DTO.userDTO.ChangePasswordDTO;
 import show.isaBack.DTO.userDTO.EmployeeGradeDTO;
+import show.isaBack.DTO.userDTO.NewDermatologistInPharmacyDTO;
 import show.isaBack.DTO.userDTO.PatientDTO;
 import show.isaBack.DTO.userDTO.PatientsAllergenDTO;
 import show.isaBack.DTO.userDTO.PhAdminDTO;
@@ -471,6 +472,51 @@ public class UserController {
 		
 	}
 	
+	@GetMapping("/dermatologistsNotInPharmacy/{phId}")
+	//@PreAuthorize("hasRole('PHARMACYADMIN')")
+	@CrossOrigin
+	public ResponseEntity<List<UnspecifiedDTO<EmployeeGradeDTO>>> getDermatologistsForPgarmacy(@PathVariable UUID phId){
+		
+		System.out.println(phId);
+		
+		try {		
+			return new ResponseEntity<>(userService.findDermatologistsWhoDontWorkInPharmacy(phId),HttpStatus.OK);
+		} catch (IllegalArgumentException e) {
+			e.printStackTrace();
+			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+		} catch (Exception e) {
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+		
+		
+	}
+	
+	@PutMapping("/addDermatologistInPharmacy") 
+	@PreAuthorize("hasRole('PHARMACYADMIN')")
+	@CrossOrigin
+	public ResponseEntity<?> addDermatologistInPharmacy(@RequestBody NewDermatologistInPharmacyDTO newDTO) {
+		try {
+			if(userService.addDermatologistInPharmacy(newDTO))
+				return new ResponseEntity<>(HttpStatus.OK); 
+			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);	
+		} catch (Exception e) {
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR); 
+		}
+	}
+	
+	@PutMapping("/addWorkTime") 
+	@PreAuthorize("hasRole('PHARMACYADMIN')")
+	@CrossOrigin
+	public ResponseEntity<?> addWorkTime(@RequestBody WorkTimeDTO workTimeDTO) {
+		try {
+			System.out.println("usao u work time");
+			if(userService.addWorkTimeForEmployee(workTimeDTO)!=null)
+				return new ResponseEntity<>(HttpStatus.OK); 
+			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);	
+		} catch (Exception e) {
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR); 
+		}
+	}
 	
 	
 	@GetMapping("/pharmacistsInPharmacy/{phId}")
