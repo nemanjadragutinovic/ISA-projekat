@@ -875,14 +875,14 @@ public class AppointmentService implements IAppointmentService{
 		if(existingAppointments!=null) {
         	for (Appointment appointment : existingAppointments)
             {
-                 endTime = appointment.getStartDateTime().toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
+                 endTime = convertToLocalDateTime(appointment.getStartDateTime());
                  suggestionsForAppointment.addAll(generateIntervals(startTime, endTime,duration));
-                 startTime = appointment.getEndDateTime().toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
+                 startTime = convertToLocalDateTime(appointment.getEndDateTime());
                 
             }
         }
         
-        endTime = endWorkTime.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
+        endTime = convertToLocalDateTime(endWorkTime);
         suggestionsForAppointment.addAll(generateIntervals(startTime, endTime,duration));
 		
 		
@@ -896,26 +896,30 @@ public class AppointmentService implements IAppointmentService{
 		
 		while (Duration.between(startTime, endTime).toMinutes() >= Duration.ofMinutes(durationOfFreeAppointment).toMinutes())
         {
-            FreeAppointmentPeriodDTO freePeriod = new FreeAppointmentPeriodDTO(convertToDateViaInstant(startTime),convertToDateViaInstant(startTime.plusMinutes(durationOfFreeAppointment)));
-            startTime = convertToLocalDateTimeViaInstant(freePeriod.getEndDate());
+            FreeAppointmentPeriodDTO freePeriod = new FreeAppointmentPeriodDTO(convertToDate(startTime),convertToDate(startTime.plusMinutes(durationOfFreeAppointment)));
+            startTime = convertToLocalDateTime(freePeriod.getEndDate());
             suggestionsForAppointment.add(freePeriod);
         }
         return suggestionsForAppointment;
 	}
 
-	private LocalDateTime convertToLocalDateTimeViaInstant(Date dateToConvert) {
-	    return dateToConvert.toInstant()
-	      .atZone(ZoneId.systemDefault())
-	      .toLocalDateTime();
+	private LocalDateTime convertToLocalDateTime(Date dateToConvert) {
+	    return dateToConvert.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
 	}
 	
-	private Date convertToDateViaInstant(LocalDateTime dateToConvert) {
-	    return java.util.Date
-	    	      .from(dateToConvert.atZone(ZoneId.systemDefault())
-	    	      .toInstant());
+	private Date convertToDate(LocalDateTime dateToConvert) {
+	    return java.util.Date.from(dateToConvert.atZone(ZoneId.systemDefault()).toInstant());
 	    }
 
-	
+	@Override
+	public boolean isFutureAppointmentExists(UUID dermatologistId, UUID phId ) {
+		List<Appointment> allFutureAppointments = appointmentRepository.findAppointmentForDermatologistInPharmacy(dermatologistId,phId);
+		if(allFutureAppointments.size()>0)
+			return true;
+		
+		return false;
+	}
+
 	@Override
 	public List<UnspecifiedDTO<AuthorityDTO>> findAll() {
 		// TODO Auto-generated method stub

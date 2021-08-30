@@ -35,5 +35,8 @@ public interface WorkTimeRepository extends JpaRepository<WorkTime, UUID>{
 
 	@Query(value = "SELECT w FROM WorkTime w WHERE w.employee.id = ?1 AND w.pharmacy.id =?2  AND DATE(w.startDate)<=?3 AND DATE(w.endDate)>= ?3 ")
 	WorkTime getDermatologistsWorkTimeForPharmacy(UUID dermatologistId, UUID pharmacyId ,Date date);
+	
+	@Query(value = "SELECT w FROM WorkTime w WHERE w.employee.id = ?1 AND w.pharmacy.id =?2")
+	List<WorkTime> getDermatologistsWorkTimesForPharmacy(UUID dermatologistId, UUID pharmacyId);
 
 }

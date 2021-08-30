@@ -83,6 +83,7 @@ public interface IUserInterface extends IService<UserDTO, UnspecifiedDTO<UserDTO
 	List<UnspecifiedDTO<EmployeeGradeDTO>> findDermatologistsWhoDontWorkInPharmacy(UUID phId);
 	UUID addWorkTimeForEmployee(WorkTimeDTO workTimeDTO);
 	boolean addDermatologistInPharmacy(NewDermatologistInPharmacyDTO addDermatologistToPharmacyDTO);
+	boolean removeDermatologistFromPharmacy(UUID dermatologistId, UUID phId);
 
 
 

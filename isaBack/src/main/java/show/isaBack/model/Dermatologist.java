@@ -59,5 +59,17 @@ public class Dermatologist extends User {
 		this.pharmacies.add(pharmacy);
 	}
 	
+	public void removePharmacy(UUID pharmacyId) {
+		if(this.pharmacies == null)
+			return;
+		
+		for(Pharmacy pharmacy : pharmacies) {
+			if(pharmacyId.equals(pharmacy.getId())) {
+				pharmacies.remove(pharmacy);
+				return;
+			}
+		}
+	}
+	
 
 }

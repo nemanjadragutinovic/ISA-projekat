@@ -24,9 +24,9 @@ class AddDermatologistModal extends Component {
         hiddenSuccessAlert: true,
 		successHeader: "",
 		successMessage: "",
-		hiddenFailAlert: true,
-		failHeader: "",
-		failMessage: "",
+		hiddenUnsuccessAlert: true,
+		unsuccessHeader: "",
+		unsuccessMessage: "",
     }
 
     componentDidMount() {
@@ -46,10 +46,11 @@ class AddDermatologistModal extends Component {
 		this.setState({ hiddenSuccessAlert: true });
     };
     
-    handleCloseAlertFail = () => {
-		this.setState({ hiddenFailAlert: true });
+    handleCloseAlertUnuccess = () => {
+		this.setState({ hiddenUnsuccessAlert: true });
 	};
 
+   
     handleAdd = () => {
         let newDTO = {
             pharmacyId : this.props.pharmacyId,
@@ -70,29 +71,35 @@ class AddDermatologistModal extends Component {
                     hiddenSuccessAlert: false,
                     hiddenFailAlert:true,
                     successHeader: "Success",
-                    successMessage: "You successfully add new appointment.",
+                    successMessage: "You successfully add new dermatologist.",
                 })
-                this.props.updateDermatologist();
-                this.setState({showWorkTime: false, modalSize:'lg'});
-                this.handleSuccessClose();
+                
+               /// this.setState({showWorkTime: false, modalSize:'lg'});
+                
             }else if(res.status===400){
                 this.setState({ 
                     hiddenSuccessAlert: true,
-                    hiddenFailAlert: false, 
-                    failHeader: "Unsuccess", 
-                    failMessage: "Dermatologist has worktime in other pharmacy at this date range"
+                    hiddenUnsuccessAlert: false, 
+                    unsuccessHeader: "Unsuccess", 
+                    unsuccessMessage: "Dermatologist works in selected period."
                 });
             }else if(res.status===500){
                 this.setState({ 
                     hiddenSuccessAlert: true,
-                    hiddenFailAlert: false, 
-                    failHeader: "Unsuccess", 
-                    failMessage: "We have internal server error,please try later"
+                    hiddenUnsuccessAlert: false, 
+                    unsuccessHeader: "Unsuccess", 
+                    unsuccessMessage: "We have internal server error,please try later"
                 });
             }
             
         }).catch((err) => {
             console.log(err);
+            this.setState({ 
+                hiddenSuccessAlert: true,
+                hiddenUnsuccessAlert: false, 
+                unsuccessHeader: "Unsuccess", 
+                unsuccessMessage: "Error,please try later"
+            });
         });
     }
 
@@ -154,22 +161,27 @@ class AddDermatologistModal extends Component {
         }
     }
 
-    handleSuccessClose = () =>{
+    handleCloseAlertSuccess = () =>{
         this.setState({
-            showAddWorkTime: false, 
+            hiddenSuccessAlert: true,
+            hiddenUnsuccessAlert: true,
+            showWorkTime: false, 
             modalSize:'lg',
             selectedStartDate:new Date(),
             selectedEndDate:new Date(),
             timeFrom:1,
             timeTo:2,
         });
-        this.props.closeModal();
-        this.props.addedDermatologistMessage();
+        this.props.updateDermatologistsWhoarentInPharmacy();
+        this.handleBack();
+      
     }
 
     handleCloseModal = () => {
         this.setState({
-            showAddWorkTime: false, 
+            hiddenSuccessAlert: true,
+            hiddenUnsuccessAlert: true,
+            showWorkTime: false, 
             modalSize:'lg',
             selectedStartDate:new Date(),
             selectedEndDate:new Date(),
@@ -197,10 +209,10 @@ class AddDermatologistModal extends Component {
                             handleCloseAlert={this.handleCloseAlertSuccess}
                         />
                         <HeadingAlert
-                                hidden={this.state.hiddenFailAlert}
-                                header={this.state.failHeader}
-                                message={this.state.failMessage}
-                                handleCloseAlert={this.handleCloseAlertFail}
+                                hidden={this.state.hiddenUnsuccessAlert}
+                                header={this.state.unsuccessHeader}
+                                message={this.state.unsuccessMessage}
+                                handleCloseAlert={this.handleCloseAlertSuccess}
                         />
                 <div className="container">      
                     <table hidden={this.state.showWorkTime} className="table" style={{ width: "100%", marginTop: "3rem" }}>
@@ -241,7 +253,7 @@ class AddDermatologistModal extends Component {
                                 <form >
                                     <div  className="control-group" >
                                         <div className="form-row">
-                                            <button  onClick = {() => this.handleBack()} className="btn btn-link btn-xl" type="button">
+                                            <button  onClick = {() => this.handleBack()} className="btn btn-link " type="button">
                                               
                                                 Back
                                             </button>                   
@@ -268,7 +280,7 @@ class AddDermatologistModal extends Component {
                                                     <label>Time from:</label>
                                                 </td>
                                                 <td>
-                                                    <input placeholder="Time from" className="form-control ml-2" style={{width: "12em"}} type="number" min="1" max="23" onChange={this.handleTimeFromChange} value={this.state.timeFrom} />
+                                                    <input placeholder="Time from" className="form-control " style={{width: "12em"}} type="number" min="1" max="23" onChange={this.handleTimeFromChange} value={this.state.timeFrom} />
                                                 </td>
                                             </tr>
 
@@ -277,7 +289,7 @@ class AddDermatologistModal extends Component {
                                                     <label>Time to:</label>
                                                 </td>
                                                 <td>
-                                                    <input placeholder="Time to" className="form-control ml-2 " style={{width: "12em"}} type="number" min="2" max="24" onChange={this.handleTimeToChange} value={this.state.timeTo} />
+                                                    <input placeholder="Time to" className="form-control  " style={{width: "12em"}} type="number" min="2" max="24" onChange={this.handleTimeToChange} value={this.state.timeTo} />
                                                 </td>
                                             </tr>
                                         </table>

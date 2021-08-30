@@ -1,13 +1,17 @@
-import React from "react";
+
 import './card-list.styles.css';
 import Card from './Card'
+import React, { Component } from "react";
 
-class CardList extends React.Component {
+class CardList extends Component {
 	
-    constructor(props){
-        super(props);
+    componentDidMount() {
+        
     }
 
+    handleUpdateDermatologists =()=>{
+        this.props.updateDermatologists()
+    }
     render() {
 	
         console.log(this.employee);
@@ -16,7 +20,7 @@ class CardList extends React.Component {
       
       <React.Fragment>
                 <div className='card-list'>{this.props.dermatologists.map((dermatologist)=>(
-            <Card key={dermatologist.id} dermatologist={dermatologist} pharmacyId={this.props.pharmacyId}/>
+            <Card key={dermatologist.id} dermatologist={dermatologist} pharmacyId={this.props.pharmacyId} updateDermatologists={this.handleUpdateDermatologists}/>
             ))}
             </div>
 	    </React.Fragment>

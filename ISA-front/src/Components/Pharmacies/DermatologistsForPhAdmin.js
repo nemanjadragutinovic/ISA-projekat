@@ -63,7 +63,20 @@ class DermatologistsForPhAdmin extends Component {
 		});
        
     }
- 
+
+    handleUpdateDermatologistsWhoarentInPharmacy = () => {
+        Axios.get(API_URL + "/users/dermatologistsNotInPharmacy/"+ localStorage.getItem("keyPharmacyId"), {
+			headers: { Authorization:  GetAuthorisation() },
+		}).then((res) => {
+                this.setState({ dermatologists1: res.data});
+				console.log(res.data);
+		})
+			.catch((err) => {
+				console.log(err);
+		});
+       
+    }
+    
     handleModalClose = () => {
         this.setState({showWorkTimesModal: false});
     }
@@ -89,6 +102,20 @@ class DermatologistsForPhAdmin extends Component {
 				console.log(err);
 			});
         this.setState({ showAddDermatologist: false });
+    }
+
+    handleUpdateDermatologists = () => {
+        Axios.get(API_URL + "/users/dermatologistsInPharmacy/"  + localStorage.getItem("keyPharmacyId"), {
+            headers: { Authorization:  GetAuthorisation() },
+		})
+			.then((res) => {
+				this.setState({ dermatologists: res.data });
+                console.log(res.data);
+            
+			})
+			.catch((err) => {
+				console.log(err);
+			});
     }
     
     render() {
@@ -181,11 +208,11 @@ class DermatologistsForPhAdmin extends Component {
 						</Button>
                        
 
-                         
+                       
                     </div>
                     <div className="container">
-                    <CardList dermatologists={this.state.dermatologists} pharmacyId={this.state.pharmacyId} /> 
-                    <AddDermatologistModal show={this.state.showAddDermatologist} closeModal={this.handleAddDermatologistClose} dermatologists={this.state.dermatologists1} pharmacyId={this.state.pharmacyId}/>
+                    <CardList dermatologists={this.state.dermatologists} pharmacyId={this.state.pharmacyId} updateDermatologists={this.handleUpdateDermatologists} /> 
+                    <AddDermatologistModal show={this.state.showAddDermatologist} closeModal={this.handleAddDermatologistClose} dermatologists={this.state.dermatologists1} pharmacyId={this.state.pharmacyId} updateDermatologistsWhoarentInPharmacy={this.handleUpdateDermatologistsWhoarentInPharmacy}/>
                     </div>
                     
  

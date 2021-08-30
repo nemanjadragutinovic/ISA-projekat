@@ -8,20 +8,17 @@ import Axios from "axios";
 import GetAuthorisation from "../../Funciton/GetAuthorisation";
 
 const API_URL="http://localhost:8080";
-class Card extends React.Component {
+class Card extends Component {
 	
-    constructor(props){
-        super(props);
-    }
-    
-    
     state = {
-
         openScheduleModal: false,
         workTimes:[],
         employee: ''
   };
 
+  componentDidMount() {
+        
+}
 
   
   handleUpdateScheduleModal = () => {
@@ -62,11 +59,15 @@ class Card extends React.Component {
             openScheduleModal: true
         });
         };
+        
         handleModalClose = () => {
             this.setState({openScheduleModal: false});
         }
 
-
+        handleUpdateDermatologists =() =>{
+            this.setState({openScheduleModal: false});
+            this.props.updateDermatologists();
+        }
 	render() {
 	
         console.log(this.employee);
@@ -84,7 +85,7 @@ class Card extends React.Component {
         
         </button>
         
-        <ScheduleModal show={this.state.openScheduleModal} update={this.handleUpdateScheduleModal} onCloseModal={this.handleModalClose} workTimes={this.state.workTimes}  employee ={this.props.dermatologist.Id} pharmacyId={this.props.pharmacyId} header="WorkTimes" />
+        <ScheduleModal show={this.state.openScheduleModal} update={this.handleUpdateScheduleModal} updateDermatologists={this.handleUpdateDermatologists} onCloseModal={this.handleModalClose} workTimes={this.state.workTimes}  employee ={this.props.dermatologist.Id} pharmacyId={this.props.pharmacyId} header="WorkTimes" />
 	    </React.Fragment>
         
 

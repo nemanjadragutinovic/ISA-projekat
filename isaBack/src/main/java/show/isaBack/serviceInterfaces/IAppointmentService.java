@@ -71,6 +71,8 @@ public interface IAppointmentService extends IService<DermatologistAppointmentDT
 
 	public void refreshPatientsAppointments();
 
+	boolean isFutureAppointmentExists(UUID dermatologistId, UUID phId);
+
 
 	
 }

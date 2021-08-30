@@ -786,6 +786,24 @@ public class UserService implements IUserInterface{
 	}
 	
 	
+	@Override
+	public boolean removeDermatologistFromPharmacy(UUID dermatologistId,UUID phId) {
+			if(!appointmentService.isFutureAppointmentExists(dermatologistId,phId)) {
+				Dermatologist dermatologist = dermatologistRepository.getOne(dermatologistId);
+				dermatologist.removePharmacy(phId);
+				dermatologistRepository.save(dermatologist);
+				
+				
+			    List<WorkTime> workTimesForDermatologist = workTimeRepository. getDermatologistsWorkTimesForPharmacy(dermatologistId,phId);
+				workTimeRepository.deleteAll(workTimesForDermatologist);
+				
+				return true;
+			}else {
+				return false;
+			}
+	
+	}
+	
 	
 	@Override
 	public List<UnspecifiedDTO<AuthorityDTO>> findAll() {

@@ -102,8 +102,14 @@ class ScheduleModal extends Component {
 
 	handleCloseConfirmModal = () => {
 		this.setState({ hiddenConfirmModal: false,showAnotherModal:false });
+      
 	};
 
+    handleUpdateDermatologists = () => {
+		this.setState({ hiddenConfirmModal: false,showAnotherModal:false });
+        this.props.onCloseModal();
+        this.props.updateDermatologists();
+	};
     handleCloseAddAppModal = () => {
 		this.setState({ showAddAppointment: false,showAnotherModal:false });
 	};
@@ -293,7 +299,7 @@ class ScheduleModal extends Component {
 							Add worktime
 						</Button>
                     </div>
-                <ConfirmModal show={this.state.hiddenConfirmModal}  handleCloseAlert={this.handleCloseConfirmModal} header="Removing dermatologist" />
+                <ConfirmModal show={this.state.hiddenConfirmModal}  handleCloseAlert={this.handleCloseConfirmModal} updateDermatologists={this.handleUpdateDermatologists} pharmacyId={this.props.pharmacyId} dermatologistId={this.props.employee} header="Removing dermatologist" />
                 <AddAppointmentModal show={this.state.showAddAppointment} onCloseModal={this.handleCloseAddAppModal} pharmacyId={this.props.pharmacyId} header="Create appointment" dermatologistId={this.props.employee} />
 				</Modal.Body>
 				<Modal.Footer>

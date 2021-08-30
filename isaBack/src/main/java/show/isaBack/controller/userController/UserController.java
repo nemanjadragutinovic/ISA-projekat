@@ -31,6 +31,7 @@ import show.isaBack.DTO.userDTO.PatientDTO;
 import show.isaBack.DTO.userDTO.PatientsAllergenDTO;
 import show.isaBack.DTO.userDTO.PhAdminDTO;
 import show.isaBack.DTO.userDTO.PharmacistForAppointmentPharmacyGadeDTO;
+import show.isaBack.DTO.userDTO.RemoveDermatologistDTO;
 import show.isaBack.DTO.userDTO.UserChangeInfoDTO;
 import show.isaBack.DTO.userDTO.UserDTO;
 import show.isaBack.DTO.userDTO.WorkTimeDTO;
@@ -581,6 +582,21 @@ public class UserController {
 					return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR); 
 				}
 			}
-	
+			
+			@PutMapping("/removeDermatologistFromPharmacy") 
+			//@PreAuthorize("hasRole('PHARMACYADMIN')")
+			@CrossOrigin
+			public ResponseEntity<?> removeDermatologistFromPharmacy(@RequestBody RemoveDermatologistDTO removeDTO) {
+				System.out.println("EJ ALO BIDIBOU");
+				try {
+					
+					if(userService.removeDermatologistFromPharmacy(removeDTO.getDermatologistId(),removeDTO.getPharmacyId()))
+						return new ResponseEntity<>(HttpStatus.OK); 
+					
+					return new ResponseEntity<>(HttpStatus.BAD_REQUEST);	
+				} catch (Exception e) {
+					return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR); 
+				}
+			}
 	
 }

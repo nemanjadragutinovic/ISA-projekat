@@ -60,13 +60,14 @@ class AddAppointmentModal extends Component {
                     successHeader: "Success",
                     successMessage: "You successfully add new appointment.",
                 })
-                Axios.post(API_URL + "/api/appointment/getFreePeriod", {
-                    params:{
-                        dermatologistId: this.state.dermatologist,
-                        pharmacyId:this.props.pharmacyId,
-                        date: this.state.selectedDate,
-                        duration: this.state.duration,
-                    },
+                let paramsAAA = {
+                    dermatologistId: this.props.dermatologistId,
+                    phId:this.props.pharmacyId,
+                    date: this.state.selectedDate,
+                    duration: this.state.duration,
+                };
+
+                Axios.post(API_URL + "/appointment/generateSuggestionsForTimePeriod", paramsAAA ,{
                     headers: { Authorization:  GetAuthorisation() },
                 }).then((res) => {
                         this.setState({ periods: res.data, selectedPeriod:res.data[0]
@@ -81,7 +82,7 @@ class AddAppointmentModal extends Component {
                     hiddenSuccessAlert: true,
                     hiddenFailAlert: false, 
                     failHeader: "Unsuccess", 
-                    failMessage: "Dermatologist has absence at this day"
+                    failMessage: "Dermatologist has absence at selected day"
                 });
                 
             }else if(res.status===500){
@@ -155,25 +156,7 @@ class AddAppointmentModal extends Component {
         }
     }
 
-    convertDate = str => {
-        str = str.toString();
-        let parts = str.split(" ");
-        let months = {
-          Jan: "01",
-          Feb: "02",
-          Mar: "03",
-          Apr: "04",
-          May: "05",
-          Jun: "06",
-          Jul: "07",
-          Aug: "08",
-          Sep: "09",
-          Oct: "10",
-          Nov: "11",
-          Dec: "12"
-        };
-        return months[parts[1]] + "/" + parts[2] + "/" + parts[3];
-      };
+    
 
     handleCloseModal = () => {
         this.setState({
@@ -213,11 +196,10 @@ class AddAppointmentModal extends Component {
                 onCloseModal={this.handleCloseModal}
                 show = {this.props.show}
                 size = "md"
-                dialogClassName="modal-80w-100h"
-                aria-labelledby="contained-modal-title-vcenter"
+                dialogClassName="modal"
                 centered>
                 <Modal.Header >
-                    <Modal.Title style={{marginLeft:'28%'}} id="contained-modal-title-vcenter">
+                    <Modal.Title style={{marginLeft:'28%'}} >
                         {this.props.header}
                     </Modal.Title>
 
@@ -245,7 +227,7 @@ class AddAppointmentModal extends Component {
                                                     <label>Select date:</label>
                                                 </td>
                                                 <td>
-                                                    <DatePicker className="form-control"  style={{width: "18em"}} minDate={this.state.selectedDate} onChange={date => this.handleDateChange(date)} selected={this.state.selectedDate}/>
+                                                    <DatePicker className="form-control"  style={{width: "20em"}} minDate={this.state.selectedDate} onChange={date => this.handleDateChange(date)} selected={this.state.selectedDate}/>
                                                     
                                                 </td>
                                             </tr>
@@ -254,7 +236,7 @@ class AddAppointmentModal extends Component {
                                                     <label>Select duration:</label>
                                                 </td>
                                                 <td>
-                                                    <input placeholder="Duration" className="form-control" style={{width: "15.8em"}} type="number" min="10" max="60" onChange={this.handleSelectDurationChange} value={this.state.duration} />
+                                                    <input placeholder="Duration" className="form-control" style={{width: "15em"}} type="number" min="10" max="60" onChange={this.handleSelectDurationChange} value={this.state.duration} />
                                                 </td>
                                             </tr>
 
@@ -271,7 +253,7 @@ class AddAppointmentModal extends Component {
                                                     <label>Price:</label>
                                                 </td>
                                                 <td>
-                                                    <input placeholder="Price" className="form-control" style={{width: "15.8em"}} type="number" min="1" onChange={this.handlePriceChange} value={this.state.price} />
+                                                    <input placeholder="Price" className="form-control" style={{width: "15em"}} type="number" min="1" onChange={this.handlePriceChange} value={this.state.price} />
                                                 </td>
                                             </tr>
                                         </table>
