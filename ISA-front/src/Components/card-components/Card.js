@@ -59,7 +59,7 @@ class Card extends Component {
             openScheduleModal: true
         });
         };
-        
+
         handleModalClose = () => {
             this.setState({openScheduleModal: false});
         }
@@ -80,7 +80,7 @@ class Card extends Component {
         <h2>{this.props.dermatologist.EntityDTO.name} {this.props.dermatologist.EntityDTO.surname}</h2>
         <p>Email: {this.props.dermatologist.EntityDTO.email}</p>
         <p>Phone: {this.props.dermatologist.EntityDTO.phoneNumber}</p>
-        <p>Grade: {this.props.dermatologist.EntityDTO.grade} </p>
+        <p>Grade: {this.props.dermatologist.EntityDTO.grade} <i className="icon-star" style={{ color: "yellow"}}></i> </p>
         
         
         </button>

@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.UUID;
 
 import show.isaBack.DTO.drugDTO.AllergenDTO;
+import show.isaBack.DTO.pharmacyDTO.PharmacyDTO;
 import show.isaBack.DTO.userDTO.ChangePasswordDTO;
 import show.isaBack.DTO.userDTO.PatientDTO;
 import show.isaBack.DTO.userDTO.PatientsAllergenDTO;
@@ -84,6 +85,7 @@ public interface IUserInterface extends IService<UserDTO, UnspecifiedDTO<UserDTO
 	UUID addWorkTimeForEmployee(WorkTimeDTO workTimeDTO);
 	boolean addDermatologistInPharmacy(NewDermatologistInPharmacyDTO addDermatologistToPharmacyDTO);
 	boolean removeDermatologistFromPharmacy(UUID dermatologistId, UUID phId);
+	List<UnspecifiedDTO<PharmacyDTO>> findAllPharmaciesByDermatologistId(UUID dermatologistId);
 
 
 

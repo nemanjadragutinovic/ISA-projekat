@@ -24,6 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 
 import show.isaBack.DTO.drugDTO.AllergenDTO;
+import show.isaBack.DTO.pharmacyDTO.PharmacyDTO;
 import show.isaBack.DTO.userDTO.ChangePasswordDTO;
 import show.isaBack.DTO.userDTO.EmployeeGradeDTO;
 import show.isaBack.DTO.userDTO.NewDermatologistInPharmacyDTO;
@@ -594,6 +595,21 @@ public class UserController {
 						return new ResponseEntity<>(HttpStatus.OK); 
 					
 					return new ResponseEntity<>(HttpStatus.BAD_REQUEST);	
+				} catch (Exception e) {
+					return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR); 
+				}
+			}
+			
+			@GetMapping("/dermatologistspharmacies/{dermatologistId}") 
+			//@PreAuthorize("hasRole('PHARMACYADMIN') or hasRole('PATIENT')")
+			@CrossOrigin
+			public ResponseEntity<List<UnspecifiedDTO<PharmacyDTO>>> getAllPharmaciesbydermatologistId(@PathVariable UUID dermatologistId) {
+			  
+				try {
+					List<UnspecifiedDTO<PharmacyDTO>> pharmacies = userService.findAllPharmaciesByDermatologistId(dermatologistId);
+					return new ResponseEntity<>(pharmacies,HttpStatus.OK); 
+				} catch (EntityNotFoundException e) {
+					return new ResponseEntity<>(HttpStatus.NOT_FOUND); 
 				} catch (Exception e) {
 					return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR); 
 				}

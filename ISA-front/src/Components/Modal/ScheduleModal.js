@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Button, Modal } from "react-bootstrap";
+import { Button, CloseButton, Modal } from "react-bootstrap";
 import Axios from "axios";
 import DatePicker from "react-datepicker";
 import GetAuthorisation from "../../Funciton/GetAuthorisation";
@@ -10,6 +10,7 @@ import { confirmAlert } from 'react-confirm-alert';
 import "../card-components/card.styles.css"
 import ConfirmModal from "./ConfirmModal";
 import AddAppointmentModal from "./AddAppointmentModal"
+import PharmaciesForEmployee from "./PharmaciesForEmployeeModal";
 const API_URL="http://localhost:8080";
 
 class ScheduleModal extends Component {
@@ -25,7 +26,9 @@ class ScheduleModal extends Component {
         showWorkTime: true,
         hiddenSuccessAlert: true,
         hiddenUnsuccessAlert: true, 
-		showAddAppointment: false
+		showAddAppointment: false,
+        showPharmaciesForEmployee: false,
+        pharmacies:[]
 	};
 
     handleAdd = () => {
@@ -105,6 +108,24 @@ class ScheduleModal extends Component {
       
 	};
 
+    handleOpenPharmaciesForEmployeeModal = () => {
+        Axios.get(API_URL + "/users/dermatologistspharmacies/"+this.props.employee,{
+            headers: { Authorization:  GetAuthorisation() },  
+        })
+			.then((res) => {
+				this.setState({ pharmacies: res.data });
+				console.log(res.data);
+			})
+			.catch((err) => {
+				console.log(err);
+			});
+            this.setState({ showPharmaciesForEmployee: true,showAnotherModal:true });
+    }
+
+    handleClosePharmaciesForEmployeeModal = () => {
+		this.setState({ showPharmaciesForEmployee: false,showAnotherModal:false });
+      
+	};
     handleUpdateDermatologists = () => {
 		this.setState({ hiddenConfirmModal: false,showAnotherModal:false });
         this.props.onCloseModal();
@@ -300,14 +321,15 @@ class ScheduleModal extends Component {
 						</Button>
                     </div>
                 <ConfirmModal show={this.state.hiddenConfirmModal}  handleCloseAlert={this.handleCloseConfirmModal} updateDermatologists={this.handleUpdateDermatologists} pharmacyId={this.props.pharmacyId} dermatologistId={this.props.employee} header="Removing dermatologist" />
-                <AddAppointmentModal show={this.state.showAddAppointment} onCloseModal={this.handleCloseAddAppModal} pharmacyId={this.props.pharmacyId} header="Create appointment" dermatologistId={this.props.employee} />
-				</Modal.Body>
+                <AddAppointmentModal show={this.state.showAddAppointment} onCloseModal={this.handleCloseAddAppModal} pharmacyId={this.props.pharmacyId} header="Create appointment" dermatologistId={this.props.employee}  />
+				<PharmaciesForEmployee show={this.state.showPharmaciesForEmployee} pharmacies={this.state.pharmacies} onCloseModal={this.handleClosePharmaciesForEmployeeModal}/>
+                </Modal.Body>
 				<Modal.Footer>
                 <button hidden={!this.state.showWorkTime} type="button" class="btn btn-secondary mr-auto" type="button"  onClick={() => this.handleOpenConfirmModal()}>Remove Dermatologist</button>
                         <Button hidden={!this.state.showWorkTime}  onClick={() => this.handleAddAppointmentModal()}>
 							Add Appointment
 						</Button>
-                        <Button hidden={!this.state.showWorkTime} >
+                        <Button hidden={!this.state.showWorkTime} onClick={() => this.handleOpenPharmaciesForEmployeeModal()}>
 							Pharmacies
 						</Button>
 					<Button onClick={() => this.handleClickOnClose()}>Close</Button>

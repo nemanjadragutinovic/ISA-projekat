@@ -24,6 +24,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PathVariable;
 
 import show.isaBack.DTO.drugDTO.AllergenDTO;
+import show.isaBack.DTO.pharmacyDTO.PharmacyDTO;
 import show.isaBack.DTO.pharmacyDTO.PharmacyWithGradeAndPriceDTO;
 import show.isaBack.DTO.userDTO.AuthorityDTO;
 import show.isaBack.DTO.userDTO.ChangePasswordDTO;
@@ -936,5 +937,22 @@ public class UserService implements IUserInterface{
 	}
 
 	
-
+	@Override
+	public List<UnspecifiedDTO<PharmacyDTO>> findAllPharmaciesByDermatologistId(UUID dermatologistId) {
+		
+			Dermatologist dermatologist = dermatologistRepository.getOne(dermatologistId);
+			
+			List<UnspecifiedDTO<PharmacyDTO>> pharmaciesDTO = new ArrayList<UnspecifiedDTO<PharmacyDTO>>();
+			
+			
+			
+			for (Pharmacy ph : dermatologist.getPharmacies()) 
+			{	
+				PharmacyDTO pharmacyDTO= new PharmacyDTO(ph);	
+				pharmaciesDTO.add(new UnspecifiedDTO<PharmacyDTO>(ph.getId(),pharmacyDTO));
+			}
+			
+			return pharmaciesDTO;
+	
+	} 
 }
