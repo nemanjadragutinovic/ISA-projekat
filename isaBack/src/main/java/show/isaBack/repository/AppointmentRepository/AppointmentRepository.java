@@ -99,4 +99,5 @@ public interface AppointmentRepository extends PagingAndSortingRepository<Appoin
 			+ " AND a.appointmentStatus = 'SCHEDULED' AND a.appointmentType = 'CONSULTATION' AND a.pharmacy.id=?2")
 	List<Appointment> getCalendarAppointmentsByPharmacist(UUID loggedUserId, UUID pharmacyId);
 	
+	
 }

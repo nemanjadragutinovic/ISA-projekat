@@ -1,6 +1,5 @@
 import React, { Component } from "react";
 import { Button, Modal } from "react-bootstrap";
-//import AppointmentIcon from "../static/appointment-icon.jpg";
 const TIME_INTERVAL= 24 * 60 * 60 * 1000;
 
 class AppointmentDetails extends Component {
@@ -79,7 +78,7 @@ class AppointmentDetails extends Component {
 										</div>
 									</div>
 								</div>
-								<div className="row align-items-end m-4" hidden={!this.canInteractWithAppointment(this.props.startDateTime) || this.props.appointmentStatus != "SCHEDULED"}>
+								<div className="row align-items-end m-4" hidden={!this.canInteractWithAppointment(this.props.startDateTime) && this.props.appointmentStatus != "SCHEDULED"}>
 											<button
 												type="button"
 												onClick={() =>
@@ -98,7 +97,7 @@ class AppointmentDetails extends Component {
 												}
 												className="btn btn-danger w-100 mt-1"
 											>
-												Did not show up
+												Patient did not show up
 												</button>
 										</div>
 							</div>

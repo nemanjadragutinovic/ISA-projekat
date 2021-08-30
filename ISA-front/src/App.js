@@ -32,6 +32,7 @@ import activateAccount from './Components/activateAccount';
 import PatientsPage from './Pages/Appointment/PatientsPage';
 import PharmacyForAdmin from './Components/Pharmacies/PharmacyForPhAdmin';
 import CalendarForAppointments from './Pages/Appointment/CalendarForAppointments';
+import AppointmentReport from './Pages/Appointment/AppointmentReport';
 
 
 import {
@@ -88,7 +89,7 @@ function App() {
 
         <Route to="/dermatologistsForPhAdmin" path ="/dermatologistsForPhAdmin"  component={dermatologistsForPhAdmin}/>
         <Route to="/calendar" path ="/calendar" component={CalendarForAppointments}/>
-
+        <Route to="/report/:id" path ="/report/:id" component={AppointmentReport}/>
 
 
         </Switch>

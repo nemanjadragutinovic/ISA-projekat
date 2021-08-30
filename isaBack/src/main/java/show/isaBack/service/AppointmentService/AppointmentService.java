@@ -21,6 +21,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import show.isaBack.DTO.AppointmentDTO.AppointmentDTO;
+import show.isaBack.DTO.AppointmentDTO.AppointmentReportDTO;
 import show.isaBack.DTO.AppointmentDTO.DermatologistAppointmentDTO;
 import show.isaBack.DTO.AppointmentDTO.FormAppointmentDTO;
 import show.isaBack.DTO.AppointmentDTO.FreeAppointmentPeriodDTO;
@@ -38,10 +39,12 @@ import show.isaBack.model.Pharmacy;
 import show.isaBack.model.User;
 import show.isaBack.model.UserCharacteristics.WorkTime;
 import show.isaBack.model.appointment.Appointment;
+import show.isaBack.model.appointment.AppointmentReport;
 import show.isaBack.model.appointment.AppointmentStatus;
 import show.isaBack.model.appointment.AppointmentType;
 import show.isaBack.model.drugs.DrugReservation;
 import show.isaBack.model.drugs.EReceipt;
+import show.isaBack.repository.AppointmentRepository.AppointmentReportRepository;
 import show.isaBack.repository.AppointmentRepository.AppointmentRepository;
 
 import show.isaBack.repository.pharmacyRepository.PharmacyRepository;
@@ -67,6 +70,9 @@ public class AppointmentService implements IAppointmentService{
 
 	@Autowired
 	private AppointmentRepository appointmentRepository;
+	
+	@Autowired
+	private AppointmentReportRepository appointmentReportRepository;
 	
 	@Autowired
 	private DermatologistRepository dermatologistRepository;
@@ -915,6 +921,23 @@ public class AppointmentService implements IAppointmentService{
 		List<UnspecifiedDTO<AppointmentDTO>> returnAppointments = AppointmentsMapper.MapAppointmentPersistenceListToAppointmentUnspecifiedDTOList(appointments);
 		
 		return returnAppointments;
+	}
+	
+	@Override
+	public UUID create(AppointmentReportDTO entityDTO) {
+		// TODO Auto-generated method stub
+		try {
+			Appointment appointment = appointmentRepository.findById(entityDTO.getAppointmentId()).get();
+			AppointmentReport appointmentReport = new AppointmentReport(entityDTO.getAnamnesis(), entityDTO.getDiagnosis(), entityDTO.getTherapy(), appointment);
+			appointmentReportRepository.save(appointmentReport);
+			return appointmentReport.getId();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return null;
+			
+		}
+		
 	}
 	
 	@Override
