@@ -31,7 +31,7 @@ import PatientsProccessedDrugsEReceipts from "./Pages/PatientsProccessedDrugsERe
 import activateAccount from './Components/activateAccount';
 import PatientsPage from './Pages/Appointment/PatientsPage';
 import PharmacyForAdmin from './Components/Pharmacies/PharmacyForPhAdmin';
-
+import pharmacistsForPhAdmin from './Components/Pharmacies/PharmacistsForPhAdmin';
 
 
 import {
@@ -87,6 +87,7 @@ function App() {
 
 
         <Route to="/dermatologistsForPhAdmin" path ="/dermatologistsForPhAdmin"  component={dermatologistsForPhAdmin}/>
+        <Route to="/pharmacistsForPhAdmin" path ="/pharmacistsForPhAdmin"  component={pharmacistsForPhAdmin}/>
 
 
 

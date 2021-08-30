@@ -524,7 +524,7 @@ public class UserController {
 	@GetMapping("/pharmacistsInPharmacy/{phId}")
 	//@PreAuthorize("hasRole('PHARMACYADMIN')")
 	@CrossOrigin
-	public ResponseEntity<List<UnspecifiedDTO<EmployeeGradeDTO>>> getPharmacists(@RequestParam UUID phId){
+	public ResponseEntity<List<UnspecifiedDTO<EmployeeGradeDTO>>> getPharmacists(@PathVariable UUID phId){
 		
 		System.out.println(phId);
 		
