@@ -1,11 +1,10 @@
 import React, { Component } from "react";
 import Modal from 'react-bootstrap/Modal'
 import './card.styles.css'
-import Picture from "../../Images/dermatologist.png" ;
-import ScheduleModal from "../Modal/ScheduleModal";
-import Header from '../Header';
+import Picture from "../../Images/pharmacist.png" ;
 import Axios from "axios";
 import GetAuthorisation from "../../Funciton/GetAuthorisation";
+import ScheduleModalPharmacist from "../Modal/ScheduleModalPharmacist";
 
 const API_URL="http://localhost:8080";
 class PharmacistCard extends Component {
@@ -25,7 +24,7 @@ class PharmacistCard extends Component {
         
     console.log("aaaaaaaaaaaaaa");
     
-    Axios.get(API_URL + "/users/scheduleForEmployee/" + this.props.dermatologist.Id, {
+    Axios.get(API_URL + "/users/scheduleForEmployee/" + this.props.pharmacist.Id, {
         headers: { Authorization: GetAuthorisation() },
     })
     .then((res) => {
@@ -70,7 +69,7 @@ class PharmacistCard extends Component {
         }
 	render() {
 	
-        console.log(this.props.pharmacist.EntityDTO);
+        console.log(this.props.pharmacist);
         console.log(this.props.pharmacyId)
 		return (
       
@@ -85,10 +84,10 @@ class PharmacistCard extends Component {
         
         </button>
         
-       
+        <ScheduleModalPharmacist show={this.state.openScheduleModal} update={this.handleUpdateScheduleModal} updateDermatologists={this.handleUpdateDermatologists} onCloseModal={this.handleModalClose} workTimes={this.state.workTimes}  employee ={this.props.pharmacist.Id} pharmacyId={this.props.pharmacyId} header="WorkTimes" />
 	    </React.Fragment>
         
-
+        
 		);
 	}
 }

@@ -572,7 +572,7 @@ public class UserController {
 			@GetMapping("/scheduleForEmployee/{id}") 	
 			@PreAuthorize("hasRole('PHARMACYADMIN')")
 			@CrossOrigin
-			public ResponseEntity<List<UnspecifiedDTO<WorkTimeDTO>>> getWorkTimeForStaff(@PathVariable UUID id) {
+			public ResponseEntity<List<UnspecifiedDTO<WorkTimeDTO>>> getWorkTimesForEmployee(@PathVariable UUID id) {
 			  
 				try {
 					List<UnspecifiedDTO<WorkTimeDTO>> schedule = userService.getScheduleForEmployee(id);
