@@ -359,7 +359,7 @@ public class UserService implements IUserInterface{
 	}
 
 	@Override
-	public UUID createPharmacist(UserRegistrationDTO entityDTO, UUID pharmacyId) {
+	public UUID createPharmacist(UserRegistrationDTO entityDTO, UUID pharmacyId) { 
 		Pharmacy pharmacy = pharmacyRepository.getOne(pharmacyId);
 		Pharmacist pharmacist = CreatePharmacistFromDTO(entityDTO, pharmacy);
 		pharmacist.setPassword(passwordEncoder.encode(pharmacist.getId().toString()));

@@ -22,7 +22,9 @@ public interface DrugInPharmacyRepository extends JpaRepository<DrugInPharmacy, 
 	@Query(value = "SELECT d FROM DrugInPharmacy d WHERE d.drugInstance.id = ?1 AND d.pharmacy.id = ?2")
 	DrugInPharmacy getDrugInPharmacy(UUID drugId, UUID pharmacyId);
 
-	
+
+	@Query(value = "SELECT d.price FROM DrugInPharmacy d WHERE d.drugInstance.id = ?1 AND d.pharmacy.id = ?2 AND DATE(d.dateFrom) <= CURRENT_DATE AND DATE(d.dateTo) >= CURRENT_DATE")
+	Double getCurrentPriceForDrugInPharmacy(UUID drugId, UUID pharmacyId);
 
 	
 }

@@ -9,6 +9,7 @@ import show.isaBack.DTO.drugDTO.DrugInstanceDTO;
 import show.isaBack.DTO.drugDTO.DrugReservationDTO;
 import show.isaBack.DTO.drugDTO.DrugReservationResponseDTO;
 import show.isaBack.DTO.drugDTO.DrugWithEreceiptsDTO;
+import show.isaBack.DTO.drugDTO.DrugWithPriceDTO;
 import show.isaBack.DTO.drugDTO.DrugsWithGradesDTO;
 import show.isaBack.DTO.drugDTO.EreceiptDTO;
 import show.isaBack.DTO.drugDTO.IngredientDTO;
@@ -47,6 +48,9 @@ public interface IDrugService extends IService<DrugInstanceDTO, UnspecifiedDTO<D
 	public List<UnspecifiedDTO<EreceiptDTO>> findAllPatientsEreceiptsWithStatus(EReceiptStatus searchStatus);
 	public List<UnspecifiedDTO<DrugWithEreceiptsDTO>> findAllPatientsPRoccesedDrugsFromEreceipts();
 	public void refreshPatientDrugsReservations();
+	List<UnspecifiedDTO<DrugWithPriceDTO>> findDrugsInPharmacyWithPrice(UUID pharmacyId);
+	List<UnspecifiedDTO<DrugWithPriceDTO>> searchDrugsInPharmacy(String name, double gradeFrom, double gradeTo,
+			String manufacturer, UUID pharmacyId);
 	
 
 	
