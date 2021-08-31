@@ -24,6 +24,7 @@ import show.isaBack.DTO.drugDTO.DrugKindIdDTO;
 import show.isaBack.DTO.drugDTO.DrugReservationDTO;
 import show.isaBack.DTO.drugDTO.DrugReservationResponseDTO;
 import show.isaBack.DTO.drugDTO.DrugWithEreceiptsDTO;
+import show.isaBack.DTO.drugDTO.DrugWithPriceDTO;
 import show.isaBack.DTO.drugDTO.DrugsWithGradesDTO;
 import show.isaBack.DTO.drugDTO.EreceiptDTO;
 import show.isaBack.DTO.drugDTO.EreceiptWithPharmacyDTO;
@@ -289,6 +290,29 @@ public class DrugService implements IDrugService{
 		return drugsWithGrades;
 	}
 	
+	@Override
+	
+	public List<UnspecifiedDTO<DrugWithPriceDTO>> searchDrugsInPharmacy(String name, double gradeFrom, double gradeTo, String manufacturer,UUID pharmacyId) {
+		List<DrugInstance> drugsWithName;
+		System.out.println("eja alooooooooooooooo");
+		if(!name.equals("")|| !manufacturer.equals("")) {
+			drugsWithName = drugInstanceRepository.findByNameAndManufacturer(name.toLowerCase(),manufacturer.toLowerCase());
+		}else
+			drugsWithName = drugInstanceRepository.findAll();
+		List<DrugInstance> drugsWithNameinPharmacy=new ArrayList<DrugInstance>();
+		for(DrugInstance dr:drugsWithName) {
+			if(drugInPharmacyRepository.getDrugInPharmacy(dr.getId(), pharmacyId)!=null) {
+				drugsWithNameinPharmacy.add(dr);
+			}
+		}
+			
+			
+		List<UnspecifiedDTO<DrugWithPriceDTO>> drugs = checkDrugGrades(drugsWithNameinPharmacy, gradeFrom, gradeTo,pharmacyId);
+		for(UnspecifiedDTO<DrugWithPriceDTO> dr:drugs)
+			System.out.println(dr.Id);
+		return drugs;
+	}
+	
 	private List<DrugInstance> sreachDrugKind(List<DrugInstance> drugs, String Kind){
 		
 		if(Kind.equals(""))
@@ -304,6 +328,40 @@ public class DrugService implements IDrugService{
 		return drugsWithKind;
 	}
 	
+	private List<UnspecifiedDTO<DrugWithPriceDTO>> checkDrugGrades(List<DrugInstance> drugsWithName, double gradeFrom, double gradeTo,UUID pharmacyId){
+		List<UnspecifiedDTO<DrugWithPriceDTO>> drugs = new ArrayList<UnspecifiedDTO<DrugWithPriceDTO>>();
+		double grade;
+		double price=0;
+		for (DrugInstance var : drugsWithName) 
+		{ 
+			grade = findAvgGradeForDrug(var.getId());
+			System.out.println(grade);
+			Double price1=drugInPharmacyRepository.getCurrentPriceForDrugInPharmacy(var.getId(), pharmacyId);
+			
+			if(price1!=null)
+				price=price1;
+			
+			if(!(gradeFrom == -1.0 || gradeTo == -1.0)) {
+				if(grade >= gradeFrom && grade <= gradeTo) {
+					drugs.add(DrugsWithGradesMapper.MapDrugInstancePersistenceToDrugWithPriceDTO(var, grade,price));
+				}
+			}else {
+				if(gradeFrom == -1.0 & gradeTo != -1.0) {
+					if(grade <= gradeTo)
+						drugs.add(DrugsWithGradesMapper.MapDrugInstancePersistenceToDrugWithPriceDTO(var, grade,price));
+				}else if (gradeTo == -1.0 & gradeFrom != -1.0){
+					if(grade >= gradeFrom)
+						drugs.add(DrugsWithGradesMapper.MapDrugInstancePersistenceToDrugWithPriceDTO(var, grade,price));
+				}else {
+					drugs.add(DrugsWithGradesMapper.MapDrugInstancePersistenceToDrugWithPriceDTO(var, grade,price));
+				}
+			}
+			
+		}
+		
+		return drugs;
+	}
+	
 	private List<UnspecifiedDTO<DrugsWithGradesDTO>> checkDrugGrades(List<DrugInstance> drugsWithKind, double gradeFrom, double gradeTo){
 		List<UnspecifiedDTO<DrugsWithGradesDTO>> drugsWithGrades = new ArrayList<UnspecifiedDTO<DrugsWithGradesDTO>>();
 		double grade;
@@ -311,6 +369,7 @@ public class DrugService implements IDrugService{
 		for (DrugInstance var : drugsWithKind) 
 		{ 
 			grade = findAvgGradeForDrug(var.getId());
+			
 			
 			if(!(gradeFrom == -1.0 || gradeTo == -1.0)) {
 				if(grade >= gradeFrom && grade <= gradeTo) {
@@ -752,8 +811,22 @@ public class DrugService implements IDrugService{
 	}
 	
 	
-	
-	
+	@Override
+	public List<UnspecifiedDTO<DrugWithPriceDTO>> findDrugsInPharmacyWithPrice(UUID pharmacyId) {
+		List<UnspecifiedDTO<DrugWithPriceDTO>> drugs = new ArrayList<UnspecifiedDTO<DrugWithPriceDTO>>();
+		
+		for(DrugInstance drugInstance : drugInstanceRepository.findAll()) {
+			if(drugInPharmacyRepository.getDrugInPharmacy(drugInstance.getId(), pharmacyId)!=null) {
+				double grade = findAvgGradeForDrug(drugInstance.getId());
+				double price=drugInPharmacyRepository.getCurrentPriceForDrugInPharmacy(drugInstance.getId(), pharmacyId);
+				drugs.add(new UnspecifiedDTO<DrugWithPriceDTO>(drugInstance.getId(),new DrugWithPriceDTO(drugInstance.getName(),drugInstance.getManufacturer().getName(),drugInstance.getDrugInstanceName(),drugInstance.getDrugFormat(),drugInstance.getQuantity(),drugInstance.isOnReciept(),grade,price)));
+			}
+				
+		}
+		
+		return drugs;
+	}
+
 	
 	
 	

@@ -32,7 +32,7 @@ import activateAccount from './Components/activateAccount';
 import PatientsPage from './Pages/Appointment/PatientsPage';
 import PharmacyForAdmin from './Components/Pharmacies/PharmacyForPhAdmin';
 import pharmacistsForPhAdmin from './Components/Pharmacies/PharmacistsForPhAdmin';
-
+import DrugsForPharmacyAdmin from './Components/DrugsForPharmacyAdmin';
 
 import {
   BrowserRouter as Router,
@@ -40,6 +40,7 @@ import {
   Link,
   Switch
 } from "react-router-dom";
+
 
 
 
@@ -88,7 +89,7 @@ function App() {
 
         <Route to="/dermatologistsForPhAdmin" path ="/dermatologistsForPhAdmin"  component={dermatologistsForPhAdmin}/>
         <Route to="/pharmacistsForPhAdmin" path ="/pharmacistsForPhAdmin"  component={pharmacistsForPhAdmin}/>
-
+        <Route  to ="/drugsForPhAdmin" path ="/drugsForPhAdmin"  component={DrugsForPharmacyAdmin}/>
 
 
 

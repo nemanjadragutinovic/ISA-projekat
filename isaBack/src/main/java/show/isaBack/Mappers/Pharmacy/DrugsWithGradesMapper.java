@@ -3,6 +3,7 @@ package show.isaBack.Mappers.Pharmacy;
 import java.util.ArrayList;
 import java.util.List;
 
+import show.isaBack.DTO.drugDTO.DrugWithPriceDTO;
 import show.isaBack.DTO.drugDTO.DrugsWithGradesDTO;
 import show.isaBack.DTO.drugDTO.ManufacturerDTO;
 import show.isaBack.DTO.drugDTO.ReplaceDrugDTO;
@@ -34,5 +35,12 @@ public class DrugsWithGradesMapper {
 		
 		return new UnspecifiedDTO<ReplaceDrugDTO>(drug.getId(), new ReplaceDrugDTO(drug.getName(), drug.getFabricCode(), drug.getDrugInstanceName(), new ManufacturerDTO(drug.getManufacturer().getName())));
 	}
+	
+	public static UnspecifiedDTO<DrugWithPriceDTO> MapDrugInstancePersistenceToDrugWithPriceDTO(DrugInstance drug,double grade,double price){
+		if(drug == null) throw new IllegalArgumentException();
+		
+		return new UnspecifiedDTO<DrugWithPriceDTO>(drug.getId(),new DrugWithPriceDTO(drug.getName(),drug.getManufacturer().getName(),drug.getDrugInstanceName(),drug.getDrugFormat(),drug.getQuantity(),drug.isOnReciept(),grade,price));
+	}
+	
 	
 }

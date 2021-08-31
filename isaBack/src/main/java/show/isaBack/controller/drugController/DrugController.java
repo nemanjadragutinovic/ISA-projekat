@@ -31,6 +31,7 @@ import show.isaBack.DTO.drugDTO.DrugManufacturerDTO;
 import show.isaBack.DTO.drugDTO.DrugReservationDTO;
 import show.isaBack.DTO.drugDTO.DrugReservationResponseDTO;
 import show.isaBack.DTO.drugDTO.DrugWithEreceiptsDTO;
+import show.isaBack.DTO.drugDTO.DrugWithPriceDTO;
 import show.isaBack.DTO.drugDTO.DrugsWithGradesDTO;
 import show.isaBack.DTO.drugDTO.EreceiptDTO;
 import show.isaBack.DTO.drugDTO.IngredientDTO;
@@ -160,6 +161,14 @@ public class DrugController {
 		System.out.println("usao u pretragu");
 		return new ResponseEntity<>(drugService.searchDrugs(name, gradeFrom, gradeTo, drugKind) ,HttpStatus.CREATED);
 	}
+	
+	@CrossOrigin
+	@GetMapping("/searchDrugsInPharmacy") 
+	public ResponseEntity<List<UnspecifiedDTO<DrugWithPriceDTO>>> searchDrugsInPharmacy(@RequestParam String name, @RequestParam double gradeFrom, @RequestParam double gradeTo, @RequestParam String manufacturer, @RequestParam UUID pharmacyId) {
+		System.out.println("usao u pretragu");
+		return new ResponseEntity<>(drugService.searchDrugsInPharmacy(name, gradeFrom, gradeTo, manufacturer,pharmacyId) ,HttpStatus.CREATED);
+	}
+	
 	
 	@CrossOrigin
 	@GetMapping("/getDrugsWithGrade") 
@@ -323,5 +332,12 @@ public class DrugController {
 		return new ResponseEntity<>(drugService.findAllPatientsPRoccesedDrugsFromEreceipts() ,HttpStatus.OK);
 	}
 	
+	@CrossOrigin
+	@GetMapping("/drugsInPharmacy/{pharmacyId}")
+	//@PreAuthorize("hasRole('PHARMACYADMIN')")
+	public ResponseEntity<List<UnspecifiedDTO<DrugWithPriceDTO>>> findDrugsFromPharmacyWithPrice(@PathVariable UUID pharmacyId) {
+		System.out.println("ALooo");
+		return new ResponseEntity<>(drugService.findDrugsInPharmacyWithPrice(pharmacyId),HttpStatus.OK);
+	}
 	
 }
