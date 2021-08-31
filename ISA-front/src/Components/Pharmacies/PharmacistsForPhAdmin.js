@@ -50,34 +50,6 @@ class PharmacistsForPhAdmin extends Component {
             });
     }
 
-
-
-    handleAddDermatologist = () => {
-        Axios.get(API_URL + "/users/dermatologistsNotInPharmacy/" + localStorage.getItem("keyPharmacyId"), {
-            headers: { Authorization: GetAuthorisation() },
-        }).then((res) => {
-            this.setState({ dermatologists1: res.data, showAddDermatologist: true });
-            console.log(res.data);
-        })
-            .catch((err) => {
-                console.log(err);
-            });
-
-    }
-
-    handleUpdateDermatologistsWhoarentInPharmacy = () => {
-        Axios.get(API_URL + "/users/dermatologistsNotInPharmacy/" + localStorage.getItem("keyPharmacyId"), {
-            headers: { Authorization: GetAuthorisation() },
-        }).then((res) => {
-            this.setState({ dermatologists1: res.data });
-            console.log(res.data);
-        })
-            .catch((err) => {
-                console.log(err);
-            });
-
-    }
-
     handleModalClose = () => {
         this.setState({ showWorkTimesModal: false });
     }
@@ -91,11 +63,11 @@ class PharmacistsForPhAdmin extends Component {
 
 
     handleAddDermatologistClose = () => {
-        Axios.get(API_URL + "/users/dermatologistsInPharmacy/" + localStorage.getItem("keyPharmacyId"), {
+        Axios.get(API_URL + "/users/pharmacistsInPharmacy/" + localStorage.getItem("keyPharmacyId"), {
             headers: { Authorization: GetAuthorisation() },
         })
             .then((res) => {
-                this.setState({ dermatologists: res.data });
+                this.setState({ pharmacists: res.data });
                 console.log(res.data);
 
             })
@@ -105,12 +77,12 @@ class PharmacistsForPhAdmin extends Component {
         this.setState({ showAddDermatologist: false });
     }
 
-    handleUpdateDermatologists = () => {
-        Axios.get(API_URL + "/users/dermatologistsInPharmacy/" + localStorage.getItem("keyPharmacyId"), {
+    handleUpdatePharmacists = () => {
+        Axios.get(API_URL + "/users/pharmacistsInPharmacy/" + localStorage.getItem("keyPharmacyId"), {
             headers: { Authorization: GetAuthorisation() },
         })
             .then((res) => {
-                this.setState({ dermatologists: res.data });
+                this.setState({ pharmacists: res.data });
                 console.log(res.data);
 
             })
@@ -196,7 +168,7 @@ class PharmacistsForPhAdmin extends Component {
 
                 </div>
                 <div className="container">
-                    <PharmacistCardList pharmacists={this.state.pharmacists} pharmacyId={this.state.pharmacyId} updateDermatologists={this.handleUpdateDermatologists} />
+                    <PharmacistCardList pharmacists={this.state.pharmacists} pharmacyId={this.state.pharmacyId} updatePharmacists={this.handleUpdatePharmacists} />
                    
                 </div>
 

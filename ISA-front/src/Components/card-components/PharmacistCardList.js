@@ -10,8 +10,8 @@ class PharmacistCardList extends Component {
         
     }
 
-    handleUpdateDermatologists =()=>{
-        this.props.updateDermatologists()
+    handleUpdatePharmacists =()=>{
+        this.props.updatePharmacists()
     }
     render() {
 	
@@ -21,7 +21,7 @@ class PharmacistCardList extends Component {
       
       <React.Fragment>
                 <div className='card-list'>{this.props.pharmacists.map((pharmacist)=>(
-            <PharmacistCard key={pharmacist.id} pharmacist={pharmacist} pharmacyId={this.props.pharmacyId} updateDermatologists={this.handleUpdateDermatologists}/>
+            <PharmacistCard key={pharmacist.id} pharmacist={pharmacist} pharmacyId={this.props.pharmacyId} updatePharmacists={this.handleUpdatePharmacists}/>
             ))}
             </div>
 	    </React.Fragment>

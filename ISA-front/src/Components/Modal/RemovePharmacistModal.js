@@ -7,47 +7,47 @@ import SuccessAlert from "../Alerts/SuccessfulAlert";
 import UnsuccessAlert from "../Alerts/UnsuccessfulAlert";
 const API_URL="http://localhost:8080";
 
-class ConfirmModal extends Component {
+class RemovePharmacistModal extends Component {
     state = {
         hiddenSuccessAlert: true,
         hiddenUnsuccessAlert:true,
-        
+       
        
     }
 
     componentDidMount() {
     }
  
-    handleRemoveDermatologist = () =>{
+    handleRemovePharamcist = () =>{
         console.log(`Bearer ${localStorage.getItem("keyToken")}`);
-           console.log(this.props.dermatologistId);        
+           console.log(this.props.pharmacistId);        
        
 
                     let removeDTO = {
-                        employeeId: this.props.dermatologistId,
+                        employeeId: this.props.pharmacistId,
                         pharmacyId: this.props.pharmacyId,
                     };
                     
-                    Axios.put(API_URL + "/users/removeDermatologistFromPharmacy",removeDTO, {
+                    Axios.put(API_URL + "/users/removePharmacistFromPharmacy",removeDTO, {
                       
                         validateStatus: () => true,
                         headers: { Authorization:  GetAuthorisation() },
                     }).then((res) =>{
                         if (res.status === 200) {
-                            this.setState({
-                                hiddenSuccessAlert: false,
-                                hiddenUnsuccessAlert:true,
-                                successHeader: "Success",
-                                successMessage: "You successfully remove dermatologist."
-                            });
-                        }else if (res.status === 400){
-                            this.setState({ 
-                                hiddenSuccessAlert: true,
-                                hiddenUnsuccessAlert: false, 
-                                failHeader: "Unsuccess", 
-                                failMessage: "Dermatologist has scheduled appointments."});
-                        
-                        }
+                        this.setState({
+                            hiddenSuccessAlert: false,
+                            hiddenUnsuccessAlert:true,
+                            successHeader: "Success",
+                            successMessage: "You successfully remove dermatologist."
+                        });
+                    }else if (res.status === 400){
+                        this.setState({ 
+                            hiddenSuccessAlert: true,
+                            hiddenUnsuccessAlert: false, 
+                            failHeader: "Unsuccess", 
+                            failMessage: "Pharmacist has scheduled appointments."});
+                    
+                    }
                     }).catch((err) => {
                        
                         console.log(err);
@@ -55,7 +55,7 @@ class ConfirmModal extends Component {
                             hiddenSuccessAlert: true,
                             hiddenUnsuccessAlert: false, 
                             failHeader: "Unsuccess", 
-                            failMessage: "It is not possible to remove the dermatologist"});
+                            failMessage: "It is not possible to remove the pharmacist"});
                     });
             
        
@@ -64,7 +64,7 @@ class ConfirmModal extends Component {
     handleCloseAlertSuccess = () => {
 		this.setState({ hiddenSuccessAlert: true });
         this.props.handleCloseAlert();
-        this.props.updateDermatologists();
+        this.props.updatePharmacists();
     };
     
     handleCloseUnsuccessAlert = () => {
@@ -78,6 +78,7 @@ class ConfirmModal extends Component {
             <Modal
                 show = {this.props.show}
                 centered
+               
                 >
                 <Modal.Header >
                     <Modal.Title style={{marginLeft:'19%'}} >
@@ -102,7 +103,7 @@ class ConfirmModal extends Component {
                 </div>
                 </Modal.Body>
                 <Modal.Footer>
-                <button type="button" class="btn btn-secondary" type="button" onClick={() => this.handleRemoveDermatologist()}>Yes</button> 
+                <button type="button" class="btn btn-secondary" type="button" onClick={() => this.handleRemovePharamcist()}>Yes</button> 
                 <button type="button" class="btn btn-secondary" type="button" onClick={() => this.props.handleCloseAlert()}>No</button> 
 				
                 </Modal.Footer>
@@ -111,4 +112,4 @@ class ConfirmModal extends Component {
     }
 }
  
-export default ConfirmModal;
+export default RemovePharmacistModal;

@@ -128,8 +128,8 @@ insert into appointment (id, appointment_status, appointment_type, start_date_ti
 
 --consultations-appointments
 
-insert into appointment (id, appointment_status, appointment_type, start_date_time, end_date_time, price,pharmacy_id, employee_id) values ('09a10e8e-ba61-11eb-8529-0242ac130003','FREE','CONSULTATION', '2021-08-28 11:30:00', '2021-08-28 12:00:00', 1200, '775d8e36-9859-11eb-a8b3-0242ac130003', '80c86094-ba60-11eb-8529-0242ac130003');         
-insert into appointment (id, appointment_status, appointment_type, start_date_time, end_date_time, price,pharmacy_id, employee_id) values ('09a110d2-ba61-11eb-8529-0242ac130003','FREE','CONSULTATION', '2021-08-28 14:30:00', '2021-08-28 15:30:00', 1300, '775d8e36-9859-11eb-a8b3-0242ac130003','80c86094-ba60-11eb-8529-0242ac130003');
+insert into appointment (id, appointment_status, appointment_type, start_date_time, end_date_time, price,pharmacy_id, employee_id) values ('09a10e8e-ba61-11eb-8529-0242ac130003','SCHEDULED','CONSULTATION', '2021-09-28 11:30:00', '2021-09-28 12:00:00', 1200, '775d8e36-9859-11eb-a8b3-0242ac130003', '80c86094-ba60-11eb-8529-0242ac130003');         
+insert into appointment (id, appointment_status, appointment_type, start_date_time, end_date_time, price,pharmacy_id, employee_id) values ('09a110d2-ba61-11eb-8529-0242ac130003','SCHEDULED','CONSULTATION', '2021-09-28 14:30:00', '2021-09-28 15:30:00', 1300, '775d8e36-9859-11eb-a8b3-0242ac130003','80c86094-ba60-11eb-8529-0242ac130003');
 insert into appointment (id, appointment_status, appointment_type, start_date_time, end_date_time, price,pharmacy_id, employee_id) values ('09a111c2-ba61-11eb-8529-0242ac130003','FREE','CONSULTATION', '2021-08-28 11:30:00', '2021-08-28 12:00:00', 1200, '775d8e36-9859-11eb-a8b3-0242ac130003', '80c862c4-ba60-11eb-8529-0242ac130003');       
 insert into appointment (id, appointment_status, appointment_type, start_date_time, end_date_time, price,pharmacy_id, employee_id) values ('09a11460-ba61-11eb-8529-0242ac130003','FREE','CONSULTATION', '2021-08-28 14:30:00', '2021-08-28 15:30:00', 1300, '775d8e36-9859-11eb-a8b3-0242ac130003','80c862c4-ba60-11eb-8529-0242ac130003');
 
@@ -156,12 +156,12 @@ insert into drug_instance(drug_format, drug_instance_name, loyality_points, on_r
 
 --DRUGS-IN-PHARMACY
 
-insert into drug_in_pharmacy(id, pharmacy_id, drug_instance_id, date_from, date_to, price, count) values ('39438ef2-c180-11eb-8529-0242ac130003','775d8e36-9859-11eb-a8b3-0242ac130003','2fe1cd8e-5839-11eb-ae93-0242ac130002','2021-5-11','2021-08-22', 340, 50);
-insert into drug_in_pharmacy(id, pharmacy_id, drug_instance_id, date_from, date_to, price, count) values ('3943c304-c180-11eb-8529-0242ac130003','775d9322-9859-11eb-a8b3-0242ac130003','2fe1cd8e-5839-11eb-ae93-0242ac130002','2021-5-11','2021-08-22', 320, 30);
-insert into drug_in_pharmacy(id, pharmacy_id, drug_instance_id, date_from, date_to, price, count) values ('3943c4c6-c180-11eb-8529-0242ac130003','775d8e36-9859-11eb-a8b3-0242ac130003','2c797174-5839-11eb-ae93-0242ac130002','2021-5-11','2021-08-22', 180, 38);
-insert into drug_in_pharmacy(id, pharmacy_id, drug_instance_id, date_from, date_to, price, count) values ('3943c5a2-c180-11eb-8529-0242ac130003','775d9322-9859-11eb-a8b3-0242ac130003','2c797174-5839-11eb-ae93-0242ac130002','2021-5-11','2021-08-22', 190, 50);
-insert into drug_in_pharmacy(id, pharmacy_id, drug_instance_id, date_from, date_to, price, count) values ('4943c4c6-c180-11eb-8529-0242ac130003','775d8e36-9859-11eb-a8b3-0242ac130003','0db9e1a0-3760-4835-8785-6dcc9c199ee0','2021-5-11','2021-08-22', 120, 10);
-insert into drug_in_pharmacy(id, pharmacy_id, drug_instance_id, date_from, date_to, price, count) values ('5943c5a2-c180-11eb-8529-0242ac130003','775d9322-9859-11eb-a8b3-0242ac130003','4d62cbe3-69a1-40a0-8e9c-9479132dadbe','2021-5-11','2021-08-22', 550, 20);
+insert into drug_in_pharmacy(id, pharmacy_id, drug_instance_id, date_from, date_to, price, count) values ('39438ef2-c180-11eb-8529-0242ac130003','775d8e36-9859-11eb-a8b3-0242ac130003','2fe1cd8e-5839-11eb-ae93-0242ac130002','2021-5-11','2021-09-22', 340, 50);
+insert into drug_in_pharmacy(id, pharmacy_id, drug_instance_id, date_from, date_to, price, count) values ('3943c304-c180-11eb-8529-0242ac130003','775d9322-9859-11eb-a8b3-0242ac130003','2fe1cd8e-5839-11eb-ae93-0242ac130002','2021-5-11','2021-09-22', 320, 30);
+insert into drug_in_pharmacy(id, pharmacy_id, drug_instance_id, date_from, date_to, price, count) values ('3943c4c6-c180-11eb-8529-0242ac130003','775d8e36-9859-11eb-a8b3-0242ac130003','2c797174-5839-11eb-ae93-0242ac130002','2021-5-11','2021-09-22', 180, 38);
+insert into drug_in_pharmacy(id, pharmacy_id, drug_instance_id, date_from, date_to, price, count) values ('3943c5a2-c180-11eb-8529-0242ac130003','775d9322-9859-11eb-a8b3-0242ac130003','2c797174-5839-11eb-ae93-0242ac130002','2021-5-11','2021-09-22', 190, 50);
+insert into drug_in_pharmacy(id, pharmacy_id, drug_instance_id, date_from, date_to, price, count) values ('4943c4c6-c180-11eb-8529-0242ac130003','775d8e36-9859-11eb-a8b3-0242ac130003','0db9e1a0-3760-4835-8785-6dcc9c199ee0','2021-5-11','2021-09-22', 120, 10);
+insert into drug_in_pharmacy(id, pharmacy_id, drug_instance_id, date_from, date_to, price, count) values ('5943c5a2-c180-11eb-8529-0242ac130003','775d9322-9859-11eb-a8b3-0242ac130003','4d62cbe3-69a1-40a0-8e9c-9479132dadbe','2021-5-11','2021-09-22', 550, 20);
 
 
 --INGREDIENTS

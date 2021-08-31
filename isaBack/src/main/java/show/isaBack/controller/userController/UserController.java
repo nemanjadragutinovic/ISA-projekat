@@ -32,7 +32,7 @@ import show.isaBack.DTO.userDTO.PatientDTO;
 import show.isaBack.DTO.userDTO.PatientsAllergenDTO;
 import show.isaBack.DTO.userDTO.PhAdminDTO;
 import show.isaBack.DTO.userDTO.PharmacistForAppointmentPharmacyGadeDTO;
-import show.isaBack.DTO.userDTO.RemoveDermatologistDTO;
+import show.isaBack.DTO.userDTO.RemoveDTO;
 import show.isaBack.DTO.userDTO.UserChangeInfoDTO;
 import show.isaBack.DTO.userDTO.UserDTO;
 import show.isaBack.DTO.userDTO.WorkTimeDTO;
@@ -587,11 +587,29 @@ public class UserController {
 			@PutMapping("/removeDermatologistFromPharmacy") 
 			//@PreAuthorize("hasRole('PHARMACYADMIN')")
 			@CrossOrigin
-			public ResponseEntity<?> removeDermatologistFromPharmacy(@RequestBody RemoveDermatologistDTO removeDTO) {
+			public ResponseEntity<?> removeDermatologistFromPharmacy(@RequestBody RemoveDTO removeDTO) {
+				System.out.println("EJ ALO BIDIBOU");
+				System.out.println(removeDTO.getEmployeeId());
+				System.out.println(removeDTO.getPharmacyId());
+				try {
+					
+					if(userService.removeDermatologistFromPharmacy(removeDTO.getEmployeeId(),removeDTO.getPharmacyId()))
+						return new ResponseEntity<>(HttpStatus.OK); 
+					
+					return new ResponseEntity<>(HttpStatus.BAD_REQUEST);	
+				} catch (Exception e) {
+					return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR); 
+				}
+			}
+			
+			@PutMapping("/removePharmacistFromPharmacy") 
+			//@PreAuthorize("hasRole('PHARMACYADMIN')")
+			@CrossOrigin
+			public ResponseEntity<?> removePharmacistFromPharmacy(@RequestBody RemoveDTO removeDTO) {
 				System.out.println("EJ ALO BIDIBOU");
 				try {
 					
-					if(userService.removeDermatologistFromPharmacy(removeDTO.getDermatologistId(),removeDTO.getPharmacyId()))
+					if(userService.removePharmacistFromPharmacy(removeDTO.getEmployeeId(),removeDTO.getPharmacyId()))
 						return new ResponseEntity<>(HttpStatus.OK); 
 					
 					return new ResponseEntity<>(HttpStatus.BAD_REQUEST);	

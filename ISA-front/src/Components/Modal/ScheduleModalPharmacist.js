@@ -11,6 +11,7 @@ import "../card-components/card.styles.css"
 import ConfirmModal from "./ConfirmModal";
 import AddAppointmentModal from "./AddAppointmentModal"
 import PharmaciesForEmployee from "./PharmaciesForEmployeeModal";
+import RemovePharmacistModal from "./RemovePharmacistModal";
 const API_URL="http://localhost:8080";
 
 class ScheduleModalPharmacist extends Component {
@@ -113,10 +114,10 @@ class ScheduleModalPharmacist extends Component {
 		this.setState({ showPharmaciesForEmployee: false,showAnotherModal:false });
       
 	};
-    handleUpdateDermatologists = () => {
+    handleUpdatePharmacists = () => {
 		this.setState({ hiddenConfirmModal: false,showAnotherModal:false });
         this.props.onCloseModal();
-        this.props.updateDermatologists();
+        this.props.updatePharmacists();
 	};
     handleCloseAddAppModal = () => {
 		this.setState({ showAddAppointment: false,showAnotherModal:false });
@@ -304,7 +305,7 @@ class ScheduleModalPharmacist extends Component {
                     
                     </div>
               
-			
+                    <RemovePharmacistModal show={this.state.hiddenConfirmModal}  handleCloseAlert={this.handleCloseConfirmModal} updatePharmacists={this.handleUpdatePharmacists} pharmacyId={this.props.pharmacyId} pharmacistId={this.props.employee} header="Removing pharmacist" />
                 </Modal.Body>
 				<Modal.Footer>
                 <button hidden={!this.state.showWorkTime} type="button" class="btn btn-secondary mr-auto" type="button"  onClick={() => this.handleOpenConfirmModal()}>Remove Pharmacist</button>

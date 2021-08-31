@@ -63,9 +63,9 @@ class PharmacistCard extends Component {
             this.setState({openScheduleModal: false});
         }
 
-        handleUpdateDermatologists =() =>{
+        handleUpdatePharmacists =() =>{
             this.setState({openScheduleModal: false});
-            this.props.updateDermatologists();
+            this.props.updatePharmacists();
         }
 	render() {
 	
@@ -84,7 +84,7 @@ class PharmacistCard extends Component {
         
         </button>
         
-        <ScheduleModalPharmacist show={this.state.openScheduleModal} update={this.handleUpdateScheduleModal} updateDermatologists={this.handleUpdateDermatologists} onCloseModal={this.handleModalClose} workTimes={this.state.workTimes}  employee ={this.props.pharmacist.Id} pharmacyId={this.props.pharmacyId} header="WorkTimes" />
+        <ScheduleModalPharmacist show={this.state.openScheduleModal} update={this.handleUpdateScheduleModal} updatePharmacists={this.handleUpdatePharmacists} onCloseModal={this.handleModalClose} workTimes={this.state.workTimes}  employee ={this.props.pharmacist.Id} pharmacyId={this.props.pharmacyId} header="WorkTimes" />
 	    </React.Fragment>
         
         

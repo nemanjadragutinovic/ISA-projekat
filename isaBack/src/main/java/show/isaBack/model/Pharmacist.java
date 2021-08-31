@@ -1,6 +1,7 @@
 package show.isaBack.model;
 
 import java.util.List;
+import java.util.UUID;
 
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -48,7 +49,8 @@ public class Pharmacist extends User {
 	}
 	
 	
-	
-	
-	
 }
+	
+	
+	
+

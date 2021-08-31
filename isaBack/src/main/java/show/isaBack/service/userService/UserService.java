@@ -675,7 +675,8 @@ public class UserService implements IUserInterface{
 	@Override
 	public List<UnspecifiedDTO<EmployeeGradeDTO>> findPharmacistsinPharmacy(UUID phId){
 		
-	
+	    System.out.println("ejjjjjjjjjjj alo");
+	    System.out.println(phId);
 		List<UnspecifiedDTO<EmployeeGradeDTO>> pharmacistsForPharmacy= new ArrayList<UnspecifiedDTO<EmployeeGradeDTO>>();  
 		
 		List<Pharmacist>  allPharmacists=pharmacistRepository.findAll();
@@ -683,13 +684,20 @@ public class UserService implements IUserInterface{
 	
 		
 		for (Pharmacist pharmacist : allPharmacists) {
+			System.out.println("petlja");
+			if(pharmacist.getPharmacy()!=null) {
 			if(pharmacist.getPharmacy().getId().equals(phId)) {
 			double avgGrade = getAvgGradeForEmployee(pharmacist.getId());
 			
 			pharmacistsForPharmacy.add(appointmentsMapper.MapPharmacistsToEmployeeDTO(pharmacist,avgGrade));
 			}
 		}
-		
+		}
+		for (UnspecifiedDTO<EmployeeGradeDTO> ph: pharmacistsForPharmacy) {
+			System.out.println(ph.Id);
+			
+		}
+		System.out.println("ejjjjjjjjjjj alo bidibou");
 		return pharmacistsForPharmacy;
 		
 	}
@@ -805,6 +813,25 @@ public class UserService implements IUserInterface{
 	
 	}
 	
+	
+	@Override
+	public boolean removePharmacistFromPharmacy(UUID pharmacistId,UUID phId) {
+			if(!appointmentService.isFutureAppointmentExists(pharmacistId,phId)) {
+				System.out.println("BidiBou");
+				Pharmacist pharmacist = pharmacistRepository.getOne(pharmacistId);
+				pharmacist.setPharmacy(null);
+				pharmacistRepository.save(pharmacist);
+				
+				
+			    List<WorkTime> workTimesForDermatologist = workTimeRepository.getPharmacistsWorkTimesForPharmacy(pharmacistId,phId);
+				workTimeRepository.deleteAll(workTimesForDermatologist);
+				
+				return true;
+			}else {
+				return false;
+			}
+	
+	}
 	
 	@Override
 	public List<UnspecifiedDTO<AuthorityDTO>> findAll() {
