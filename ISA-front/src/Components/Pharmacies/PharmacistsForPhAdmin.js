@@ -6,6 +6,7 @@ import GetAuthorisation from "../../Funciton/GetAuthorisation";
 import CardList from "../card-components/CardList";
 import AddDermatologistModal from "../Modal/AddDermatologistModal";
 import PharmacistCardList from "../card-components/PharmacistCardList";
+import AddPharmacistModal from "../Modal/AddPharmacistModal";
 const API_URL = "http://localhost:8080";
 
 
@@ -16,9 +17,9 @@ class PharmacistsForPhAdmin extends Component {
 
 
         workTimes: [],
-        forStaff: '',
+ 
         showSearchForm: false,
-        showAddDermatologist: false
+        showAddPharmacist: false
     };
 
     handleCloseAlertSuccess = () => {
@@ -60,9 +61,11 @@ class PharmacistsForPhAdmin extends Component {
         this.setState({ showSearchForm: !this.state.showSearchForm });
     };
 
+    handleOpenAddPharmacistModal = () => {
+        this.setState({ showAddPharmacist: true });
+    }
 
-
-    handleAddDermatologistClose = () => {
+    handleAddPharmacistClose = () => {
         Axios.get(API_URL + "/users/pharmacistsInPharmacy/" + localStorage.getItem("keyPharmacyId"), {
             headers: { Authorization: GetAuthorisation() },
         })
@@ -74,7 +77,7 @@ class PharmacistsForPhAdmin extends Component {
             .catch((err) => {
                 console.log(err);
             });
-        this.setState({ showAddDermatologist: false });
+        this.setState({ showAddPharmacist: false });
     }
 
     handleUpdatePharmacists = () => {
@@ -112,7 +115,7 @@ class PharmacistsForPhAdmin extends Component {
 
                     </button>
 
-                    <button type="button" class="btn btn-primary btn-xl ml-2" onClick={this.handleAddDermatologist}>
+                    <button type="button" class="btn btn-primary btn-xl ml-2" onClick={this.handleOpenAddPharmacistModal}>
 
                         Add pharmacist
 
@@ -169,7 +172,7 @@ class PharmacistsForPhAdmin extends Component {
                 </div>
                 <div className="container">
                     <PharmacistCardList pharmacists={this.state.pharmacists} pharmacyId={this.state.pharmacyId} updatePharmacists={this.handleUpdatePharmacists} />
-                   
+                    <AddPharmacistModal show={this.state.showAddPharmacist} onCloseModal={this.handleAddPharmacistClose} pharmacyId={this.state.pharmacyId} updatePharmacists={this.handleUpdatePharmacists}/>
                 </div>
 
 

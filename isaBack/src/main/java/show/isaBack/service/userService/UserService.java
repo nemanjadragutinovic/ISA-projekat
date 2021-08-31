@@ -57,6 +57,7 @@ import show.isaBack.model.PharmacyAdmin;
 import show.isaBack.model.Supplier;
 import show.isaBack.model.SystemAdmin;
 import show.isaBack.model.User;
+import show.isaBack.model.UserCharacteristics.UserType;
 import show.isaBack.model.UserCharacteristics.WorkTime;
 import show.isaBack.model.drugs.Allergen;
 import show.isaBack.repository.drugsRepository.AllergenRepository;
@@ -357,7 +358,27 @@ public class UserService implements IUserInterface{
 		return pharmacyAdmin.getId();
 	}
 
+	@Override
+	public UUID createPharmacist(UserRegistrationDTO entityDTO, UUID pharmacyId) {
+		Pharmacy pharmacy = pharmacyRepository.getOne(pharmacyId);
+		Pharmacist pharmacist = CreatePharmacistFromDTO(entityDTO, pharmacy);
+		pharmacist.setPassword(passwordEncoder.encode(pharmacist.getId().toString()));
+		pharmacist.setFirstLogin(true);
+		
+		UnspecifiedDTO<AuthorityDTO> authority = authorityService.findByName("ROLE_PHARMACIST");
+		List<Authority> authorities = new ArrayList<Authority>();
+		authorities.add(new Authority(authority.Id,authority.EntityDTO.getName()));
+		pharmacist.setUserAuthorities(authorities);
+		System.out.println("Na spavanje");
+		System.out.println(pharmacist.getUserType());
+		userRepository.save(pharmacist);
+		
+		return pharmacist.getId();
+	}
 	
+	private Pharmacist CreatePharmacistFromDTO(UserRegistrationDTO staffDTO,Pharmacy pharmacy) {
+		return new Pharmacist(staffDTO.getEmail(), passwordEncoder.encode(staffDTO.getPassword()), staffDTO.getName(), staffDTO.getSurname(), staffDTO.getAddress(), staffDTO.getPhoneNumber(),pharmacy,UserType.PHARMACIST);
+	}
 	@Override
 	public void updatePatient(UserChangeInfoDTO patientInfoChangeDTO) {
 		
