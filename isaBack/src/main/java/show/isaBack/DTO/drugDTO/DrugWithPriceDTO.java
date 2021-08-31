@@ -12,21 +12,23 @@ public class DrugWithPriceDTO {
 	
 	private double quantity;
 	
-	private boolean onReciept;
+	private Integer count;
 
 	private double avgGrade;
 
 	private double price;
+	
+	
 
 	public DrugWithPriceDTO(String name, String producerName, String fabricCode, FormatDrug formatDrug,
-			double quantity, boolean onReciept, double avgGrade, double price) {
+			double quantity, double avgGrade, double price,Integer count) {
 		super();
 		this.name = name;
 		this.producerName = producerName;
 		this.fabricCode = fabricCode;
 		this.formatDrug = formatDrug;
 		this.quantity = quantity;
-		this.onReciept = onReciept;
+		this.count=count;
 		this.avgGrade = avgGrade;
 		this.price = price;
 	}
@@ -71,13 +73,6 @@ public class DrugWithPriceDTO {
 		this.quantity = quantity;
 	}
 
-	public boolean isOnReciept() {
-		return onReciept;
-	}
-
-	public void setOnReciept(boolean onReciept) {
-		this.onReciept = onReciept;
-	}
 
 	public double getAvgGrade() {
 		return avgGrade;
@@ -93,5 +88,13 @@ public class DrugWithPriceDTO {
 
 	public void setPrice(double price) {
 		this.price = price;
+	}
+
+	public Integer getCount() {
+		return count;
+	}
+
+	public void setCount(Integer count) {
+		this.count = count;
 	}
 }

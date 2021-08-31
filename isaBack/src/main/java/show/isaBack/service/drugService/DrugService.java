@@ -307,7 +307,7 @@ public class DrugService implements IDrugService{
 		}
 			
 			
-		List<UnspecifiedDTO<DrugWithPriceDTO>> drugs = checkDrugGrades(drugsWithNameinPharmacy, gradeFrom, gradeTo,pharmacyId);
+		List<UnspecifiedDTO<DrugWithPriceDTO>> drugs = checkDrugGrades1(drugsWithNameinPharmacy, gradeFrom, gradeTo,pharmacyId);
 		for(UnspecifiedDTO<DrugWithPriceDTO> dr:drugs)
 			System.out.println(dr.Id);
 		return drugs;
@@ -328,7 +328,7 @@ public class DrugService implements IDrugService{
 		return drugsWithKind;
 	}
 	
-	private List<UnspecifiedDTO<DrugWithPriceDTO>> checkDrugGrades(List<DrugInstance> drugsWithName, double gradeFrom, double gradeTo,UUID pharmacyId){
+	private List<UnspecifiedDTO<DrugWithPriceDTO>> checkDrugGrades1(List<DrugInstance> drugsWithName, double gradeFrom, double gradeTo,UUID pharmacyId){
 		List<UnspecifiedDTO<DrugWithPriceDTO>> drugs = new ArrayList<UnspecifiedDTO<DrugWithPriceDTO>>();
 		double grade;
 		double price=0;
@@ -337,23 +337,23 @@ public class DrugService implements IDrugService{
 			grade = findAvgGradeForDrug(var.getId());
 			System.out.println(grade);
 			Double price1=drugInPharmacyRepository.getCurrentPriceForDrugInPharmacy(var.getId(), pharmacyId);
-			
+			DrugInPharmacy pomDrug=drugInPharmacyRepository.getDrugInPharmacy(var.getId(), pharmacyId);
 			if(price1!=null)
 				price=price1;
 			
 			if(!(gradeFrom == -1.0 || gradeTo == -1.0)) {
 				if(grade >= gradeFrom && grade <= gradeTo) {
-					drugs.add(DrugsWithGradesMapper.MapDrugInstancePersistenceToDrugWithPriceDTO(var, grade,price));
+					drugs.add(DrugsWithGradesMapper.MapDrugInstancePersistenceToDrugWithPriceDTO(var, grade,price,pomDrug.getCount()));
 				}
 			}else {
 				if(gradeFrom == -1.0 & gradeTo != -1.0) {
 					if(grade <= gradeTo)
-						drugs.add(DrugsWithGradesMapper.MapDrugInstancePersistenceToDrugWithPriceDTO(var, grade,price));
+						drugs.add(DrugsWithGradesMapper.MapDrugInstancePersistenceToDrugWithPriceDTO(var, grade,price,pomDrug.getCount()));
 				}else if (gradeTo == -1.0 & gradeFrom != -1.0){
 					if(grade >= gradeFrom)
-						drugs.add(DrugsWithGradesMapper.MapDrugInstancePersistenceToDrugWithPriceDTO(var, grade,price));
+						drugs.add(DrugsWithGradesMapper.MapDrugInstancePersistenceToDrugWithPriceDTO(var, grade,price,pomDrug.getCount()));
 				}else {
-					drugs.add(DrugsWithGradesMapper.MapDrugInstancePersistenceToDrugWithPriceDTO(var, grade,price));
+					drugs.add(DrugsWithGradesMapper.MapDrugInstancePersistenceToDrugWithPriceDTO(var, grade,price,pomDrug.getCount()));
 				}
 			}
 			
@@ -816,10 +816,14 @@ public class DrugService implements IDrugService{
 		List<UnspecifiedDTO<DrugWithPriceDTO>> drugs = new ArrayList<UnspecifiedDTO<DrugWithPriceDTO>>();
 		
 		for(DrugInstance drugInstance : drugInstanceRepository.findAll()) {
+			double price=0;
+			DrugInPharmacy drug=drugInPharmacyRepository.getDrugInPharmacy(drugInstance.getId(), pharmacyId);
 			if(drugInPharmacyRepository.getDrugInPharmacy(drugInstance.getId(), pharmacyId)!=null) {
 				double grade = findAvgGradeForDrug(drugInstance.getId());
-				double price=drugInPharmacyRepository.getCurrentPriceForDrugInPharmacy(drugInstance.getId(), pharmacyId);
-				drugs.add(new UnspecifiedDTO<DrugWithPriceDTO>(drugInstance.getId(),new DrugWithPriceDTO(drugInstance.getName(),drugInstance.getManufacturer().getName(),drugInstance.getDrugInstanceName(),drugInstance.getDrugFormat(),drugInstance.getQuantity(),drugInstance.isOnReciept(),grade,price)));
+				Double price1=drugInPharmacyRepository.getCurrentPriceForDrugInPharmacy(drugInstance.getId(), pharmacyId);
+				if(price1!=null)
+					price=price1;
+				drugs.add(new UnspecifiedDTO<DrugWithPriceDTO>(drugInstance.getId(),new DrugWithPriceDTO(drugInstance.getName(),drugInstance.getManufacturer().getName(),drugInstance.getDrugInstanceName(),drugInstance.getDrugFormat(),drugInstance.getQuantity(),grade,price,drug.getCount())));
 			}
 				
 		}

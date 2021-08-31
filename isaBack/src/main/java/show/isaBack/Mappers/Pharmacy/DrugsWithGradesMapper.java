@@ -36,10 +36,10 @@ public class DrugsWithGradesMapper {
 		return new UnspecifiedDTO<ReplaceDrugDTO>(drug.getId(), new ReplaceDrugDTO(drug.getName(), drug.getFabricCode(), drug.getDrugInstanceName(), new ManufacturerDTO(drug.getManufacturer().getName())));
 	}
 	
-	public static UnspecifiedDTO<DrugWithPriceDTO> MapDrugInstancePersistenceToDrugWithPriceDTO(DrugInstance drug,double grade,double price){
+	public static UnspecifiedDTO<DrugWithPriceDTO> MapDrugInstancePersistenceToDrugWithPriceDTO(DrugInstance drug,double grade,double price,Integer count){
 		if(drug == null) throw new IllegalArgumentException();
 		
-		return new UnspecifiedDTO<DrugWithPriceDTO>(drug.getId(),new DrugWithPriceDTO(drug.getName(),drug.getManufacturer().getName(),drug.getDrugInstanceName(),drug.getDrugFormat(),drug.getQuantity(),drug.isOnReciept(),grade,price));
+		return new UnspecifiedDTO<DrugWithPriceDTO>(drug.getId(),new DrugWithPriceDTO(drug.getName(),drug.getManufacturer().getName(),drug.getDrugInstanceName(),drug.getDrugFormat(),drug.getQuantity(),grade,price,count));
 	}
 	
 	
