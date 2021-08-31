@@ -8,23 +8,37 @@ import Axios from "axios";
 import GetAuthorisation from "../../Funciton/GetAuthorisation";
 
 const API_URL="http://localhost:8080";
-class Card extends React.Component {
+class Card extends Component {
 	
-    constructor(props){
-        super(props);
-    }
-    
-    
     state = {
-
         openScheduleModal: false,
         workTimes:[],
         employee: ''
   };
 
+  componentDidMount() {
+        
+}
 
   
-
+  handleUpdateScheduleModal = () => {
+        
+    console.log("aaaaaaaaaaaaaa");
+    
+    Axios.get(API_URL + "/users/scheduleForEmployee/" + this.props.dermatologist.Id, {
+        headers: { Authorization: GetAuthorisation() },
+    })
+    .then((res) => {
+     
+        this.setState({ workTimes: res.data});
+        
+        console.log(res.data);
+       
+    })
+    .catch((err) => {
+        console.log(err);
+    });
+    };
 
     handleScheduleModal = (id) => {
         
@@ -45,14 +59,19 @@ class Card extends React.Component {
             openScheduleModal: true
         });
         };
+
         handleModalClose = () => {
             this.setState({openScheduleModal: false});
         }
 
-
+        handleUpdateDermatologists =() =>{
+            this.setState({openScheduleModal: false});
+            this.props.updateDermatologists();
+        }
 	render() {
 	
         console.log(this.employee);
+        console.log(this.props.pharmacyId)
 		return (
       
       <React.Fragment>
@@ -61,12 +80,12 @@ class Card extends React.Component {
         <h2>{this.props.dermatologist.EntityDTO.name} {this.props.dermatologist.EntityDTO.surname}</h2>
         <p>Email: {this.props.dermatologist.EntityDTO.email}</p>
         <p>Phone: {this.props.dermatologist.EntityDTO.phoneNumber}</p>
-        <p>Grade: {this.props.dermatologist.EntityDTO.grade} </p>
+        <p>Grade: {this.props.dermatologist.EntityDTO.grade} <i className="icon-star" style={{ color: "yellow"}}></i> </p>
         
         
         </button>
         
-        <ScheduleModal show={this.state.openScheduleModal}  onCloseModal={this.handleModalClose} workTimes={this.state.workTimes}  employee={this.props.dermatologist.Id} header="WorkTimes" />
+        <ScheduleModal show={this.state.openScheduleModal} update={this.handleUpdateScheduleModal} updateDermatologists={this.handleUpdateDermatologists} onCloseModal={this.handleModalClose} workTimes={this.state.workTimes}  employee ={this.props.dermatologist.Id} pharmacyId={this.props.pharmacyId} header="WorkTimes" />
 	    </React.Fragment>
         
 

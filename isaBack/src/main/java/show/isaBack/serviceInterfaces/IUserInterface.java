@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.UUID;
 
 import show.isaBack.DTO.drugDTO.AllergenDTO;
+import show.isaBack.DTO.pharmacyDTO.PharmacyDTO;
 import show.isaBack.DTO.userDTO.ChangePasswordDTO;
 import show.isaBack.DTO.userDTO.PatientDTO;
 import show.isaBack.DTO.userDTO.PatientsAllergenDTO;
@@ -16,6 +17,7 @@ import show.isaBack.DTO.userDTO.PharmacistForAppointmentPharmacyGadeDTO;
 import show.isaBack.DTO.userDTO.UserChangeInfoDTO;
 import show.isaBack.DTO.userDTO.DermatologistWithGradeDTO;
 import show.isaBack.DTO.userDTO.EmployeeGradeDTO;
+import show.isaBack.DTO.userDTO.NewDermatologistInPharmacyDTO;
 import show.isaBack.DTO.userDTO.UserDTO;
 import show.isaBack.DTO.userDTO.UserRegistrationDTO;
 
@@ -79,6 +81,13 @@ public interface IUserInterface extends IService<UserDTO, UnspecifiedDTO<UserDTO
 	public List<UnspecifiedDTO<UserDTO>> findPatientByNameAndSurname(String name, String surname);
 
 	List<UnspecifiedDTO<WorkTimeDTO>>getScheduleForEmployee(UUID id);
+	List<UnspecifiedDTO<EmployeeGradeDTO>> findDermatologistsWhoDontWorkInPharmacy(UUID phId);
+	UUID addWorkTimeForEmployee(WorkTimeDTO workTimeDTO);
+	boolean addDermatologistInPharmacy(NewDermatologistInPharmacyDTO addDermatologistToPharmacyDTO);
+	boolean removeDermatologistFromPharmacy(UUID dermatologistId, UUID phId);
+	List<UnspecifiedDTO<PharmacyDTO>> findAllPharmaciesByDermatologistId(UUID dermatologistId);
+	boolean removePharmacistFromPharmacy(UUID pharmacistId, UUID phId);
+	UUID createPharmacist(UserRegistrationDTO entityDTO, UUID pharmacyId);
 
 
 

@@ -24,10 +24,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PathVariable;
 
 import show.isaBack.DTO.drugDTO.AllergenDTO;
+import show.isaBack.DTO.pharmacyDTO.PharmacyDTO;
 import show.isaBack.DTO.pharmacyDTO.PharmacyWithGradeAndPriceDTO;
 import show.isaBack.DTO.userDTO.AuthorityDTO;
 import show.isaBack.DTO.userDTO.ChangePasswordDTO;
 import show.isaBack.DTO.userDTO.LoyalityProgramForPatientDTO;
+import show.isaBack.DTO.userDTO.NewDermatologistInPharmacyDTO;
 import show.isaBack.DTO.userDTO.PatientDTO;
 import show.isaBack.DTO.userDTO.PatientsAllergenDTO;
 
@@ -55,6 +57,7 @@ import show.isaBack.model.PharmacyAdmin;
 import show.isaBack.model.Supplier;
 import show.isaBack.model.SystemAdmin;
 import show.isaBack.model.User;
+import show.isaBack.model.UserCharacteristics.UserType;
 import show.isaBack.model.UserCharacteristics.WorkTime;
 import show.isaBack.model.drugs.Allergen;
 import show.isaBack.repository.drugsRepository.AllergenRepository;
@@ -355,7 +358,27 @@ public class UserService implements IUserInterface{
 		return pharmacyAdmin.getId();
 	}
 
+	@Override
+	public UUID createPharmacist(UserRegistrationDTO entityDTO, UUID pharmacyId) {
+		Pharmacy pharmacy = pharmacyRepository.getOne(pharmacyId);
+		Pharmacist pharmacist = CreatePharmacistFromDTO(entityDTO, pharmacy);
+		pharmacist.setPassword(passwordEncoder.encode(pharmacist.getId().toString()));
+		pharmacist.setFirstLogin(true);
+		
+		UnspecifiedDTO<AuthorityDTO> authority = authorityService.findByName("ROLE_PHARMACIST");
+		List<Authority> authorities = new ArrayList<Authority>();
+		authorities.add(new Authority(authority.Id,authority.EntityDTO.getName()));
+		pharmacist.setUserAuthorities(authorities);
+		System.out.println("Na spavanje");
+		System.out.println(pharmacist.getUserType());
+		userRepository.save(pharmacist);
+		
+		return pharmacist.getId();
+	}
 	
+	private Pharmacist CreatePharmacistFromDTO(UserRegistrationDTO staffDTO,Pharmacy pharmacy) {
+		return new Pharmacist(staffDTO.getEmail(), passwordEncoder.encode(staffDTO.getPassword()), staffDTO.getName(), staffDTO.getSurname(), staffDTO.getAddress(), staffDTO.getPhoneNumber(),pharmacy,UserType.PHARMACIST);
+	}
 	@Override
 	public void updatePatient(UserChangeInfoDTO patientInfoChangeDTO) {
 		
@@ -549,7 +572,59 @@ public class UserService implements IUserInterface{
 		
 	}
 	
+	@Override
+
+	public UUID addWorkTimeForEmployee(WorkTimeDTO workTimeDTO) {
+		System.out.println("asdasdfasdfdsfdasdasdBidibou");
+		if(isEmployeeWorksAtThatTime(workTimeDTO)) {
+			return null;
+		}
+		System.out.println(workTimeDTO.getPharmacyId());
+		System.out.println(workTimeDTO.getEmployee());
+		User employee = userRepository.getOne(workTimeDTO.getEmployee());
+		Pharmacy pharmacy = pharmacyRepository.getOne(workTimeDTO.getPharmacyId());
+		System.out.println("BIDIBOU");
+			
+		WorkTime newWorkTime = new WorkTime(pharmacy,employee,workTimeDTO.getStartDate(),workTimeDTO.getEndDate(),workTimeDTO.getStartTime(),workTimeDTO.getEndTime());
+		
+		//if(!(newWorkTime.getEndDate().before(newWorkTime.getStartDate()) || newWorkTime.getStartTime()>=newWorkTime.getEndTime())) {
+			workTimeRepository.save(newWorkTime);
+			return newWorkTime.getId();
+		//}
+		
+		//return null;
+	}
 	
+	private boolean isEmployeeWorksAtThatTime(WorkTimeDTO workTimeDTO) {
+			List<WorkTime> allWorkTimes= workTimeRepository.findAll();
+		
+		for(WorkTime workTime : allWorkTimes) {
+			if((workTime.getEmployee().getId().equals(workTimeDTO.getEmployee()) && isDateOccupied(workTimeDTO,workTime)))
+				return true;
+		}
+		
+		return false;
+		
+		
+	}
+	
+	private boolean isDateOccupied(WorkTimeDTO workTimeDTO,WorkTime workTime) {
+		 if( workTimeDTO.getStartDate().before(workTime.getEndDate())  && workTime.getStartDate().before(workTimeDTO.getEndDate())
+		 || (workTime.getEndDate().getDay() == workTimeDTO.getStartDate().getDay() && workTime.getEndDate().getMonth() == workTimeDTO.getStartDate().getMonth() )
+		 || (workTime.getStartDate().getDay() == workTimeDTO.getEndDate().getDay() && workTime.getStartDate().getMonth() == workTimeDTO.getEndDate().getMonth() )
+		 ){
+		    	
+		    	if(workTime.getStartTime()<=workTimeDTO.getEndTime() && workTimeDTO.getStartTime()<=workTime.getEndTime()) {
+		    		return true;
+		    	}
+		    	
+		    	if(workTime.getPharmacy().getId().equals(workTimeDTO.getPharmacyId
+		    			()))
+		    		return true;
+		    }
+			
+		    return false;
+	}
 	@Override
 	public List<UnspecifiedDTO<EmployeeGradeDTO>> findDermatologistsinPharmacy(UUID phId){
 		
@@ -560,7 +635,7 @@ public class UserService implements IUserInterface{
 	 System.out.println("sassssssss: "+phId);
 		
 		for (Dermatologist dermatologist : allDermatologists) {
-			if(isInPharmacy(dermatologist,phId)) {
+			if(isDermatologistInPharmacy(dermatologist,phId)) {
 			double avgGrade = getAvgGradeForEmployee(dermatologist.getId());
 			
 			dermatologistsForPharmacy.add(appointmentsMapper.MapDermatologistToEmployeeDTO(dermatologist,avgGrade));
@@ -572,7 +647,7 @@ public class UserService implements IUserInterface{
 	}
 
 
-	public boolean isInPharmacy(Dermatologist d,UUID phId) {
+	public boolean isDermatologistInPharmacy(Dermatologist d,UUID phId) {
 		for(Pharmacy p : d.getPharmacies()) {
 			if(p.getId().equals(phId)) {
 				return true;
@@ -582,12 +657,47 @@ public class UserService implements IUserInterface{
 		
 	}
 	
-
+	@Override
+	public List<UnspecifiedDTO<EmployeeGradeDTO>> findDermatologistsWhoDontWorkInPharmacy(UUID phId) {
+		
+		List<Dermatologist> allDermatologists = dermatologistRepository.findAll();
+		List<UnspecifiedDTO<EmployeeGradeDTO>> retVal = new ArrayList<UnspecifiedDTO<EmployeeGradeDTO>>();
+		
+		for(Dermatologist dermatologist : allDermatologists) {
+			if(!isDermatologistInPharmacy(dermatologist,phId)) {
+               double avgGrade = getAvgGradeForEmployee(dermatologist.getId());
+			
+			   retVal.add(appointmentsMapper.MapDermatologistToEmployeeDTO(dermatologist,avgGrade));
+		   }
+		}	
+		
+		return retVal;
+	}
+	
+	
+	@Override
+	public boolean addDermatologistInPharmacy(NewDermatologistInPharmacyDTO newDTO) {
+		    
+			Pharmacy pharmacy = pharmacyRepository.getOne(newDTO.getPharmacyId());
+			Dermatologist dermatologist = dermatologistRepository.getOne(newDTO.getDermatologistId());
+			
+			WorkTimeDTO workTimeDTO = new WorkTimeDTO(newDTO.getPharmacyId(),newDTO.getDermatologistId(), newDTO.getStartDate(), newDTO.getEndDate(), newDTO.getStartTime(), newDTO.getEndTime());
+			
+			if(addWorkTimeForEmployee(workTimeDTO)==null)
+				return false;
+			
+			dermatologist.addPharmacy(pharmacy);
+			dermatologistRepository.save(dermatologist);
+			
+			return true;
+	
+	}
 	
 	@Override
 	public List<UnspecifiedDTO<EmployeeGradeDTO>> findPharmacistsinPharmacy(UUID phId){
 		
-	
+	    System.out.println("ejjjjjjjjjjj alo");
+	    System.out.println(phId);
 		List<UnspecifiedDTO<EmployeeGradeDTO>> pharmacistsForPharmacy= new ArrayList<UnspecifiedDTO<EmployeeGradeDTO>>();  
 		
 		List<Pharmacist>  allPharmacists=pharmacistRepository.findAll();
@@ -595,16 +705,26 @@ public class UserService implements IUserInterface{
 	
 		
 		for (Pharmacist pharmacist : allPharmacists) {
+			System.out.println("petlja");
+			if(pharmacist.getPharmacy()!=null) {
 			if(pharmacist.getPharmacy().getId().equals(phId)) {
 			double avgGrade = getAvgGradeForEmployee(pharmacist.getId());
 			
 			pharmacistsForPharmacy.add(appointmentsMapper.MapPharmacistsToEmployeeDTO(pharmacist,avgGrade));
 			}
 		}
-		
+		}
+		for (UnspecifiedDTO<EmployeeGradeDTO> ph: pharmacistsForPharmacy) {
+			System.out.println(ph.Id);
+			
+		}
+		System.out.println("ejjjjjjjjjjj alo bidibou");
 		return pharmacistsForPharmacy;
 		
 	}
+
+
+	
 
 	
 	
@@ -696,6 +816,43 @@ public class UserService implements IUserInterface{
 	}
 	
 	
+	@Override
+	public boolean removeDermatologistFromPharmacy(UUID dermatologistId,UUID phId) {
+			if(!appointmentService.isFutureAppointmentExists(dermatologistId,phId)) {
+				Dermatologist dermatologist = dermatologistRepository.getOne(dermatologistId);
+				dermatologist.removePharmacy(phId);
+				dermatologistRepository.save(dermatologist);
+				
+				
+			    List<WorkTime> workTimesForDermatologist = workTimeRepository. getDermatologistsWorkTimesForPharmacy(dermatologistId,phId);
+				workTimeRepository.deleteAll(workTimesForDermatologist);
+				
+				return true;
+			}else {
+				return false;
+			}
+	
+	}
+	
+	
+	@Override
+	public boolean removePharmacistFromPharmacy(UUID pharmacistId,UUID phId) {
+			if(!appointmentService.isFutureAppointmentExists(pharmacistId,phId)) {
+				System.out.println("BidiBou");
+				Pharmacist pharmacist = pharmacistRepository.getOne(pharmacistId);
+				pharmacist.setPharmacy(null);
+				pharmacistRepository.save(pharmacist);
+				
+				
+			    List<WorkTime> workTimesForDermatologist = workTimeRepository.getPharmacistsWorkTimesForPharmacy(pharmacistId,phId);
+				workTimeRepository.deleteAll(workTimesForDermatologist);
+				
+				return true;
+			}else {
+				return false;
+			}
+	
+	}
 	
 	@Override
 	public List<UnspecifiedDTO<AuthorityDTO>> findAll() {
@@ -828,5 +985,24 @@ public class UserService implements IUserInterface{
 	}
 
 	
-
+	@Override
+	public List<UnspecifiedDTO<PharmacyDTO>> findAllPharmaciesByDermatologistId(UUID dermatologistId) {
+		
+			Dermatologist dermatologist = dermatologistRepository.getOne(dermatologistId);
+			
+			List<UnspecifiedDTO<PharmacyDTO>> pharmaciesDTO = new ArrayList<UnspecifiedDTO<PharmacyDTO>>();
+			
+			
+			
+			for (Pharmacy ph : dermatologist.getPharmacies()) 
+			{	
+				PharmacyDTO pharmacyDTO= new PharmacyDTO(ph);	
+				pharmaciesDTO.add(new UnspecifiedDTO<PharmacyDTO>(ph.getId(),pharmacyDTO));
+			}
+			
+			return pharmaciesDTO;
+	
+	} 
+	
+	
 }

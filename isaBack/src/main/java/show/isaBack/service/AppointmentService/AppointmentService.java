@@ -829,7 +829,7 @@ public class AppointmentService implements IAppointmentService{
 	
 	@Override
 	public boolean createDermatologistsAppointment(FormAppointmentDTO appointmentDTO) {
-		
+		System.out.println("ALO BIDIBOU");
 			User dermatologist = userRepository.getOne(appointmentDTO.getDermatologistId());
 			Pharmacy pharmacy = pharmacyRepository.getOne(appointmentDTO.getPhId());
 			
@@ -853,9 +853,14 @@ public class AppointmentService implements IAppointmentService{
 		List<FreeAppointmentPeriodDTO> suggestionsForAppointment = new ArrayList<FreeAppointmentPeriodDTO>();
 		Date startWorkTime = paramsFromAppointmentDTO.getDate();
 		startWorkTime.setHours(workTime.getStartTime());
+		startWorkTime.setMinutes(0);
+		startWorkTime.setSeconds(0);
+		
 		LocalDateTime startTime=startWorkTime.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
 		Date endWorkTime =  paramsFromAppointmentDTO.getDate();
 		endWorkTime.setHours(workTime.getEndTime());
+		startWorkTime.setMinutes(0);
+		endWorkTime.setSeconds(0);
 		LocalDateTime endTime;
 		int duration=paramsFromAppointmentDTO.getDuration();
 		
@@ -870,14 +875,14 @@ public class AppointmentService implements IAppointmentService{
 		if(existingAppointments!=null) {
         	for (Appointment appointment : existingAppointments)
             {
-                 endTime = appointment.getStartDateTime().toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
+                 endTime = convertToLocalDateTime(appointment.getStartDateTime());
                  suggestionsForAppointment.addAll(generateIntervals(startTime, endTime,duration));
-                 startTime = appointment.getEndDateTime().toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
+                 startTime = convertToLocalDateTime(appointment.getEndDateTime());
                 
             }
         }
         
-        endTime = endWorkTime.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
+        endTime = convertToLocalDateTime(endWorkTime);
         suggestionsForAppointment.addAll(generateIntervals(startTime, endTime,duration));
 		
 		
@@ -891,14 +896,30 @@ public class AppointmentService implements IAppointmentService{
 		
 		while (Duration.between(startTime, endTime).toMinutes() >= Duration.ofMinutes(durationOfFreeAppointment).toMinutes())
         {
-            FreeAppointmentPeriodDTO freePeriod = new FreeAppointmentPeriodDTO(startTime,startTime.plusMinutes(durationOfFreeAppointment));
-            startTime = freePeriod.getEndDate();
+            FreeAppointmentPeriodDTO freePeriod = new FreeAppointmentPeriodDTO(convertToDate(startTime),convertToDate(startTime.plusMinutes(durationOfFreeAppointment)));
+            startTime = convertToLocalDateTime(freePeriod.getEndDate());
             suggestionsForAppointment.add(freePeriod);
         }
         return suggestionsForAppointment;
 	}
 
+	private LocalDateTime convertToLocalDateTime(Date dateToConvert) {
+	    return dateToConvert.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
+	}
 	
+	private Date convertToDate(LocalDateTime dateToConvert) {
+	    return java.util.Date.from(dateToConvert.atZone(ZoneId.systemDefault()).toInstant());
+	    }
+
+	@Override
+	public boolean isFutureAppointmentExists(UUID dermatologistId, UUID phId ) {
+		List<Appointment> allFutureAppointments = appointmentRepository.findAppointmentForDermatologistInPharmacy(dermatologistId,phId);
+		if(allFutureAppointments.size()>0)
+			return true;
+		
+		return false;
+	}
+
 	@Override
 	public List<UnspecifiedDTO<AuthorityDTO>> findAll() {
 		// TODO Auto-generated method stub

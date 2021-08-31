@@ -10,22 +10,28 @@ public class FreeAppointmentPeriodDTO {
 	
 	public FreeAppointmentPeriodDTO() {}
 
-	public FreeAppointmentPeriodDTO(LocalDateTime startDate, LocalDateTime endDate) {
+	/*public FreeAppointmentPeriodDTO(LocalDateTime startDate, LocalDateTime endDate) {
 		super();
 		this.startDate =  java.util.Date.from(startDate.atZone(ZoneId.systemDefault()).toInstant());
 		this.endDate = java.util.Date.from(endDate.atZone(ZoneId.systemDefault()).toInstant());
-	}
+	}*/
 
-	public LocalDateTime getStartDate() {
-		return startDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
+	public FreeAppointmentPeriodDTO(Date startDate, Date endDate) {
+		super();
+		this.startDate =  startDate;
+		this.endDate = endDate;
+	}
+	
+	public Date getStartDate() {
+		return startDate;
 	}
 
 	public void setStartDate(Date startDate) {
 		this.startDate = startDate;
 	}
 
-	public LocalDateTime getEndDate() {
-		return endDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
+	public Date getEndDate() {
+		return endDate;
 	}
 
 	public void setEndDate(Date endDate) {

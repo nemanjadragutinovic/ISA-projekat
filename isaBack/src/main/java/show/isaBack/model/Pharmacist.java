@@ -1,6 +1,7 @@
 package show.isaBack.model;
 
 import java.util.List;
+import java.util.UUID;
 
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -32,7 +33,14 @@ public class Pharmacist extends User {
 	}
 
 	public Pharmacist(String email, String password, String name, String surname, String address, String phoneNumber,Pharmacy pharmacy) {
-		super(email, password, name, surname, address, phoneNumber, true);
+		super(email, password, name, surname, address, phoneNumber, true,UserType.PHARMACIST);
+		//OVO TREBA IZMENITI KADA SE NAMESTI AKTIVACIJA!!!!!!!!!!!!!!!!!!!!
+		
+		this.pharmacy= pharmacy;
+		
+	}
+	public Pharmacist(String email, String password, String name, String surname, String address, String phoneNumber,Pharmacy pharmacy,UserType userType ) {
+		super(email, password, name, surname, address, phoneNumber, true,userType);
 		//OVO TREBA IZMENITI KADA SE NAMESTI AKTIVACIJA!!!!!!!!!!!!!!!!!!!!
 		
 		this.pharmacy= pharmacy;
@@ -48,7 +56,8 @@ public class Pharmacist extends User {
 	}
 	
 	
-	
-	
-	
 }
+	
+	
+	
+

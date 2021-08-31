@@ -457,12 +457,15 @@ public class AppointmentController {
 	}
 	
 	
-	@GetMapping("/generateSuggestionsForTimePeriod")
+	@PostMapping("/generateSuggestionsForTimePeriod")
 	//@PreAuthorize("hasRole('PHARMACYADMIN')")
 	@CrossOrigin
 	public ResponseEntity<List<FreeAppointmentPeriodDTO>> getFreePeriods(@RequestBody ParamsFromAppointmentDTO paramsAAA) {
 		try {
 			System.out.println("aa"+paramsAAA.getDate());
+			System.out.println("eeee"+paramsAAA.getDuration());
+			System.out.println("Bidibou"+paramsAAA.getDermatologistId());
+			System.out.println("Oijo"+paramsAAA.getPhId());
 			return new ResponseEntity<>(appointmentService.generateListFreePeriods(paramsAAA),HttpStatus.OK);
 		}catch (Exception e) {
 			e.printStackTrace();
