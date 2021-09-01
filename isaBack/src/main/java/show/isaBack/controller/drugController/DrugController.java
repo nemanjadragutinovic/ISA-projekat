@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 
 import show.isaBack.DTO.AppointmentDTO.IdDTO;
+import show.isaBack.DTO.drugDTO.AddDrugDTO;
 import show.isaBack.DTO.drugDTO.DrugDTO;
 import show.isaBack.DTO.drugDTO.DrugFormatIdDTO;
 import show.isaBack.DTO.drugDTO.DrugInstanceDTO;
@@ -340,4 +341,27 @@ public class DrugController {
 		return new ResponseEntity<>(drugService.findDrugsInPharmacyWithPrice(pharmacyId),HttpStatus.OK);
 	}
 	
+	@CrossOrigin
+	@GetMapping("/drugsWhichArentInPharmacy/{pharmacyId}")
+	//@PreAuthorize("hasRole('PHARMACYADMIN')")
+	public ResponseEntity<List<UnspecifiedDTO<DrugDTO>>> findDrugsWhichArentInPharmacy(@PathVariable UUID pharmacyId) {
+		System.out.println("ALooo BidiBouuu");
+		return new ResponseEntity<>(drugService.findDrugsWhichArentInPharmacy(pharmacyId),HttpStatus.OK);
+	}
+	
+	@PutMapping("/addDrugInPharmacy")
+	//@PreAuthorize("hasRole('PHARMACYADMIN')")
+	@CrossOrigin
+	public ResponseEntity<?> addDrug(@RequestBody AddDrugDTO addDTO) {
+		System.out.println("ALooo");
+		System.out.println(addDTO.getDrugId());
+		try {
+			drugService.addDrug(addDTO);
+			return new ResponseEntity<>(HttpStatus.CREATED);
+		} catch (IllegalArgumentException e) {
+			return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+		} catch (Exception e) {
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
 }

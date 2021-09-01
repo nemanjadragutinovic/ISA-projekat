@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.UUID;
 
 import show.isaBack.DTO.AppointmentDTO.IdDTO;
+import show.isaBack.DTO.drugDTO.AddDrugDTO;
 import show.isaBack.DTO.drugDTO.DrugDTO;
 import show.isaBack.DTO.drugDTO.DrugInstanceDTO;
 import show.isaBack.DTO.drugDTO.DrugReservationDTO;
@@ -51,6 +52,8 @@ public interface IDrugService extends IService<DrugInstanceDTO, UnspecifiedDTO<D
 	List<UnspecifiedDTO<DrugWithPriceDTO>> findDrugsInPharmacyWithPrice(UUID pharmacyId);
 	List<UnspecifiedDTO<DrugWithPriceDTO>> searchDrugsInPharmacy(String name, double gradeFrom, double gradeTo,
 			String manufacturer, UUID pharmacyId);
+	List<UnspecifiedDTO<DrugDTO>> findDrugsWhichArentInPharmacy(UUID pharmacyId);
+	void addDrug(AddDrugDTO addDTO);
 	
 
 	

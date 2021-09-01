@@ -17,4 +17,5 @@ public interface PharmacistRepository extends JpaRepository<Pharmacist, UUID>{
 	Pharmacy findPharmacyWhereWorksPharmacist(UUID pharmacistId);
 	
 	
+	
 }

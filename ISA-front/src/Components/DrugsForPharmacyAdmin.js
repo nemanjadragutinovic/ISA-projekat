@@ -205,16 +205,16 @@ class DrugsForPharmacyAdmin extends Component {
 	};
 
 	handleAddDrug = () => {
-        {/*Axios.get(API_URL + "/users/dermatologistsNotInPharmacy/" + localStorage.getItem("keyPharmacyId"), {
+		Axios.get(API_URL + "/drug/drugsWhichArentInPharmacy/" + localStorage.getItem("keyPharmacyId"), {
             headers: { Authorization: GetAuthorisation() },
         }).then((res) => {
-            this.setState({ dermatologists1: res.data, showAddDermatologist: true });
+            this.setState({ drugs1: res.data });
             console.log(res.data);
         })
             .catch((err) => {
                 console.log(err);
             });
-		*/}
+
 		this.setState({ showAddDrug: true });
     }
 
@@ -235,15 +235,15 @@ class DrugsForPharmacyAdmin extends Component {
 
 
 	handleUpdateDrugsWhicharentInPharmacy = () => {
-      {/*  Axios.get(API_URL + "/users/dermatologistsNotInPharmacy/" + localStorage.getItem("keyPharmacyId"), {
+        Axios.get(API_URL + "/drug/drugsWhichArentInPharmacy/" + localStorage.getItem("keyPharmacyId"), {
             headers: { Authorization: GetAuthorisation() },
         }).then((res) => {
-            this.setState({ dermatologists1: res.data });
+            this.setState({ drugs1: res.data });
             console.log(res.data);
         })
             .catch((err) => {
                 console.log(err);
-            });*/}
+            });
 
     }
 	render() {
@@ -352,10 +352,7 @@ class DrugsForPharmacyAdmin extends Component {
 						</div>
 
 
-
-
-
-						<table className={"table"} style={{ width: "100%", marginTop: "3rem" }}>
+						<table className={"table"} style={{ width: "75%", marginTop: "3rem" }}>
 							<tbody>
 								{this.state.drugs.map((drug) => (
 									<tr id={drug.Id} key={drug.Id} >
@@ -392,12 +389,12 @@ class DrugsForPharmacyAdmin extends Component {
 											</div>
 										</td>
 										<td className="align-middle">
-											<div style={{ marginLeft: "40%" }}>
+											<div style={{ marginLeft: "25%" }}>
 												<button
 													type="button"
 													onClick={() => this.handleGetGradeClick(drug)}
 
-													className="btn btn-outline-secondary btn-block"
+													className="btn btn-outline-primary btn-block"
 												>
 													Edit Storage
 												</button>
@@ -405,7 +402,7 @@ class DrugsForPharmacyAdmin extends Component {
 													type="button"
 													onClick={() => this.handleGetGradeClick(drug)}
 
-													className="btn btn-outline-secondary btn-block"
+													className="btn btn-outline-primary btn-block"
 												>
 													Edit Drug Price
 												</button>
@@ -413,7 +410,7 @@ class DrugsForPharmacyAdmin extends Component {
 												<button
 													type="button"
 													onClick={() => this.handleDrugClick(drug)}
-													className="btn btn-outline-secondary btn-block"
+													className="btn btn-outline-primary btn-block"
 												>
 													Remove Drug
 												</button>

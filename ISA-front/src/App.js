@@ -31,6 +31,10 @@ import PatientsProccessedDrugsEReceipts from "./Pages/PatientsProccessedDrugsERe
 import activateAccount from './Components/activateAccount';
 import PatientsPage from './Pages/Appointment/PatientsPage';
 import PharmacyForAdmin from './Components/Pharmacies/PharmacyForPhAdmin';
+import CalendarForAppointments from './Pages/Appointment/CalendarForAppointments';
+import AppointmentReport from './Pages/Appointment/AppointmentReport';
+import PatientProfile from './Pages/Appointment/PatientProfile';
+
 import pharmacistsForPhAdmin from './Components/Pharmacies/PharmacistsForPhAdmin';
 import DrugsForPharmacyAdmin from './Components/DrugsForPharmacyAdmin';
 
@@ -88,6 +92,9 @@ function App() {
 
 
         <Route to="/dermatologistsForPhAdmin" path ="/dermatologistsForPhAdmin"  component={dermatologistsForPhAdmin}/>
+        <Route to="/calendar" path ="/calendar" component={CalendarForAppointments}/>
+        <Route to="/appointment-report/:id" path ="/appointment-report/:id" component={AppointmentReport}/>
+        <Route to="/patient-profile/:id" path ="/patient-profile/:id" component={PatientProfile}/>
         <Route to="/pharmacistsForPhAdmin" path ="/pharmacistsForPhAdmin"  component={pharmacistsForPhAdmin}/>
         <Route  to ="/drugsForPhAdmin" path ="/drugsForPhAdmin"  component={DrugsForPharmacyAdmin}/>
 

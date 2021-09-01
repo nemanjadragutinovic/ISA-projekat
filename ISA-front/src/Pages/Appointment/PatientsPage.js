@@ -3,6 +3,7 @@ import React, { Component } from 'react';
 import Header from '../../Components/Header';
 import Axios from 'axios';
 import GetAuthorisation from '../../Funciton/GetAuthorisation';
+import PatientIcon from '../../Images/patient-icon.jpg'
 import { Redirect } from "react-router-dom";
 const API_URL="http://localhost:8080";
 class PatientsPage extends Component {
@@ -55,13 +56,8 @@ class PatientsPage extends Component {
                 console.log(err);
             });
 
-            /*if(this.handleSearch == null){
-                this.setState({
-                    redirect:true,
-                    redirectUrl: "/drugs"
-                });
-                
-            }*/
+
+            
     };
 
 
@@ -195,6 +191,11 @@ class PatientsPage extends Component {
                             {this.state.patients.map((patient) => (
                                 <tr id={patient.Id} key={patient.Id} onClick={() => this.handlePatientClick(patient.Id)} className="rounded" style={{ cursor: "pointer" }}>
                                     <td width="130em">
+                                    <img
+                                            className="img-fluid"
+                                            src={PatientIcon}
+                                            width="60em"
+                                        />
                                     </td>
                                     <td>
                                         <div>

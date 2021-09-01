@@ -11,14 +11,8 @@ const API_URL="http://localhost:8080";
 
 class AddDrugModal extends Component {
     state = {
-        dermatologists:[],
-        showWorkTime:false,
-        dermatologistIdToAdd:'',
-        modalSize:'lg',    
-        selectedStartDate:new Date(),
-        selectedEndDate:new Date(),
-        timeFrom:1,
-        timeTo:2,    
+        
+        drugId:'',  
         pharmacyId:'',
         hiddenSuccessAlert: true,
 		successHeader: "",
@@ -26,7 +20,9 @@ class AddDrugModal extends Component {
 		hiddenUnsuccessAlert: true,
 		unsuccessHeader: "",
 		unsuccessMessage: "",
-        showadd:true
+        showadd:false,
+        price:1,
+        count:1
     }
 
     componentDidMount() {
@@ -36,9 +32,9 @@ class AddDrugModal extends Component {
     onAddClick = (id) =>{
         console.log(this.props.pharmacyId);
         this.setState({
-            showWorkTime: true,
-            dermatologistIdToAdd:id,
-            modalSize:'md'
+            showadd: true,
+            drugId:id
+          
         });
     }
 
@@ -52,17 +48,18 @@ class AddDrugModal extends Component {
 
    
     handleAdd = () => {
-        let newDTO = {
-            pharmacyId : this.props.pharmacyId,
-            dermatologistId: this.state.dermatologistIdToAdd, 
-            startDate: this.state.selectedStartDate, 
-            endDate:this.state.selectedEndDate,
-            startTime: this.state.timeFrom, 
-            endTime:this.state.timeTo
+        let addDTO = {
+            drugId: this.state.drugId, 
+            pharmacyId : this.props.pharmacyId, 
+            count:this.state.count, 
+            price: this.state.price 
+           
+         
         };
-        console.log(newDTO);
+        console.log(addDTO);
+        if(this.state.price>1 && this.state.count>1){
         Axios
-        .put(API_URL + "/users/addDermatologistInPharmacy", newDTO, {
+        .put(API_URL + "/drug/addDrugInPharmacy", addDTO, {
             validateStatus: () => true,
             headers: { Authorization:  GetAuthorisation() },
         }).then((res) =>{
@@ -100,65 +97,26 @@ class AddDrugModal extends Component {
                 unsuccessHeader: "Unsuccess", 
                 unsuccessMessage: "Error,please try later"
             });
-        });
+        });}
+        else{
+            alert("Data is not valid.")
+
+        }
     }
 
     handleBack = (event) =>{
-        this.setState({showWorkTime: false,modalSize:'lg'});
-    }
-
-    handleStartDateChange = (date) => {
-        this.setState({
-            selectedStartDate:date,
-        });
-
-        if(date>this.state.selectedEndDate){
-            this.setState({
-                selectedEndDate:date,
-            }); 
-        }
+        this.setState({showadd: false});
     }
 
 
-    handleEndDateChange = (date) => {
-        this.setState({selectedEndDate:date});
-    }
-
-    handleTimeFromChange= (event) => {
-        if(event.target.value < 1){
-            this.setState({timeFrom:1});
-        }
-        else if(event.target.value > 23){
-            this.setState({timeFrom:23});
-        }
+    handlePriceChange= (event) => {
         
-        if(event.target.value >= this.state.timeTo){
-            this.setState({
-                timeFrom:event.target.value,
-                timeTo: ++event.target.value
-            });
-        }else{
-            this.setState({timeFrom:event.target.value});
-        }
+            this.setState({price:event.target.value});
+        
     }
 
-    handleTimeToChange = (event) => {
-        
-        if(event.target.value < 2){
-            this.setState({timeTo:2});
-        }
-       else  if(event.target.value > 24){
-        this.setState({timeTo:24});
-        }
-            
-        if(event.target.value <= this.state.timeFrom){
-            this.setState({
-                timeTo:event.target.value,
-                timeFrom: --event.target.value
-            });
-        }else{
-            this.setState({timeTo:event.target.value});
-        }
+    handleCountChange = (event) => {
+            this.setState({count:event.target.value});
     }
 
     handleCloseAlertSuccess = () =>{
@@ -166,11 +124,7 @@ class AddDrugModal extends Component {
             hiddenSuccessAlert: true,
             hiddenUnsuccessAlert: true,
             showWorkTime: false, 
-            modalSize:'lg',
-            selectedStartDate:new Date(),
-            selectedEndDate:new Date(),
-            timeFrom:1,
-            timeTo:2,
+           
         });
         this.props.updateDermatologistsWhoarentInPharmacy();
         this.handleBack();
@@ -181,12 +135,10 @@ class AddDrugModal extends Component {
         this.setState({
             hiddenSuccessAlert: true,
             hiddenUnsuccessAlert: true,
-            showWorkTime: false, 
-            modalSize:'lg',
-            selectedStartDate:new Date(),
-            selectedEndDate:new Date(),
-            timeFrom:1,
-            timeTo:2,
+            showadd: false, 
+            price: 1,
+            count: 1
+           
         });
         this.props.closeModal();
     }
@@ -195,8 +147,8 @@ class AddDrugModal extends Component {
         return ( 
             <Modal
                 show = {this.props.show}
-                size = {this.state.modalSize}
-                dialogClassName="modal-100w-100h"
+                size = "lg"
+                dialogClassName="modal-180w-180h"
                 aria-labelledby="contained-modal-title-vcenter"
                 centered
                 >
@@ -251,7 +203,7 @@ class AddDrugModal extends Component {
 											<div style={{ marginLeft: "40%" }}>
 												<button
 													type="button"
-													onClick={() => this.handleGetGradeClick(drug)}
+													onClick={() => this.onAddClick(drug.Id)}
 
 													className="btn btn-outline-secondary btn-block"
 												>
@@ -281,7 +233,7 @@ class AddDrugModal extends Component {
                                                     <label>Number of drug units:</label>
                                                 </td>
                                                 <td>
-                                                    <input placeholder="Time from" className="form-control " style={{width: "12em"}} type="number"  onChange={this.handleTimeFromChange} value={this.state.timeFrom} />
+                                                    <input  className="form-control " style={{width: "12em"}} type="number" min="1" onChange={this.handleCountChange} value={this.state.count} />
                                                 </td>
                                             </tr>
 
@@ -290,12 +242,12 @@ class AddDrugModal extends Component {
                                                     <label>Price:</label>
                                                 </td>
                                                 <td>
-                                                    <input placeholder="Time to" className="form-control  " style={{width: "12em"}} type="number"  onChange={this.handleTimeToChange} value={this.state.timeTo} />
+                                                    <input  className="form-control  " style={{width: "12em"}} type="number" min="1" onChange={this.handlePriceChange} value={this.state.price} />
                                                 </td>
                                             </tr>
                                         </table>
                                         <div  className="form-group text-center">
-                                            <Button className="mt-3"  onClick = {() => this.handleAdd()} >Add dermatologist</Button>
+                                            <Button className="mt-3"  onClick = {() => this.handleAdd()} >Add drug in pharmacy</Button>
                                         </div>
                                     </div>
                                 </form>

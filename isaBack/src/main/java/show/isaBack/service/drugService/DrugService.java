@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import show.isaBack.DTO.AppointmentDTO.IdDTO;
+import show.isaBack.DTO.drugDTO.AddDrugDTO;
 import show.isaBack.DTO.drugDTO.DrugDTO;
 import show.isaBack.DTO.drugDTO.DrugEReceiptDTO;
 import show.isaBack.DTO.drugDTO.DrugFormatIdDTO;
@@ -832,7 +833,39 @@ public class DrugService implements IDrugService{
 	}
 
 	
+	@Override
+	public List<UnspecifiedDTO<DrugDTO>> findDrugsWhichArentInPharmacy(UUID pharmacyId) {
+		List<UnspecifiedDTO<DrugDTO>> drugs = new ArrayList<UnspecifiedDTO<DrugDTO>>();
+		
+		for(DrugInstance drugInstance : drugInstanceRepository.findAll()) {
+			
+			if( drugInPharmacyRepository.getDrugInPharmacy(drugInstance.getId(), pharmacyId)==null) {
+				
+				
+				drugs.add(new UnspecifiedDTO<DrugDTO>(drugInstance.getId(),new DrugDTO(drugInstance.getName(),drugInstance.getManufacturer().getName(),drugInstance.getDrugInstanceName())));
+			}
+				
+		}
+		
+		return drugs;
+	}
 	
+	@Override
+	public void addDrug(AddDrugDTO addDTO) {
+	
+		if(drugInPharmacyRepository.getDrugInPharmacy(addDTO.getDrugId(), addDTO.getPharmacyId())==null) {
+			DrugInstance drugInstance = drugInstanceRepository.getOne(addDTO.getDrugId());
+			Pharmacy pharmacy = pharmacyRepository.getOne(addDTO.getPharmacyId());
+			Date endDate=new Date();
+			endDate.setYear(endDate.getYear()+1);
+			System.out.println(endDate);
+			DrugInPharmacy newDrug=new DrugInPharmacy(pharmacy,drugInstance,new Date(),new Date(),addDTO.getPrice(),addDTO.getCount());
+			
+			
+			drugInPharmacyRepository.save(newDrug);
+		}
+
+	}
 	
 	@Override
 	public List<UnspecifiedDTO<AuthorityDTO>> findAll() {
