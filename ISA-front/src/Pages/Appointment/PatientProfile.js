@@ -70,7 +70,7 @@ class PatientProfile extends Component {
 			id: id
 		});
 
-		Axios.get( + "/users/patient/" + id, { validateStatus: () => true, headers: { Authorization: GetAuthorisation() } })
+		Axios.get(API_URL + "/users/patient/" + id, { validateStatus: () => true, headers: { Authorization: GetAuthorisation() } })
 			.then((res) => {
 				console.log(res.data);
 
@@ -202,10 +202,15 @@ class PatientProfile extends Component {
 						<div className="col-lg-8 mx-auto">
 							<br />
 							<form id="contactForm" name="sentMessage">
+							<img
+									style={{ float: "left" }}
+									className="img-fluid"
+									src={PatientIcon}
+									width="150em"
+								/>
 								<div className="control-group">
 									<div
 										className="form-group controls mb-0 pb-2"
-										style={{ color: "#6c757d", opacity: 1 }}
 									>
 										<div>
 											<b>Name: </b> {this.state.name}
@@ -215,7 +220,6 @@ class PatientProfile extends Component {
 								<div className="control-group">
 									<div
 										className="form-group controls mb-0 pb-2"
-										style={{ color: "#6c757d", opacity: 1 }}
 									>
 										<div>
 											<b>Surname: </b> {this.state.surname}
@@ -225,7 +229,6 @@ class PatientProfile extends Component {
 								<div className="control-group">
 									<div
 										className="form-group controls mb-0 pb-2"
-										style={{ color: "#6c757d", opacity: 1 }}
 									>
 										<div>
 											<b>Email address: </b> {this.state.email}
@@ -235,7 +238,6 @@ class PatientProfile extends Component {
 								<div className="control-group">
 									<div
 										className="form-group controls mb-0 pb-2"
-										style={{ color: "#6c757d", opacity: 1 }}
 									>
 										<div>
 											<b>Phone number: </b> {this.state.phoneNumber}
@@ -245,10 +247,9 @@ class PatientProfile extends Component {
 								<div className="control-group">
 									<div
 										className="form-group controls mb-0 pb-2"
-										style={{ color: "#6c757d", opacity: 1 }}
 									>
 										<div>
-											<b>Address: </b> {this.state.address.country + " " + this.state.address.city + " " + this.state.address.street}
+											<b>Address: </b> {this.state.address}
 										</div>
 									</div>
 								</div>
@@ -285,7 +286,7 @@ class PatientProfile extends Component {
 								style={{ color: "#6c757d", opacity: 1 }}
 							>
 								<div>
-									<h3 hidden={this.state.patientsHistory}>You can't observe patient's appointment history because you did not have one already</h3>
+									<h3 hidden={this.state.patientsHistory}>You can't observe patient's appointment history because you did not have appointment for this patient already.</h3>
 								</div>
 							</div>
 						</div>
@@ -299,7 +300,6 @@ class PatientProfile extends Component {
 										id={appointment.Id}
 										key={appointment.Id}
 										className="rounded"
-										style={{ background: appointment.EntityDTO.appointmentStatus == "SCHEDULED" ? "#93c2aa" : "" }}
 									>
 										<td
 											width="190em"
@@ -386,7 +386,7 @@ class PatientProfile extends Component {
 													}
 													className="btn btn-danger"
 												>
-													Did not show up
+													Patient did not show up
 												</button>
 											</div>
 										</td>

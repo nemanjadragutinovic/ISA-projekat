@@ -1,5 +1,6 @@
 package show.isaBack.model;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -51,7 +52,24 @@ public class Dermatologist extends User {
 		this.pharmacies = pharmacies;
 	}
 
+	public void addPharmacy(Pharmacy pharmacy) {
+		if(this.pharmacies==null) {
+			this.pharmacies=new ArrayList<Pharmacy>();
+		}
+		this.pharmacies.add(pharmacy);
+	}
 	
+	public void removePharmacy(UUID pharmacyId) {
+		if(this.pharmacies == null)
+			return;
+		
+		for(Pharmacy pharmacy : pharmacies) {
+			if(pharmacyId.equals(pharmacy.getId())) {
+				pharmacies.remove(pharmacy);
+				return;
+			}
+		}
+	}
 	
 
 }

@@ -72,6 +72,7 @@ public interface IAppointmentService extends IService<DermatologistAppointmentDT
 
 	public void refreshPatientsAppointments();
 
+
 	public List<UnspecifiedDTO<AppointmentDTO>> getCalendarAppointmentsByDermatologist(UUID pharmacyId);
 
 	public List<UnspecifiedDTO<AppointmentDTO>> getCalendarAppointmentsByPharmacist(UUID pharmacyId);
@@ -81,6 +82,9 @@ public interface IAppointmentService extends IService<DermatologistAppointmentDT
 	public List<UnspecifiedDTO<AppointmentDTO>> getAppointmentsByPatientAsEmpolyee(UUID patientId);
 
 
+
+
+	boolean isFutureAppointmentExists(UUID dermatologistId, UUID phId);
 
 
 

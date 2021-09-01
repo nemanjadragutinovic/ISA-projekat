@@ -35,6 +35,8 @@ import CalendarForAppointments from './Pages/Appointment/CalendarForAppointments
 import AppointmentReport from './Pages/Appointment/AppointmentReport';
 import PatientProfile from './Pages/Appointment/PatientProfile';
 
+import pharmacistsForPhAdmin from './Components/Pharmacies/PharmacistsForPhAdmin';
+import DrugsForPharmacyAdmin from './Components/DrugsForPharmacyAdmin';
 
 import {
   BrowserRouter as Router,
@@ -42,6 +44,7 @@ import {
   Link,
   Switch
 } from "react-router-dom";
+
 
 
 
@@ -92,6 +95,10 @@ function App() {
         <Route to="/calendar" path ="/calendar" component={CalendarForAppointments}/>
         <Route to="/appointment-report/:id" path ="/appointment-report/:id" component={AppointmentReport}/>
         <Route to="/patient-profile/:id" path ="/patient-profile/:id" component={PatientProfile}/>
+        <Route to="/pharmacistsForPhAdmin" path ="/pharmacistsForPhAdmin"  component={pharmacistsForPhAdmin}/>
+        <Route  to ="/drugsForPhAdmin" path ="/drugsForPhAdmin"  component={DrugsForPharmacyAdmin}/>
+
+
 
         </Switch>
     </Router>

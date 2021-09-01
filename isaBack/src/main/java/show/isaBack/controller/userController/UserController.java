@@ -27,10 +27,12 @@ import show.isaBack.DTO.drugDTO.AllergenDTO;
 import show.isaBack.DTO.pharmacyDTO.PharmacyDTO;
 import show.isaBack.DTO.userDTO.ChangePasswordDTO;
 import show.isaBack.DTO.userDTO.EmployeeGradeDTO;
+import show.isaBack.DTO.userDTO.NewDermatologistInPharmacyDTO;
 import show.isaBack.DTO.userDTO.PatientDTO;
 import show.isaBack.DTO.userDTO.PatientsAllergenDTO;
 import show.isaBack.DTO.userDTO.PhAdminDTO;
 import show.isaBack.DTO.userDTO.PharmacistForAppointmentPharmacyGadeDTO;
+import show.isaBack.DTO.userDTO.RemoveDTO;
 import show.isaBack.DTO.userDTO.UserChangeInfoDTO;
 import show.isaBack.DTO.userDTO.UserDTO;
 import show.isaBack.DTO.userDTO.WorkTimeDTO;
@@ -472,11 +474,57 @@ public class UserController {
 		
 	}
 	
-	
-	@GetMapping("/pharmacistsInPharmacy")
+	@GetMapping("/dermatologistsNotInPharmacy/{phId}")
 	//@PreAuthorize("hasRole('PHARMACYADMIN')")
 	@CrossOrigin
-	public ResponseEntity<List<UnspecifiedDTO<EmployeeGradeDTO>>> getPharmacists(@RequestParam UUID phId){
+	public ResponseEntity<List<UnspecifiedDTO<EmployeeGradeDTO>>> getDermatologistsForPgarmacy(@PathVariable UUID phId){
+		
+		System.out.println(phId);
+		
+		try {		
+			return new ResponseEntity<>(userService.findDermatologistsWhoDontWorkInPharmacy(phId),HttpStatus.OK);
+		} catch (IllegalArgumentException e) {
+			e.printStackTrace();
+			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+		} catch (Exception e) {
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+		
+		
+	}
+	
+	@PutMapping("/addDermatologistInPharmacy") 
+	@PreAuthorize("hasRole('PHARMACYADMIN')")
+	@CrossOrigin
+	public ResponseEntity<?> addDermatologistInPharmacy(@RequestBody NewDermatologistInPharmacyDTO newDTO) {
+		try {
+			if(userService.addDermatologistInPharmacy(newDTO))
+				return new ResponseEntity<>(HttpStatus.OK); 
+			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);	
+		} catch (Exception e) {
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR); 
+		}
+	}
+	
+	@PutMapping("/addWorkTime") 
+	@PreAuthorize("hasRole('PHARMACYADMIN')")
+	@CrossOrigin
+	public ResponseEntity<?> addWorkTime(@RequestBody WorkTimeDTO workTimeDTO) {
+		try {
+			System.out.println("usao u work time");
+			if(userService.addWorkTimeForEmployee(workTimeDTO)!=null)
+				return new ResponseEntity<>(HttpStatus.OK); 
+			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);	
+		} catch (Exception e) {
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR); 
+		}
+	}
+	
+	
+	@GetMapping("/pharmacistsInPharmacy/{phId}")
+	//@PreAuthorize("hasRole('PHARMACYADMIN')")
+	@CrossOrigin
+	public ResponseEntity<List<UnspecifiedDTO<EmployeeGradeDTO>>> getPharmacists(@PathVariable UUID phId){
 		
 		System.out.println(phId);
 		
@@ -524,7 +572,7 @@ public class UserController {
 			@GetMapping("/scheduleForEmployee/{id}") 	
 			@PreAuthorize("hasRole('PHARMACYADMIN')")
 			@CrossOrigin
-			public ResponseEntity<List<UnspecifiedDTO<WorkTimeDTO>>> getWorkTimeForStaff(@PathVariable UUID id) {
+			public ResponseEntity<List<UnspecifiedDTO<WorkTimeDTO>>> getWorkTimesForEmployee(@PathVariable UUID id) {
 			  
 				try {
 					List<UnspecifiedDTO<WorkTimeDTO>> schedule = userService.getScheduleForEmployee(id);
@@ -535,6 +583,7 @@ public class UserController {
 					return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR); 
 				}
 			}
+
 	
 			@GetMapping("/dermatologist/pharmacies") 
 			@PreAuthorize("hasRole('DERMATHOLOGIST')")
@@ -546,10 +595,28 @@ public class UserController {
 					return new ResponseEntity<>(pharmacies,HttpStatus.OK); 
 				} catch (EntityNotFoundException e) {
 					return new ResponseEntity<>(HttpStatus.NOT_FOUND); 
+				}
+			}
+			
+			@PutMapping("/removeDermatologistFromPharmacy") 
+			//@PreAuthorize("hasRole('PHARMACYADMIN')")
+			@CrossOrigin
+			public ResponseEntity<?> removeDermatologistFromPharmacy(@RequestBody RemoveDTO removeDTO) {
+				System.out.println("EJ ALO BIDIBOU");
+				System.out.println(removeDTO.getEmployeeId());
+				System.out.println(removeDTO.getPharmacyId());
+				try {
+					
+					if(userService.removeDermatologistFromPharmacy(removeDTO.getEmployeeId(),removeDTO.getPharmacyId()))
+						return new ResponseEntity<>(HttpStatus.OK); 
+					
+					return new ResponseEntity<>(HttpStatus.BAD_REQUEST);	
+
 				} catch (Exception e) {
 					return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR); 
 				}
 			}
+
 			@GetMapping("/pharmacist/pharmacy") 
 			@PreAuthorize("hasRole('PHARMACIST')")
 			@CrossOrigin
@@ -560,11 +627,27 @@ public class UserController {
 					return new ResponseEntity<>(pharmacies,HttpStatus.OK); 
 				} catch (EntityNotFoundException e) {
 					return new ResponseEntity<>(HttpStatus.NOT_FOUND); 
+				}
+			}
+			
+			@PutMapping("/removePharmacistFromPharmacy") 
+			//@PreAuthorize("hasRole('PHARMACYADMIN')")
+			@CrossOrigin
+			public ResponseEntity<?> removePharmacistFromPharmacy(@RequestBody RemoveDTO removeDTO) {
+				System.out.println("EJ ALO BIDIBOU");
+				try {
+					
+					if(userService.removePharmacistFromPharmacy(removeDTO.getEmployeeId(),removeDTO.getPharmacyId()))
+						return new ResponseEntity<>(HttpStatus.OK); 
+					
+					return new ResponseEntity<>(HttpStatus.BAD_REQUEST);	
+
 				} catch (Exception e) {
 					return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR); 
 				}
 			}
 			
+
 			@GetMapping("/patient/{patientId}")
 			@CrossOrigin
 			@PreAuthorize("hasRole('DERMATHOLOGIST') or hasRole('PHARMACIST')")
@@ -582,4 +665,20 @@ public class UserController {
 			
 			
 			
+
+			@GetMapping("/dermatologistspharmacies/{dermatologistId}") 
+			//@PreAuthorize("hasRole('PHARMACYADMIN') or hasRole('PATIENT')")
+			@CrossOrigin
+			public ResponseEntity<List<UnspecifiedDTO<PharmacyDTO>>> getAllPharmaciesbydermatologistId(@PathVariable UUID dermatologistId) {
+			  
+				try {
+					List<UnspecifiedDTO<PharmacyDTO>> pharmacies = userService.findAllPharmaciesByDermatologistId(dermatologistId);
+					return new ResponseEntity<>(pharmacies,HttpStatus.OK); 
+				} catch (EntityNotFoundException e) {
+					return new ResponseEntity<>(HttpStatus.NOT_FOUND); 
+				} catch (Exception e) {
+					return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR); 
+				}
+			}
+	
 }
