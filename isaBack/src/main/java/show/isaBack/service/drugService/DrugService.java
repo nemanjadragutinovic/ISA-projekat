@@ -1,6 +1,7 @@
 package show.isaBack.service.drugService;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -16,6 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import show.isaBack.DTO.AppointmentDTO.IdDTO;
+import show.isaBack.DTO.drugDTO.AddDrugDTO;
 import show.isaBack.DTO.drugDTO.DrugDTO;
 import show.isaBack.DTO.drugDTO.DrugEReceiptDTO;
 import show.isaBack.DTO.drugDTO.DrugFormatIdDTO;
@@ -26,6 +28,7 @@ import show.isaBack.DTO.drugDTO.DrugReservationResponseDTO;
 import show.isaBack.DTO.drugDTO.DrugWithEreceiptsDTO;
 import show.isaBack.DTO.drugDTO.DrugWithPriceDTO;
 import show.isaBack.DTO.drugDTO.DrugsWithGradesDTO;
+import show.isaBack.DTO.drugDTO.EditDrugPriceDTO;
 import show.isaBack.DTO.drugDTO.EreceiptDTO;
 import show.isaBack.DTO.drugDTO.EreceiptWithPharmacyDTO;
 import show.isaBack.DTO.drugDTO.IngredientDTO;
@@ -53,6 +56,7 @@ import show.isaBack.model.Pharmacy;
 import show.isaBack.model.drugs.DrugFormatId;
 import show.isaBack.model.drugs.DrugInPharmacy;
 import show.isaBack.model.drugs.DrugKindId;
+import show.isaBack.model.drugs.DrugPriceList;
 import show.isaBack.model.drugs.DrugReservation;
 import show.isaBack.model.drugs.DrugReservationStatus;
 import show.isaBack.model.drugs.EReceipt;
@@ -64,6 +68,7 @@ import show.isaBack.repository.pharmacyRepository.PharmacyRepository;
 import show.isaBack.repository.userRepository.PatientRepository;
 import show.isaBack.repository.userRepository.UserRepository;
 import show.isaBack.repository.drugsRepository.DrugInPharmacyRepository;
+import show.isaBack.repository.drugsRepository.DrugPriceListRepository;
 import show.isaBack.repository.drugsRepository.DrugReservationRepository;
 import show.isaBack.repository.drugsRepository.EReceiptItemsRepository;
 import show.isaBack.service.loyalityService.LoyalityProgramService;
@@ -94,7 +99,9 @@ public class DrugService implements IDrugService{
 	
 	@Autowired
 	private EReceiptRepository eReceiptRepository;
-
+	
+	@Autowired
+	private DrugPriceListRepository drugPriceListRepository;
 	
 	@Autowired
 	private IUserInterface userService;
@@ -336,7 +343,7 @@ public class DrugService implements IDrugService{
 		{ 
 			grade = findAvgGradeForDrug(var.getId());
 			System.out.println(grade);
-			Double price1=drugInPharmacyRepository.getCurrentPriceForDrugInPharmacy(var.getId(), pharmacyId);
+			Double price1=drugPriceListRepository.getCurrentPriceForDrugInPharmacy(var.getId(), pharmacyId);
 			DrugInPharmacy pomDrug=drugInPharmacyRepository.getDrugInPharmacy(var.getId(), pharmacyId);
 			if(price1!=null)
 				price=price1;
@@ -486,10 +493,10 @@ public class DrugService implements IDrugService{
 		List<UnspecifiedPharmacyWithDrugAndPrice> retVal = new ArrayList<UnspecifiedPharmacyWithDrugAndPrice>();
 		
 		for (DrugInPharmacy drugInPharmacy : availablePharmaciesWithDrug) {
-			
+			double price=drugPriceListRepository.getCurrentPriceForDrugInPharmacy(drugInPharmacy.getId(), drugInPharmacy.getPharmacy().getId());
 			Pharmacy pharmacy= drugInPharmacy.getPharmacy();
 			retVal.add(new UnspecifiedPharmacyWithDrugAndPrice(pharmacy.getId(), pharmacy.getName(),pharmacy.getAddress(),
-					pharmacy.getDescription(), pharmacy.getConsultationPrice(), drugInPharmacy.getPrice(),0));
+					pharmacy.getDescription(), pharmacy.getConsultationPrice(), price,0));
 		
 		}
 		
@@ -820,7 +827,7 @@ public class DrugService implements IDrugService{
 			DrugInPharmacy drug=drugInPharmacyRepository.getDrugInPharmacy(drugInstance.getId(), pharmacyId);
 			if(drugInPharmacyRepository.getDrugInPharmacy(drugInstance.getId(), pharmacyId)!=null) {
 				double grade = findAvgGradeForDrug(drugInstance.getId());
-				Double price1=drugInPharmacyRepository.getCurrentPriceForDrugInPharmacy(drugInstance.getId(), pharmacyId);
+				Double price1=drugPriceListRepository.getCurrentPriceForDrugInPharmacy(drugInstance.getId(), pharmacyId);
 				if(price1!=null)
 					price=price1;
 				drugs.add(new UnspecifiedDTO<DrugWithPriceDTO>(drugInstance.getId(),new DrugWithPriceDTO(drugInstance.getName(),drugInstance.getManufacturer().getName(),drugInstance.getDrugInstanceName(),drugInstance.getDrugFormat(),drugInstance.getQuantity(),grade,price,drug.getCount())));
@@ -832,7 +839,92 @@ public class DrugService implements IDrugService{
 	}
 
 	
+	@Override
+	public List<UnspecifiedDTO<DrugDTO>> findDrugsWhichArentInPharmacy(UUID pharmacyId) {
+		List<UnspecifiedDTO<DrugDTO>> drugs = new ArrayList<UnspecifiedDTO<DrugDTO>>();
+		
+		for(DrugInstance drugInstance : drugInstanceRepository.findAll()) {
+			
+			if( drugInPharmacyRepository.getDrugInPharmacy(drugInstance.getId(), pharmacyId)==null) {
+				
+				
+				drugs.add(new UnspecifiedDTO<DrugDTO>(drugInstance.getId(),new DrugDTO(drugInstance.getName(),drugInstance.getManufacturer().getName(),drugInstance.getDrugInstanceName())));
+			}
+				
+		}
+		
+		return drugs;
+	}
 	
+	@Override
+	public void addDrug(AddDrugDTO addDTO) {
+	System.out.println("easdffdsa");
+		if(drugInPharmacyRepository.getDrugInPharmacy(addDTO.getDrugId(), addDTO.getPharmacyId())==null) {
+			DrugInstance drugInstance = drugInstanceRepository.getOne(addDTO.getDrugId());
+			Pharmacy pharmacy = pharmacyRepository.getOne(addDTO.getPharmacyId());
+			System.out.println(drugInstance.getId());
+			Date endDate=new Date();
+			endDate.setYear(endDate.getYear()+10);
+			System.out.println(endDate);
+			DrugInPharmacy newDrugAAA=new DrugInPharmacy(pharmacy,drugInstance,addDTO.getCount());
+			System.out.println(newDrugAAA.getCount());
+			System.out.println(pharmacy.getId());
+			System.out.println(newDrugAAA.getPharmacy().getId());
+			System.out.println(newDrugAAA.getDrug().getId());
+			System.out.println(drugInstance.getId());
+		    DrugPriceList drugPrice=new DrugPriceList(pharmacy,drugInstance,new Date(),endDate,addDTO.getPrice());
+			drugInPharmacyRepository.save(newDrugAAA);
+			drugPriceListRepository.save(drugPrice);
+			
+		}
+		return;
+	}
+	
+	
+	
+	@Override
+	public boolean editDrugPrice(EditDrugPriceDTO editPriceDTO) {
+		List<DrugPriceList> drugPriceList = drugPriceListRepository.findDrugPricePhId(editPriceDTO.getDrugInstanceId(), editPriceDTO.getPharmacyId());
+		System.out.println("BIDIBOU ALO");
+		System.out.println(editPriceDTO.getPharmacyId());
+		System.out.println(editPriceDTO.getDrugInstanceId());
+		System.out.println(editPriceDTO.getPrice());
+		System.out.println(editPriceDTO.getPharmacyId());
+		for(DrugPriceList drugPrice : drugPriceList) {
+			
+			if(drugPrice.getDateFrom().after(editPriceDTO.getStartDate())) {
+				System.out.println("sad je u petlji");
+				drugPriceListRepository.delete(drugPrice);		
+			} 
+		}
+		DrugPriceList drugWithPrice =drugPriceListRepository.findDrugPriceForPeriod(editPriceDTO.getDrugInstanceId(), editPriceDTO.getPharmacyId(), editPriceDTO.getStartDate(), editPriceDTO.getEndDate());
+		if(drugWithPrice!=null) {
+			Date newDateTo=addDays(editPriceDTO.getStartDate(),-1);
+			
+			drugWithPrice.setDateTo(newDateTo);
+			
+			drugPriceListRepository.save(drugWithPrice);
+			
+			DrugPriceList newDrugPrice= new DrugPriceList( pharmacyRepository.getOne(editPriceDTO.getPharmacyId()), drugInstanceRepository.getOne(editPriceDTO.getDrugInstanceId()),editPriceDTO.getStartDate(), editPriceDTO.getEndDate(),editPriceDTO.getPrice());
+			drugPriceListRepository.save(newDrugPrice);
+			return true;
+		}else {
+			DrugPriceList newDrugPrice= new DrugPriceList( pharmacyRepository.getOne(editPriceDTO.getPharmacyId()), drugInstanceRepository.getOne(editPriceDTO.getDrugInstanceId()),editPriceDTO.getStartDate(), editPriceDTO.getEndDate(),editPriceDTO.getPrice());
+			drugPriceListRepository.save(newDrugPrice);
+			return true;
+		}
+		
+	}
+
+
+    private Date addDays(Date date, int days) {
+        Calendar c = Calendar.getInstance();
+        c.setTime(date);
+        c.add(Calendar.DATE, days);
+        return new Date(c.getTimeInMillis());
+    }
+
+
 	
 	@Override
 	public List<UnspecifiedDTO<AuthorityDTO>> findAll() {

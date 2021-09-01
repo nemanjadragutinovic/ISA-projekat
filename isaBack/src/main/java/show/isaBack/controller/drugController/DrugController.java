@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 
 import show.isaBack.DTO.AppointmentDTO.IdDTO;
+import show.isaBack.DTO.drugDTO.AddDrugDTO;
 import show.isaBack.DTO.drugDTO.DrugDTO;
 import show.isaBack.DTO.drugDTO.DrugFormatIdDTO;
 import show.isaBack.DTO.drugDTO.DrugInstanceDTO;
@@ -33,6 +34,8 @@ import show.isaBack.DTO.drugDTO.DrugReservationResponseDTO;
 import show.isaBack.DTO.drugDTO.DrugWithEreceiptsDTO;
 import show.isaBack.DTO.drugDTO.DrugWithPriceDTO;
 import show.isaBack.DTO.drugDTO.DrugsWithGradesDTO;
+import show.isaBack.DTO.drugDTO.EditDrugPriceDTO;
+import show.isaBack.DTO.drugDTO.EditStorageDTO;
 import show.isaBack.DTO.drugDTO.EreceiptDTO;
 import show.isaBack.DTO.drugDTO.IngredientDTO;
 import show.isaBack.DTO.drugDTO.ManufacturerDTO;
@@ -340,4 +343,67 @@ public class DrugController {
 		return new ResponseEntity<>(drugService.findDrugsInPharmacyWithPrice(pharmacyId),HttpStatus.OK);
 	}
 	
+	@CrossOrigin
+	@GetMapping("/drugsWhichArentInPharmacy/{pharmacyId}")
+	//@PreAuthorize("hasRole('PHARMACYADMIN')")
+	public ResponseEntity<List<UnspecifiedDTO<DrugDTO>>> findDrugsWhichArentInPharmacy(@PathVariable UUID pharmacyId) {
+		System.out.println("ALooo BidiBouuu");
+		return new ResponseEntity<>(drugService.findDrugsWhichArentInPharmacy(pharmacyId),HttpStatus.OK);
+	}
+	
+	@PutMapping("/addDrugInPharmacy")
+	//@PreAuthorize("hasRole('PHARMACYADMIN')")
+	@CrossOrigin
+	public ResponseEntity<?> addDrug(@RequestBody AddDrugDTO addDTO) {
+		System.out.println("ALooo");
+		System.out.println(addDTO.getDrugId());
+		try {
+			drugService.addDrug(addDTO);
+			return new ResponseEntity<>(HttpStatus.CREATED);
+		} catch (IllegalArgumentException e) {
+			return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+		} catch (Exception e) {
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+	
+	@CrossOrigin
+	@PutMapping("/editPharmacyStorage")
+	//@PreAuthorize("hasRole('PHARMACYADMIN')")
+	public ResponseEntity<?> editPharmacyStorage(@RequestBody EditStorageDTO editStorageDTO) {
+		try {
+			return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+		/*	if(drugService.editPriceForDrug(editStorageAmountForDrugDTO))
+				return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+			else {
+				return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+			}*/
+		} catch (IllegalArgumentException e) {
+			return new ResponseEntity<>(e.getMessage(),HttpStatus.BAD_REQUEST);
+		} catch (Exception e) {
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+	
+	@CrossOrigin
+	@PutMapping("/editDrugPriceInPharmacy")
+	//@PreAuthorize("hasRole('PHARMACYADMIN')")
+	public ResponseEntity<?> editDrugPriceInPharmacy(@RequestBody EditDrugPriceDTO editPriceDTO) {
+		try {
+			System.out.println("Efsdfgsdaffafsaf bidibouuuu");
+			drugService.editDrugPrice(editPriceDTO);
+			return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+			
+			/*
+			if(drugPriceInPharmacyService.editPriceForDrug(editPriceForDrugDTO))
+				return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+			else {
+				return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+			}*/
+		} catch (IllegalArgumentException e) {
+			return new ResponseEntity<>(e.getMessage(),HttpStatus.BAD_REQUEST);
+		} catch (Exception e) {
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
 }
