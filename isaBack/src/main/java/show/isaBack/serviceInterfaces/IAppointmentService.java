@@ -85,5 +85,12 @@ public interface IAppointmentService extends IService<DermatologistAppointmentDT
 
 	void didNotShowUpToAppointment(UUID id);
 
+	List<UnspecifiedDTO<AppointmentDTO>> getCreatedAppointmentsByDermatologist();
+
+	public Object getAppointment(UUID appointmentId);
+
+	void finishAppointment(UUID id);
+
+	
 	
 }

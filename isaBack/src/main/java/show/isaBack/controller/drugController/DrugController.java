@@ -37,6 +37,7 @@ import show.isaBack.DTO.drugDTO.EreceiptDTO;
 import show.isaBack.DTO.drugDTO.IngredientDTO;
 import show.isaBack.DTO.drugDTO.ManufacturerDTO;
 import show.isaBack.DTO.drugDTO.ReplaceDrugIdDTO;
+import show.isaBack.model.drugs.DrugStorageQuantityException;
 import show.isaBack.model.drugs.EReceiptStatus;
 import show.isaBack.serviceInterfaces.IDrugFormatService;
 import show.isaBack.serviceInterfaces.IDrugKindIdService;
@@ -339,5 +340,19 @@ public class DrugController {
 		System.out.println("ALooo");
 		return new ResponseEntity<>(drugService.findDrugsInPharmacyWithPrice(pharmacyId),HttpStatus.OK);
 	}
+	
+	@GetMapping("/not-allergic/{patientId}")
+	@PreAuthorize("hasRole('DERMATHOLOGIST') or hasRole('PHARMACIST')")
+	public ResponseEntity<List<UnspecifiedDTO<DrugInstanceDTO>>> findDrugsPatientIsNotAllergicTo(@PathVariable UUID patientId) {
+		try {
+			return new ResponseEntity<>(drugService.findDrugsPatientIsNotAllergicTo(patientId) ,HttpStatus.OK);
+		} catch (IllegalArgumentException e) {
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		} catch (Exception e) {
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+	
+	
 	
 }

@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import show.isaBack.DTO.AppointmentDTO.AppointmentDTO;
 import show.isaBack.DTO.AppointmentDTO.AppointmentReportDTO;
+import show.isaBack.DTO.AppointmentDTO.CreateAppointmentDTO;
 import show.isaBack.DTO.AppointmentDTO.DermatologistAppointmentDTO;
 import show.isaBack.DTO.AppointmentDTO.FormAppointmentDTO;
 import show.isaBack.DTO.AppointmentDTO.FreeAppointmentPeriodDTO;
@@ -499,6 +500,35 @@ public class AppointmentController {
 	public ResponseEntity<?> didNotShowUpToAppointment(@RequestBody IdDTO appointmentId) {
 		try {
 			appointmentService.didNotShowUpToAppointment(appointmentId.getId());
+			return new ResponseEntity<>(HttpStatus.OK);
+		} catch (Exception e) {
+			return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+		}
+	}
+	
+	@GetMapping("/dermatologist-created-appointment")
+	@PreAuthorize("hasRole('DERMATHOLOGIST')")
+	public ResponseEntity<List<UnspecifiedDTO<AppointmentDTO>>> getAllAppointmentsByDermatologist() {
+		return new ResponseEntity<>(appointmentService.getCreatedAppointmentsByDermatologist(),HttpStatus.OK);
+	}
+	
+	@GetMapping("/{appointmentId}")
+	@PreAuthorize("hasRole('DERMATHOLOGIST') or hasRole('PHARMACIST')")
+	public ResponseEntity<?> getAppointment(@PathVariable UUID appointmentId) {
+		try {
+			return new ResponseEntity<>(appointmentService.getAppointment(appointmentId),HttpStatus.OK);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return new ResponseEntity<>(e.getMessage(), HttpStatus.UNAUTHORIZED);
+		}
+	}
+	
+	@PutMapping("/finish")
+	@PreAuthorize("hasRole('DERMATHOLOGIST') or hasRole('PHARMACIST')")
+	@CrossOrigin
+	public ResponseEntity<?> finishAppointment(@RequestBody IdDTO appointmentId) {
+		try {
+			appointmentService.finishAppointment(appointmentId.getId());
 			return new ResponseEntity<>(HttpStatus.OK);
 		} catch (Exception e) {
 			return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);

@@ -171,4 +171,10 @@ public class LoyalityProgramService implements ILoyaltyService {
 		return false;
 	}
 
+	@Override
+	public LoyalityProgram get() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }

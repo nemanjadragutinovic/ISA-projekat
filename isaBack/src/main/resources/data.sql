@@ -125,7 +125,7 @@ insert into appointment (id, appointment_status, appointment_type, start_date_ti
 
 
 insert into appointment (id, appointment_status, appointment_type, start_date_time, end_date_time, price,pharmacy_id, employee_id,patient_id) values ('62934792-be2a-11eb-8529-0242ac130003','SCHEDULED','EXAMINATION', '2021-09-01 18:30:00', '2021-09-01 19:00:00', 1800, '775d8e36-9859-11eb-a8b3-0242ac130003','07a2c302-b584-11eb-8529-0242ac130003','22793162-52d3-11eb-ae93-0242ac130002');  
-insert into appointment (id, appointment_status, appointment_type, start_date_time, end_date_time, price,pharmacy_id, employee_id,patient_id) values ('62934846-be2a-11eb-8529-0242ac130003','SCHEDULED','EXAMINATION', '2021-09-01 11:00:00', '2021-09-01 11:30:00', 1400, '775d8e36-9859-11eb-a8b3-0242ac130003','07a2c302-b584-11eb-8529-0242ac130003','22793162-52d3-11eb-ae93-0242ac130002'); 
+insert into appointment (id, appointment_status, appointment_type, start_date_time, end_date_time, price,pharmacy_id, employee_id,patient_id) values ('62934846-be2a-11eb-8529-0242ac130003','FINISHED','EXAMINATION', '2021-09-01 11:00:00', '2021-09-01 11:30:00', 1400, '775d8e36-9859-11eb-a8b3-0242ac130003','07a2c302-b584-11eb-8529-0242ac130003','22793162-52d3-11eb-ae93-0242ac130002'); 
 
 --consultations-appointments
 

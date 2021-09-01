@@ -7,8 +7,10 @@ import java.util.List;
 import java.util.UUID;
 
 import javax.mail.MessagingException;
+import javax.persistence.EntityNotFoundException;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.mail.MailException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -35,7 +37,7 @@ import show.isaBack.DTO.pharmacyDTO.UnspecifiedPharmacyWithDrugAndPrice;
 import show.isaBack.DTO.userDTO.AuthorityDTO;
 
 import show.isaBack.DTO.userDTO.PatientDTO;
-
+import show.isaBack.Mappers.Drugs.DrugInstanceMapper;
 import show.isaBack.Mappers.Drugs.DrugReservationMapper;
 import show.isaBack.Mappers.Drugs.EReceiptsMapper;
 import show.isaBack.Mappers.Pharmacy.DrugsWithGradesMapper;
@@ -50,11 +52,15 @@ import show.isaBack.model.Ingredient;
 import show.isaBack.model.Manufacturer;
 import show.isaBack.model.Patient;
 import show.isaBack.model.Pharmacy;
+import show.isaBack.model.User;
+import show.isaBack.model.UserCharacteristics.UserType;
+import show.isaBack.model.drugs.Allergen;
 import show.isaBack.model.drugs.DrugFormatId;
 import show.isaBack.model.drugs.DrugInPharmacy;
 import show.isaBack.model.drugs.DrugKindId;
 import show.isaBack.model.drugs.DrugReservation;
 import show.isaBack.model.drugs.DrugReservationStatus;
+import show.isaBack.model.drugs.DrugStorageQuantityException;
 import show.isaBack.model.drugs.EReceipt;
 import show.isaBack.model.drugs.EReceiptItems;
 import show.isaBack.model.drugs.EReceiptStatus;
@@ -62,6 +68,7 @@ import show.isaBack.repository.drugsRepository.DrugFeedbackRepository;
 import show.isaBack.repository.drugsRepository.EReceiptRepository;
 import show.isaBack.repository.pharmacyRepository.PharmacyRepository;
 import show.isaBack.repository.userRepository.PatientRepository;
+import show.isaBack.repository.userRepository.PharmacistRepository;
 import show.isaBack.repository.userRepository.UserRepository;
 import show.isaBack.repository.drugsRepository.DrugInPharmacyRepository;
 import show.isaBack.repository.drugsRepository.DrugReservationRepository;
@@ -115,11 +122,14 @@ public class DrugService implements IDrugService{
 	@Autowired
 	private DrugReservationRepository drugReservationRepository;
 	
+	@Autowired
+	private PharmacistRepository pharmacistRepository;
 
 	@Autowired
 	private EmailService emailService;
 	
-
+	@Autowired
+	private UserRepository userRepository;
 	
 	@Autowired
 	private EReceiptItemsRepository eReceiptItemsRepository;
@@ -831,6 +841,30 @@ public class DrugService implements IDrugService{
 		return drugs;
 	}
 
+	@Override
+	public List<UnspecifiedDTO<DrugInstanceDTO>> findDrugsPatientIsNotAllergicTo(UUID patientId) {
+		Patient patient = patientRepository.getOne(patientId);
+		List<DrugInstance> drugInstances = drugInstanceRepository.findAll();
+		List<DrugInstance> acceptableDrugInstances = new ArrayList<DrugInstance>();
+		for(DrugInstance drugInstance : drugInstances) {
+			if(!isAllergic(patient, drugInstance))
+				acceptableDrugInstances.add(drugInstance); 
+		}
+		
+		List<UnspecifiedDTO<DrugInstanceDTO>> retDrugs = new ArrayList<UnspecifiedDTO<DrugInstanceDTO>>();
+		acceptableDrugInstances.forEach((drug) -> retDrugs.add(DrugInstanceMapper.MapDrugInstancePersistenceToDrugInstanceUnspecifiedDTO(drug)));
+		return retDrugs;
+	}
+	
+	private boolean isAllergic(Patient patient, DrugInstance drugInstance) {
+		for(Allergen diA : drugInstance.getAllergens()) {
+			for(Allergen pA : patient.getAllergens()) {
+				if(diA.getId() == pA.getId())
+					return true;
+			}
+		}
+		return false;
+	}
 	
 	
 	

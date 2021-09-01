@@ -23,21 +23,18 @@ class DrugModal extends Component {
           <h5>{this.props.subheader}</h5>
           <table className="table table-hover" style={{ width: "100%" }}>
             <tbody>
-              {this.props.drugsPatientIsNotAllergicTo.map((drug) => (
-                <tr id={drug.Id} key={drug.Id} style={{ cursor: "pointer"}} onClick={() => this.props.handleDrugDetails(drug)}>
+              {this.props.drugsPatientIsNotAllergicTo.map((drugInstanceName) => (
+                <tr id={drugInstanceName.Id} key={drugInstanceName.Id} style={{ cursor: "pointer"}} onClick={() => this.props.handleDrugDetails(drugInstanceName)}>
                     <td width="130em">
 						<img className="img-fluid" src={MedicamentPicture} width="70em" />
 				    </td>
                     <td>
 						<div>
-							<b>Name:</b> {drug.EntityDTO.drugInstanceName}
+							<b>Name:</b> {drugInstanceName.EntityDTO.drugInstanceName}
 						</div>
+						
 						<div>
-							<b>Manufacturer:</b>{" "}
-							{drug.EntityDTO.manufacturer.EntityDTO.name}
-						</div>
-						<div>
-							<b>Quantity:</b> {drug.EntityDTO.quantity} <b>mg</b>
+							<b>Quantity:</b> {drugInstanceName.EntityDTO.quantity} <b>mg</b>
 						</div>
 					</td>					
                 </tr>

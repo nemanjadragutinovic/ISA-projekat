@@ -126,4 +126,7 @@ public interface AppointmentRepository extends PagingAndSortingRepository<Appoin
 			+ " AND a.appointmentStatus = 'SCHEDULED' AND  a.startDateTime > CURRENT_TIMESTAMP")
 	List<Appointment> findAppointmentForDermatologistInPharmacy(UUID dermatologistId, UUID phId);
 
+	@Query(value = "SELECT a FROM Appointment a WHERE a.employee.id = ?1 AND a.pharmacy.id = ?2 AND a.startDateTime > CURRENT_TIMESTAMP"
+			+ " AND a.appointmentStatus = 'CREATED' AND a.appointmentType = 'EXAMINATION'  ORDER BY a.startDateTime DESC")
+	List<Appointment> getCreatedAppointmentsByDermatologist(UUID dermatologistId, UUID pharmacyId);
 }

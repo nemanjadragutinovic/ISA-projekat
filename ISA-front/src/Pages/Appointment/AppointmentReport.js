@@ -115,7 +115,7 @@ class AppointmentReport extends Component {
 		});
 		console.log(therapy);
 
-		Axios.post(API_URL + "/appointment/report",
+		Axios.post(API_URL + "/appointment-report",
 			{anamnesis: this.state.anamnesis, diagnosis: this.state.diagnosis, therapy: therapy, appointmentId: this.state.id},
 			{headers: { Authorization: GetAuthorisation() }}
 		)

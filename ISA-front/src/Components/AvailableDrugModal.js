@@ -3,7 +3,7 @@ import { Button, Modal } from "react-bootstrap";
 import MedicamentPicture from "../Images/medicament.jpg" ;
 
 
-class AlternativeDrugsModal extends Component {
+class AvailableDrugModal extends Component {
   render() {
     return (
       <Modal
@@ -24,21 +24,18 @@ class AlternativeDrugsModal extends Component {
           <h5>{this.props.subheader}</h5>
           <table className="table table-hover" style={{ width: "100%" }}>
             <tbody>
-              {this.props.alternativeDrugs.map((drug) => (
-                <tr id={drug.Id} key={drug.Id} style={{ cursor: "pointer"}} onClick={() => this.props.handleDrugDetails(drug)}>
+              {this.props.alternativeDrugs.map((drugInstanceName) => (
+                <tr id={drugInstanceName.Id} key={drugInstanceName.Id} style={{ cursor: "pointer"}} onClick={() => this.props.handleDrugDetails(drugInstanceName)}>
                     <td width="130em">
 						<img className="img-fluid" src={MedicamentPicture} width="70em" />
 				    </td>
                     <td>
 						<div>
-							<b>Name:</b> {drug.EntityDTO.drugInstanceName}
+							<b>Name:</b> {drugInstanceName.EntityDTO.drugInstanceName}
 						</div>
+						
 						<div>
-							<b>Manufacturer:</b>{" "}
-							{drug.EntityDTO.manufacturer.EntityDTO.name}
-						</div>
-						<div>
-							<b>Quantity:</b> {drug.EntityDTO.quantity} <b>mg</b>
+							<b>Quantity:</b> {drugInstanceName.EntityDTO.quantity} <b>mg</b>
 						</div>
 					</td>					
                 </tr>
@@ -54,4 +51,4 @@ class AlternativeDrugsModal extends Component {
   }
 }
 
-export default AlternativeDrugsModal;
+export default AvailableDrugModal;

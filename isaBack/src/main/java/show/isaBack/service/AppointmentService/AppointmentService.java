@@ -1006,7 +1006,45 @@ public class AppointmentService implements IAppointmentService{
 		patientRepository.save(patient);
 		appointmentRepository.save(appointment);
 	}
-
+	
+	@Override
+	public List<UnspecifiedDTO<AppointmentDTO>> getCreatedAppointmentsByDermatologist() {
+		List<Appointment> appointments = appointmentRepository.getCreatedAppointmentsByDermatologist(userService.getLoggedUserId(), userService.getPharmacyForLoggedDermatologist().getId());
+		
+		List<UnspecifiedDTO<AppointmentDTO>> returnAppointments = AppointmentsMapper.MapAppointmentPersistenceListToAppointmentUnspecifiedDTOList(appointments);
+		
+		return returnAppointments;
+	}
+	
+	public UnspecifiedDTO<AppointmentDTO> getAppointment(UUID appointmentId) {
+		// current pharmacy?
+		User user = userRepository.getOne(userService.getLoggedUserId());
+		Pharmacy pharmacy;
+		if (user.getUserType() == UserType.DERMATOLOGIST)
+			pharmacy = userService.getPharmacyForLoggedDermatologist();
+		else
+			pharmacy = pharmacistRepository.getOne(user.getId()).getPharmacy();
+		Appointment appointment = appointmentRepository.findById(appointmentId).get();
+		if (appointment.getEmployee().getId() != user.getId() || appointment.getPharmacy().getId() != pharmacy.getId())
+			throw new IllegalArgumentException("Can't access appointment not scheduled for given staff and pharmacy");
+		return AppointmentsMapper.MapAppointmentPersistenceToAppointmentUnspecifiedDTO(appointment);
+	}
+	
+	@Override
+	@Transactional
+	public void finishAppointment(UUID id) {
+		Appointment appointment = appointmentRepository.findById(id).get();
+		Patient patient = appointment.getPatient();
+		if(appointment.getAppointmentType() == AppointmentType.EXAMINATION)
+			patient.setPoints(patient.getPoints() + loyaltyService.get().getPointsForAppointment());
+		else
+			patient.setPoints(patient.getPoints() + loyaltyService.get().getPointsForConsulting());
+		
+		patientRepository.save(patient);
+		appointment.setAppointmentStatus(AppointmentStatus.FINISHED);
+		appointmentRepository.save(appointment);
+	}
+	
 	@Override
 	public List<UnspecifiedDTO<AuthorityDTO>> findAll() {
 		// TODO Auto-generated method stub

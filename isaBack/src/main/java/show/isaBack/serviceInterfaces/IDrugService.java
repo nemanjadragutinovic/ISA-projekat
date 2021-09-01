@@ -15,6 +15,7 @@ import show.isaBack.DTO.drugDTO.EreceiptDTO;
 import show.isaBack.DTO.drugDTO.IngredientDTO;
 import show.isaBack.DTO.drugDTO.ManufacturerDTO;
 import show.isaBack.DTO.pharmacyDTO.UnspecifiedPharmacyWithDrugAndPrice;
+import show.isaBack.model.drugs.DrugStorageQuantityException;
 import show.isaBack.model.drugs.EReceiptStatus;
 import show.isaBack.unspecifiedDTO.UnspecifiedDTO;
 
@@ -51,6 +52,7 @@ public interface IDrugService extends IService<DrugInstanceDTO, UnspecifiedDTO<D
 	List<UnspecifiedDTO<DrugWithPriceDTO>> findDrugsInPharmacyWithPrice(UUID pharmacyId);
 	List<UnspecifiedDTO<DrugWithPriceDTO>> searchDrugsInPharmacy(String name, double gradeFrom, double gradeTo,
 			String manufacturer, UUID pharmacyId);
+	List<UnspecifiedDTO<DrugInstanceDTO>> findDrugsPatientIsNotAllergicTo(UUID patientId);
 	
 
 	
