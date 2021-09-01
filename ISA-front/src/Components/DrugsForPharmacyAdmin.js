@@ -9,6 +9,7 @@ import ReservationDrugModal from "./Modal/ReservationDrugsModal";
 import FirstGradeModal from "../Components/Modal/FirstGradeModal";
 import UnsuccessfulAlert from "../Components/Alerts/UnsuccessfulAlert";
 import SuccessfulAlert from "../Components/Alerts/SuccessfulAlert";
+import AddDrugModal from "./Modal/AddDrugModal";
 
 
 const API_URL = "http://localhost:8080";
@@ -19,6 +20,7 @@ class DrugsForPharmacyAdmin extends Component {
 
 	state = {
 		drugs: [],
+		drugs1: [],
 		drugAmount: "",
 		drugQuantity: "",
 		drugManufacturer: "",
@@ -56,14 +58,17 @@ class DrugsForPharmacyAdmin extends Component {
 		UnsuccessfulHeader: "",
 		UnsuccessfulMessage: "",
 
-
+		showAddDrug: false ,
 
 		searchMan: ""
 
 	};
 
 	componentDidMount() {
-
+		let pharmacyId = localStorage.getItem("keyPharmacyId")
+        this.setState({
+            pharmacyId: pharmacyId
+        })
 		Axios.get(API_URL + "/drug/drugsInPharmacy/" + localStorage.getItem("keyPharmacyId"), {
 
 			validateStatus: () => true,
@@ -199,6 +204,48 @@ class DrugsForPharmacyAdmin extends Component {
 		});
 	};
 
+	handleAddDrug = () => {
+        {/*Axios.get(API_URL + "/users/dermatologistsNotInPharmacy/" + localStorage.getItem("keyPharmacyId"), {
+            headers: { Authorization: GetAuthorisation() },
+        }).then((res) => {
+            this.setState({ dermatologists1: res.data, showAddDermatologist: true });
+            console.log(res.data);
+        })
+            .catch((err) => {
+                console.log(err);
+            });
+		*/}
+		this.setState({ showAddDrug: true });
+    }
+
+	handleAddDrugClose = () => {
+        Axios.get(API_URL + "/drug/drugsInPharmacy/" + localStorage.getItem("keyPharmacyId"), {
+            headers: { Authorization: GetAuthorisation() },
+        })
+            .then((res) => {
+                this.setState({ drugs: res.data });
+                console.log(res.data);
+
+            })
+            .catch((err) => {
+                console.log(err);
+            });
+        this.setState({ showAddDrug: false });
+    }
+
+
+	handleUpdateDrugsWhicharentInPharmacy = () => {
+      {/*  Axios.get(API_URL + "/users/dermatologistsNotInPharmacy/" + localStorage.getItem("keyPharmacyId"), {
+            headers: { Authorization: GetAuthorisation() },
+        }).then((res) => {
+            this.setState({ dermatologists1: res.data });
+            console.log(res.data);
+        })
+            .catch((err) => {
+                console.log(err);
+            });*/}
+
+    }
 	render() {
 
 
@@ -235,7 +282,7 @@ class DrugsForPharmacyAdmin extends Component {
 							Search drugs
 						</button>
 
-						<button className="btn btn-primary btn-xl" type="button" onClick={this.hangleFormToogle} style={{ marginLeft: "2%" }}>
+						<button className="btn btn-primary btn-xl" type="button" onClick={this.handleAddDrug} style={{ marginLeft: "2%" }}>
 
 							Add drug
 						</button>
@@ -387,7 +434,7 @@ class DrugsForPharmacyAdmin extends Component {
 					</div>
 
 
-
+					<AddDrugModal show={this.state.showAddDrug} closeModal={this.handleAddDrugClose} drugs={this.state.drugs1} pharmacyId={this.state.pharmacyId} updateDrugsWhicharentInPharmacy={this.handleUpdateDrugsWhicharentInPharmacy} />
 
 
 				</div>
