@@ -81,6 +81,7 @@ public interface IUserInterface extends IService<UserDTO, UnspecifiedDTO<UserDTO
 	List<UnspecifiedDTO<WorkTimeDTO>>getScheduleForEmployee(UUID id);
 	public List<UnspecifiedDTO<PharmacyDTO>> getPharmacies();
 	public UnspecifiedDTO<PharmacyDTO> getPharmacy();
+	UnspecifiedDTO<UserDTO> getPatientById(UUID patientId);
 
 
 

@@ -28,7 +28,7 @@ public class AppointmentDTO {
     private double price;
     
     private AppointmentStatus appointmentStatus;
-   
+    private AppointmentReportDTO appointmentReportDTO;
 
 	public AppointmentDTO() {}
 
@@ -83,5 +83,12 @@ public class AppointmentDTO {
 	}
 	
 
+	public AppointmentReportDTO getAppointmentReportDTO() {
+		return appointmentReportDTO;
+	}
+
+	public void setAppointmentReportDTO(AppointmentReportDTO appointmentReportDTO) {
+		this.appointmentReportDTO = appointmentReportDTO;
+	}
 }
 

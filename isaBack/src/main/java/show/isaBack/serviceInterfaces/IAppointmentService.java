@@ -76,7 +76,9 @@ public interface IAppointmentService extends IService<DermatologistAppointmentDT
 
 	public List<UnspecifiedDTO<AppointmentDTO>> getCalendarAppointmentsByPharmacist(UUID pharmacyId);
 
-	public UUID create(AppointmentReportDTO entityDTO);
+	boolean hasExaminedPatient(UUID patientId);
+
+	public List<UnspecifiedDTO<AppointmentDTO>> getAppointmentsByPatientAsEmpolyee(UUID patientId);
 
 
 

@@ -33,6 +33,7 @@ import PatientsPage from './Pages/Appointment/PatientsPage';
 import PharmacyForAdmin from './Components/Pharmacies/PharmacyForPhAdmin';
 import CalendarForAppointments from './Pages/Appointment/CalendarForAppointments';
 import AppointmentReport from './Pages/Appointment/AppointmentReport';
+import PatientProfile from './Pages/Appointment/PatientProfile';
 
 
 import {
@@ -89,8 +90,8 @@ function App() {
 
         <Route to="/dermatologistsForPhAdmin" path ="/dermatologistsForPhAdmin"  component={dermatologistsForPhAdmin}/>
         <Route to="/calendar" path ="/calendar" component={CalendarForAppointments}/>
-        <Route to="/report/:id" path ="/report/:id" component={AppointmentReport}/>
-
+        <Route to="/appointment-report/:id" path ="/appointment-report/:id" component={AppointmentReport}/>
+        <Route to="/patient-profile/:id" path ="/patient-profile/:id" component={PatientProfile}/>
 
         </Switch>
     </Router>

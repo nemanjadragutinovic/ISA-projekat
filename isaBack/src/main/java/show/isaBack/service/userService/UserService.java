@@ -848,5 +848,9 @@ public class UserService implements IUserInterface{
 			return PharmacyMapper.MapPharmacyPersistenceToPharmacyUnspecifiedDTO(pharmacist.getPharmacy());
 	}
 
+	@Override
+	public UnspecifiedDTO<UserDTO> getPatientById(UUID patientId) {
+		return UserMapper.MapUserPersistenceToUserUnspecifiedDTO(userRepository.getOne(patientId));
+	}
 
 }

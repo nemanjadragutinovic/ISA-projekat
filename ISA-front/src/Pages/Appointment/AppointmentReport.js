@@ -1,6 +1,5 @@
 import React, { Component } from "react";
 import Header from "../../Components/Header";
-import TopBar from "../../Components/TopBar";
 import Axios from "axios";
 import DrugModal from "../../Components/DrugModal";
 import AvailableDrugModal from "../../Components/AvailableDrugModal";
@@ -55,7 +54,7 @@ class AppointmentReport extends Component {
 			id:id
 		});
 
-		Axios.get(API_URL + "/api/appointment/" + id, 
+		Axios.get(API_URL + "/appointment/" + id, 
 			{validateStatus: () => true, headers: { Authorization: GetAuthorisation() }}
 		)
 			.then((res) => {
@@ -205,7 +204,6 @@ class AppointmentReport extends Component {
 		return (
             <React.Fragment>
 			<div hidden={this.props.hidden}>
-				<TopBar />
 				<Header />
 
 				<div className="container" style={{ marginTop: "10%" }}>

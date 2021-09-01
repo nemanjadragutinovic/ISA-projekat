@@ -11,7 +11,8 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
-
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import javax.mail.MessagingException;
 import javax.persistence.EntityNotFoundException;
 import javax.transaction.Transactional;
@@ -19,6 +20,8 @@ import javax.transaction.Transactional;
 import org.hibernate.boot.registry.classloading.spi.ClassLoaderService.Work;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+
 
 import show.isaBack.DTO.AppointmentDTO.AppointmentDTO;
 import show.isaBack.DTO.AppointmentDTO.AppointmentReportDTO;
@@ -37,6 +40,7 @@ import show.isaBack.model.Patient;
 import show.isaBack.model.Pharmacist;
 import show.isaBack.model.Pharmacy;
 import show.isaBack.model.User;
+import show.isaBack.model.UserCharacteristics.UserType;
 import show.isaBack.model.UserCharacteristics.WorkTime;
 import show.isaBack.model.appointment.Appointment;
 import show.isaBack.model.appointment.AppointmentReport;
@@ -924,20 +928,49 @@ public class AppointmentService implements IAppointmentService{
 	}
 	
 	@Override
-	public UUID create(AppointmentReportDTO entityDTO) {
-		// TODO Auto-generated method stub
-		try {
-			Appointment appointment = appointmentRepository.findById(entityDTO.getAppointmentId()).get();
-			AppointmentReport appointmentReport = new AppointmentReport(entityDTO.getAnamnesis(), entityDTO.getDiagnosis(), entityDTO.getTherapy(), appointment);
-			appointmentReportRepository.save(appointmentReport);
-			return appointmentReport.getId();
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			return null;
-			
+	public boolean hasExaminedPatient(UUID patientId) {
+		return appointmentRepository.getFinishedAppointmentsForEmployeeForPatient(userService.getLoggedUserId(), patientId).size() > 0;
+	}
+	
+	private void concatenateTreatmentReport(List<UnspecifiedDTO<AppointmentDTO>> appointments) {
+		for (int i = 0; i < appointments.size(); i++) {
+			UnspecifiedDTO<AppointmentDTO> appointment = appointments.get(i);
+			if(appointment.EntityDTO.getAppointmentStatus() == AppointmentStatus.FINISHED) {
+				try {
+					AppointmentReport appointmentReport = appointmentReportRepository.findByAppointmentId(appointment.Id);
+					AppointmentReportDTO appointmentReportDTO = new AppointmentReportDTO(appointmentReport.getAnamnesis(), appointmentReport.getDiagnosis(), appointmentReport.getTherapy(), appointmentReport.getId());
+					appointment.EntityDTO.setAppointmentReportDTO(appointmentReportDTO);
+					appointments.set(i, appointment);
+				} catch (Exception e) {
+					continue;
+				}
+			}
 		}
-		
+	}
+	
+	@Override
+	public List<UnspecifiedDTO<AppointmentDTO>> getAppointmentsByPatientAsEmpolyee(UUID patientId) {
+		UUID userId = userService.getLoggedUserId();
+		User user = userRepository.getOne(userId);
+		List<Appointment> appointments = new ArrayList<Appointment>();
+		if(user.getUserType() == UserType.DERMATOLOGIST) {
+			Pharmacy pharmacy = userService.getPharmacyForLoggedDermatologist();
+			List<Appointment> scheduledAppointments = appointmentRepository.getScheduledDermatologistAppointmentsByPatient(patientId, userId, pharmacy.getId());
+			List<Appointment> finishedAppointments = new ArrayList<Appointment>();
+			if (hasExaminedPatient(patientId))
+				finishedAppointments = appointmentRepository.getFinishedDermatologistAppointmentsByPatient(patientId, userId, pharmacy.getId());
+			appointments = Stream.concat(scheduledAppointments.stream(), finishedAppointments.stream()).collect(Collectors.toList());
+		} else {
+			Pharmacist pharmacist = pharmacistRepository.getOne(userId);
+			List<Appointment> scheduledAppointments = appointmentRepository.getScheduledPharmacistAppointmentsByPatient(patientId, userId, pharmacist.getPharmacy().getId());
+			List<Appointment> finishedAppointments = new ArrayList<Appointment>();
+			if (hasExaminedPatient(patientId))
+				finishedAppointments = appointmentRepository.getFinishedPharmacistAppointmentsByPatient(patientId, userId, pharmacist.getPharmacy().getId());
+			appointments = Stream.concat(scheduledAppointments.stream(), finishedAppointments.stream()).collect(Collectors.toList());
+		}
+		List<UnspecifiedDTO<AppointmentDTO>> returnAppointments = AppointmentsMapper.MapAppointmentPersistenceListToAppointmentUnspecifiedDTOList(appointments);
+		concatenateTreatmentReport(returnAppointments);
+		return returnAppointments;
 	}
 	
 	@Override

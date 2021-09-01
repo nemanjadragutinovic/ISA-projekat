@@ -163,7 +163,7 @@ class CalendarForAppointments extends Component {
     handleExamine = () => {
 		this.setState({
 			redirect: true,
-			redirectUrl: "/appointment/report/" + this.state.id
+			redirectUrl: "/appointment-report/" + this.state.id
 		});
 	};
 
