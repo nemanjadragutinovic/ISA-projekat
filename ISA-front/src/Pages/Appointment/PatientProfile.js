@@ -108,7 +108,7 @@ class PatientProfile extends Component {
 
 	handleDidNotShowUp = (appointmentId) => {
 		console.log(appointmentId)
-		Axios.put(API_URL + "/appointment/did-not-show-up",
+		Axios.put(API_URL + "/appointment/patient-did-not-come",
 			{ id: appointmentId },
 			{ headers: { Authorization: GetAuthorisation() } })
 			.then((res) => {
@@ -386,7 +386,7 @@ class PatientProfile extends Component {
 													}
 													className="btn btn-danger"
 												>
-													Patient did not show up
+													Patient did not come
 												</button>
 											</div>
 										</td>
@@ -398,6 +398,7 @@ class PatientProfile extends Component {
 					</div>
 				</div>
 				<ModalDialog
+					
 					show={this.state.openModalSuccess}
 					onCloseModal={this.handleModalSuccessClose}
 					header="Successfully added penalty to patient"

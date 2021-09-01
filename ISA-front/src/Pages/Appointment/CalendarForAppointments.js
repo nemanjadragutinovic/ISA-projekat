@@ -168,7 +168,7 @@ class CalendarForAppointments extends Component {
 	};
 
 	handleDidNotShowUp = () => {
-		Axios.put(API_URL + "/appointment/did-not-show-up",
+		Axios.put(API_URL + "/appointment/patient-did-not-come",
 			{ id: this.state.id },
 			{ headers: { Authorization: GetAuthorisation() } })
 			.then((res) => {

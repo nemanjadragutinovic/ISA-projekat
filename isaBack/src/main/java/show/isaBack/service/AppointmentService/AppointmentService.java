@@ -995,6 +995,17 @@ public class AppointmentService implements IAppointmentService{
 		
 		return false;
 	}
+	
+	@Override
+	@Transactional
+	public void didNotShowUpToAppointment(UUID id) {
+		Appointment appointment = appointmentRepository.findById(id).get();
+		appointment.setAppointmentStatus(AppointmentStatus.EXPIRED);
+		Patient patient = patientRepository.getOne(appointment.getPatient().getId());
+		patient.setPenalty(patient.getPenalty() + 1); 
+		patientRepository.save(patient);
+		appointmentRepository.save(appointment);
+	}
 
 	@Override
 	public List<UnspecifiedDTO<AuthorityDTO>> findAll() {

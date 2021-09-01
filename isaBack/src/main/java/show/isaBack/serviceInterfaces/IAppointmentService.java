@@ -81,12 +81,9 @@ public interface IAppointmentService extends IService<DermatologistAppointmentDT
 
 	public List<UnspecifiedDTO<AppointmentDTO>> getAppointmentsByPatientAsEmpolyee(UUID patientId);
 
-
-
-
 	boolean isFutureAppointmentExists(UUID dermatologistId, UUID phId);
 
-
+	void didNotShowUpToAppointment(UUID id);
 
 	
 }

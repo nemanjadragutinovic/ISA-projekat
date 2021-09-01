@@ -493,4 +493,16 @@ public class AppointmentController {
 		return new ResponseEntity<>(appointmentService.getAppointmentsByPatientAsEmpolyee(patientId), status);
 	}
 	
+	@PutMapping("/patient-did-not-come")
+	@PreAuthorize("hasRole('DERMATHOLOGIST') or hasRole('PHARMACIST')")
+	@CrossOrigin
+	public ResponseEntity<?> didNotShowUpToAppointment(@RequestBody IdDTO appointmentId) {
+		try {
+			appointmentService.didNotShowUpToAppointment(appointmentId.getId());
+			return new ResponseEntity<>(HttpStatus.OK);
+		} catch (Exception e) {
+			return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+		}
+	}
+	
 }
