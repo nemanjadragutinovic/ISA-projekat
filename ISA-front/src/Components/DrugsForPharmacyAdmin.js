@@ -10,6 +10,7 @@ import FirstGradeModal from "../Components/Modal/FirstGradeModal";
 import UnsuccessfulAlert from "../Components/Alerts/UnsuccessfulAlert";
 import SuccessfulAlert from "../Components/Alerts/SuccessfulAlert";
 import AddDrugModal from "./Modal/AddDrugModal";
+import EditDrugPriceModal from "./Modal/EditDrugPriceModal";
 
 
 const API_URL = "http://localhost:8080";
@@ -36,20 +37,13 @@ class DrugsForPharmacyAdmin extends Component {
 		searchGradeTo: "",
 
 		grade: 1,
-		hiddenFailAlert: true,
-		failHeader: "",
-		failMessage: "",
-		hiddenSuccessAlert: true,
-		successHeader: "",
-		successMessage: "",
+	
 
 		pharmacyId: "",
 		maxCount: "",
 		price: 0,
 		drugId: "",
-		hiddenErrorAlert: true,
-		errorHeader: "",
-		errorMessage: "",
+	
 
 		hiddenSuccessfulAlert: true,
 		SuccessfulHeader: "",
@@ -59,9 +53,9 @@ class DrugsForPharmacyAdmin extends Component {
 		UnsuccessfulMessage: "",
 
 		showAddDrug: false ,
-
-		searchMan: ""
-
+		showEditDrugPrice: false ,
+		searchMan: "",
+		
 	};
 
 	componentDidMount() {
@@ -175,16 +169,12 @@ class DrugsForPharmacyAdmin extends Component {
 		this.setState({ specificationModalShow: false });
 	};
 
-	handleCloseAlertFail = () => {
-		this.setState({ hiddenFailAlert: true });
-	};
 
-	handleCloseAlertSuccess = () => {
-		this.setState({ hiddenSuccessAlert: true });
-	};
 
-	handleClickIcon = (grade) => {
-		this.setState({ grade });
+
+
+	handleOpenEditDrugPrice = (id) => {
+		this.setState({ showEditDrugPrice: true , drugId:id});
 	};
 
 	handleCloseSuccessfulAlert = () => {
@@ -195,14 +185,6 @@ class DrugsForPharmacyAdmin extends Component {
 		this.setState({ hiddenUnsuccessfulAlert: true });
 	};
 
-
-	handleCloseErrorAlert = () => {
-		this.setState({
-			hiddenErrorAlert: true,
-			errorHeader: "",
-			errorMessage: ""
-		});
-	};
 
 	handleAddDrug = () => {
 		Axios.get(API_URL + "/drug/drugsWhichArentInPharmacy/" + localStorage.getItem("keyPharmacyId"), {
@@ -233,6 +215,20 @@ class DrugsForPharmacyAdmin extends Component {
         this.setState({ showAddDrug: false });
     }
 
+	handleEditPriceClose = () => {
+        Axios.get(API_URL + "/drug/drugsInPharmacy/" + localStorage.getItem("keyPharmacyId"), {
+            headers: { Authorization: GetAuthorisation() },
+        })
+            .then((res) => {
+                this.setState({ drugs: res.data });
+                console.log(res.data);
+
+            })
+            .catch((err) => {
+                console.log(err);
+            });
+        this.setState({ showEditDrugPrice: false });
+    }
 
 	handleUpdateDrugsWhicharentInPharmacy = () => {
         Axios.get(API_URL + "/drug/drugsWhichArentInPharmacy/" + localStorage.getItem("keyPharmacyId"), {
@@ -361,7 +357,7 @@ class DrugsForPharmacyAdmin extends Component {
 												<img className="img-fluid" src={MedicamentPicture} width="70em" />
 											</div>
 										</td>
-										<td onClick={() => this.handleOnDrugSelect(drug.Id)}>
+										<td >
 											<div>
 												<b>Drug Name:</b> {drug.EntityDTO.name}
 											</div>
@@ -392,7 +388,7 @@ class DrugsForPharmacyAdmin extends Component {
 											<div style={{ marginLeft: "25%" }}>
 												<button
 													type="button"
-													onClick={() => this.handleGetGradeClick(drug)}
+													onClick={() => this.handleGetGradeClick(drug.Id)}
 
 													className="btn btn-outline-primary btn-block"
 												>
@@ -400,7 +396,7 @@ class DrugsForPharmacyAdmin extends Component {
 												</button>
 												<button
 													type="button"
-													onClick={() => this.handleGetGradeClick(drug)}
+													onClick={() => this.handleOpenEditDrugPrice(drug.Id)}
 
 													className="btn btn-outline-primary btn-block"
 												>
@@ -432,7 +428,7 @@ class DrugsForPharmacyAdmin extends Component {
 
 
 					<AddDrugModal show={this.state.showAddDrug} closeModal={this.handleAddDrugClose} drugs={this.state.drugs1} pharmacyId={this.state.pharmacyId} updateDrugsWhicharentInPharmacy={this.handleUpdateDrugsWhicharentInPharmacy} />
-
+					<EditDrugPriceModal show={this.state.showEditDrugPrice}  closeModal={this.handleEditPriceClose} drugId={this.state.drugId} pharmacyId={this.state.pharmacyId}/> 
 
 				</div>
 

@@ -1,6 +1,5 @@
 package show.isaBack.model.drugs;
 
-import java.io.Serializable;
 import java.util.Date;
 import java.util.UUID;
 
@@ -11,16 +10,8 @@ import javax.persistence.ManyToOne;
 
 import show.isaBack.model.DrugInstance;
 import show.isaBack.model.Pharmacy;
-
 @Entity
-public class DrugInPharmacy implements Serializable {
-
-	
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
-
+public class DrugPriceList {
 	@Id
 	private UUID id;
 	
@@ -30,23 +21,30 @@ public class DrugInPharmacy implements Serializable {
 	@ManyToOne(optional = false)
 	private DrugInstance drugInstance;
 		
-
+	@Column(nullable = false)
+	private Date dateFrom;
 	
 	@Column( nullable = false)
-	private int count;
-
-	public DrugInPharmacy() {
+	private Date dateTo;
+	
+	@Column( nullable = false)
+	private double price;
+	
+	
+	public DrugPriceList() {
 		super();
 	}
 
-	public DrugInPharmacy( Pharmacy pharmacy, DrugInstance drug,int count) {
+	public DrugPriceList( Pharmacy pharmacy, DrugInstance drug, Date dateFrom, Date dateTo, double price) {
 		super();
 		this.id =UUID.randomUUID();
 		this.pharmacy = pharmacy;
-		this.drugInstance=drug;
-		this.count = count;
+		this.drugInstance = drug;
+		this.dateFrom = dateFrom;
+		this.dateTo = dateTo;
+		this.price = price;
 	}
-
+	
 	public UUID getId() {
 		return id;
 	}
@@ -71,26 +69,27 @@ public class DrugInPharmacy implements Serializable {
 		this.drugInstance = drug;
 	}
 
-	
-
-	public int getCount() {
-		return count;
+	public Date getDateFrom() {
+		return dateFrom;
 	}
 
-	public void setCount(int count) {
-		this.count = count;
+	public void setDateFrom(Date dateFrom) {
+		this.dateFrom = dateFrom;
 	}
-	
-	
-	public void reduceCount(int reduceCount) {
-		if(this.count - reduceCount < 0)
-			throw new IllegalArgumentException("Not enough drugs in storage.");
-		else
-			this.count=this.count - reduceCount;
+
+	public Date getDateTo() {
+		return dateTo;
 	}
-	
-	public void addCount(int addCount) {
-			this.count=this.count + addCount;
+
+	public void setDateTo(Date dateTo) {
+		this.dateTo = dateTo;
 	}
-	
+
+	public double getPrice() {
+		return price;
+	}
+
+	public void setPrice(double price) {
+		this.price = price;
+	}
 }

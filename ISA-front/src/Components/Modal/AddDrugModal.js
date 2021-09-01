@@ -57,35 +57,31 @@ class AddDrugModal extends Component {
          
         };
         console.log(addDTO);
-        if(this.state.price>1 && this.state.count>1){
+        if(this.state.price>=1 && this.state.count>=1){
         Axios
         .put(API_URL + "/drug/addDrugInPharmacy", addDTO, {
             validateStatus: () => true,
             headers: { Authorization:  GetAuthorisation() },
         }).then((res) =>{
-            if (res.status === 200) {
+            console.log(res.status);
+            console.log(res.data);
+            if (res.status === 201) {
                 this.setState({
                     hiddenSuccessAlert: false,
-                    hiddenFailAlert:true,
+                    hiddenUnsuccessAlert:true,
                     successHeader: "Success",
-                    successMessage: "You successfully add new dermatologist.",
+                    successMessage: "You successfully add drug in pharmacy.",
                 })
                 
-               /// this.setState({showWorkTime: false, modalSize:'lg'});
+           
                 
-            }else if(res.status===400){
+            }else {
+    
                 this.setState({ 
                     hiddenSuccessAlert: true,
                     hiddenUnsuccessAlert: false, 
                     unsuccessHeader: "Unsuccess", 
-                    unsuccessMessage: "Dermatologist works in selected period."
-                });
-            }else if(res.status===500){
-                this.setState({ 
-                    hiddenSuccessAlert: true,
-                    hiddenUnsuccessAlert: false, 
-                    unsuccessHeader: "Unsuccess", 
-                    unsuccessMessage: "We have internal server error,please try later"
+                    unsuccessMessage: "Error on server."
                 });
             }
             
@@ -123,13 +119,15 @@ class AddDrugModal extends Component {
         this.setState({
             hiddenSuccessAlert: true,
             hiddenUnsuccessAlert: true,
-            showWorkTime: false, 
+            showadd: false, 
            
         });
-        this.props.updateDermatologistsWhoarentInPharmacy();
+        this.props.updateDrugsWhicharentInPharmacy();
         this.handleBack();
       
     }
+
+    
 
     handleCloseModal = () => {
         this.setState({

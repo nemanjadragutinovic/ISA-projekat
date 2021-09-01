@@ -43,6 +43,7 @@ import show.isaBack.model.drugs.EReceiptItems;
 import show.isaBack.model.drugs.EReceiptStatus;
 import show.isaBack.repository.Pharmacy.PharmacyGradeRepository;
 import show.isaBack.repository.drugsRepository.DrugInPharmacyRepository;
+import show.isaBack.repository.drugsRepository.DrugPriceListRepository;
 import show.isaBack.repository.drugsRepository.EReceiptItemsRepository;
 import show.isaBack.repository.drugsRepository.EReceiptRepository;
 import show.isaBack.repository.pharmacyRepository.PharmacyRepository;
@@ -72,6 +73,9 @@ public class PharmacyService implements IPharmacyService{
 	@Autowired
 	private PharmacyAdminRepository phAdminRepository;
 
+	@Autowired
+	private DrugPriceListRepository drugPriceListRepository;
+	
 	@Autowired
 	private PatientRepository patientRepository;
 	
@@ -458,9 +462,10 @@ UUID patientID = userService.getLoggedUserId();
 			found = false;
 			for (DrugInPharmacy drugInPharmacy : drugInPharmacyRepository.findAll()) {
 				if(drugInPharmacy.getPharmacy().getId().equals(pha.getId())) {
+					double price1=drugPriceListRepository.getCurrentPriceForDrugInPharmacy(drugInPharmacy.getDrug().getId(), drugInPharmacy.getPharmacy().getId());
 					if(i.getDrugInstance().getId().equals(drugInPharmacy.getDrug().getId()) && drugInPharmacy.getCount()>=i.getAmount()) {
 						found = true;
-						price += drugInPharmacy.getPrice() * i.getAmount();
+						price += price1 * i.getAmount();
 						
 					}
 				}

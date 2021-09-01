@@ -3,6 +3,8 @@ package show.isaBack.DTO.drugDTO;
 import java.util.UUID;
 
 public class AddDrugDTO {
+	
+
 	private UUID drugId;
 	
 	private UUID pharmacyId;
@@ -11,6 +13,10 @@ public class AddDrugDTO {
 	
 	private double price;
 	
+	public AddDrugDTO() {
+		super();
+		// TODO Auto-generated constructor stub
+	}
 	public AddDrugDTO(UUID drugId,UUID pharmacyId, int count, double price) {
 		super();
 		this.drugId = drugId;

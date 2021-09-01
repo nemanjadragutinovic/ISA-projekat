@@ -12,6 +12,7 @@ import show.isaBack.DTO.drugDTO.DrugReservationResponseDTO;
 import show.isaBack.DTO.drugDTO.DrugWithEreceiptsDTO;
 import show.isaBack.DTO.drugDTO.DrugWithPriceDTO;
 import show.isaBack.DTO.drugDTO.DrugsWithGradesDTO;
+import show.isaBack.DTO.drugDTO.EditDrugPriceDTO;
 import show.isaBack.DTO.drugDTO.EreceiptDTO;
 import show.isaBack.DTO.drugDTO.IngredientDTO;
 import show.isaBack.DTO.drugDTO.ManufacturerDTO;
@@ -54,6 +55,7 @@ public interface IDrugService extends IService<DrugInstanceDTO, UnspecifiedDTO<D
 			String manufacturer, UUID pharmacyId);
 	List<UnspecifiedDTO<DrugDTO>> findDrugsWhichArentInPharmacy(UUID pharmacyId);
 	void addDrug(AddDrugDTO addDTO);
+	boolean editDrugPrice(EditDrugPriceDTO editPriceDTO);
 	
 
 	
