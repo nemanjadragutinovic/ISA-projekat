@@ -30,14 +30,7 @@ public class DrugInPharmacy implements Serializable {
 	@ManyToOne(optional = false)
 	private DrugInstance drugInstance;
 		
-	@Column(nullable = false)
-	private Date dateFrom;
-	
-	@Column( nullable = false)
-	private Date dateTo;
-	
-	@Column( nullable = false)
-	private double price;
+
 	
 	@Column( nullable = false)
 	private int count;
@@ -46,15 +39,11 @@ public class DrugInPharmacy implements Serializable {
 		super();
 	}
 
-	public DrugInPharmacy( Pharmacy pharmacy, DrugInstance drug, Date dateFrom, Date dateTo, double price,
-			int count) {
+	public DrugInPharmacy( Pharmacy pharmacy, DrugInstance drug,int count) {
 		super();
 		this.id =UUID.randomUUID();
 		this.pharmacy = pharmacy;
-		this.drugInstance = drug;
-		this.dateFrom = dateFrom;
-		this.dateTo = dateTo;
-		this.price = price;
+		this.drugInstance=drug;
 		this.count = count;
 	}
 
@@ -82,29 +71,7 @@ public class DrugInPharmacy implements Serializable {
 		this.drugInstance = drug;
 	}
 
-	public Date getDateFrom() {
-		return dateFrom;
-	}
-
-	public void setDateFrom(Date dateFrom) {
-		this.dateFrom = dateFrom;
-	}
-
-	public Date getDateTo() {
-		return dateTo;
-	}
-
-	public void setDateTo(Date dateTo) {
-		this.dateTo = dateTo;
-	}
-
-	public double getPrice() {
-		return price;
-	}
-
-	public void setPrice(double price) {
-		this.price = price;
-	}
+	
 
 	public int getCount() {
 		return count;

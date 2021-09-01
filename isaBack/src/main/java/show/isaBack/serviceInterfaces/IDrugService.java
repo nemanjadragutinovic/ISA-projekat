@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.UUID;
 
 import show.isaBack.DTO.AppointmentDTO.IdDTO;
+import show.isaBack.DTO.drugDTO.AddDrugDTO;
 import show.isaBack.DTO.drugDTO.DrugDTO;
 import show.isaBack.DTO.drugDTO.DrugInstanceDTO;
 import show.isaBack.DTO.drugDTO.DrugReservationDTO;
@@ -11,6 +12,7 @@ import show.isaBack.DTO.drugDTO.DrugReservationResponseDTO;
 import show.isaBack.DTO.drugDTO.DrugWithEreceiptsDTO;
 import show.isaBack.DTO.drugDTO.DrugWithPriceDTO;
 import show.isaBack.DTO.drugDTO.DrugsWithGradesDTO;
+import show.isaBack.DTO.drugDTO.EditDrugPriceDTO;
 import show.isaBack.DTO.drugDTO.EreceiptDTO;
 import show.isaBack.DTO.drugDTO.IngredientDTO;
 import show.isaBack.DTO.drugDTO.ManufacturerDTO;
@@ -52,7 +54,13 @@ public interface IDrugService extends IService<DrugInstanceDTO, UnspecifiedDTO<D
 	List<UnspecifiedDTO<DrugWithPriceDTO>> findDrugsInPharmacyWithPrice(UUID pharmacyId);
 	List<UnspecifiedDTO<DrugWithPriceDTO>> searchDrugsInPharmacy(String name, double gradeFrom, double gradeTo,
 			String manufacturer, UUID pharmacyId);
+
 	List<UnspecifiedDTO<DrugInstanceDTO>> findDrugsPatientIsNotAllergicTo(UUID patientId);
+
+	List<UnspecifiedDTO<DrugDTO>> findDrugsWhichArentInPharmacy(UUID pharmacyId);
+	void addDrug(AddDrugDTO addDTO);
+	boolean editDrugPrice(EditDrugPriceDTO editPriceDTO);
+
 	
 
 	

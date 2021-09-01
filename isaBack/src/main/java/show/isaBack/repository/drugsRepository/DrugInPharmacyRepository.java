@@ -9,11 +9,12 @@ import org.springframework.data.jpa.repository.Query;
 import show.isaBack.model.drugs.DrugInPharmacy;
 
 
+
+
 public interface DrugInPharmacyRepository extends JpaRepository<DrugInPharmacy, UUID>{
 	
 	
-	@Query(value = "SELECT d FROM DrugInPharmacy d WHERE d.drugInstance.id = ?1 "
-			+ " AND DATE(d.dateFrom) <= CURRENT_DATE AND DATE(d.dateTo) >= CURRENT_DATE")
+	@Query(value = "SELECT d FROM DrugInPharmacy d WHERE d.drugInstance.id = ?1 ")
 	List<DrugInPharmacy> getAllPharmaciesForDrug(UUID drugId);
 	
 	@Query(value = "SELECT d.count FROM DrugInPharmacy d WHERE d.drugInstance.id = ?1 AND d.pharmacy.id = ?2")
@@ -23,8 +24,6 @@ public interface DrugInPharmacyRepository extends JpaRepository<DrugInPharmacy, 
 	DrugInPharmacy getDrugInPharmacy(UUID drugId, UUID pharmacyId);
 
 
-	@Query(value = "SELECT d.price FROM DrugInPharmacy d WHERE d.drugInstance.id = ?1 AND d.pharmacy.id = ?2 AND DATE(d.dateFrom) <= CURRENT_DATE AND DATE(d.dateTo) >= CURRENT_DATE")
-	Double getCurrentPriceForDrugInPharmacy(UUID drugId, UUID pharmacyId);
-
+	
 	
 }

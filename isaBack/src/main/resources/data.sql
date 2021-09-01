@@ -157,13 +157,21 @@ insert into drug_instance(drug_format, drug_instance_name, loyality_points, on_r
 
 --DRUGS-IN-PHARMACY
 
-insert into drug_in_pharmacy(id, pharmacy_id, drug_instance_id, date_from, date_to, price, count) values ('39438ef2-c180-11eb-8529-0242ac130003','775d8e36-9859-11eb-a8b3-0242ac130003','2fe1cd8e-5839-11eb-ae93-0242ac130002','2021-5-11','2021-09-22', 340, 50);
-insert into drug_in_pharmacy(id, pharmacy_id, drug_instance_id, date_from, date_to, price, count) values ('3943c304-c180-11eb-8529-0242ac130003','775d9322-9859-11eb-a8b3-0242ac130003','2fe1cd8e-5839-11eb-ae93-0242ac130002','2021-5-11','2021-09-22', 320, 30);
-insert into drug_in_pharmacy(id, pharmacy_id, drug_instance_id, date_from, date_to, price, count) values ('3943c4c6-c180-11eb-8529-0242ac130003','775d8e36-9859-11eb-a8b3-0242ac130003','2c797174-5839-11eb-ae93-0242ac130002','2021-5-11','2021-09-22', 180, 38);
-insert into drug_in_pharmacy(id, pharmacy_id, drug_instance_id, date_from, date_to, price, count) values ('3943c5a2-c180-11eb-8529-0242ac130003','775d9322-9859-11eb-a8b3-0242ac130003','2c797174-5839-11eb-ae93-0242ac130002','2021-5-11','2021-09-22', 190, 50);
-insert into drug_in_pharmacy(id, pharmacy_id, drug_instance_id, date_from, date_to, price, count) values ('4943c4c6-c180-11eb-8529-0242ac130003','775d8e36-9859-11eb-a8b3-0242ac130003','0db9e1a0-3760-4835-8785-6dcc9c199ee0','2021-5-11','2021-09-22', 120, 10);
-insert into drug_in_pharmacy(id, pharmacy_id, drug_instance_id, date_from, date_to, price, count) values ('5943c5a2-c180-11eb-8529-0242ac130003','775d9322-9859-11eb-a8b3-0242ac130003','4d62cbe3-69a1-40a0-8e9c-9479132dadbe','2021-5-11','2021-09-22', 550, 20);
+insert into drug_in_pharmacy(id, pharmacy_id, drug_instance_id,  count) values ('39438ef2-c180-11eb-8529-0242ac130003','775d8e36-9859-11eb-a8b3-0242ac130003','2fe1cd8e-5839-11eb-ae93-0242ac130002', 50);
+insert into drug_in_pharmacy(id, pharmacy_id, drug_instance_id,  count) values ('3943c304-c180-11eb-8529-0242ac130003','775d9322-9859-11eb-a8b3-0242ac130003','2fe1cd8e-5839-11eb-ae93-0242ac130002', 30);
+insert into drug_in_pharmacy(id, pharmacy_id, drug_instance_id,  count) values ('3943c4c6-c180-11eb-8529-0242ac130003','775d8e36-9859-11eb-a8b3-0242ac130003','2c797174-5839-11eb-ae93-0242ac130002', 38);
+insert into drug_in_pharmacy(id, pharmacy_id, drug_instance_id,  count) values ('3943c5a2-c180-11eb-8529-0242ac130003','775d9322-9859-11eb-a8b3-0242ac130003','2c797174-5839-11eb-ae93-0242ac130002', 50);
+insert into drug_in_pharmacy(id, pharmacy_id, drug_instance_id,  count) values ('4943c4c6-c180-11eb-8529-0242ac130003','775d8e36-9859-11eb-a8b3-0242ac130003','0db9e1a0-3760-4835-8785-6dcc9c199ee0', 10);
+insert into drug_in_pharmacy(id, pharmacy_id, drug_instance_id,  count) values ('5943c5a2-c180-11eb-8529-0242ac130003','775d9322-9859-11eb-a8b3-0242ac130003','4d62cbe3-69a1-40a0-8e9c-9479132dadbe', 20);
 
+--DRUG-PRICE-LIST
+
+insert into drug_price_list(id,date_from,date_to,price,drug_instance_id,pharmacy_id) values ('5944c5a2-c180-11eb-8529-0242ac130003','2021-5-11','2021-09-22',450,'4d62cbe3-69a1-40a0-8e9c-9479132dadbe','775d9322-9859-11eb-a8b3-0242ac130003'); 
+insert into drug_price_list(id,date_from,date_to,price,drug_instance_id,pharmacy_id) values ('39438ef2-c180-11eb-8529-0242ac130003','2021-5-11','2021-09-22',399,'2fe1cd8e-5839-11eb-ae93-0242ac130002','775d8e36-9859-11eb-a8b3-0242ac130003');
+insert into drug_price_list(id,date_from,date_to,price,drug_instance_id,pharmacy_id) values ('3943c304-c180-11eb-8529-0242ac130003','2021-5-11','2021-09-22',425,'2fe1cd8e-5839-11eb-ae93-0242ac130002','775d9322-9859-11eb-a8b3-0242ac130003');
+insert into drug_price_list(id,date_from,date_to,price,drug_instance_id,pharmacy_id) values ('3943c4c6-c180-11eb-8529-0242ac130003','2021-5-11','2021-09-22',330,'2c797174-5839-11eb-ae93-0242ac130002','775d8e36-9859-11eb-a8b3-0242ac130003');
+insert into drug_price_list(id,date_from,date_to,price,drug_instance_id,pharmacy_id) values ('3943c5a2-c180-11eb-8529-0242ac130003','2021-5-11','2021-09-22',235,'2c797174-5839-11eb-ae93-0242ac130002','775d9322-9859-11eb-a8b3-0242ac130003');
+insert into drug_price_list(id,date_from,date_to,price,drug_instance_id,pharmacy_id) values ('4943c4c6-c180-11eb-8529-0242ac130003','2021-5-11','2021-09-22',299,'0db9e1a0-3760-4835-8785-6dcc9c199ee0','775d8e36-9859-11eb-a8b3-0242ac130003');
 
 --INGREDIENTS
 insert into ingredient(id, name) values ('4b852c00-b7bd-11eb-8529-0242ac130003', 'Sastojak1');
@@ -295,3 +303,4 @@ insert into drug_reservation(id, count, price_for_one_drug, end_date,start_date,
 
 insert into drug_reservation(id, count, price_for_one_drug, end_date,start_date, drug_reservation_status,  drug_instance_id, patient_id, pharmacy_id) values ('bc3198f0-c2e2-11eb-8529-0242ac130003', 2, 280, '2021-04-18 17:04:03', '2021-04-16 17:04:03',  'PROCESSED', 'dac2b818-5838-11eb-ae93-0242ac130002', '22793162-52d3-11eb-ae93-0242ac130002','775d9322-9859-11eb-a8b3-0242ac130003');
 insert into drug_reservation(id, count, price_for_one_drug, end_date,start_date, drug_reservation_status,  drug_instance_id, patient_id, pharmacy_id) values ('71a394d4-c6e6-11eb-b8bc-0242ac130003', 8, 280, '2021-03-18 17:04:03', '2021-03-16 17:04:03',  'ACTIVE', '2fe1cd8e-5839-11eb-ae93-0242ac130002', '22793162-52d3-11eb-ae93-0242ac130002','775d8e36-9859-11eb-a8b3-0242ac130003');
+ 

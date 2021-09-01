@@ -9,6 +9,8 @@ import ReservationDrugModal from "./Modal/ReservationDrugsModal";
 import FirstGradeModal from "../Components/Modal/FirstGradeModal";
 import UnsuccessfulAlert from "../Components/Alerts/UnsuccessfulAlert";
 import SuccessfulAlert from "../Components/Alerts/SuccessfulAlert";
+import AddDrugModal from "./Modal/AddDrugModal";
+import EditDrugPriceModal from "./Modal/EditDrugPriceModal";
 
 
 const API_URL = "http://localhost:8080";
@@ -19,6 +21,7 @@ class DrugsForPharmacyAdmin extends Component {
 
 	state = {
 		drugs: [],
+		drugs1: [],
 		drugAmount: "",
 		drugQuantity: "",
 		drugManufacturer: "",
@@ -34,20 +37,13 @@ class DrugsForPharmacyAdmin extends Component {
 		searchGradeTo: "",
 
 		grade: 1,
-		hiddenFailAlert: true,
-		failHeader: "",
-		failMessage: "",
-		hiddenSuccessAlert: true,
-		successHeader: "",
-		successMessage: "",
+	
 
 		pharmacyId: "",
 		maxCount: "",
 		price: 0,
 		drugId: "",
-		hiddenErrorAlert: true,
-		errorHeader: "",
-		errorMessage: "",
+	
 
 		hiddenSuccessfulAlert: true,
 		SuccessfulHeader: "",
@@ -56,14 +52,17 @@ class DrugsForPharmacyAdmin extends Component {
 		UnsuccessfulHeader: "",
 		UnsuccessfulMessage: "",
 
-
-
-		searchMan: ""
-
+		showAddDrug: false ,
+		showEditDrugPrice: false ,
+		searchMan: "",
+		
 	};
 
 	componentDidMount() {
-
+		let pharmacyId = localStorage.getItem("keyPharmacyId")
+        this.setState({
+            pharmacyId: pharmacyId
+        })
 		Axios.get(API_URL + "/drug/drugsInPharmacy/" + localStorage.getItem("keyPharmacyId"), {
 
 			validateStatus: () => true,
@@ -170,16 +169,12 @@ class DrugsForPharmacyAdmin extends Component {
 		this.setState({ specificationModalShow: false });
 	};
 
-	handleCloseAlertFail = () => {
-		this.setState({ hiddenFailAlert: true });
-	};
 
-	handleCloseAlertSuccess = () => {
-		this.setState({ hiddenSuccessAlert: true });
-	};
 
-	handleClickIcon = (grade) => {
-		this.setState({ grade });
+
+
+	handleOpenEditDrugPrice = (id) => {
+		this.setState({ showEditDrugPrice: true , drugId:id});
 	};
 
 	handleCloseSuccessfulAlert = () => {
@@ -191,14 +186,62 @@ class DrugsForPharmacyAdmin extends Component {
 	};
 
 
-	handleCloseErrorAlert = () => {
-		this.setState({
-			hiddenErrorAlert: true,
-			errorHeader: "",
-			errorMessage: ""
-		});
-	};
+	handleAddDrug = () => {
+		Axios.get(API_URL + "/drug/drugsWhichArentInPharmacy/" + localStorage.getItem("keyPharmacyId"), {
+            headers: { Authorization: GetAuthorisation() },
+        }).then((res) => {
+            this.setState({ drugs1: res.data });
+            console.log(res.data);
+        })
+            .catch((err) => {
+                console.log(err);
+            });
 
+		this.setState({ showAddDrug: true });
+    }
+
+	handleAddDrugClose = () => {
+        Axios.get(API_URL + "/drug/drugsInPharmacy/" + localStorage.getItem("keyPharmacyId"), {
+            headers: { Authorization: GetAuthorisation() },
+        })
+            .then((res) => {
+                this.setState({ drugs: res.data });
+                console.log(res.data);
+
+            })
+            .catch((err) => {
+                console.log(err);
+            });
+        this.setState({ showAddDrug: false });
+    }
+
+	handleEditPriceClose = () => {
+        Axios.get(API_URL + "/drug/drugsInPharmacy/" + localStorage.getItem("keyPharmacyId"), {
+            headers: { Authorization: GetAuthorisation() },
+        })
+            .then((res) => {
+                this.setState({ drugs: res.data });
+                console.log(res.data);
+
+            })
+            .catch((err) => {
+                console.log(err);
+            });
+        this.setState({ showEditDrugPrice: false });
+    }
+
+	handleUpdateDrugsWhicharentInPharmacy = () => {
+        Axios.get(API_URL + "/drug/drugsWhichArentInPharmacy/" + localStorage.getItem("keyPharmacyId"), {
+            headers: { Authorization: GetAuthorisation() },
+        }).then((res) => {
+            this.setState({ drugs1: res.data });
+            console.log(res.data);
+        })
+            .catch((err) => {
+                console.log(err);
+            });
+
+    }
 	render() {
 
 
@@ -235,7 +278,7 @@ class DrugsForPharmacyAdmin extends Component {
 							Search drugs
 						</button>
 
-						<button className="btn btn-primary btn-xl" type="button" onClick={this.hangleFormToogle} style={{ marginLeft: "2%" }}>
+						<button className="btn btn-primary btn-xl" type="button" onClick={this.handleAddDrug} style={{ marginLeft: "2%" }}>
 
 							Add drug
 						</button>
@@ -305,10 +348,7 @@ class DrugsForPharmacyAdmin extends Component {
 						</div>
 
 
-
-
-
-						<table className={"table"} style={{ width: "100%", marginTop: "3rem" }}>
+						<table className={"table"} style={{ width: "75%", marginTop: "3rem" }}>
 							<tbody>
 								{this.state.drugs.map((drug) => (
 									<tr id={drug.Id} key={drug.Id} >
@@ -317,7 +357,7 @@ class DrugsForPharmacyAdmin extends Component {
 												<img className="img-fluid" src={MedicamentPicture} width="70em" />
 											</div>
 										</td>
-										<td onClick={() => this.handleOnDrugSelect(drug.Id)}>
+										<td >
 											<div>
 												<b>Drug Name:</b> {drug.EntityDTO.name}
 											</div>
@@ -345,20 +385,20 @@ class DrugsForPharmacyAdmin extends Component {
 											</div>
 										</td>
 										<td className="align-middle">
-											<div style={{ marginLeft: "40%" }}>
+											<div style={{ marginLeft: "25%" }}>
 												<button
 													type="button"
-													onClick={() => this.handleGetGradeClick(drug)}
+													onClick={() => this.handleGetGradeClick(drug.Id)}
 
-													className="btn btn-outline-secondary btn-block"
+													className="btn btn-outline-primary btn-block"
 												>
 													Edit Storage
 												</button>
 												<button
 													type="button"
-													onClick={() => this.handleGetGradeClick(drug)}
+													onClick={() => this.handleOpenEditDrugPrice(drug.Id)}
 
-													className="btn btn-outline-secondary btn-block"
+													className="btn btn-outline-primary btn-block"
 												>
 													Edit Drug Price
 												</button>
@@ -366,7 +406,7 @@ class DrugsForPharmacyAdmin extends Component {
 												<button
 													type="button"
 													onClick={() => this.handleDrugClick(drug)}
-													className="btn btn-outline-secondary btn-block"
+													className="btn btn-outline-primary btn-block"
 												>
 													Remove Drug
 												</button>
@@ -387,8 +427,8 @@ class DrugsForPharmacyAdmin extends Component {
 					</div>
 
 
-
-
+					<AddDrugModal show={this.state.showAddDrug} closeModal={this.handleAddDrugClose} drugs={this.state.drugs1} pharmacyId={this.state.pharmacyId} updateDrugsWhicharentInPharmacy={this.handleUpdateDrugsWhicharentInPharmacy} />
+					<EditDrugPriceModal show={this.state.showEditDrugPrice}  closeModal={this.handleEditPriceClose} drugId={this.state.drugId} pharmacyId={this.state.pharmacyId}/> 
 
 				</div>
 
