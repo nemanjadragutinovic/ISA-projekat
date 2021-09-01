@@ -91,7 +91,39 @@ public interface AppointmentRepository extends PagingAndSortingRepository<Appoin
 	@Query(value = "SELECT a FROM Appointment a WHERE  a.appointmentStatus = 'SCHEDULED' AND a.endDateTime < CURRENT_TIMESTAMP")
 	List<Appointment> findAllScheduledAppointmentThatHaveExpired();
 
+
+	@Query(value = "SELECT a FROM Appointment a WHERE a.employee.id = ?1"
+			+ " AND (a.appointmentStatus = 'CREATED' OR a.appointmentStatus = 'SCHEDULED') AND a.appointmentType = 'EXAMINATION' AND a.pharmacy.id=?2")
+	List<Appointment> getCalendarDermatologistAppointmentsForPharamacy(UUID dermatologistId, UUID pharmacyId);
+
+	@Query(value = "SELECT a FROM Appointment a WHERE a.employee.id = ?1"
+			+ " AND a.appointmentStatus = 'SCHEDULED' AND a.appointmentType = 'CONSULTATION' AND a.pharmacy.id=?2")
+	List<Appointment> getCalendarAppointmentsByPharmacist(UUID loggedUserId, UUID pharmacyId);
+	
+	@Query(value = "SELECT a FROM Appointment a WHERE a.patient.id = ?2 AND a.employee.id = ?1"
+			+ " AND a.appointmentStatus = 'FINISHED'")
+	List<Appointment> getFinishedAppointmentsForEmployeeForPatient(UUID employeeId, UUID patientId);
+	
+	@Query(value = "SELECT a FROM Appointment a WHERE a.patient.id = ?1"
+			+ " AND a.appointmentStatus = 'SCHEDULED' AND a.employee.id = ?2 AND a.pharmacy.id = ?3 AND a.appointmentType = 'EXAMINATION' ORDER BY a.startDateTime DESC")
+	List<Appointment> getScheduledDermatologistAppointmentsByPatient(UUID patientId, UUID employeeId, UUID pharmacyId);
+	
+	@Query(value = "SELECT a FROM Appointment a WHERE a.patient.id = ?1"
+			+ " AND a.appointmentStatus = 'FINISHED' AND a.appointmentType = 'EXAMINATION' ORDER BY a.startDateTime DESC")
+	List<Appointment> getFinishedDermatologistAppointmentsByPatient(UUID patientId, UUID employeeId, UUID pharmacyId);
+	
+	@Query(value = "SELECT a FROM Appointment a WHERE a.patient.id = ?1"
+			+ " AND a.appointmentStatus = 'SCHEDULED' AND a.employee.id = ?2 AND a.pharmacy.id = ?3 AND a.appointmentType = 'CONSULTATION' ORDER BY a.startDateTime DESC")
+	List<Appointment> getScheduledPharmacistAppointmentsByPatient(UUID patientId, UUID employeeId, UUID pharmacyId);
+
+	@Query(value = "SELECT a FROM Appointment a WHERE a.patient.id = ?1"
+			+ " AND a.appointmentStatus = 'FINISHED' AND a.appointmentType = 'CONSULTATION' ORDER BY a.startDateTime DESC")
+	List<Appointment> getFinishedPharmacistAppointmentsByPatient(UUID patientId, UUID employeeId, UUID pharmacyId);
+
+
+
 	@Query(value = "SELECT a FROM Appointment a WHERE a.employee.id = ?1 AND a.pharmacy.id=?2"
 			+ " AND a.appointmentStatus = 'SCHEDULED' AND  a.startDateTime > CURRENT_TIMESTAMP")
 	List<Appointment> findAppointmentForDermatologistInPharmacy(UUID dermatologistId, UUID phId);
+
 }

@@ -40,7 +40,7 @@ import show.isaBack.DTO.userDTO.PharmacistForAppointmentPharmacyGadeDTO;
 import show.isaBack.DTO.userDTO.UserChangeInfoDTO;
 import show.isaBack.DTO.userDTO.UserDTO;
 import show.isaBack.DTO.userDTO.UserRegistrationDTO;
-
+import show.isaBack.Mappers.Pharmacy.PharmacyMapper;
 import show.isaBack.Mappers.Pharmacy.UserMapper;
 
 import show.isaBack.DTO.userDTO.WorkTimeDTO;
@@ -984,8 +984,33 @@ public class UserService implements IUserInterface{
 		return retWorkTimes;
 	}
 
+	@Override
+	public List<UnspecifiedDTO<PharmacyDTO>> getPharmacies() {
+		try {
+			UUID dermatologistId = getLoggedUserId();
+			Dermatologist dermatologist = dermatologistRepository.getOne(dermatologistId);
+			List<UnspecifiedDTO<PharmacyDTO>> pharmacies = new ArrayList<UnspecifiedDTO<PharmacyDTO>>();
+			dermatologist.getPharmacies().forEach((p) -> pharmacies.add(PharmacyMapper.MapPharmacyPersistenceToPharmacyUnspecifiedDTO(p)));
+			return pharmacies;
+		}catch(Exception e) {
+			return null;
+		}
+	}
 	
 	@Override
+
+	public UnspecifiedDTO<PharmacyDTO> getPharmacy() {
+			UUID pharmacistId = getLoggedUserId();
+			Pharmacist pharmacist = pharmacistRepository.getOne(pharmacistId);
+			return PharmacyMapper.MapPharmacyPersistenceToPharmacyUnspecifiedDTO(pharmacist.getPharmacy());
+	}
+
+	@Override
+	public UnspecifiedDTO<UserDTO> getPatientById(UUID patientId) {
+		return UserMapper.MapUserPersistenceToUserUnspecifiedDTO(userRepository.getOne(patientId));
+	}
+
+
 	public List<UnspecifiedDTO<PharmacyDTO>> findAllPharmaciesByDermatologistId(UUID dermatologistId) {
 		
 			Dermatologist dermatologist = dermatologistRepository.getOne(dermatologistId);
@@ -1005,4 +1030,5 @@ public class UserService implements IUserInterface{
 	} 
 	
 	
+
 }

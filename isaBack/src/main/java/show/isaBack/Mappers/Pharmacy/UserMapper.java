@@ -26,5 +26,13 @@ public class UserMapper {
 				user.getPhoneNumber(), user.isActive(), user.getUserAuthorities()));
 
 	}
+	
+	public static UnspecifiedDTO<UserDTO> MapEmployeePersistenceToEmployeeIdentifiableDTO(User user) {
+		if(user == null) throw new IllegalArgumentException();
+		
+		return new UnspecifiedDTO<UserDTO>(user.getId(), new UserDTO(user.getEmail(), user.getName(), user.getSurname(), user.getAddress(),
+				user.getPhoneNumber(), user.isActive(), user.getUserAuthorities()));
+
+	}
 
 }

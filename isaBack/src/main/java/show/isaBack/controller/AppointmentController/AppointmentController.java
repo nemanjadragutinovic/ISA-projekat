@@ -21,7 +21,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-
+import show.isaBack.DTO.AppointmentDTO.AppointmentDTO;
+import show.isaBack.DTO.AppointmentDTO.AppointmentReportDTO;
 import show.isaBack.DTO.AppointmentDTO.DermatologistAppointmentDTO;
 import show.isaBack.DTO.AppointmentDTO.FormAppointmentDTO;
 import show.isaBack.DTO.AppointmentDTO.FreeAppointmentPeriodDTO;
@@ -473,5 +474,23 @@ public class AppointmentController {
 		}
 	}
 	
+	@GetMapping("/dermatologist/calendar-for-pharmacy/{pharmacyId}")
+	@PreAuthorize("hasRole('DERMATHOLOGIST')")
+	public ResponseEntity<List<UnspecifiedDTO<AppointmentDTO>>> getCalendarAppointmentsByDermatologist(@PathVariable UUID pharmacyId) {
+		return new ResponseEntity<>(appointmentService.getCalendarAppointmentsByDermatologist(pharmacyId),HttpStatus.OK);
+	}
+	
+	@GetMapping("/pharmacist/calendar/{pharmacyId}")
+	@PreAuthorize("hasRole('PHARMACIST')")
+	public ResponseEntity<List<UnspecifiedDTO<AppointmentDTO>>> getCalendarAppointmentsByPharmacist(@PathVariable UUID pharmacyId) {
+		return new ResponseEntity<>(appointmentService.getCalendarAppointmentsByPharmacist(pharmacyId),HttpStatus.OK);
+	}
+	
+	@GetMapping("/patient/{patientId}")
+	@PreAuthorize("hasRole('DERMATHOLOGIST') or hasRole('PHARMACIST')")
+	public ResponseEntity<List<UnspecifiedDTO<AppointmentDTO>>> getAppointmentsByPatientAsEmpolyee(@PathVariable UUID patientId) {
+		HttpStatus status = appointmentService.hasExaminedPatient(patientId) ? HttpStatus.CREATED : HttpStatus.OK;
+		return new ResponseEntity<>(appointmentService.getAppointmentsByPatientAsEmpolyee(patientId), status);
+	}
 	
 }

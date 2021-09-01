@@ -8,8 +8,10 @@ import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import show.isaBack.DTO.AppointmentDTO.AppointmentDTO;
 import show.isaBack.DTO.AppointmentDTO.DermatologistAppointmentDTO;
 import show.isaBack.DTO.userDTO.EmployeeGradeDTO;
+import show.isaBack.Mappers.Pharmacy.UserMapper;
 import show.isaBack.model.Dermatologist;
 import show.isaBack.model.Pharmacist;
 import show.isaBack.model.appointment.Appointment;
@@ -78,6 +80,21 @@ public class AppointmentsMapper {
 		return new UnspecifiedDTO<DermatologistAppointmentDTO>(appointment.getId(), 
 				new DermatologistAppointmentDTO(employeeDTO,appointment.getStartDateTime(),appointment.getEndDateTime(),appointment.getPrice()));
 		
+	}
+	
+	public static List<UnspecifiedDTO<AppointmentDTO>> MapAppointmentPersistenceListToAppointmentUnspecifiedDTOList(
+			List<Appointment> appointments) {
+		
+		List<UnspecifiedDTO<AppointmentDTO>> appointmentDTOList = new ArrayList<UnspecifiedDTO<AppointmentDTO>>();
+		appointments.forEach((a) -> appointmentDTOList.add(MapAppointmentPersistenceToAppointmentUnspecifiedDTO(a)));
+
+		return appointmentDTOList;
+	}
+	
+	public static UnspecifiedDTO<AppointmentDTO> MapAppointmentPersistenceToAppointmentUnspecifiedDTO(Appointment appointment){
+		if(appointment == null) throw new IllegalArgumentException();
+		
+		return new UnspecifiedDTO<AppointmentDTO>(appointment.getId(), new AppointmentDTO(UserMapper.MapEmployeePersistenceToEmployeeIdentifiableDTO(appointment.getEmployee()), UserMapper.MapUserPersistenceToUserUnspecifiedDTO(appointment.getPatient()), appointment.getAppointmentStatus(), appointment.getStartDateTime(), appointment.getEndDateTime(), appointment.getPrice()));
 	}
 	
 }

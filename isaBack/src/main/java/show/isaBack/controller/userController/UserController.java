@@ -583,6 +583,20 @@ public class UserController {
 					return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR); 
 				}
 			}
+
+	
+			@GetMapping("/dermatologist/pharmacies") 
+			@PreAuthorize("hasRole('DERMATHOLOGIST')")
+			@CrossOrigin
+			public ResponseEntity<List<UnspecifiedDTO<PharmacyDTO>>> getPharmacies() {
+			  
+				try {
+					List<UnspecifiedDTO<PharmacyDTO>> pharmacies = userService.getPharmacies();
+					return new ResponseEntity<>(pharmacies,HttpStatus.OK); 
+				} catch (EntityNotFoundException e) {
+					return new ResponseEntity<>(HttpStatus.NOT_FOUND); 
+				}
+			}
 			
 			@PutMapping("/removeDermatologistFromPharmacy") 
 			//@PreAuthorize("hasRole('PHARMACYADMIN')")
@@ -597,8 +611,22 @@ public class UserController {
 						return new ResponseEntity<>(HttpStatus.OK); 
 					
 					return new ResponseEntity<>(HttpStatus.BAD_REQUEST);	
+
 				} catch (Exception e) {
 					return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR); 
+				}
+			}
+
+			@GetMapping("/pharmacist/pharmacy") 
+			@PreAuthorize("hasRole('PHARMACIST')")
+			@CrossOrigin
+			public ResponseEntity<UnspecifiedDTO<PharmacyDTO>> getPharmacy() {
+			  
+				try {
+					UnspecifiedDTO<PharmacyDTO> pharmacies = userService.getPharmacy();
+					return new ResponseEntity<>(pharmacies,HttpStatus.OK); 
+				} catch (EntityNotFoundException e) {
+					return new ResponseEntity<>(HttpStatus.NOT_FOUND); 
 				}
 			}
 			
@@ -613,11 +641,31 @@ public class UserController {
 						return new ResponseEntity<>(HttpStatus.OK); 
 					
 					return new ResponseEntity<>(HttpStatus.BAD_REQUEST);	
+
 				} catch (Exception e) {
 					return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR); 
 				}
 			}
 			
+
+			@GetMapping("/patient/{patientId}")
+			@CrossOrigin
+			@PreAuthorize("hasRole('DERMATHOLOGIST') or hasRole('PHARMACIST')")
+			public ResponseEntity<UnspecifiedDTO<UserDTO>> getPatientById(@PathVariable UUID patientId) {
+				try {
+					UnspecifiedDTO<UserDTO> patient = userService.getPatientById(patientId);
+					return new ResponseEntity<>(patient,HttpStatus.OK); 
+				} catch (EntityNotFoundException e) {
+					return new ResponseEntity<>(HttpStatus.NOT_FOUND); 
+				} 
+				catch (Exception e) {
+					return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR); 
+				}
+			}
+			
+			
+			
+
 			@GetMapping("/dermatologistspharmacies/{dermatologistId}") 
 			//@PreAuthorize("hasRole('PHARMACYADMIN') or hasRole('PATIENT')")
 			@CrossOrigin
