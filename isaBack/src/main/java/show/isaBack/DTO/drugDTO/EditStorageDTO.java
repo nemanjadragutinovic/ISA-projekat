@@ -11,11 +11,13 @@ public class EditStorageDTO {
 		super();
 		// TODO Auto-generated constructor stub
 	}
-	public EditStorageDTO(UUID drugInstanceId, int count) {
+	public EditStorageDTO(UUID drugInstanceId, UUID pharmacyId, int count) {
 		super();
 		this.drugInstanceId = drugInstanceId;
+		this.pharmacyId = pharmacyId;
 		this.count = count;
 	}
+
 	public UUID getDrugInstanceId() {
 		return drugInstanceId;
 	}

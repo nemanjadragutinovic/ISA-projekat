@@ -32,5 +32,8 @@ public interface DrugReservationRepository extends JpaRepository<DrugReservation
 	
 	@Query(value = "SELECT d FROM DrugReservation d WHERE  d.endDate < CURRENT_TIMESTAMP AND d.drugReservationStatus = 'ACTIVE' ")
 	List<DrugReservation> getAllActiveDrugReservationThatHaveExpired();
+	
+	@Query(value = "SELECT d FROM DrugReservation d WHERE d.drugInstance.id = ?1 AND d.pharmacy.id = ?2 AND d.endDate > CURRENT_TIMESTAMP AND d.drugReservationStatus = 'ACTIVE' ")
+	List<DrugReservation> findAllFutureDrugsReservation(UUID drugId,UUID pharmacyId);
 
 }
