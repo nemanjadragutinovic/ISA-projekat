@@ -45,6 +45,7 @@ import show.isaBack.model.drugs.DrugStorageQuantityException;
 import show.isaBack.model.drugs.EReceiptStatus;
 import show.isaBack.serviceInterfaces.IDrugFormatService;
 import show.isaBack.serviceInterfaces.IDrugKindIdService;
+import show.isaBack.serviceInterfaces.IDrugReservationService;
 import show.isaBack.serviceInterfaces.IDrugService;
 import show.isaBack.unspecifiedDTO.UnspecifiedDTO;
 
@@ -56,6 +57,9 @@ public class DrugController {
 
 	@Autowired
 	private IDrugService drugService;
+	
+	@Autowired
+	private IDrugReservationService drugReservationService;
 	
 	@Autowired
 	private IDrugKindIdService drugKindIdService;
@@ -441,18 +445,18 @@ public class DrugController {
 		}
 	}
 	
-	/*@PostMapping("/reserve-drug-as-employee")
+	@PostMapping("/reserve-drug-as-employee")
 	@PreAuthorize("hasRole('DERMATHOLOGIST') or hasRole('PHARMACIST')")
 	@CrossOrigin
 	public ResponseEntity<?> reserveDrugAsEmployee(@RequestBody EmployeeReservationDrugDTO employeeReservationDrugDTO) {
 		try {
-			UUID reservationId = drugService.reserveDrugAsEmployee(employeeReservationDrugDTO);
+			UUID reservationId = drugReservationService.reserveDrugAsEmployee(employeeReservationDrugDTO);
 			return new ResponseEntity<>(reservationId ,HttpStatus.CREATED);
 		} catch (Exception e) {
 			e.printStackTrace();
 			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 		
-	}*/
+	}
 
 }

@@ -971,13 +971,13 @@ public class DrugService implements IDrugService{
 			pharmacy = pharmacistRepository.getOne(userId).getPharmacy();
 		else if (user.getUserType() == UserType.DERMATOLOGIST)
 			pharmacy = userService.getPharmacyForLoggedDermatologist();
-		DrugInPharmacy drugStorage = drugInPharmacyRepository.findByDrugIdAndPharmacyId(drugId, pharmacy.getId());
-		if(drugStorage == null) {
+		DrugInPharmacy drugInPharmacy = drugInPharmacyRepository.findByDrugIdAndPharmacyId(drugId, pharmacy.getId());
+		if(drugInPharmacy == null) {
 			DrugRequest drugRequest = new DrugRequest(pharmacy, drugInstance, user);
 			drugRequestRepository.save(drugRequest);
 			throw new EntityNotFoundException();
 		}		
-		if(drugStorage.getCount() < amount) {
+		if(drugInPharmacy.getCount() < amount) {
 			DrugRequest drugRequest = new DrugRequest(pharmacy, drugInstance, user);
 			drugRequestRepository.save(drugRequest);
 			throw new DrugStorageQuantityException("Amount exceeds drug storage count");

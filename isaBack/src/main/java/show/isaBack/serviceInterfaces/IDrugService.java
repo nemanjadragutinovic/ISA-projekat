@@ -62,6 +62,7 @@ public interface IDrugService extends IService<DrugInstanceDTO, UnspecifiedDTO<D
 	void addDrug(AddDrugDTO addDTO);
 	boolean editDrugPrice(EditDrugPriceDTO editPriceDTO);
 	void isDrugAvailableInPharamcy(UUID drugId, int amount) throws DrugStorageQuantityException;
+//	void reduceAmountOfReservedDrug(UUID drugId, UUID pharmacyId, int count);
 	
 
 
