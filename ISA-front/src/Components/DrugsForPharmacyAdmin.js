@@ -11,6 +11,7 @@ import UnsuccessfulAlert from "../Components/Alerts/UnsuccessfulAlert";
 import SuccessfulAlert from "../Components/Alerts/SuccessfulAlert";
 import AddDrugModal from "./Modal/AddDrugModal";
 import EditDrugPriceModal from "./Modal/EditDrugPriceModal";
+import AddActionPromotionModal from "./Modal/AddActionPromotionModal";
 
 
 const API_URL = "http://localhost:8080";
@@ -43,7 +44,7 @@ class DrugsForPharmacyAdmin extends Component {
 		maxCount: "",
 		price: 0,
 		drugId: "",
-	
+		
 
 		hiddenSuccessfulAlert: true,
 		SuccessfulHeader: "",
@@ -429,7 +430,7 @@ class DrugsForPharmacyAdmin extends Component {
 
 					<AddDrugModal show={this.state.showAddDrug} closeModal={this.handleAddDrugClose} drugs={this.state.drugs1} pharmacyId={this.state.pharmacyId} updateDrugsWhicharentInPharmacy={this.handleUpdateDrugsWhicharentInPharmacy} />
 					<EditDrugPriceModal show={this.state.showEditDrugPrice}  closeModal={this.handleEditPriceClose} drugId={this.state.drugId} pharmacyId={this.state.pharmacyId}/> 
-
+					
 				</div>
 
 			</React.Fragment>

@@ -15,6 +15,8 @@ import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
+import show.isaBack.model.ActionPromotion;
+import show.isaBack.model.ActionType;
 import show.isaBack.model.ComplaintPharmacy;
 import show.isaBack.model.ComplaintStaff;
 import show.isaBack.model.Patient;
@@ -54,7 +56,7 @@ public class EmailService {
 					"<p>You registered an account on Health Clinic, before being able to use your account you need to verify that this is your email address by clicking here:</p>"
 					+ "<a href=\"" + url + "\">Verify your account</a>.</p>" + "<p>Health Clinic</p>"; 
 		helper.setText(htmlMsg, true);
-		helper.setTo(patient.getEmail());
+		helper.setTo("acamijatovic.98@gmail.com");
 		helper.setSubject("Activate account");
 		helper.setFrom(env.getProperty("spring.mail.username"));
 		System.out.println("usao 2");
@@ -214,5 +216,35 @@ public class EmailService {
 		
 	}
 	
-
+	@Async
+	public void sendActionAndPromotionNotificaitionAsync(Patient patient, ActionPromotion actionPromotion)
+			throws  MailException, InterruptedException, MessagingException {
+		System.out.println("Salji Mejl Bidibou");
+		String aa="";
+		if(actionPromotion.getActionType()==ActionType.DRUGDISCOUNT) {
+			aa= " buying drugs";
+		}else if(actionPromotion.getActionType()==ActionType.CONSULTATIONDISCOUNT) {
+			aa= " consultation";
+		}else {
+			aa= " consultation";
+		}
+		MimeMessage mimeMessage = javaMailSender.createMimeMessage();
+		MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, "utf-8");
+		String htmlMsg = "<p>Dear " + patient.getName()+" "+patient.getSurname() + ",</p>" +
+				"<p>"+"From: " + actionPromotion.getDateFrom().toString()+" we have special action."+"</p>"+
+				"<p>"+"In our pharmcy you have " +actionPromotion.getDiscount() +"% for"+ aa +
+				"<p> P.S This action is valid to: "+ actionPromotion.getDateTo().toString()+"</p>"+
+				"<p>"+"Best regards, Health Clinic "+ "</p>";
+		helper.setText(htmlMsg, true);
+		System.out.println("Na spavanje");
+		//helper.setTo(patient.getEmail());
+		helper.setTo("acamijatovic.98@gmail.com");
+		helper.setSubject("ACTION AND PROMOTION IN "+actionPromotion.getPharmacy().getName());
+		helper.setFrom(env.getProperty("spring.mail.username"));
+		System.out.println("Budjenje");
+		javaMailSender.send(mimeMessage);
+		System.out.println("Poslatoooooooo");
+	}
+	
+	
 }
