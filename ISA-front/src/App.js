@@ -37,7 +37,7 @@ import PatientProfile from './Pages/Appointment/PatientProfile';
 
 import pharmacistsForPhAdmin from './Components/Pharmacies/PharmacistsForPhAdmin';
 import DrugsForPharmacyAdmin from './Components/DrugsForPharmacyAdmin';
-
+import ActionPromotionPageForPhAdmin from './Components/Pharmacies/ActionPromotionPageForPhAdmin';
 import {
   BrowserRouter as Router,
   Route,
@@ -97,7 +97,7 @@ function App() {
         <Route to="/patient-profile/:id" path ="/patient-profile/:id" component={PatientProfile}/>
         <Route to="/pharmacistsForPhAdmin" path ="/pharmacistsForPhAdmin"  component={pharmacistsForPhAdmin}/>
         <Route  to ="/drugsForPhAdmin" path ="/drugsForPhAdmin"  component={DrugsForPharmacyAdmin}/>
-
+        <Route  to ="/actions" path ="/actions"  component={ActionPromotionPageForPhAdmin}/>
 
 
         </Switch>

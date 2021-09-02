@@ -21,6 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 import show.isaBack.DTO.drugDTO.DrugDTO;
 import show.isaBack.DTO.drugDTO.PharmacyDrugPriceDTO;
 import show.isaBack.DTO.drugDTO.PharmacyERecipeDTO;
+import show.isaBack.DTO.pharmacyDTO.ActionPromotionDTO;
 import show.isaBack.DTO.pharmacyDTO.PharmacyDTO;
 import show.isaBack.DTO.pharmacyDTO.PharmacySearchDTO;
 import show.isaBack.DTO.pharmacyDTO.PharmacyWithGradeAndPriceDTO;
@@ -28,11 +29,13 @@ import show.isaBack.DTO.userDTO.AuthorityDTO;
 import show.isaBack.DTO.userDTO.LoyalityProgramForPatientDTO;
 import show.isaBack.Mappers.Pharmacy.PharmacyMapper;
 import show.isaBack.emailService.EmailService;
+import show.isaBack.model.ActionPromotion;
 import show.isaBack.model.Drug;
 import show.isaBack.model.Patient;
 import show.isaBack.model.Pharmacy;
 
 import show.isaBack.model.PharmacyAdmin;
+import show.isaBack.repository.pharmacyRepository.ActionPromotionRepository;
 import show.isaBack.repository.pharmacyRepository.PharmacyRepository;
 import show.isaBack.repository.userRepository.PharmacyAdminRepository;
 
@@ -72,7 +75,10 @@ public class PharmacyService implements IPharmacyService{
 	
 	@Autowired
 	private PharmacyAdminRepository phAdminRepository;
-
+	
+	@Autowired
+	private ActionPromotionRepository actionPromotionRepository;
+	
 	@Autowired
 	private DrugPriceListRepository drugPriceListRepository;
 	
@@ -87,6 +93,7 @@ public class PharmacyService implements IPharmacyService{
 	
 	@Autowired
 	private DrugInPharmacyRepository drugInPharmacyRepository;
+	
 	
 	@Autowired
 	private LoyalityProgramService loyalityService;
@@ -610,6 +617,51 @@ UUID patientID = userService.getLoggedUserId();
 	}
 	
 	
+	@Override
+	public List<UnspecifiedDTO<ActionPromotionDTO>> getAllActionsInPharmacy(UUID pharmacyId) {
+		List<ActionPromotion> actionsInPharmacy=actionPromotionRepository.getAllActionsForPharmacy(pharmacyId);
+		List<UnspecifiedDTO<ActionPromotionDTO>> retList=new ArrayList<UnspecifiedDTO<ActionPromotionDTO>>();
+		for(ActionPromotion ap:actionsInPharmacy) {
+			retList.add(new UnspecifiedDTO<ActionPromotionDTO>(ap.getId(),new ActionPromotionDTO(ap.getDateFrom(),ap.getDateTo(),ap.getDiscount(),ap.getActionType())));
+		}
+		
+		return retList;
+	}
+	
+	@Override
+	public boolean createNewActionPromtion(UUID pharmacyId,ActionPromotionDTO action) throws MailException, InterruptedException, MessagingException {
+		System.out.println(pharmacyId);
+		System.out.println(action.getDiscount());
+		System.out.println(action.getActionType());
+		Pharmacy pharmacy = pharmacyRepository.getOne(pharmacyId);
+		List<Patient> patientList = patientRepository.findAll();
+		List<ActionPromotion> newwwww=actionPromotionRepository.getAllActionsInPeriod(pharmacyId,action.getActionType(),action.getDateFrom(),action.getDateTo());
+		if(newwwww.size()<=0) {
+			ActionPromotion newAction= new ActionPromotion(pharmacy,action.getDateFrom(),action.getDateTo(),action.getDiscount(),action.getActionType());
+			actionPromotionRepository.save(newAction);
+			for(Patient patient : patientList) {
+				if(isPatientSubscribed(patient,pharmacyId))
+					emailService.sendActionAndPromotionNotificaitionAsync(patient, newAction);
+			}
+			return true;
+		}
+		
+		return false;
+	}
+
+
+	private boolean isPatientSubscribed(Patient patient, UUID pharmacyId) {
+		if(patient.getPharmacies()==null)
+			return false;
+		
+		for(Pharmacy pharmacy : patient.getPharmacies()) {
+			if(pharmacy.getId().equals(pharmacyId))
+				return true;
+		}
+		
+		return false;
+	}
+
 	
 	@Override
 	public List<UnspecifiedDTO<AuthorityDTO>> findAll() {

@@ -4,10 +4,14 @@ import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
+import javax.mail.MessagingException;
+
 import org.springframework.http.ResponseEntity;
+import org.springframework.mail.MailException;
 
 import show.isaBack.DTO.drugDTO.PharmacyDrugPriceDTO;
 import show.isaBack.DTO.drugDTO.PharmacyERecipeDTO;
+import show.isaBack.DTO.pharmacyDTO.ActionPromotionDTO;
 import show.isaBack.DTO.pharmacyDTO.PharmacyDTO;
 import show.isaBack.DTO.pharmacyDTO.PharmacySearchDTO;
 import show.isaBack.DTO.pharmacyDTO.PharmacyWithGradeAndPriceDTO;
@@ -54,5 +58,8 @@ public interface IPharmacyService extends IService<PharmacyDTO, UnspecifiedDTO<P
 	public List<UnspecifiedDTO<PharmacyDTO>> getAllPharmaciesSortByCityDescending();
 	public List<UnspecifiedDTO<PharmacyDTO>> getAllPharmaciesSortByGradeAscending();
 	public List<UnspecifiedDTO<PharmacyDTO>> getAllPharmaciesSortByGradeDescending();
+	List<UnspecifiedDTO<ActionPromotionDTO>> getAllActionsInPharmacy(UUID pharmacyId);
+	boolean createNewActionPromtion(UUID pharmacyId, ActionPromotionDTO action)
+			throws MailException, InterruptedException, MessagingException;
 
 }

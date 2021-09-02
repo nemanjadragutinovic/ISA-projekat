@@ -91,11 +91,15 @@ class Header extends React.Component{
                 <ReactBootStrap.Nav.Link href="#deets" hidden={!this.hasRole("ROLE_PHARMACYADMIN")}>Pharmacist</ReactBootStrap.Nav.Link>
                 </Link>
 
+              
                 <Link to="/drugsForPhAdmin">
                 <ReactBootStrap.Nav.Link href="#deets" hidden={!this.hasRole("ROLE_PHARMACYADMIN")}>Drugs</ReactBootStrap.Nav.Link>
                 </Link>
               
-
+                <Link to="/actions">
+                <ReactBootStrap.Nav.Link href="#deets" hidden={!this.hasRole("ROLE_PHARMACYADMIN")}>Actions</ReactBootStrap.Nav.Link>
+                </Link>
+                
                 <ReactBootStrap.NavDropdown alignRight title="My reports" id="collasible-nav-dropdown" hidden={!this.hasRole("ROLE_PATIENT")} >
 
                     <ReactBootStrap.NavDropdown.Item href="/futureDermatologistAppointmentsForPatient">Dermatologist</ReactBootStrap.NavDropdown.Item>
