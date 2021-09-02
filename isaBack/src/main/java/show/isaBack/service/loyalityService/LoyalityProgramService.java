@@ -15,6 +15,7 @@ import show.isaBack.model.LoyalityCategory;
 import show.isaBack.model.LoyalityProgram;
 import show.isaBack.model.Patient;
 import show.isaBack.model.Pharmacy;
+import show.isaBack.model.appointment.AppointmentType;
 import show.isaBack.repository.userRepository.LoyalityProgramRepository;
 import show.isaBack.repository.userRepository.PatientRepository;
 import show.isaBack.serviceInterfaces.ILoyaltyService;
@@ -140,6 +141,28 @@ public class LoyalityProgramService implements ILoyaltyService {
 		
 		return discountPrice;
 	}
+	
+	@Override
+	public LoyalityProgramForPatientDTO getLoggedPatientLoyalityProgram(UUID patientId) {
+
+		Patient patient = patientRepository.findById(patientId).get();		
+		LoyalityProgram loyalityProgram = loyaltyProgramRepository.findById(ID_FOR_LOYALITY_PROGRAM).get();
+		
+		return createPatientLoyalityProgram(loyalityProgram, patient);
+	}
+
+	
+	@Override
+	public double getDiscountAppointmentPriceForPatient(double regularPrice, AppointmentType appointmentType, UUID patientId) {
+		
+		LoyalityProgramForPatientDTO LoyalityProgramForPatientDTO = getLoggedPatientLoyalityProgram(patientId);
+		if(appointmentType.equals(AppointmentType.EXAMINATION))
+			return ((100 - LoyalityProgramForPatientDTO.getExaminationDiscount()) / 100.0) * regularPrice;
+		else
+			return ((100 - LoyalityProgramForPatientDTO.getConsultationDiscount()) / 100.0) * regularPrice;
+
+	}
+	
 	
 	@Override
 	public List<UnspecifiedDTO<AuthorityDTO>> findAll() {

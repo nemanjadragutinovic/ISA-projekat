@@ -38,6 +38,7 @@ import PatientProfile from './Pages/Appointment/PatientProfile';
 import pharmacistsForPhAdmin from './Components/Pharmacies/PharmacistsForPhAdmin';
 import DrugsForPharmacyAdmin from './Components/DrugsForPharmacyAdmin';
 import DermatologistScheduleAppointment from './Pages/Appointment/DermatologistScheduleAppointment';
+import PharmacistScheduleAppointment from './Pages/Appointment/PharmacistScheduleAppointment';
 
 import {
   BrowserRouter as Router,
@@ -99,7 +100,7 @@ function App() {
         <Route to="/pharmacistsForPhAdmin" path ="/pharmacistsForPhAdmin"  component={pharmacistsForPhAdmin}/>
         <Route  to ="/drugsForPhAdmin" path ="/drugsForPhAdmin"  component={DrugsForPharmacyAdmin}/>
         <Route to="/dermathologist-schedule-appointment/:id" path="/dermathologist-schedule-appointment/:id" component={DermatologistScheduleAppointment}/>
-
+        <Route to="/new-appointment/:id" path ="/new-appointment/:id" component={PharmacistScheduleAppointment}/>
 
         </Switch>
     </Router>

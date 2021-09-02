@@ -104,6 +104,34 @@ public class Appointment {
 		this.appointmentStatus = appointmentStatus;
 	}
 
+	
+	public Appointment(UUID id,AppointmentStatus appointmentStatus,AppointmentType appointmentType,Date endDateTime,double price,Date startDateTime,
+			User employee,Patient patient,Pharmacy pharmacy) {
+		super();
+		this.id = id;
+		this.employee = employee;
+		this.pharmacy=pharmacy;
+		this.startDateTime = startDateTime;
+		this.endDateTime = endDateTime;
+		this.price = price;
+		this.patient = patient;
+		this.appointmentType = appointmentType;
+		this.appointmentStatus = appointmentStatus;
+	}
+	
+	public Appointment(AppointmentStatus appointmentStatus,AppointmentType appointmentType,Date endDateTime,double price,Date startDateTime,
+			User employee,Patient patient,Pharmacy pharmacy) {
+		super();
+		this.employee = employee;
+		this.pharmacy=pharmacy;
+		this.startDateTime = startDateTime;
+		this.endDateTime = endDateTime;
+		this.price = price;
+		this.patient = patient;
+		this.appointmentType = appointmentType;
+		this.appointmentStatus = appointmentStatus;
+	}
+
 
 	public UUID getId() {
 		return id;

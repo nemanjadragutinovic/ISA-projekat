@@ -35,7 +35,6 @@ class PrescriptionDrug extends Component {
                                             </div>
                                             <div className="form-col">
                                                 <div><b>Name:</b> {this.props.name}</div>
-                                                <div><b>Manufacturer:</b> {this.props.manufacturer}</div>
                                                 <div><b>Quantity:</b> {this.props.quantity} <b>mg</b></div>
                                             </div>
                                         </div>

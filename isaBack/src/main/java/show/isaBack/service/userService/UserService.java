@@ -960,7 +960,7 @@ public class UserService implements IUserInterface{
 			for(WorkTime wt : workTimes)
 					pharmacy = wt.getPharmacy();
 		if(pharmacy == null)
-			throw new IllegalArgumentException("Dermatologist doesn't work in any pharamcy at current hours");
+			throw new IllegalArgumentException("Dermatologist doesn't work in any pharmacy at current hours");
 		return pharmacy;
 	}
 	

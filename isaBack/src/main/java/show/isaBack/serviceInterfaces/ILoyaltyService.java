@@ -6,6 +6,7 @@ import show.isaBack.DTO.userDTO.LoyalityProgramForPatientDTO;
 import show.isaBack.DTO.userDTO.LoyaltyProgramDTO;
 import show.isaBack.model.LoyalityProgram;
 import show.isaBack.model.Patient;
+import show.isaBack.model.appointment.AppointmentType;
 import show.isaBack.unspecifiedDTO.UnspecifiedDTO;
 
 public interface ILoyaltyService extends IService<LoyaltyProgramDTO, UnspecifiedDTO<LoyaltyProgramDTO>> {
@@ -19,4 +20,6 @@ public interface ILoyaltyService extends IService<LoyaltyProgramDTO, Unspecified
 	public double getDiscountPriceForExaminationAppointmentForPatient(UUID patientId, double standardPrice);
 	public double getDiscountPriceForConsultationAppointmentForPatient(UUID patientId, double standardPrice);
 	LoyalityProgram get();
+	LoyalityProgramForPatientDTO getLoggedPatientLoyalityProgram(UUID patientId);
+	double getDiscountAppointmentPriceForPatient(double regularPrice, AppointmentType appointmentType, UUID patientId);
 }

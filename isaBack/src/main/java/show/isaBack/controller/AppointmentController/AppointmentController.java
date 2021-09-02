@@ -28,9 +28,11 @@ import show.isaBack.DTO.AppointmentDTO.DermatologistAppointmentDTO;
 import show.isaBack.DTO.AppointmentDTO.FormAppointmentDTO;
 import show.isaBack.DTO.AppointmentDTO.FreeAppointmentPeriodDTO;
 import show.isaBack.DTO.AppointmentDTO.IdDTO;
+import show.isaBack.DTO.AppointmentDTO.NewConsultationDTO;
 import show.isaBack.DTO.AppointmentDTO.ParamsFromAppointmentDTO;
 import show.isaBack.DTO.AppointmentDTO.ReservationConsultationDTO;
 import show.isaBack.model.appointment.Appointment;
+import show.isaBack.model.appointment.AppointmentTimeOverlappingWithOtherAppointmentException;
 import show.isaBack.model.appointment.AppointmentType;
 import show.isaBack.serviceInterfaces.IAppointmentService;
 import show.isaBack.unspecifiedDTO.UnspecifiedDTO;
@@ -533,6 +535,25 @@ public class AppointmentController {
 		} catch (Exception e) {
 			return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
 		}
+	}
+	
+	@PostMapping("/pharmacist/new")
+	@PreAuthorize("hasRole('PHARMACIST')")
+	@CrossOrigin
+	public ResponseEntity<?> newConsultationAppointment(@RequestBody NewConsultationDTO newConsultationDTO) {
+		try {
+			UUID appointmentId = appointmentService.newConsultation(newConsultationDTO);
+			return new ResponseEntity<>(appointmentId, HttpStatus.CREATED);
+		} catch (AppointmentTimeOverlappingWithOtherAppointmentException e) {
+			return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+		} catch (AuthorizationServiceException e) {
+			return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+		} catch (IllegalArgumentException e) {
+			return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+		} catch (Exception e) {
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		} 
+		
 	}
 	
 }

@@ -10,9 +10,11 @@ import java.util.UUID;
 import javax.mail.MessagingException;
 import javax.persistence.EntityNotFoundException;
 
+import org.springframework.core.env.Environment;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.mail.MailException;
+import org.springframework.security.access.AuthorizationServiceException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -31,6 +33,7 @@ import show.isaBack.DTO.drugDTO.DrugWithEreceiptsDTO;
 import show.isaBack.DTO.drugDTO.DrugWithPriceDTO;
 import show.isaBack.DTO.drugDTO.DrugsWithGradesDTO;
 import show.isaBack.DTO.drugDTO.EditDrugPriceDTO;
+import show.isaBack.DTO.drugDTO.EmployeeReservationDrugDTO;
 import show.isaBack.DTO.drugDTO.EreceiptDTO;
 import show.isaBack.DTO.drugDTO.EreceiptWithPharmacyDTO;
 import show.isaBack.DTO.drugDTO.IngredientDTO;
@@ -62,6 +65,7 @@ import show.isaBack.model.drugs.DrugFormatId;
 import show.isaBack.model.drugs.DrugInPharmacy;
 import show.isaBack.model.drugs.DrugKindId;
 import show.isaBack.model.drugs.DrugPriceList;
+import show.isaBack.model.drugs.DrugRequest;
 import show.isaBack.model.drugs.DrugReservation;
 import show.isaBack.model.drugs.DrugReservationStatus;
 import show.isaBack.model.drugs.DrugStorageQuantityException;
@@ -76,6 +80,7 @@ import show.isaBack.repository.userRepository.PharmacistRepository;
 import show.isaBack.repository.userRepository.UserRepository;
 import show.isaBack.repository.drugsRepository.DrugInPharmacyRepository;
 import show.isaBack.repository.drugsRepository.DrugPriceListRepository;
+import show.isaBack.repository.drugsRepository.DrugRequestRepository;
 import show.isaBack.repository.drugsRepository.DrugReservationRepository;
 import show.isaBack.repository.drugsRepository.EReceiptItemsRepository;
 import show.isaBack.service.loyalityService.LoyalityProgramService;
@@ -112,7 +117,6 @@ public class DrugService implements IDrugService{
 	
 	@Autowired
 	private IUserInterface userService;
-
 	
 	@Autowired
 	private DrugInPharmacyRepository drugInPharmacyRepository;
@@ -133,10 +137,17 @@ public class DrugService implements IDrugService{
 	private PharmacistRepository pharmacistRepository;
 
 	@Autowired
+	private Environment env;
+	
+	@Autowired
 	private EmailService emailService;
 	
 	@Autowired
 	private UserRepository userRepository;
+	
+	@Autowired
+	private DrugRequestRepository drugRequestRepository;
+	
 	
 	@Autowired
 	private EReceiptItemsRepository eReceiptItemsRepository;
@@ -949,7 +960,33 @@ public class DrugService implements IDrugService{
 		}
 		
 	}
+	
+	@Override
+	public void isDrugAvailableInPharamcy(UUID drugId, int amount) throws DrugStorageQuantityException {
+		UUID userId = userService.getLoggedUserId();
+		User user = userRepository.getOne(userId);
+		DrugInstance drugInstance = drugInstanceRepository.getOne(drugId);
+		Pharmacy pharmacy = null;
+		if(user.getUserType() == UserType.PHARMACIST)
+			pharmacy = pharmacistRepository.getOne(userId).getPharmacy();
+		else if (user.getUserType() == UserType.DERMATOLOGIST)
+			pharmacy = userService.getPharmacyForLoggedDermatologist();
+		DrugInPharmacy drugStorage = drugInPharmacyRepository.findByDrugIdAndPharmacyId(drugId, pharmacy.getId());
+		if(drugStorage == null) {
+			DrugRequest drugRequest = new DrugRequest(pharmacy, drugInstance, user);
+			drugRequestRepository.save(drugRequest);
+			throw new EntityNotFoundException();
+		}		
+		if(drugStorage.getCount() < amount) {
+			DrugRequest drugRequest = new DrugRequest(pharmacy, drugInstance, user);
+			drugRequestRepository.save(drugRequest);
+			throw new DrugStorageQuantityException("Amount exceeds drug storage count");
+		}		
+	}
 
+	
+	
+	
 
     private Date addDays(Date date, int days) {
         Calendar c = Calendar.getInstance();

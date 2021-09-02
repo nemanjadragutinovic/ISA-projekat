@@ -36,6 +36,7 @@ import show.isaBack.DTO.drugDTO.DrugWithPriceDTO;
 import show.isaBack.DTO.drugDTO.DrugsWithGradesDTO;
 import show.isaBack.DTO.drugDTO.EditDrugPriceDTO;
 import show.isaBack.DTO.drugDTO.EditStorageDTO;
+import show.isaBack.DTO.drugDTO.EmployeeReservationDrugDTO;
 import show.isaBack.DTO.drugDTO.EreceiptDTO;
 import show.isaBack.DTO.drugDTO.IngredientDTO;
 import show.isaBack.DTO.drugDTO.ManufacturerDTO;
@@ -423,5 +424,35 @@ public class DrugController {
 			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
+	
+	@GetMapping("/available/{drugId}/{amount}")
+	@PreAuthorize("hasRole('DERMATHOLOGIST') or hasRole('PHARMACIST')")
+	public ResponseEntity<?> isDrugAvailableInPharamcy(@PathVariable UUID drugId, @PathVariable int amount) {
+		try {
+			drugService.isDrugAvailableInPharamcy(drugId, amount);
+			return new ResponseEntity<>(HttpStatus.OK);
+		} catch (DrugStorageQuantityException e) {
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		} catch (EntityNotFoundException e) {
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+	
+	/*@PostMapping("/reserve-drug-as-employee")
+	@PreAuthorize("hasRole('DERMATHOLOGIST') or hasRole('PHARMACIST')")
+	@CrossOrigin
+	public ResponseEntity<?> reserveDrugAsEmployee(@RequestBody EmployeeReservationDrugDTO employeeReservationDrugDTO) {
+		try {
+			UUID reservationId = drugService.reserveDrugAsEmployee(employeeReservationDrugDTO);
+			return new ResponseEntity<>(reservationId ,HttpStatus.CREATED);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+		
+	}*/
 
 }
