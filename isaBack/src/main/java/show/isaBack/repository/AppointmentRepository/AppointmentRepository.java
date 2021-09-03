@@ -95,7 +95,7 @@ public interface AppointmentRepository extends PagingAndSortingRepository<Appoin
 
 
 	@Query(value = "SELECT a FROM Appointment a WHERE a.employee.id = ?1"
-			+ " AND (a.appointmentStatus = 'CREATED' OR a.appointmentStatus = 'SCHEDULED') AND a.appointmentType = 'EXAMINATION' AND a.pharmacy.id=?2")
+			+ " AND (a.appointmentStatus = 'FREE' OR a.appointmentStatus = 'SCHEDULED') AND a.appointmentType = 'EXAMINATION' AND a.pharmacy.id=?2")
 	List<Appointment> getCalendarDermatologistAppointmentsForPharamacy(UUID dermatologistId, UUID pharmacyId);
 
 	@Query(value = "SELECT a FROM Appointment a WHERE a.employee.id = ?1"
@@ -129,7 +129,7 @@ public interface AppointmentRepository extends PagingAndSortingRepository<Appoin
 	List<Appointment> findAppointmentForDermatologistInPharmacy(UUID dermatologistId, UUID phId);
 
 	@Query(value = "SELECT a FROM Appointment a WHERE a.employee.id = ?1 AND a.pharmacy.id = ?2 AND a.startDateTime > CURRENT_TIMESTAMP"
-			+ " AND a.appointmentStatus = 'CREATED' AND a.appointmentType = 'EXAMINATION'  ORDER BY a.startDateTime DESC")
+			+ " AND a.appointmentStatus = 'FREE' AND a.appointmentType = 'EXAMINATION'  ORDER BY a.startDateTime DESC")
 	List<Appointment> getCreatedAppointmentsByDermatologist(UUID dermatologistId, UUID pharmacyId);
 	
 	@Query(value = "SELECT a FROM Appointment a WHERE NOT (a.startDateTime >= ?2 OR a.endDateTime <= ?1)"

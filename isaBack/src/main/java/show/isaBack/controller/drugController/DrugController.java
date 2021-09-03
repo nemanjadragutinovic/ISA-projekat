@@ -394,12 +394,8 @@ public class DrugController {
 	//@PreAuthorize("hasRole('PHARMACYADMIN')")
 	public ResponseEntity<?> editPharmacyStorage(@RequestBody EditStorageDTO editStorageDTO) {
 		try {
-			return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-		/*	if(drugService.editPriceForDrug(editStorageAmountForDrugDTO))
-				return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-			else {
-				return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-			}*/
+			
+			return new ResponseEntity<>(HttpStatus.CREATED);
 		} catch (IllegalArgumentException e) {
 			return new ResponseEntity<>(e.getMessage(),HttpStatus.BAD_REQUEST);
 		} catch (Exception e) {
@@ -414,14 +410,8 @@ public class DrugController {
 		try {
 			System.out.println("Efsdfgsdaffafsaf bidibouuuu");
 			drugService.editDrugPrice(editPriceDTO);
-			return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+			return new ResponseEntity<>(HttpStatus.CREATED);
 			
-			/*
-			if(drugPriceInPharmacyService.editPriceForDrug(editPriceForDrugDTO))
-				return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-			else {
-				return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-			}*/
 		} catch (IllegalArgumentException e) {
 			return new ResponseEntity<>(e.getMessage(),HttpStatus.BAD_REQUEST);
 		} catch (Exception e) {

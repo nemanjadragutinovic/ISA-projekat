@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.UUID;
 
 import show.isaBack.DTO.AppointmentDTO.DermatologistAppointmentDTO;
+import show.isaBack.DTO.AppointmentDTO.DermatologistCreateAppointmentDTO;
 import show.isaBack.DTO.AppointmentDTO.FormAppointmentDTO;
 import show.isaBack.DTO.AppointmentDTO.FreeAppointmentPeriodDTO;
 import show.isaBack.DTO.AppointmentDTO.NewConsultationDTO;
@@ -96,6 +97,15 @@ public interface IAppointmentService extends IService<DermatologistAppointmentDT
 	void finishAppointment(UUID id);
 
 	public UUID newConsultation(NewConsultationDTO newConsultationDTO) throws AppointmentNotScheduledException, AppointmentTimeOverlappingWithOtherAppointmentException, AppointmentTimeOutofWorkTimeRange;
+
+	boolean scheduleAppointment(UUID patientId, UUID appointmentId);
+
+	List<FreeAppointmentPeriodDTO> getFreePeriodsDermatologist(Date date, int duration);
+
+	UUID createAndScheduleAppointment(DermatologistCreateAppointmentDTO appointmentDTO);
+
+	UUID newExamination(NewConsultationDTO newConsultationDTO) throws AppointmentNotScheduledException,
+			AppointmentTimeOverlappingWithOtherAppointmentException, AppointmentTimeOutofWorkTimeRange;
 
 	
 	

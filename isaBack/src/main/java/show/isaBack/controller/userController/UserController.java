@@ -687,4 +687,9 @@ public class UserController {
 				return new ResponseEntity<>(HttpStatus.OK); 
 			}
 	
+			@GetMapping("/dermatologist/auth") 
+			@PreAuthorize("hasRole('DERMATHOLOGIST')")
+			public ResponseEntity<?>checAuthority() {	  
+				return new ResponseEntity<>(HttpStatus.OK); 
+			}
 }

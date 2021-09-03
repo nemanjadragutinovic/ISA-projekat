@@ -25,6 +25,7 @@ import show.isaBack.DTO.AppointmentDTO.AppointmentDTO;
 import show.isaBack.DTO.AppointmentDTO.AppointmentReportDTO;
 import show.isaBack.DTO.AppointmentDTO.CreateAppointmentDTO;
 import show.isaBack.DTO.AppointmentDTO.DermatologistAppointmentDTO;
+import show.isaBack.DTO.AppointmentDTO.DermatologistCreateAppointmentDTO;
 import show.isaBack.DTO.AppointmentDTO.FormAppointmentDTO;
 import show.isaBack.DTO.AppointmentDTO.FreeAppointmentPeriodDTO;
 import show.isaBack.DTO.AppointmentDTO.IdDTO;
@@ -537,11 +538,12 @@ public class AppointmentController {
 		}
 	}
 	
-	@PostMapping("/pharmacist/new")
+	@PostMapping("/pharmacist/new/")
 	@PreAuthorize("hasRole('PHARMACIST')")
 	@CrossOrigin
-	public ResponseEntity<?> newConsultationAppointment(@RequestBody NewConsultationDTO newConsultationDTO) {
+	public ResponseEntity<?> newConsultationAppointment(@RequestBody NewConsultationDTO newConsultationDTO){
 		try {
+			System.out.println("PRVERA== ZA PACIJENTA");
 			UUID appointmentId = appointmentService.newConsultation(newConsultationDTO);
 			return new ResponseEntity<>(appointmentId, HttpStatus.CREATED);
 		} catch (AppointmentTimeOverlappingWithOtherAppointmentException e) {
@@ -554,6 +556,60 @@ public class AppointmentController {
 			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 		} 
 		
+	}
+	
+	@PostMapping("/dermatologist/new/")
+	@PreAuthorize("hasRole('DERMATHOLOGIST')")
+	@CrossOrigin
+	public ResponseEntity<?> newExamination(@RequestBody  NewConsultationDTO newConsultationDTO){
+		try {
+			System.out.println("PRVERA== ZA PACIJENTA");
+			UUID appointmentId = appointmentService.newExamination(newConsultationDTO);
+			return new ResponseEntity<>(appointmentId, HttpStatus.CREATED);
+		} //catch (AppointmentTimeOverlappingWithOtherAppointmentException e) {
+			//return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+		//}
+	catch (AuthorizationServiceException e) {
+			return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+		} catch (IllegalArgumentException e) {
+			return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+		} catch (Exception e) {
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		} 
+		
+	}
+	
+	@PostMapping("/schedule-appointment")
+	@PreAuthorize("hasRole('DERMATHOLOGIST')")
+	@CrossOrigin
+	public ResponseEntity<?> scheduleAppointment(@RequestBody CreateAppointmentDTO createAppointmentDTO) {
+		System.out.println("PRVERA== ZA PACIJENTA");
+		boolean isSuccesfull = appointmentService.scheduleAppointment(createAppointmentDTO.getPatientId(), createAppointmentDTO.getAppointmentId());
+		
+		if(isSuccesfull) return new ResponseEntity<>(createAppointmentDTO,HttpStatus.CREATED);
+		
+		return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+	}
+	
+	@GetMapping("/free-periods-dermatologist")
+	@PreAuthorize("hasRole('DERMATHOLOGIST')")
+	@CrossOrigin
+	public ResponseEntity<List<FreeAppointmentPeriodDTO>> getFreePeriodsDermatologist(@RequestParam long datetime,@RequestParam int duration) {
+		return new ResponseEntity<>(appointmentService.getFreePeriodsDermatologist(new Date(datetime), duration),HttpStatus.OK);
+	}
+	
+	@PostMapping("/create-and-schedule-appointment")
+	@CrossOrigin
+	@PreAuthorize("hasRole('DERMATHOLOGIST')")
+	public ResponseEntity<?> createAppointment(@RequestBody DermatologistCreateAppointmentDTO appointmentDTO ) {
+		try {
+			if(appointmentService.createAndScheduleAppointment(appointmentDTO)!=null)
+				return new ResponseEntity<>(HttpStatus.OK);
+			
+			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+		}catch(Exception e) {
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
 	}
 	
 }

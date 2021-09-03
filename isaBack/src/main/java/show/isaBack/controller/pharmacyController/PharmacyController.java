@@ -24,6 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
 import show.isaBack.DTO.drugDTO.DrugDTO;
 import show.isaBack.DTO.drugDTO.PharmacyDrugPriceDTO;
 import show.isaBack.DTO.drugDTO.PharmacyERecipeDTO;
+import show.isaBack.DTO.pharmacyDTO.ActionPromotionDTO;
 import show.isaBack.DTO.pharmacyDTO.PharmacyDTO;
 import show.isaBack.DTO.pharmacyDTO.PharmacySearchDTO;
 import show.isaBack.DTO.pharmacyDTO.PharmacyWithGradeAndPriceDTO;
@@ -406,4 +407,33 @@ public class PharmacyController {
 
 	
 
+	@PostMapping("/addNewActionPromotion/{pharmacyId}")
+	@CrossOrigin
+	@PreAuthorize("hasRole('PHARMACYADMIN')")
+	public ResponseEntity<?> createActionAndPromotion(@PathVariable UUID pharmacyId,@RequestBody ActionPromotionDTO actionPromotionDTO) {
+		try {
+			System.out.println("Usao je");
+			if(pharmacyService.createNewActionPromtion(pharmacyId,actionPromotionDTO))
+				return new ResponseEntity<>(HttpStatus.CREATED);
+			else
+				return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+		}catch (Exception e) {
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+	
+	@CrossOrigin
+	@GetMapping("/getAllActionsInPharmacy/{pharmacyId}")
+	//@PreAuthorize("hasRole('PHARMACYADMIN')")
+	public ResponseEntity<List<UnspecifiedDTO<ActionPromotionDTO>>> getAllActionAndPromotionInPharmacy(@PathVariable UUID pharmacyId) {
+		try {
+			return new ResponseEntity<>(pharmacyService.getAllActionsInPharmacy(pharmacyId),HttpStatus.OK);
+		} catch (IllegalArgumentException e) {
+			e.printStackTrace();
+			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
 }

@@ -41,7 +41,7 @@ class DermatologistScheduleAppointment extends Component {
 
 	handleAppointmentClick = (appointmentId) => {
 		Axios.post(API_URL + "/appointment/schedule-appointment",
-			{ appointmentId: appointmentId, patientId: this.state.id },
+			{ appointmentId: appointmentId, patientId: this.props.match.params.id },
 			{ headers: { Authorization: GetAuthorisation() } }
 		)
 			.then((res) => {

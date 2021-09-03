@@ -125,12 +125,12 @@ class PatientProfile extends Component {
 		if (this.hasRole("ROLE_DERMATHOLOGIST")) {
 			this.setState({
 				redirect: true,
-				redirectUrl: "/schedule-appointment/" + this.state.id
+				redirectUrl: "/dermathologist-schedule-appointment/" + this.props.match.params.id
 			});
 		} else if (this.hasRole("ROLE_PHARMACIST")) {
 			this.setState({
 				redirect: true,
-				redirectUrl: "/new-appointment/" + this.state.id
+				redirectUrl: "/new-appointment/" + this.props.match.params.id
 			});
 		}
 	};
@@ -138,7 +138,7 @@ class PatientProfile extends Component {
 	handleCreateAndSchedule = () => {
 		this.setState({
 			redirect: true,
-			redirectUrl: "/create-and-schedule-appointment/" + this.state.id
+			redirectUrl: "/create-and-schedule-appointment/" + this.props.match.params.id
 		});
 	};
 
@@ -262,7 +262,7 @@ class PatientProfile extends Component {
 									}
 									className="btn btn-primary"
 								>
-									Schedule appointment
+									Schedule
 								</button>
 								<br />
 								<br />
@@ -335,20 +335,20 @@ class PatientProfile extends Component {
 												})}
 											</div>
 											<div hidden={appointment.EntityDTO.appointmentStatus != "FINISHED"}>
-												{appointment.EntityDTO.appointmentStatus == "FINISHED" && appointment.EntityDTO.treatmentReportDTO != undefined && appointment.EntityDTO.treatmentReportDTO != null ? (
+												{appointment.EntityDTO.appointmentStatus == "FINISHED" && appointment.EntityDTO.appointmentReportDTO != undefined && appointment.EntityDTO.appointmentReportDTO != null ? (
 													<div style={{whiteSpace: "pre"}}>
 														<div>
 															<b>Anamensis</b>{" "}
-															{appointment.EntityDTO.treatmentReportDTO.anamnesis}
+															{appointment.EntityDTO.appointmentReportDTO.anamnesis}
 														</div>
 														<div>
 															<b>Diagnosis</b>{" "}
-															{appointment.EntityDTO.treatmentReportDTO.diagnosis}
+															{appointment.EntityDTO.appointmentReportDTO.diagnosis}
 														</div>
 														<div>
 															<b>Therapy</b><br />
 															<div>
-																{appointment.EntityDTO.treatmentReportDTO.therapy}
+																{appointment.EntityDTO.appointmentReportDTO.therapy}
 															</div>	
 														</div>
 													</div>

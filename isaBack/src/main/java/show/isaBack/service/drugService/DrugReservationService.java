@@ -19,6 +19,8 @@ import show.isaBack.interfaceRepository.drugRepository.DrugInstanceRepository;
 import show.isaBack.interfaceRepository.drugRepository.DrugRepository;
 import show.isaBack.interfaceRepository.drugRepository.IngredientRepository;
 import show.isaBack.interfaceRepository.drugRepository.ManufacturerRepository;
+import show.isaBack.model.ActionPromotion;
+import show.isaBack.model.ActionType;
 import show.isaBack.model.DrugInstance;
 import show.isaBack.model.Patient;
 import show.isaBack.model.Pharmacy;
@@ -33,6 +35,7 @@ import show.isaBack.repository.drugsRepository.DrugRequestRepository;
 import show.isaBack.repository.drugsRepository.DrugReservationRepository;
 import show.isaBack.repository.drugsRepository.EReceiptItemsRepository;
 import show.isaBack.repository.drugsRepository.EReceiptRepository;
+import show.isaBack.repository.pharmacyRepository.ActionPromotionRepository;
 import show.isaBack.repository.pharmacyRepository.PharmacyRepository;
 import show.isaBack.repository.userRepository.PatientRepository;
 import show.isaBack.repository.userRepository.PharmacistRepository;
@@ -56,6 +59,9 @@ public class DrugReservationService implements IDrugReservationService {
 	
 	@Autowired
 	private ManufacturerRepository manufacturerRepository;
+	
+	@Autowired
+	private ActionPromotionRepository actionPromotionRepository;
 	
 	@Autowired
 	private IngredientRepository ingredientRepository;
@@ -121,10 +127,10 @@ public class DrugReservationService implements IDrugReservationService {
 		Integer price = drugPriceListRepository.findCurrentDrugPrice(drugInstance.getId(), pharmacy.getId());
 
 		double priceDiscounted = loyalityProgramService.getDiscountPriceForDrugForPatient(patient.getId(),price);
-		/*ActionAndPromotion action = actionAndPromotionsRepository.findCurrentActionAndPromotionForPharmacyForActionType(pharmacy.getId(), ActionAndPromotionType.DRUGDISCOUNT);
+		ActionPromotion action = actionPromotionRepository.findCurrentActionAndPromotionForPharmacyForActionType(pharmacy.getId(), ActionType.DRUGDISCOUNT);
 		if(action != null) {
-			priceDiscounted -= (action.getPercentOfDiscount()/ 100.0) * priceDiscounted;
-		}*/
+			priceDiscounted -= (action.getDiscount()/ 100.0) * priceDiscounted;
+		}
 			
 		long drugReservationDuration = Integer.parseInt(env.getProperty("drug_reservation_duration"));
 		long currentTime = new Date().getTime();

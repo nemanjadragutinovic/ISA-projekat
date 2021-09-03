@@ -9,7 +9,7 @@ import { Redirect } from "react-router-dom";
 import { withRouter } from "react-router";
 const API_URL="http://localhost:8080";
 
-class PharmacyScheduleAppointment extends Component {
+class PharmacistScheduleAppointment extends Component {
     state = {
         id: "",
         selectedDate: new Date(),
@@ -61,6 +61,7 @@ class PharmacyScheduleAppointment extends Component {
                     patientId: this.state.id,
                     startDateTime: consultationDate
                 };
+                console.log(EntityDTO);
 				Axios.post(API_URL + "/appointment/pharmacist/new/", EntityDTO, {
                     validateStatus: () => true,
                     headers: { Authorization: GetAuthorisation() },
@@ -82,7 +83,7 @@ class PharmacyScheduleAppointment extends Component {
 			}
 		} else {
 			let EntityDTO = {
-				patientId: this.state.id,
+				patientId: this.props.match.params.id,
 				startDateTime: consultationDate
 			};
 			Axios.post(API_URL + "/appointment/pharmacist/new/", EntityDTO, {
@@ -215,4 +216,4 @@ class PharmacyScheduleAppointment extends Component {
     }
 }
 
-export default withRouter(PharmacyScheduleAppointment);
+export default withRouter(PharmacistScheduleAppointment);

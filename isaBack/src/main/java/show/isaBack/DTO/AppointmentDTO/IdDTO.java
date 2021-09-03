@@ -8,7 +8,7 @@ private UUID id;
 	
 	
 	public IdDTO() {
-	super();
+	//super();
 	}	
 
 	

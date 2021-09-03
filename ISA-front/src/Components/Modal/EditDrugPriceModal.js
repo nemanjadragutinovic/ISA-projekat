@@ -12,12 +12,7 @@ class EditDrugPriceModal extends Component {
         newPrice:1, 
         selectedStartDate:new Date(),
         selectedEndDate:new Date(),
-        hiddenSuccessAlert: true,
-		successHeader: "",
-		successMessage: "",
-		hiddenFailAlert: true,
-		failHeader: "",
-		failMessage: "",   
+     
         
 
     }
@@ -55,18 +50,24 @@ class EditDrugPriceModal extends Component {
             
         };
         console.log(editPriceDTO);
-        if(editPriceDTO.startDate>=editPriceDTO.endDate && editPriceDTO.price<1){
+        if((editPriceDTO.startDate<=editPriceDTO.endDate) && editPriceDTO.price>=1){
             Axios
             .put(API_URL + "/drug/editDrugPriceInPharmacy", editPriceDTO, {
                 validateStatus: () => true,
                 headers: { Authorization:  GetAuthorisation() },
             }).then((res) =>{
-               
+                if(res.status==401)
+                {
+                    alert("Unauthorised")
+                }
+               alert("Successfully changed drug price");
                 console.log(res.data);
+                this.handleClickOnClose();
             }).catch((err) => {
+                alert("Server error");
             });
         }else{
-          alert("Data is not valid.")
+          alert("Data is not valid.");
         }
     }
 
@@ -74,6 +75,11 @@ class EditDrugPriceModal extends Component {
 
 
     handleClickOnClose = () => {
+        this.setState({
+            newPrice:1, 
+            selectedStartDate:new Date(),
+            selectedEndDate:new Date(),
+        });
         this.props.closeModal();
     }
 
