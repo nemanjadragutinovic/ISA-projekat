@@ -7,10 +7,10 @@ import MedicamentPicture from "../../Images/medicament.jpg";
 import GetAuthorisation from "../../Funciton/GetAuthorisation";
 import { Redirect } from "react-router-dom";
 const API_URL="http://localhost:8080";
-class AddOrderModal extends Component {
+class EditOrderModal extends Component {
     state = {
-        drugsToAdd: [] ,
-        drugs:[],
+        drugsToAdd: this.props.drugsToAdd ,
+        drugs: this.props.drugs,
         page: 1,
         modalSize:'lg',    
         selectedDate:new Date(),
@@ -24,59 +24,10 @@ class AddOrderModal extends Component {
 
 
     componentDidMount() {
-		let pharmacyId = localStorage.getItem("keyPharmacyId")
-        this.setState({
-            pharmacyId: pharmacyId
-        })
-		Axios.get(API_URL + "/drug/drugsInPharmacy/" + localStorage.getItem("keyPharmacyId"), {
-			headers: { Authorization: GetAuthorisation() },
-		})
-
-			.then((res) => {
-				console.log(res.data);
-				this.setState({ drugs: res.data });
-			})
-			.catch((err) => {
-				console.log(err);
-			});
+	
 
     }
 
-    addItem = item => {
-        this.setState({
-            drugsToAdd: [
-            ...this.state.drugsToAdd,
-            item 
-          ]
-        })
-    }
-
-    removeItem(e) {
-        var array = [...this.state.drugs];
-        var index = array.indexOf(e)
-        if (index !== -1) {
-          array.splice(index, 1);
-          this.setState({drugs: array});
-        }
-      }
-  
-      addItem1 = item => {
-        this.setState({
-            drugs: [
-            ...this.state.drugs,
-            item 
-          ]
-        })
-    }
-
-    removeItem1(e) {
-        var array = [...this.state.drugsToAdd];
-        var index = array.indexOf(e)
-        if (index !== -1) {
-          array.splice(index, 1);
-          this.setState({drugsToAdd: array});
-        }
-      }
   
 
     handleAdd = () => {
@@ -84,20 +35,12 @@ class AddOrderModal extends Component {
         if(this.state.selectedCount<1){
            alert("Count is must be more than 0.");         }
         else{
-            let drugDTO = {
-                drugInstanceId: this.state.drugForAdd.Id,
-                drugName: this.state.drugForAdd.EntityDTO.name,
-                fabricCode: this.state.drugForAdd.EntityDTO.fabricCode,
-                producerName: this.state.drugForAdd.EntityDTO.producerName,
-                quantity:this.state.drugForAdd.EntityDTO.quantity,
-                amount:this.state.selectedCount
-            }
-            console.log("Bidibou");
-            console.log(this.state.drugForAdd);
-            this.removeItem(this.state.drugForAdd);
-            console.log('res.data');
-            console.log(this.state.drugForAdd);
-            this.addItem(drugDTO);
+       
+            let drug= this.state.drugForAdd;
+            drug.amount= this.state.selectedCount
+
+           
+            this.props.addToAddedDrugs(drug);
     
             this.setState({
                 page:1,
@@ -111,24 +54,8 @@ class AddOrderModal extends Component {
            
             console.log(drugRemove)
     
-            let drugDTO = {
-                Id: drugRemove.drugInstanceId,
-                EntityDTO:{
-               
-                name: drugRemove.drugName,
-                fabricCode: drugRemove.fabricCode,
-                producerName: drugRemove.producerName,
-                quantity:drugRemove.quantity
-                }
-            }
 
-            console.log("Bidibou");
-            console.log(drugDTO);
-            this.removeItem1(drugRemove);
-            console.log('res.data');
-            console.log(this.state.drugForAdd);
-            this.addItem1(drugDTO);
-    
+            this.props.removeFromDrugToAdd(drugRemove);
             this.setState({
                 page:1,
                 selectedCount:'',
@@ -137,20 +64,20 @@ class AddOrderModal extends Component {
     
 
     handleCreateOrder = () =>{
-        let createOrderDTO = {
-            pharmacyId:this.props.pharmacyId,
-            listOfDrugs: this.state.drugsToAdd,
+        let editOrderDTO = {
+            orderId:this.props.orderToEdit,
+            listOfDrugs: this.props.drugsToAdd,
             dateTo:this.state.selectedDate
         }
-      console.log(createOrderDTO)
+      console.log(editOrderDTO)
         Axios
-        .post(API_URL + "/order/addNewOrder", createOrderDTO, {
+        .put(API_URL + "/order/updateOrder", editOrderDTO, {
             validateStatus: () => true,
             headers: { Authorization: GetAuthorisation() },})
         .then((res) =>{
             console.log(res.status)
             if (res.status === 201) {
-                alert("New Oreder is succesfully created");
+                alert("Oreder is succesfully edited");
                 this.handleClickOnClose();
             }else {
                 alert("It is not possibe to create new order");
@@ -192,7 +119,7 @@ class AddOrderModal extends Component {
     }
 
     handleClickOnCreateOrder = () =>{
-        if(this.state.drugsToAdd.length<1){
+        if(this.props.drugsToAdd.length<1){
           alert("Drug list is empty");       
         }else{
             this.setState({
@@ -213,6 +140,7 @@ class AddOrderModal extends Component {
         });
         this.handleUpdte();
         this.props.closeModal();
+        this.props.update();
     }
 
     handleUpdte = () => {
@@ -266,24 +194,24 @@ class AddOrderModal extends Component {
 
                     <table hidden={this.state.page!== 1}  style={{width:'100%'}} className="table">
                                 
-                                {this.state.drugs.map((drug) => (
+                                {this.props.drugs.map((drug) => (
                                 
                                 <tr id={drug.Id} key={drug.Id}>
                                 <td width="130em">
                                     <img className="img-fluid" src={MedicamentPicture} width="70em"/>
                                 </td>
                                 <td>	<div>
-												<b>Drug Name:</b> {drug.EntityDTO.name}
+												<b>Drug Name:</b> {drug.drugName}
 											</div>
 											<div>
-												<b>Name:</b> {drug.EntityDTO.fabricCode}
+												<b>Name:</b> {drug.fabricCode}
 											</div>
 									
 											<div>
-												<b>Manufacturer:</b> {drug.EntityDTO.producerName}
+												<b>Manufacturer:</b> {drug.producerName}
 											</div>
 											<div>
-												<b>Quantity:</b> {drug.EntityDTO.quantity} <b> mg</b>
+												<b>Quantity:</b> {drug.quantity} <b> mg</b>
 											</div>
                                 </td>
                                 <td >
@@ -299,7 +227,7 @@ class AddOrderModal extends Component {
                     <table hidden={this.state.page!== 1} className="table" style={{ width: "100%", marginTop: "2rem" }}>
                     
                         <tbody>
-                            {this.state.drugsToAdd.map((drug) => (
+                            {this.props.drugsToAdd.map((drug) => (
                                 <tr id={drug.Id} key={drug.Id}>
                                     <td width="130em">
                                         <img className="img-fluid" src={MedicamentPicture} width="70em"/>
@@ -380,4 +308,4 @@ class AddOrderModal extends Component {
     }
 }
  
-export default AddOrderModal;
+export default EditOrderModal;
