@@ -5,13 +5,18 @@ import java.util.List;
 import java.util.UUID;
 
 import show.isaBack.DTO.AppointmentDTO.DermatologistAppointmentDTO;
+import show.isaBack.DTO.AppointmentDTO.DermatologistCreateAppointmentDTO;
 import show.isaBack.DTO.AppointmentDTO.FormAppointmentDTO;
 import show.isaBack.DTO.AppointmentDTO.FreeAppointmentPeriodDTO;
+import show.isaBack.DTO.AppointmentDTO.NewConsultationDTO;
 import show.isaBack.DTO.AppointmentDTO.ParamsFromAppointmentDTO;
 import show.isaBack.DTO.AppointmentDTO.ReservationConsultationDTO;
 import show.isaBack.model.Pharmacy;
 import show.isaBack.model.User;
 import show.isaBack.model.appointment.Appointment;
+import show.isaBack.model.appointment.AppointmentNotScheduledException;
+import show.isaBack.model.appointment.AppointmentTimeOutofWorkTimeRange;
+import show.isaBack.model.appointment.AppointmentTimeOverlappingWithOtherAppointmentException;
 import show.isaBack.model.appointment.AppointmentType;
 import show.isaBack.DTO.AppointmentDTO.AppointmentDTO;
 import show.isaBack.DTO.AppointmentDTO.AppointmentReportDTO;
@@ -81,12 +86,27 @@ public interface IAppointmentService extends IService<DermatologistAppointmentDT
 
 	public List<UnspecifiedDTO<AppointmentDTO>> getAppointmentsByPatientAsEmpolyee(UUID patientId);
 
-
-
-
 	boolean isFutureAppointmentExists(UUID dermatologistId, UUID phId);
 
+	void didNotShowUpToAppointment(UUID id);
 
+	List<UnspecifiedDTO<AppointmentDTO>> getCreatedAppointmentsByDermatologist();
 
+	public Object getAppointment(UUID appointmentId);
+
+	void finishAppointment(UUID id);
+
+	public UUID newConsultation(NewConsultationDTO newConsultationDTO) throws AppointmentNotScheduledException, AppointmentTimeOverlappingWithOtherAppointmentException, AppointmentTimeOutofWorkTimeRange;
+
+	boolean scheduleAppointment(UUID patientId, UUID appointmentId);
+
+	List<FreeAppointmentPeriodDTO> getFreePeriodsDermatologist(Date date, int duration);
+
+	UUID createAndScheduleAppointment(DermatologistCreateAppointmentDTO appointmentDTO);
+
+	UUID newExamination(NewConsultationDTO newConsultationDTO) throws AppointmentNotScheduledException,
+			AppointmentTimeOverlappingWithOtherAppointmentException, AppointmentTimeOutofWorkTimeRange;
+
+	
 	
 }

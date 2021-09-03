@@ -11,9 +11,11 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.PagingAndSortingRepository;
 
+import show.isaBack.DTO.AppointmentDTO.DermatologistAppointmentDTO;
 import show.isaBack.model.appointment.Appointment;
 import show.isaBack.model.appointment.AppointmentStatus;
 import show.isaBack.model.appointment.AppointmentType;
+import show.isaBack.unspecifiedDTO.UnspecifiedDTO;
 
 
 
@@ -93,7 +95,7 @@ public interface AppointmentRepository extends PagingAndSortingRepository<Appoin
 
 
 	@Query(value = "SELECT a FROM Appointment a WHERE a.employee.id = ?1"
-			+ " AND (a.appointmentStatus = 'CREATED' OR a.appointmentStatus = 'SCHEDULED') AND a.appointmentType = 'EXAMINATION' AND a.pharmacy.id=?2")
+			+ " AND (a.appointmentStatus = 'FREE' OR a.appointmentStatus = 'SCHEDULED') AND a.appointmentType = 'EXAMINATION' AND a.pharmacy.id=?2")
 	List<Appointment> getCalendarDermatologistAppointmentsForPharamacy(UUID dermatologistId, UUID pharmacyId);
 
 	@Query(value = "SELECT a FROM Appointment a WHERE a.employee.id = ?1"
@@ -126,4 +128,15 @@ public interface AppointmentRepository extends PagingAndSortingRepository<Appoin
 			+ " AND a.appointmentStatus = 'SCHEDULED' AND  a.startDateTime > CURRENT_TIMESTAMP")
 	List<Appointment> findAppointmentForDermatologistInPharmacy(UUID dermatologistId, UUID phId);
 
+	@Query(value = "SELECT a FROM Appointment a WHERE a.employee.id = ?1 AND a.pharmacy.id = ?2 AND a.startDateTime > CURRENT_TIMESTAMP"
+			+ " AND a.appointmentStatus = 'FREE' AND a.appointmentType = 'EXAMINATION'  ORDER BY a.startDateTime DESC")
+	List<Appointment> getCreatedAppointmentsByDermatologist(UUID dermatologistId, UUID pharmacyId);
+	
+	@Query(value = "SELECT a FROM Appointment a WHERE NOT (a.startDateTime >= ?2 OR a.endDateTime <= ?1)"
+			+ " AND a.appointmentStatus = 'SCHEDULED' AND a.employee.id = ?3")
+	List<UnspecifiedDTO<DermatologistAppointmentDTO>> findAllAppointmentsByAppointmentTimeAndEmployee(Date startDateTime, Date endDateTime, UUID id);
+	
+	@Query(value = "SELECT a FROM Appointment a WHERE NOT (a.startDateTime >= ?2 OR a.endDateTime <= ?1)"
+			+ " AND a.appointmentStatus = 'SCHEDULED' AND a.patient.id = ?3")
+	List<Appointment> findAllAppointmentsByAppointmentTimeAndPatient(Date dateTimeFrom, Date dateTimeTo, UUID patientId);
 }

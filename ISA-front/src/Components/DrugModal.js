@@ -33,10 +33,6 @@ class DrugModal extends Component {
 							<b>Name:</b> {drug.EntityDTO.drugInstanceName}
 						</div>
 						<div>
-							<b>Manufacturer:</b>{" "}
-							{drug.EntityDTO.manufacturer.EntityDTO.name}
-						</div>
-						<div>
 							<b>Quantity:</b> {drug.EntityDTO.quantity} <b>mg</b>
 						</div>
 					</td>					

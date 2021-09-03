@@ -6,7 +6,7 @@ import show.isaBack.unspecifiedDTO.UnspecifiedDTO;
 
 public class DrugInstanceMapper {
 
-	public static UnspecifiedDTO<DrugInstanceDTO> MapDrugInstancePersistenceToDrugInstanceIdentifiableDTO(DrugInstance drug){
+	public static UnspecifiedDTO<DrugInstanceDTO> MapDrugInstancePersistenceToDrugInstanceUnspecifiedDTO(DrugInstance drug){
 		if(drug == null) throw new IllegalArgumentException();
 				
 		return new UnspecifiedDTO<DrugInstanceDTO>(drug.getId(), new DrugInstanceDTO(drug.getName(), drug.getProducerName(), drug.getFabricCode(),drug.getDrugInstanceName(),

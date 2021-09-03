@@ -3,7 +3,7 @@ import { Button, Modal } from "react-bootstrap";
 import MedicamentPicture from "../Images/medicament.jpg" ;
 
 
-class AlternativeDrugsModal extends Component {
+class AvailableDrugModal extends Component {
   render() {
     return (
       <Modal
@@ -31,12 +31,9 @@ class AlternativeDrugsModal extends Component {
 				    </td>
                     <td>
 						<div>
-							<b>Name:</b> {drug.EntityDTO.drugInstanceName}
+							<b>Namee:</b> {drug.EntityDTO.drugInstanceName}
 						</div>
-						<div>
-							<b>Manufacturer:</b>{" "}
-							{drug.EntityDTO.manufacturer.EntityDTO.name}
-						</div>
+						
 						<div>
 							<b>Quantity:</b> {drug.EntityDTO.quantity} <b>mg</b>
 						</div>
@@ -54,4 +51,4 @@ class AlternativeDrugsModal extends Component {
   }
 }
 
-export default AlternativeDrugsModal;
+export default AvailableDrugModal;

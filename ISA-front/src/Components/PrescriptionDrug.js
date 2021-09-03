@@ -34,8 +34,8 @@ class PrescriptionDrug extends Component {
                                                 <img className="img-fluid" src={MedicamentPicture} width="90em"/>
                                             </div>
                                             <div className="form-col">
-                                                <div><b>Name:</b> {this.props.name}</div>
-                                                <div><b>Manufacturer:</b> {this.props.manufacturer}</div>
+                                                <div><b>Name:</b> {this.props.className}</div>
+                                               
                                                 <div><b>Quantity:</b> {this.props.quantity} <b>mg</b></div>
                                             </div>
                                         </div>

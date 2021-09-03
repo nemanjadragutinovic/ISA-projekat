@@ -27,7 +27,7 @@ public class DrugReservationMapper {
 		
 		return new UnspecifiedDTO<DrugReservationResponseDTO>(drugReservation.getId(),
 				   new DrugReservationResponseDTO(PharmacyMapper.MapPharmacyPersistenceToPharmacyUnspecifiedDTO(drugReservation.getPharmacy()),
-				   DrugInstanceMapper.MapDrugInstancePersistenceToDrugInstanceIdentifiableDTO(drugReservation.getDrugInstance()),
+				   DrugInstanceMapper.MapDrugInstancePersistenceToDrugInstanceUnspecifiedDTO(drugReservation.getDrugInstance()),
 				   drugReservation.getCount(), drugReservation.getStartDate(), drugReservation.getEndDate(),
 				   drugReservation.getPriceForOneDrug(), drugReservation.getDrugReservationStatus()));
 	}

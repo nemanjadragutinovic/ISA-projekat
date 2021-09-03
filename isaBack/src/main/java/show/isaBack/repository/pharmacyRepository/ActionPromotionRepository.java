@@ -18,4 +18,8 @@ public interface ActionPromotionRepository extends JpaRepository<ActionPromotion
 	@Query(value = "SELECT a from ActionPromotion a WHERE a.pharmacy.id = ?1 "
 			 + "AND a.actionType = ?2  AND DATE(?3) <= DATE(a.dateTo) AND DATE(a.dateFrom) <= DATE(?4)")
 	List<ActionPromotion> getAllActionsInPeriod(UUID pharmacyId,ActionType actionType, Date dateFrom, Date dateTo);
+	
+	@Query(value = "SELECT a from ActionPromotion a WHERE a.pharmacy.id = ?1 AND"
+			+ " a.dateFrom <= CURRENT_TIMESTAMP AND a.dateTo >= CURRENT_TIMESTAMP AND a.actionType = ?2")
+	ActionPromotion findCurrentActionAndPromotionForPharmacyForActionType(UUID pharmacyId, ActionType actionType);
 }

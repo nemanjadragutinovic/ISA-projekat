@@ -19,22 +19,27 @@ import javax.transaction.Transactional;
 
 import org.hibernate.boot.registry.classloading.spi.ClassLoaderService.Work;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.AuthorizationServiceException;
 import org.springframework.stereotype.Service;
-
+import org.springframework.core.env.Environment;
 
 
 import show.isaBack.DTO.AppointmentDTO.AppointmentDTO;
 import show.isaBack.DTO.AppointmentDTO.AppointmentReportDTO;
 import show.isaBack.DTO.AppointmentDTO.DermatologistAppointmentDTO;
+import show.isaBack.DTO.AppointmentDTO.DermatologistCreateAppointmentDTO;
 import show.isaBack.DTO.AppointmentDTO.FormAppointmentDTO;
 import show.isaBack.DTO.AppointmentDTO.FreeAppointmentPeriodDTO;
 import show.isaBack.DTO.AppointmentDTO.IdDTO;
+import show.isaBack.DTO.AppointmentDTO.NewConsultationDTO;
 import show.isaBack.DTO.AppointmentDTO.ParamsFromAppointmentDTO;
 import show.isaBack.DTO.AppointmentDTO.ReservationConsultationDTO;
 import show.isaBack.DTO.userDTO.AuthorityDTO;
 import show.isaBack.DTO.userDTO.EmployeeGradeDTO;
 import show.isaBack.Mappers.Appointmets.AppointmentsMapper;
 import show.isaBack.emailService.EmailService;
+import show.isaBack.model.ActionPromotion;
+import show.isaBack.model.ActionType;
 import show.isaBack.model.Dermatologist;
 import show.isaBack.model.Patient;
 import show.isaBack.model.Pharmacist;
@@ -43,14 +48,19 @@ import show.isaBack.model.User;
 import show.isaBack.model.UserCharacteristics.UserType;
 import show.isaBack.model.UserCharacteristics.WorkTime;
 import show.isaBack.model.appointment.Appointment;
+import show.isaBack.model.appointment.AppointmentNotScheduledException;
 import show.isaBack.model.appointment.AppointmentReport;
+import show.isaBack.model.appointment.AppointmentScheduler;
 import show.isaBack.model.appointment.AppointmentStatus;
+import show.isaBack.model.appointment.AppointmentTimeOutofWorkTimeRange;
+import show.isaBack.model.appointment.AppointmentTimeOverlappingWithOtherAppointmentException;
 import show.isaBack.model.appointment.AppointmentType;
+import show.isaBack.model.appointment.DateRange;
 import show.isaBack.model.drugs.DrugReservation;
 import show.isaBack.model.drugs.EReceipt;
 import show.isaBack.repository.AppointmentRepository.AppointmentReportRepository;
 import show.isaBack.repository.AppointmentRepository.AppointmentRepository;
-
+import show.isaBack.repository.pharmacyRepository.ActionPromotionRepository;
 import show.isaBack.repository.pharmacyRepository.PharmacyRepository;
 
 import show.isaBack.repository.drugsRepository.DrugReservationRepository;
@@ -76,6 +86,9 @@ public class AppointmentService implements IAppointmentService{
 	private AppointmentRepository appointmentRepository;
 	
 	@Autowired
+	private ActionPromotionRepository actionPromotionRepository;
+	
+	@Autowired
 	private AppointmentReportRepository appointmentReportRepository;
 	
 	@Autowired
@@ -86,6 +99,9 @@ public class AppointmentService implements IAppointmentService{
 	
 	@Autowired
 	private IUserInterface userService;
+	
+	@Autowired
+	private Environment env;
 	
 	@Autowired
 	private PharmacyRepository pharmacyRepository;
@@ -995,7 +1011,286 @@ public class AppointmentService implements IAppointmentService{
 		
 		return false;
 	}
+	
+	@Override
+	@Transactional
+	public void didNotShowUpToAppointment(UUID id) {
+		Appointment appointment = appointmentRepository.findById(id).get();
+		appointment.setAppointmentStatus(AppointmentStatus.EXPIRED);
+		Patient patient = patientRepository.getOne(appointment.getPatient().getId());
+		patient.setPenalty(patient.getPenalty() + 1); 
+		patientRepository.save(patient);
+		appointmentRepository.save(appointment);
+	}
+	
+	@Override
+	public List<UnspecifiedDTO<AppointmentDTO>> getCreatedAppointmentsByDermatologist() {
+		List<Appointment> appointments = appointmentRepository.getCreatedAppointmentsByDermatologist(userService.getLoggedUserId(), userService.getPharmacyForLoggedDermatologist().getId());
+		
+		List<UnspecifiedDTO<AppointmentDTO>> returnAppointments = AppointmentsMapper.MapAppointmentPersistenceListToAppointmentUnspecifiedDTOList(appointments);
+		
+		return returnAppointments;
+	}
+	
+	public UnspecifiedDTO<AppointmentDTO> getAppointment(UUID appointmentId) {
+		// current pharmacy?
+		User user = userRepository.getOne(userService.getLoggedUserId());
+		Pharmacy pharmacy;
+		if (user.getUserType() == UserType.DERMATOLOGIST)
+			pharmacy = userService.getPharmacyForLoggedDermatologist();
+		else
+			pharmacy = pharmacistRepository.getOne(user.getId()).getPharmacy();
+		Appointment appointment = appointmentRepository.findById(appointmentId).get();
+		if (appointment.getEmployee().getId() != user.getId() || appointment.getPharmacy().getId() != pharmacy.getId())
+			throw new IllegalArgumentException("Can't access appointment not scheduled for given staff and pharmacy");
+		return AppointmentsMapper.MapAppointmentPersistenceToAppointmentUnspecifiedDTO(appointment);
+	}
+	
+	@Override
+	@Transactional
+	public void finishAppointment(UUID id) {
+		Appointment appointment = appointmentRepository.findById(id).get();
+		Patient patient = appointment.getPatient();
+		if(appointment.getAppointmentType() == AppointmentType.EXAMINATION)
+			patient.setPoints(patient.getPoints() + loyaltyService.get().getPointsForAppointment());
+		else
+			patient.setPoints(patient.getPoints() + loyaltyService.get().getPointsForConsulting());
+		
+		patientRepository.save(patient);
+		appointment.setAppointmentStatus(AppointmentStatus.FINISHED);
+		appointmentRepository.save(appointment);
+	}
+	@Override
+	@Transactional
+	public UUID newConsultation(NewConsultationDTO newConsultationDTO) throws AppointmentNotScheduledException, AppointmentTimeOverlappingWithOtherAppointmentException, AppointmentTimeOutofWorkTimeRange{
+		long time = newConsultationDTO.getStartDateTime().getTime();
+		//System.out.println(newConsultationDTO.getPatientId());
+		//Date endDateTime= new Date(time + (Integer.parseInt(env.getProperty("consultation_time")) * 60000));
+		Date endDateTime= new Date(time + 1500000);
+		System.out.println(endDateTime);
+		Patient patient = patientRepository.findById(newConsultationDTO.getPatientId()).get();
+		UUID userId = userService.getLoggedUserId();
+		Pharmacist pharmacist = pharmacistRepository.findById(userId).get();
+		Pharmacy pharmacy = pharmacist.getPharmacy();
+		System.out.println(newConsultationDTO.getPatientId());   
+		double discountPrice = loyalityProgramService.getDiscountAppointmentPriceForPatient(pharmacy.getConsultationPrice(), AppointmentType.CONSULTATION, newConsultationDTO.getPatientId());
+		ActionPromotion action = actionPromotionRepository.findCurrentActionAndPromotionForPharmacyForActionType(pharmacy.getId(), ActionType.CONSULTATIONDISCOUNT);
+		if(action != null) {
+			discountPrice -= (action.getDiscount()/ 100.0) * pharmacy.getConsultationPrice();
+		}
+		//Appointment appointment = new Appointment(AppointmentStatus.SCHEDULED, AppointmentType.CONSULTATION,endDateTime,discountPrice, newConsultationDTO.getStartDateTime(),pharmacist,patient,pharmacy);		
+		Appointment appointment = new Appointment(pharmacist,pharmacy, newConsultationDTO.getStartDateTime(),endDateTime,discountPrice,patient,AppointmentType.CONSULTATION, AppointmentStatus.SCHEDULED);		
+		System.out.println(appointment);
+		CanCreateConsultationAllRestrictions(appointment);	
+		System.out.println(newConsultationDTO.getPatientId());
+		appointmentRepository.save(appointment);
+		pharmacistRepository.save(pharmacist);
+		//System.out.println(newConsultationDTO.getPatientId());
+		try {
+			emailService.sendAppointmentReservationNotification(appointment);
+		} catch (MessagingException e) {
+			e.printStackTrace();
+		}
+		return appointment.getId();
+	}
+	
+	@Override
+	@Transactional
+	public UUID newExamination(NewConsultationDTO newConsultationDTO) throws AppointmentNotScheduledException, AppointmentTimeOverlappingWithOtherAppointmentException, AppointmentTimeOutofWorkTimeRange{
+		long time = newConsultationDTO.getStartDateTime().getTime();
+		//System.out.println(newConsultationDTO.getPatientId());
+		//Date endDateTime= new Date(time + (Integer.parseInt(env.getProperty("consultation_time")) * 60000));
+		Date endDateTime= new Date(time + 1500000);
+		System.out.println(endDateTime);
+		Patient patient = patientRepository.findById(newConsultationDTO.getPatientId()).get();
+		UUID userId = userService.getLoggedUserId();
+		Dermatologist dermatologist = dermatologistRepository.findById(userId).get();
+		Pharmacy pharmacy = userService.getPharmacyForLoggedDermatologist();
+		System.out.println(newConsultationDTO.getPatientId());   
+		double discountPrice = loyalityProgramService.getDiscountAppointmentPriceForPatient(pharmacy.getConsultationPrice(), AppointmentType.EXAMINATION, newConsultationDTO.getPatientId());
+		ActionPromotion action = actionPromotionRepository.findCurrentActionAndPromotionForPharmacyForActionType(pharmacy.getId(), ActionType.EXAMINATIONDISCOUNT);
+		if(action != null) {
+			discountPrice -= (action.getDiscount()/ 100.0) * pharmacy.getConsultationPrice();
+		}
+		//Appointment appointment = new Appointment(AppointmentStatus.SCHEDULED, AppointmentType.CONSULTATION,endDateTime,discountPrice, newConsultationDTO.getStartDateTime(),pharmacist,patient,pharmacy);		
+		Appointment appointment = new Appointment(dermatologist,pharmacy, newConsultationDTO.getStartDateTime(),endDateTime,discountPrice,patient,AppointmentType.EXAMINATION, AppointmentStatus.SCHEDULED);		
+		System.out.println(appointment);
+		CanCreateConsultationAllRestrictions(appointment);	
+		System.out.println(newConsultationDTO.getPatientId());
+		appointmentRepository.save(appointment);
+		dermatologistRepository.save(dermatologist);
+		//System.out.println(newConsultationDTO.getPatientId());
+		try {
+			emailService.sendAppointmentReservationNotification(appointment);
+		} catch (MessagingException e) {
+			e.printStackTrace();
+		}
+		return appointment.getId();
+	}
+	
+private void CanCreateConsultationAllRestrictions(Appointment appointment) throws AppointmentTimeOverlappingWithOtherAppointmentException, AppointmentTimeOutofWorkTimeRange {
+		
+		if(doesStaffHasAppointmentInDesiredTime(appointment, appointment.getEmployee()))
+			throw new AppointmentTimeOverlappingWithOtherAppointmentException("Cannot reserve appointment at same time as other appointment");
+		
+		if(!isInWorkTimeRange(appointment, appointment.getEmployee()))
+			throw new AppointmentTimeOutofWorkTimeRange("Cannot reserve appointment out of work time range");
+		
+		if(doesPatientHaveAppointmentInDesiredTime(appointment, appointment.getPatient()))
+			throw new AppointmentTimeOverlappingWithOtherAppointmentException("Cannot reserve appointment at same time as other appointment");
+		
+		//if(appointment.getPatient().getPenalty() >= Integer.parseInt(env.getProperty("max_penalty_count")))
+			//throw new AuthorizationServiceException("Too many penalty points");
+	
+		if (!(appointment.getStartDateTime().after(new Date())))
+				throw new IllegalArgumentException("Bad request");
+		
+		//if(isAbsent(appointment))
+			//throw new IllegalArgumentException("Cannot reserve appointment at date dermatologist is absent");
+	}
+	
+private boolean doesPatientHaveAppointmentInDesiredTime(Appointment appointment, Patient patient) {
+	return appointmentRepository.findAllAppointmentsByAppointmentTimeAndPatient(appointment.getStartDateTime(), appointment.getEndDateTime(), patient.getId()).size() > 0;
+}
 
+/*private boolean isAbsent(Appointment appointment) {
+	User user = appointment.getEmployee();
+	if (user.getUserType() == UserType.DERMATOLOGIST)
+		return absenceRepository.getAbsenceForDermatologistForDateForPharmacy(staff.getId(), appointment.getStartDateTime(), appointment.getPharmacy().getId()).size() > 0;
+	else
+		return absenceRepository.findPharmacistAbsenceByStaffIdAndDate(staff.getId(), appointment.getStartDateTime()).size() > 0;
+}*/
+
+private boolean doesStaffHasAppointmentInDesiredTime(Appointment appointment, User user) {
+	return appointmentRepository.findAllAppointmentsByAppointmentTimeAndEmployee(appointment.getStartDateTime(), appointment.getEndDateTime(), user.getId()).size() > 0;
+}	
+
+@SuppressWarnings("deprecation")
+private boolean isInWorkTimeRange(Appointment appointment, User user) {
+	List<WorkTime> workTimes = workTimeRepository.findWorkTimesForStaff(user.getId());
+	Date appointmentDate = new Date(appointment.getStartDateTime().getYear(), appointment.getStartDateTime().getMonth(), appointment.getStartDateTime().getDate(),0,0,0);
+	for (WorkTime wt : workTimes) {
+		Date startDate = new Date(wt.getStartDate().getYear(), wt.getStartDate().getMonth(), wt.getStartDate().getDate(),0,0,0);
+		Date endDate = new Date(wt.getEndDate().getYear(), wt.getEndDate().getMonth(), wt.getEndDate().getDate(),0,0,0);	
+		if(appointmentDate.before(startDate) || appointmentDate.after(endDate))
+			continue;
+		Date startDateTime = new Date(appointment.getStartDateTime().getYear(), appointment.getStartDateTime().getMonth(), appointment.getStartDateTime().getDate(),wt.getStartTime(),0,0);
+		Date endDateTime = new Date(appointment.getStartDateTime().getYear(), appointment.getStartDateTime().getMonth(), appointment.getStartDateTime().getDate(),wt.getEndTime(),0,0);
+		if((appointment.getStartDateTime().after(startDateTime) || appointment.getStartDateTime().equals(startDateTime)) && (appointment.getEndDateTime().before(endDateTime) || appointment.getEndDateTime().equals(endDateTime)))
+			return true;
+	}
+	return false;
+}
+
+
+@Override
+public boolean scheduleAppointment(UUID patientId, UUID appointmentId) {
+	try {
+		Appointment appointment = appointmentRepository.findById(appointmentId).get();
+		Patient patient = patientRepository.findById(patientId).get();
+		appointment.setPatient(patient);
+		CanReserveAppointmentAllRestrictions(appointment);
+		appointment.setAppointmentStatus(AppointmentStatus.SCHEDULED);
+		appointment.setPatient(patient);
+		double discountPrice = loyalityProgramService.getDiscountAppointmentPriceForPatient(appointment.getPrice(), AppointmentType.EXAMINATION, patientId);
+		ActionPromotion action = actionPromotionRepository.findCurrentActionAndPromotionForPharmacyForActionType(appointment.getPharmacy().getId(), ActionType.EXAMINATIONDISCOUNT);
+		if(action != null) {
+			discountPrice -= (action.getDiscount()/ 100.0) * discountPrice;
+		}
+		appointment.setPrice(discountPrice);
+		appointmentRepository.save(appointment);
+		emailService.sendAppointmentReservationNotification(appointment);
+		
+		return true;
+	} catch (Exception e) {
+		e.printStackTrace();
+		return false;
+	}
+}
+
+private void CanReserveAppointmentAllRestrictions(Appointment appointment) throws AppointmentTimeOverlappingWithOtherAppointmentException, AppointmentTimeOutofWorkTimeRange {
+	
+	if(doesStaffHasAppointmentInDesiredTime(appointment, appointment.getEmployee()))
+		throw new AppointmentTimeOverlappingWithOtherAppointmentException("Cannot reserve appointment at same time as other appointment");
+	
+	if(!isInWorkTimeRange(appointment, appointment.getEmployee()))
+		throw new AppointmentTimeOutofWorkTimeRange("Cannot reserve appointment out of work time range");
+	
+	if(doesPatientHaveAppointmentInDesiredTime(appointment, appointment.getPatient()))
+		throw new AppointmentTimeOverlappingWithOtherAppointmentException("Cannot reserve appointment at same time as other appointment");
+	
+	if(appointment.getPatient().getPenalty() >= Integer.parseInt(env.getProperty("max_penalty_count")))
+		throw new AuthorizationServiceException("Too many penalty points");
+	
+	if (!(appointment.getStartDateTime().after(new Date()) &&
+			(appointment.getAppointmentStatus().equals(AppointmentStatus.FREE) || appointment.getAppointmentStatus().equals(AppointmentStatus.CANCELED))))
+		throw new IllegalArgumentException("Bad request");
+	//if(isAbsent(appointment))
+		//throw new IllegalArgumentException("Cannot reserve appointment at date dermatologist is absent");
+}
+
+
+@Override
+public List<FreeAppointmentPeriodDTO> getFreePeriodsDermatologist(Date date, int duration) {
+	UUID dermatologistId = userService.getLoggedUserId();
+			
+	Pharmacy pharmacy = userService.getPharmacyForLoggedDermatologist();
+	
+	UUID pharmacyId = pharmacy.getId();
+	
+	WorkTime workTime = workTimeRepository.getWorkTimeForDermatologistForDateForPharmacy(dermatologistId, date, pharmacyId);
+	List<Appointment> scheduledAppointments = appointmentRepository.getCreatedAppoitntmentsByDermatologistByDate(dermatologistId, pharmacyId,date);
+
+	if(workTime==null) {
+		return new ArrayList<FreeAppointmentPeriodDTO>();
+	}
+	else {
+		AppointmentScheduler scheduler = new AppointmentScheduler(createDateRangeForWorkTimeForDay(workTime, date),scheduledAppointments, duration);
+		return scheduler.GetFreeAppointment();
+	}
+}
+
+@SuppressWarnings("deprecation")
+private DateRange createDateRangeForWorkTimeForDay(WorkTime workTime, Date date) {
+
+	Date startDate = (Date) date.clone();
+	Date endDate = (Date) date.clone();
+	startDate.setHours(workTime.getStartTime());
+	endDate.setHours(workTime.getEndTime());
+
+	return new DateRange(startDate,endDate);
+}
+
+@Transactional
+@Override
+public UUID createAndScheduleAppointment(DermatologistCreateAppointmentDTO appointmentDTO) {
+	try {
+		UUID dermatologistId = userService.getLoggedUserId();
+		UUID patientId = appointmentDTO.getPatientId();
+		Patient patient = patientRepository.getOne(patientId);
+		Dermatologist dermatologist = dermatologistRepository.getOne(dermatologistId);
+		Pharmacy pharmacy = userService.getPharmacyForLoggedDermatologist();
+		if(pharmacy == null)
+			throw new IllegalArgumentException("Dermatologist can't create and schedule appointment outside work hours");
+		double discountPrice = loyalityProgramService.getDiscountAppointmentPriceForPatient(appointmentDTO.getPrice(), AppointmentType.EXAMINATION, patientId);
+		ActionPromotion action = actionPromotionRepository.findCurrentActionAndPromotionForPharmacyForActionType(pharmacy.getId(), ActionType.EXAMINATIONDISCOUNT);
+		if(action != null) {
+			discountPrice -= (action.getDiscount()/ 100.0) * discountPrice;
+		}
+		Appointment newAppointment = new Appointment(AppointmentStatus.FREE, AppointmentType.CONSULTATION,appointmentDTO.getEndDateTime(),discountPrice, appointmentDTO.getStartDateTime(),dermatologist,patient,pharmacy);
+		CanReserveAppointmentAllRestrictions(newAppointment);
+		newAppointment.setAppointmentStatus(AppointmentStatus.SCHEDULED);
+		emailService.sendAppointmentReservationNotification(newAppointment);
+		appointmentRepository.save(newAppointment);
+		dermatologistRepository.save(dermatologist);
+		return newAppointment.getId();
+	}catch(Exception e) {
+		e.printStackTrace();
+		return null;
+	}
+}
+
+	
 	@Override
 	public List<UnspecifiedDTO<AuthorityDTO>> findAll() {
 		// TODO Auto-generated method stub

@@ -20,7 +20,6 @@ class AppointmentReport extends Component {
 		drug: {},
 		drugId: "",
         name: "",
-        manufacturer: "",
 		quantity: "",
 		openModalSuccess: false,
 		appointment: {},
@@ -111,11 +110,11 @@ class AppointmentReport extends Component {
     handleSubmit = (event) => {
 		let therapy = "drug : number of days" + "\n";
 		this.state.drugs.forEach((value, index) => {
-			therapy += value.drug.EntityDTO.manufacturer.EntityDTO.name + " " + value.drug.EntityDTO.name + " : " + value.amount + "\n";
+			therapy +=  value.drug.EntityDTO.name + " : " + value.amount + "\n";
 		});
 		console.log(therapy);
 
-		Axios.post(API_URL + "/appointment/report",
+		Axios.post(API_URL + "/appointment-report",
 			{anamnesis: this.state.anamnesis, diagnosis: this.state.diagnosis, therapy: therapy, appointmentId: this.state.id},
 			{headers: { Authorization: GetAuthorisation() }}
 		)
@@ -134,8 +133,8 @@ class AppointmentReport extends Component {
 			console.log(err);
 		})
 		
-		this.state.drugs.forEach((value, index) => {
-			Axios.post(API_URL + "/drug/staff/reserve",
+		/*this.state.drugs.forEach((value, index) => {
+			Axios.post(API_URL + "/drug/reserve-drug-as-employee",
 				{ patientId: this.state.patientId, drugInstanceId: value.drug.Id, amount: value.amount},
 				{headers: { Authorization: GetAuthorisation() }}
 			)
@@ -143,7 +142,7 @@ class AppointmentReport extends Component {
 				console.log(err);
 			})
 
-		});
+		});*/
     };
 
     handleDrugDetails = (drug) => {
@@ -152,8 +151,7 @@ class AppointmentReport extends Component {
 			drugId: drug.Id,
             drug: drug,
             name: drug.EntityDTO.drugInstanceName,
-            quantity: drug.EntityDTO.quantity,
-            manufacturer: drug.EntityDTO.manufacturer.EntityDTO.name
+            quantity: drug.EntityDTO.quantity
 		});
 		this.handleAlternativeDrugsModalClose(); 
         this.handleDrugsModalClose(); 
@@ -248,10 +246,6 @@ class AppointmentReport extends Component {
 											<b>Name:</b> {drug.drug.EntityDTO.drugInstanceName}
 										</div>
 										<div>
-											<b>Manufacturer:</b>{" "}
-											{drug.drug.EntityDTO.manufacturer.EntityDTO.name}
-										</div>
-										<div>
 											<b>Quantity:</b> {drug.drug.EntityDTO.quantity} <b>mg</b>
 										</div>
 										<div>
@@ -304,7 +298,6 @@ class AppointmentReport extends Component {
             <PrescriptionDrug 
             name={this.state.name}
             quantity={this.state.quantity}
-            manufacturer={this.state.manufacturer}
             drug={this.state.drug}         
             show={this.state.openDrugDetailsModal}
             onCloseModal={this.handleDrugDetailsModalClose}

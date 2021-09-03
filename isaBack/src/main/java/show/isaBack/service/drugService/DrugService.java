@@ -8,9 +8,13 @@ import java.util.List;
 import java.util.UUID;
 
 import javax.mail.MessagingException;
+import javax.persistence.EntityNotFoundException;
 
+import org.springframework.core.env.Environment;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.mail.MailException;
+import org.springframework.security.access.AuthorizationServiceException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -29,7 +33,11 @@ import show.isaBack.DTO.drugDTO.DrugWithEreceiptsDTO;
 import show.isaBack.DTO.drugDTO.DrugWithPriceDTO;
 import show.isaBack.DTO.drugDTO.DrugsWithGradesDTO;
 import show.isaBack.DTO.drugDTO.EditDrugPriceDTO;
+
+import show.isaBack.DTO.drugDTO.EmployeeReservationDrugDTO;
+
 import show.isaBack.DTO.drugDTO.EditStorageDTO;
+
 import show.isaBack.DTO.drugDTO.EreceiptDTO;
 import show.isaBack.DTO.drugDTO.EreceiptWithPharmacyDTO;
 import show.isaBack.DTO.drugDTO.IngredientDTO;
@@ -40,7 +48,7 @@ import show.isaBack.DTO.pharmacyDTO.UnspecifiedPharmacyWithDrugAndPrice;
 import show.isaBack.DTO.userDTO.AuthorityDTO;
 
 import show.isaBack.DTO.userDTO.PatientDTO;
-
+import show.isaBack.Mappers.Drugs.DrugInstanceMapper;
 import show.isaBack.Mappers.Drugs.DrugReservationMapper;
 import show.isaBack.Mappers.Drugs.EReceiptsMapper;
 import show.isaBack.Mappers.Pharmacy.DrugsWithGradesMapper;
@@ -55,12 +63,17 @@ import show.isaBack.model.Ingredient;
 import show.isaBack.model.Manufacturer;
 import show.isaBack.model.Patient;
 import show.isaBack.model.Pharmacy;
+import show.isaBack.model.User;
+import show.isaBack.model.UserCharacteristics.UserType;
+import show.isaBack.model.drugs.Allergen;
 import show.isaBack.model.drugs.DrugFormatId;
 import show.isaBack.model.drugs.DrugInPharmacy;
 import show.isaBack.model.drugs.DrugKindId;
 import show.isaBack.model.drugs.DrugPriceList;
+import show.isaBack.model.drugs.DrugRequest;
 import show.isaBack.model.drugs.DrugReservation;
 import show.isaBack.model.drugs.DrugReservationStatus;
+import show.isaBack.model.drugs.DrugStorageQuantityException;
 import show.isaBack.model.drugs.EReceipt;
 import show.isaBack.model.drugs.EReceiptItems;
 import show.isaBack.model.drugs.EReceiptStatus;
@@ -68,9 +81,11 @@ import show.isaBack.repository.drugsRepository.DrugFeedbackRepository;
 import show.isaBack.repository.drugsRepository.EReceiptRepository;
 import show.isaBack.repository.pharmacyRepository.PharmacyRepository;
 import show.isaBack.repository.userRepository.PatientRepository;
+import show.isaBack.repository.userRepository.PharmacistRepository;
 import show.isaBack.repository.userRepository.UserRepository;
 import show.isaBack.repository.drugsRepository.DrugInPharmacyRepository;
 import show.isaBack.repository.drugsRepository.DrugPriceListRepository;
+import show.isaBack.repository.drugsRepository.DrugRequestRepository;
 import show.isaBack.repository.drugsRepository.DrugReservationRepository;
 import show.isaBack.repository.drugsRepository.EReceiptItemsRepository;
 import show.isaBack.service.loyalityService.LoyalityProgramService;
@@ -107,7 +122,6 @@ public class DrugService implements IDrugService{
 	
 	@Autowired
 	private IUserInterface userService;
-
 	
 	@Autowired
 	private DrugInPharmacyRepository drugInPharmacyRepository;
@@ -124,11 +138,21 @@ public class DrugService implements IDrugService{
 	@Autowired
 	private DrugReservationRepository drugReservationRepository;
 	
+	@Autowired
+	private PharmacistRepository pharmacistRepository;
 
+	@Autowired
+	private Environment env;
+	
 	@Autowired
 	private EmailService emailService;
 	
-
+	@Autowired
+	private UserRepository userRepository;
+	
+	@Autowired
+	private DrugRequestRepository drugRequestRepository;
+	
 	
 	@Autowired
 	private EReceiptItemsRepository eReceiptItemsRepository;
@@ -840,6 +864,30 @@ public class DrugService implements IDrugService{
 		return drugs;
 	}
 
+	@Override
+	public List<UnspecifiedDTO<DrugInstanceDTO>> findDrugsPatientIsNotAllergicTo(UUID patientId) {
+		Patient patient = patientRepository.getOne(patientId);
+		List<DrugInstance> drugInstances = drugInstanceRepository.findAll();
+		List<DrugInstance> acceptableDrugInstances = new ArrayList<DrugInstance>();
+		for(DrugInstance drugInstance : drugInstances) {
+			if(!isAllergic(patient, drugInstance))
+				acceptableDrugInstances.add(drugInstance); 
+		}
+		
+		List<UnspecifiedDTO<DrugInstanceDTO>> retDrugs = new ArrayList<UnspecifiedDTO<DrugInstanceDTO>>();
+		acceptableDrugInstances.forEach((drug) -> retDrugs.add(DrugInstanceMapper.MapDrugInstancePersistenceToDrugInstanceUnspecifiedDTO(drug)));
+		return retDrugs;
+	}
+	
+	private boolean isAllergic(Patient patient, DrugInstance drugInstance) {
+		for(Allergen diA : drugInstance.getAllergens()) {
+			for(Allergen pA : patient.getAllergens()) {
+				if(diA.getId() == pA.getId())
+					return true;
+			}
+		}
+		return false;
+	}
 	
 	@Override
 	public List<UnspecifiedDTO<DrugDTO>> findDrugsWhichArentInPharmacy(UUID pharmacyId) {
@@ -917,7 +965,33 @@ public class DrugService implements IDrugService{
 		}
 		
 	}
+	
+	@Override
+	public void isDrugAvailableInPharamcy(UUID drugId, int amount) throws DrugStorageQuantityException {
+		UUID userId = userService.getLoggedUserId();
+		User user = userRepository.getOne(userId);
+		DrugInstance drugInstance = drugInstanceRepository.getOne(drugId);
+		Pharmacy pharmacy = null;
+		if(user.getUserType() == UserType.PHARMACIST)
+			pharmacy = pharmacistRepository.getOne(userId).getPharmacy();
+		else if (user.getUserType() == UserType.DERMATOLOGIST)
+			pharmacy = userService.getPharmacyForLoggedDermatologist();
+		DrugInPharmacy drugInPharmacy = drugInPharmacyRepository.findByDrugIdAndPharmacyId(drugId, pharmacy.getId());
+		if(drugInPharmacy == null) {
+			DrugRequest drugRequest = new DrugRequest(pharmacy, drugInstance, user);
+			drugRequestRepository.save(drugRequest);
+			throw new EntityNotFoundException();
+		}		
+		if(drugInPharmacy.getCount() < amount) {
+			DrugRequest drugRequest = new DrugRequest(pharmacy, drugInstance, user);
+			drugRequestRepository.save(drugRequest);
+			throw new DrugStorageQuantityException("Amount exceeds drug storage count");
+		}		
+	}
 
+	
+	
+	
 
     private Date addDays(Date date, int days) {
         Calendar c = Calendar.getInstance();

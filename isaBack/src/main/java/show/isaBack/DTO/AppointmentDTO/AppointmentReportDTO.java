@@ -9,10 +9,10 @@ public class AppointmentReportDTO {
 	
 	public AppointmentReportDTO(String anamnesis, String diagnosis, String therapy, UUID appointmentId) {
 		super();
-		this.appointmentId = appointmentId;
-		this.therapy = therapy;
-		this.diagnosis = diagnosis;
 		this.anamnesis = anamnesis;
+		this.diagnosis = diagnosis;
+		this.therapy = therapy;
+		this.appointmentId = appointmentId;
 		
 		
 	}
