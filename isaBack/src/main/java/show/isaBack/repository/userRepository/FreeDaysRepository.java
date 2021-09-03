@@ -11,6 +11,6 @@ import show.isaBack.model.FreeDays;
 
 public interface FreeDaysRepository  extends JpaRepository<FreeDays, UUID>{
 
-	@Query(value = "SELECT fd FROM FreeDays fd WHERE fd.user.id = ?1 AND DATE(fd.startDate) <= ?2 AND DATE(fd.endDate) >= ?2 AND fd.pharmacy.id =?3 AND fd.status = 'ACCEPTED'")
+	@Query(value = "SELECT fd FROM FreeDays fd WHERE fd.user.id = ?1 AND DATE(fd.startDate) <= ?2 AND DATE(fd.endDate) >= ?2 AND fd.pharmacy.id =?3 AND fd.freeDaysStatus = 'ACCEPTED'")
 	List<FreeDays> getFreeDaysFromStartDateForDermatologistInPharmacy(UUID user, Date startDateTime, UUID pharmacy);
 }
