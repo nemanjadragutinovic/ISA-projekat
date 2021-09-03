@@ -19,6 +19,7 @@ import show.isaBack.model.ActionPromotion;
 import show.isaBack.model.ActionType;
 import show.isaBack.model.ComplaintPharmacy;
 import show.isaBack.model.ComplaintStaff;
+import show.isaBack.model.FreeDays;
 import show.isaBack.model.Patient;
 import show.isaBack.model.appointment.Appointment;
 
@@ -268,6 +269,41 @@ public class EmailService {
 		System.out.println("Budjenje");
 		javaMailSender.send(mimeMessage);
 		System.out.println("Poslatoooooooo");
+	}
+	
+	@Async
+	public void sendMailForApprovedAbsence(FreeDays freeDays) throws MessagingException {
+		
+
+		MimeMessage mimeMessage = javaMailSender.createMimeMessage();
+		MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, "utf-8");
+		String htmlMsg = "<p>Dear " + freeDays.getUser().getName()+" "+freeDays.getUser().getSurname() + ",</p>" +
+					"<p>Your request for absence  is approved"+ "</p>" +
+					"<p>"+"Best regards, Health Clinic "+ "</p>";
+		helper.setText(htmlMsg, true);
+		//helper.setTo(patient.getEmail());
+		helper.setTo("acamijatovic.98@gmail.com");
+		helper.setSubject("APPROVED ABSENCE");
+		helper.setFrom(env.getProperty("spring.mail.username"));
+		javaMailSender.send(mimeMessage);
+	
+	}
+	
+	@Async
+	public void sendMailForRejectAbsence(FreeDays freeDays) throws MessagingException {
+		MimeMessage mimeMessage = javaMailSender.createMimeMessage();
+		MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, "utf-8");
+		String htmlMsg = "<p>Dear " + freeDays.getUser().getName()+" "+freeDays.getUser().getSurname() + ",</p>" +
+					"<p>Your request for absence  is rejected."+ "</p>" +
+					"<p>Reason: "+freeDays.getRejectReason()+ "</p>"+
+					"<p>"+"Best regards, Health Clinic "+ "</p>";
+		helper.setText(htmlMsg, true);
+		//helper.setTo(patient.getEmail());
+		helper.setTo("acamijatovic.98@gmail.com");
+		helper.setSubject("REJECTED ABSENCE");
+		helper.setFrom(env.getProperty("spring.mail.username"));
+		javaMailSender.send(mimeMessage);
+	
 	}
 	
 }

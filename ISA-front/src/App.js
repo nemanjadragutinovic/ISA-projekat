@@ -52,6 +52,7 @@ import {
   Switch
 } from "react-router-dom";
 import PharmacyPage from './Components/Pharmacies/PharmacyPage';
+import AbsenceForPhAdmin from './Components/Pharmacies/AbsenceForPhAdmin';
 
 
 
@@ -109,6 +110,7 @@ function App() {
         <Route to="/new-appointment/:id" path ="/new-appointment/:id" component={PharmacistScheduleAppointment}/>
         <Route  to ="/actions" path ="/actions"  component={ActionPromotionPageForPhAdmin}/>
         <Route to = "/absence" path="/absence" component ={Absence}/>
+        <Route to = "/absencePhAdmin" path="/absencePhAdmin" component ={AbsenceForPhAdmin}/>
 
         </Switch>
     </Router>

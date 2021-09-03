@@ -16,7 +16,8 @@ public interface IAbsenceService {
 	UUID createAbsence(RequestAbsenceDTO requestAbsenceDTO);
 	List<UnspecifiedDTO<AbsenceDTO>> getAbsencesForStaff(UUID staffId);
 	List<UnspecifiedDTO<AbsenceResponseDTO>> getAbsencesForPharmacy(UUID pharmacyId);
-	boolean approveAbsence(IdDTO pharmacyIdDTO) throws MessagingException;
 	void rejectAbsence(RejectAbsenceDTO rejectAbsenceDTO) throws MessagingException;
 	public List<UnspecifiedDTO<AbsenceDTO>> getAbsencesAsEmployee();
+	boolean acceptAbsence(IdDTO absenceIdDTO) throws MessagingException;
+	List<UnspecifiedDTO<AbsenceResponseDTO>> getAbsencesPharmacy(UUID pharmacyId);
 }
