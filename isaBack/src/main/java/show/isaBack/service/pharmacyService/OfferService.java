@@ -5,18 +5,26 @@ import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
+import javax.mail.MessagingException;
+import javax.transaction.Transactional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import show.isaBack.DTO.drugDTO.OfferDTO;
 import show.isaBack.DTO.pharmacyDTO.PharmacyDTO;
 import show.isaBack.DTO.userDTO.AuthorityDTO;
+import show.isaBack.controller.pharmacyController.OfferOrderDTO;
+import show.isaBack.emailService.EmailService;
 import show.isaBack.model.Pharmacy;
+import show.isaBack.model.drugs.DrugInPharmacy;
 import show.isaBack.model.drugs.DrugOrder;
 import show.isaBack.model.drugs.OfferStatus;
 import show.isaBack.model.drugs.Offers;
 import show.isaBack.model.drugs.Order;
+import show.isaBack.model.drugs.OrderStatus;
 import show.isaBack.model.drugs.SupplierDrugStorage;
+import show.isaBack.repository.drugsRepository.DrugInPharmacyRepository;
 import show.isaBack.repository.drugsRepository.OfferRepository;
 import show.isaBack.repository.drugsRepository.OrderRepository;
 import show.isaBack.repository.drugsRepository.SupplierDrugStorageRepository;
@@ -42,6 +50,12 @@ public class OfferService implements IOfferService{
 	
 	@Autowired
 	OfferRepository offerRepository;
+	
+	@Autowired
+	private EmailService emailService;
+	
+	@Autowired
+	private DrugInPharmacyRepository drugInPharmacyRepository;
 	
 	private boolean checkIfExist(DrugOrder o) {
 
@@ -221,6 +235,66 @@ public class OfferService implements IOfferService{
 		
 		return false;
 		
+	}
+	
+	@Override
+
+	public List<UnspecifiedDTO<OfferDTO>> getOrderOffers(UUID orderId) {
+		Order order = orderRepository.getOne(orderId);
+		System.out.println(order.getOffers().size());
+		if(order.getOrderStatus().equals(OrderStatus.PROCESSED))
+			return null;
+		
+		List<UnspecifiedDTO<OfferDTO>> orderOffers = new ArrayList<UnspecifiedDTO<OfferDTO>>();
+
+		for (Offers offs : order.getOffers()) 
+		{
+			OfferDTO offDTO= new OfferDTO(offs.getDateToDelivery(),offs.getPrice(),offs.getOfferStatus(),offs.getId());	
+			orderOffers.add(new UnspecifiedDTO<OfferDTO>(offs.getId(),offDTO));
+		}
+
+		return orderOffers;
+	}
+	
+	
+	@Override
+	@Transactional
+	public boolean acceptOfferForOrder(OfferOrderDTO offerOrderDTO) throws MessagingException {
+    System.out.println("Usao u accept");
+		Order order = orderRepository.getOne(offerOrderDTO.getOrderId());
+		System.out.println(order.getDate());
+		if(order.getDate().before(new Date()))
+			return false;
+		
+		if(!order.getPharmacyAdmin().getId().equals(userService.getLoggedUserId()))
+			return false;
+		
+		for(Offers offer : order.getOffers()) {
+			System.out.println("jel radi");
+			if(offer.getId().equals(offerOrderDTO.getOfferId())) {
+				offer.setOfferStatus(OfferStatus.ACCEPTED);
+				offerRepository.save(offer);
+				emailService.sendOfferAccepted(order,offer);
+				updateStorageCount(order);
+			}
+			else{
+				offer.setOfferStatus(OfferStatus.REJECTED);
+				offerRepository.save(offer);
+			}
+		}
+		
+		order.setOrderStatus(OrderStatus.PROCESSED);
+		orderRepository.save(order);
+		return true;
+	}
+	
+     private void updateStorageCount(Order order) {
+		
+		for(DrugOrder drugOrder : order.getOrder()) {
+			DrugInPharmacy drug = drugInPharmacyRepository.getDrugInPharmacy(drugOrder.getDrugInstance().getId(), order.getPharmacy().getId());
+			drug.addCount(drugOrder.getAmount());
+			drugInPharmacyRepository.save(drug);
+		}
 	}
 
 }

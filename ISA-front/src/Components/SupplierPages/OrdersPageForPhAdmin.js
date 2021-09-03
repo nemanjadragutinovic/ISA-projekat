@@ -6,6 +6,7 @@ import orderImage from "../../Images/orderImage.png";
 import 'react-confirm-alert/src/react-confirm-alert.css';
 import { confirmAlert } from 'react-confirm-alert'; 
 import EditOrderModal from "../Modal/EditOrderModal";
+import OffersforOrderModal from "../Modal/OffersforOrderModal";
 const API_URL = "http://localhost:8080";
 
 class OrdersPageForPhAdmin extends Component {
@@ -17,6 +18,7 @@ class OrdersPageForPhAdmin extends Component {
         addedDrugs:[],
         showEditOrder:false,
         drugs:[],
+        offers:[],
         showingSorted:false,
         drugsFromOrder:[],
         drugsForAdd:[],
@@ -100,12 +102,10 @@ class OrdersPageForPhAdmin extends Component {
     }
 
     
-    handleCloseAlertSuccess = () => {
-		this.setState({ hiddenSuccessAlert: true });
-    };
-    
-    handleCloseAlertFail = () => {
-		this.setState({ hiddenFailAlert: true });
+   
+    handleCloseOffers = () => {
+        this.updateOrders();
+		this.setState({ showOffersModal: false });
 	};
 
    
@@ -233,7 +233,31 @@ class OrdersPageForPhAdmin extends Component {
 			});
     }
 
-    
+    handleOffersForOrder = (orderId) => {
+       
+            Axios
+            .get(API_URL + "/offer/getOrderOffers/"+ orderId, {
+                headers: { Authorization: GetAuthorisation() },
+            }).then((res) =>{
+                if(res.status ===200){
+                    this.setState({
+                        offers : res.data,
+                        showOffersModal:true,
+                        selectedOrder:orderId
+                    });
+                  
+                }
+                if(res.status === 400)
+                {
+                   alert("It is not possible to accept Offer");
+                }else if(res.status === 500)
+                {
+                    alert("Error");
+                }
+                console.log(res.data);
+            }).catch((err) => {console.log(err);});    
+        
+    }
 
     render() {
 		return (
@@ -328,18 +352,34 @@ class OrdersPageForPhAdmin extends Component {
 												Edit Order
 											</button>
 										</div>
+                                        <div className="mt-2" hidden={order.EntityDTO.offersCount==0 || order.EntityDTO.orderStatus=='PROCESSED'}>
+											<button
+												type="button"
+												onClick={() => this.handleOffersForOrder(order.Id)}
+												className="btn btn-outline-secondary"
+											>
+												View Offers
+											</button>
+										</div>
 									</td>
 								</tr>
 							))}
 						</tbody>
 					</table>
                     <EditOrderModal show={this.state.showEditOrder} closeModal={this.handleCloseEditOrder}  drugsToAdd={this.state.drugsFromOrder} drugs={this.state.drugsForAdd}
-                    pharmacyId={this.state.pharmacyId}
-                    removeFromDrugToAdd={this.handleRemoveDrugFromList}
-                    addToAddedDrugs={this.handleAddDrugToList}
+                            pharmacyId={this.state.pharmacyId}
+                            removeFromList={this.handleRemoveDrugFromList}
+                            addToList={this.handleAddDrugToList}
                             orderToEdit={this.state.orderToEdit}
 					        header="Create order"
                             update={this.updateOrders}
+				        />
+                         <OffersforOrderModal
+					        show={this.state.showOffersModal}
+					        closeModal={this.handleCloseOffers}
+                            offers={this.state.offers}
+					        header="Offers"
+                            orderId={this.state.selectedOrder}
 				        />
 				</div>
                     
