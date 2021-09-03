@@ -31,8 +31,8 @@ public class FreeDays {
 	private Date endDate;
     
     @Enumerated(EnumType.STRING)
-	@Column(name="status")
-	private FreeDayStatus status;
+	@Column(name="freeDaysStatus")
+	private FreeDayStatus freeDaysStatus;
  
 	
     @Column(name = "rejectReason")
@@ -47,19 +47,19 @@ public class FreeDays {
 		this.pharmacy = pharmacy;
 		this.startDate= startDate;
 		this.endDate= endDate;
-		this.status=FreeDayStatus.WAITING;
+		this.freeDaysStatus=FreeDayStatus.WAITING;
 		this.rejectReason= "";
 		
 	}
 	
-	public FreeDays(UUID id, User user, Pharmacy pharmacy, Date startDate, Date endDate, FreeDayStatus status, String rejectReason) {
+	public FreeDays(UUID id, User user, Pharmacy pharmacy, Date startDate, Date endDate, FreeDayStatus freeDaysStatus, String rejectReason) {
 		super();
 		this.id = id;
 		this.user= user;
 		this.pharmacy = pharmacy;
 		this.startDate= startDate;
 		this.endDate= endDate;
-		this.status=status;
+		this.freeDaysStatus=freeDaysStatus;
 		this.rejectReason= rejectReason;
 	}
 	
@@ -95,11 +95,11 @@ public class FreeDays {
 	}
 
 	public FreeDayStatus getStatus() {
-		return status;
+		return freeDaysStatus;
 	}
 
-	public void setStatus(FreeDayStatus status) {
-		this.status = status;
+	public void setStatus(FreeDayStatus freeDaysStatus) {
+		this.freeDaysStatus = freeDaysStatus;
 	}
 
 	public String getRejectReason() {
