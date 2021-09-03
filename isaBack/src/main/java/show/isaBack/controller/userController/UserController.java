@@ -680,5 +680,16 @@ public class UserController {
 					return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR); 
 				}
 			}
+			
+			@GetMapping("/pharmacist/auth") 
+			@PreAuthorize("hasRole('PHARMACIST')")
+			public ResponseEntity<?>checkAuthority() {	  
+				return new ResponseEntity<>(HttpStatus.OK); 
+			}
 	
+			@GetMapping("/dermatologist/auth") 
+			@PreAuthorize("hasRole('DERMATHOLOGIST')")
+			public ResponseEntity<?>checAuthority() {	  
+				return new ResponseEntity<>(HttpStatus.OK); 
+			}
 }

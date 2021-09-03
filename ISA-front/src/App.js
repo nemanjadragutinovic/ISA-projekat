@@ -1,3 +1,4 @@
+
 import './App.css';
 import HomePage from "./Components/HomePage"
 import Drugs from "./Components/Drugs"
@@ -37,14 +38,17 @@ import PatientProfile from './Pages/Appointment/PatientProfile';
 
 import pharmacistsForPhAdmin from './Components/Pharmacies/PharmacistsForPhAdmin';
 import DrugsForPharmacyAdmin from './Components/DrugsForPharmacyAdmin';
+import DermatologistScheduleAppointment from './Pages/Appointment/DermatologistScheduleAppointment';
+import PharmacistScheduleAppointment from './Pages/Appointment/PharmacistScheduleAppointment';
+import DermatologistCreateAndScheduleAppointment from './Pages/Appointment/DermatologistCreateAndScheduleAppointment';
 import ActionPromotionPageForPhAdmin from './Components/Pharmacies/ActionPromotionPageForPhAdmin';
+import DermatologistSchedule from './Pages/Appointment/DermatologistSchedule';
 import {
   BrowserRouter as Router,
   Route,
   Link,
   Switch
 } from "react-router-dom";
-import OrdersPageForPhAdmin from './Components/SupplierPages/OrdersPageForPhAdmin';
 
 
 
@@ -98,8 +102,10 @@ function App() {
         <Route to="/patient-profile/:id" path ="/patient-profile/:id" component={PatientProfile}/>
         <Route to="/pharmacistsForPhAdmin" path ="/pharmacistsForPhAdmin"  component={pharmacistsForPhAdmin}/>
         <Route  to ="/drugsForPhAdmin" path ="/drugsForPhAdmin"  component={DrugsForPharmacyAdmin}/>
+        <Route to="/dermathologist-schedule-appointment/:id" path="/dermathologist-schedule-appointment/:id" component={DermatologistSchedule}/>
+        <Route to="/new-appointment/:id" path ="/new-appointment/:id" component={PharmacistScheduleAppointment}/>
         <Route  to ="/actions" path ="/actions"  component={ActionPromotionPageForPhAdmin}/>
-        <Route  to ="/ordersForPhAdmin" path ="/ordersForPhAdmin"  component={OrdersPageForPhAdmin}/>
+        
 
         </Switch>
     </Router>

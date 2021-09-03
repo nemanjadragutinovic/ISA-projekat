@@ -13,26 +13,27 @@ import org.springframework.web.bind.annotation.RestController;
 import show.isaBack.DTO.AppointmentDTO.AppointmentReportDTO;
 import show.isaBack.serviceInterfaces.IAppointmentReportService;
 
+
+@RestController
+@RequestMapping(value = "/appointment-report")
 public class AppointmentReportController {
-	@RestController
-	@RequestMapping(value = "appointment-report")
-	public class TreatmentReportController {
-		@Autowired
-		private IAppointmentReportService appointmentReportService;
-		
-		@PostMapping
-		@CrossOrigin
-		@PreAuthorize("hasRole('DERMATHOLOGIST') or hasRole('PHARMACIST')")
-		public ResponseEntity<?> createTreatmentReport(@RequestBody AppointmentReportDTO treatmentReportDTO){
-			try {
-				if(appointmentReportService.create(treatmentReportDTO) != null)
-					return new ResponseEntity<>(HttpStatus.OK);
-				return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-				return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-			}
+
+	@Autowired
+	private IAppointmentReportService appointmentReportService;
+	
+	@PostMapping
+	@CrossOrigin
+	@PreAuthorize("hasRole('DERMATHOLOGIST') or hasRole('PHARMACIST')")
+	public ResponseEntity<?> createTreatmentReport(@RequestBody AppointmentReportDTO appointmentReportDTO){
+		try {
+			if(appointmentReportService.create(appointmentReportDTO) != null)
+				return new ResponseEntity<>(HttpStatus.OK);
+			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
+	}
 }
-}
+

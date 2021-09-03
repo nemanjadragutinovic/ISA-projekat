@@ -4,39 +4,42 @@ import java.util.List;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
-
+import org.springframework.stereotype.Service;
 
 import show.isaBack.DTO.AppointmentDTO.AppointmentReportDTO;
+import show.isaBack.DTO.userDTO.AuthorityDTO;
 import show.isaBack.model.appointment.Appointment;
 import show.isaBack.model.appointment.AppointmentReport;
 import show.isaBack.repository.AppointmentRepository.AppointmentReportRepository;
 import show.isaBack.repository.AppointmentRepository.AppointmentRepository;
 import show.isaBack.unspecifiedDTO.UnspecifiedDTO;
+import show.isaBack.serviceInterfaces.IAppointmentReportService;
 
-public class AppointmentReportService {
+@Service
+public class AppointmentReportService implements IAppointmentReportService{
 	@Autowired
 	AppointmentReportRepository appointmentReportRepository;
 	@Autowired
 	AppointmentRepository appointmentRepository;
 
-	
-	public List<UnspecifiedDTO<AppointmentReportDTO>> findAll() {
+	@Override
+	public List<UnspecifiedDTO<AuthorityDTO>> findAll() {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	
+	@Override
 	public UnspecifiedDTO<AppointmentReportDTO> findById(UUID id) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	
+	@Override
 	public boolean delete(UUID id) {
 		// TODO Auto-generated method stub
 		return false;
 	}
-
+	@Override
 	public UUID create(AppointmentReportDTO entityDTO) {
 		// TODO Auto-generated method stub
 		try {
@@ -53,7 +56,7 @@ public class AppointmentReportService {
 		
 	}
 
-	
+	@Override
 	public void update(AppointmentReportDTO entityDTO, UUID id) {
 		// TODO Auto-generated method stub
 		
