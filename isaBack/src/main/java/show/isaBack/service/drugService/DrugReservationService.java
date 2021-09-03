@@ -1,6 +1,7 @@
 package show.isaBack.service.drugService;
 
 import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 
 import javax.mail.MessagingException;
@@ -13,7 +14,10 @@ import org.springframework.mail.MailException;
 import org.springframework.security.access.AuthorizationServiceException;
 import org.springframework.stereotype.Service;
 
+import show.isaBack.DTO.drugDTO.DrugReservationDTO;
+import show.isaBack.DTO.drugDTO.DrugReservationResponseDTO;
 import show.isaBack.DTO.drugDTO.EmployeeReservationDrugDTO;
+import show.isaBack.Mappers.Drugs.DrugReservationMapper;
 import show.isaBack.emailService.EmailService;
 import show.isaBack.interfaceRepository.drugRepository.DrugInstanceRepository;
 import show.isaBack.interfaceRepository.drugRepository.DrugRepository;
@@ -23,11 +27,14 @@ import show.isaBack.model.ActionPromotion;
 import show.isaBack.model.ActionType;
 import show.isaBack.model.DrugInstance;
 import show.isaBack.model.Patient;
+import show.isaBack.model.Pharmacist;
 import show.isaBack.model.Pharmacy;
 import show.isaBack.model.User;
 import show.isaBack.model.UserCharacteristics.UserType;
 import show.isaBack.model.drugs.DrugInPharmacy;
 import show.isaBack.model.drugs.DrugReservation;
+import show.isaBack.model.drugs.DrugReservationStatus;
+import show.isaBack.model.drugs.ReservationStatus;
 import show.isaBack.repository.drugsRepository.DrugFeedbackRepository;
 import show.isaBack.repository.drugsRepository.DrugInPharmacyRepository;
 import show.isaBack.repository.drugsRepository.DrugPriceListRepository;
@@ -43,6 +50,7 @@ import show.isaBack.repository.userRepository.UserRepository;
 import show.isaBack.serviceInterfaces.IDrugReservationService;
 import show.isaBack.serviceInterfaces.ILoyaltyService;
 import show.isaBack.serviceInterfaces.IUserInterface;
+import show.isaBack.unspecifiedDTO.UnspecifiedDTO;
 
 
 
@@ -170,4 +178,28 @@ public class DrugReservationService implements IDrugReservationService {
 			throw new AuthorizationServiceException("Too many penalty points.");
 		
 	}
+	
+	@Override
+	public UnspecifiedDTO<DrugReservationResponseDTO> getDrugReservation(UUID reservationId) {
+		UUID pharmacistId = userService.getLoggedUserId();
+		Pharmacist pharmacist = pharmacistRepository.getOne(pharmacistId);
+		UUID pharmacyId = pharmacist.getPharmacy().getId();
+		List<DrugReservation> drugReservations = drugReservationRepository.findByStatusAndIdAndPharmacy(reservationId, pharmacyId);
+		if (drugReservations.isEmpty())
+			throw new EntityNotFoundException();
+		DrugReservation drugReservation = drugReservations.get(0);
+		Date currentDateTime = new Date();
+		if (drugReservation.getEndDate().getTime() - currentDateTime.getTime() < 24)
+			throw new EntityNotFoundException();
+		return DrugReservationMapper.mappCurrentDrugReservationToDTO(drugReservation);
+	}
+	
+	@Override
+	public void processReservation(UUID drugReservationId) throws MailException, InterruptedException, MessagingException {
+		DrugReservation drugReservation = drugReservationRepository.getOne(drugReservationId);
+		drugReservation.setDrugReservationStatus(DrugReservationStatus.PROCESSED);
+		drugReservationRepository.save(drugReservation);
+		emailService.sendDrugReservationProcessedNotificaitionAsync(drugReservation);
+	}
+	
 }

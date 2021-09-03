@@ -478,6 +478,29 @@ public class DrugController {
 		}
 	}
 	
+	@GetMapping("/reservation/{reservationId}")
+	@PreAuthorize("hasRole('PHARMACIST')")
+	public ResponseEntity<?> getDrugReservation(@PathVariable UUID reservationId) {
+		try {
+			return new ResponseEntity<>(drugReservationService.getDrugReservation(reservationId),HttpStatus.OK);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+		}
+	}
+	
+	@PutMapping("/process-reservation")
+	@CrossOrigin
+	@PreAuthorize("hasRole('PHARMACIST')")
+	public ResponseEntity<?> finishAppointment(@RequestBody IdDTO drugReservationId) {
+		try {
+			drugReservationService.processReservation(drugReservationId.getId());
+			return new ResponseEntity<>(HttpStatus.OK);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+		}
+	}
 
 
 }
