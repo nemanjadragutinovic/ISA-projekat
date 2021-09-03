@@ -25,6 +25,8 @@ import show.isaBack.model.appointment.Appointment;
 import show.isaBack.model.drugs.DrugReservation;
 
 import show.isaBack.model.drugs.EReceiptItems;
+import show.isaBack.model.drugs.Offers;
+import show.isaBack.model.drugs.Order;
 
 @Service
 public class EmailService {
@@ -246,5 +248,26 @@ public class EmailService {
 		System.out.println("Poslatoooooooo");
 	}
 	
+	@Async
+	public void sendOfferAccepted(Order order, Offers offer)
+			throws MessagingException {
+
+		MimeMessage mimeMessage = javaMailSender.createMimeMessage();
+		MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, "utf-8");
+		String htmlMsg = "<p>Dear " + offer.getSupplier().getName()+" "+offer.getSupplier().getSurname() + ",</p>" +
+				
+				"<p>"+"Your offer is accepted" +"</p>"+
+			
+				"<p>"+"Best regards, Health Clinic "+ "</p>";
+		helper.setText(htmlMsg, true);
+		System.out.println("Na spavanje");
+		//helper.setTo(patient.getEmail());
+		helper.setTo("acamijatovic.98@gmail.com");
+		helper.setSubject("OFFER IS ACCEPTED in "+order.getPharmacy().getName());
+		helper.setFrom(env.getProperty("spring.mail.username"));
+		System.out.println("Budjenje");
+		javaMailSender.send(mimeMessage);
+		System.out.println("Poslatoooooooo");
+	}
 	
 }

@@ -91,5 +91,32 @@ public class OfferController {
 		offerService.update(offerDTO, offerDTO.getId());
 		return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 	}
+	
+	@CrossOrigin
+	@GetMapping("/getOrderOffers/{orderId}")
+	//@PreAuthorize("hasRole('PHARMACYADMIN')") 
+	public ResponseEntity<List<UnspecifiedDTO<OfferDTO>>> findOrderOffers(@PathVariable UUID orderId) {
+	
+		return new ResponseEntity<>(offerService.getOrderOffers(orderId),HttpStatus.OK);
+	}
+	
+	@PutMapping("/accept")
+	@CrossOrigin
+	@PreAuthorize("hasRole('PHARMACYADMIN')")
+	public ResponseEntity<?> acceptOffer(@RequestBody OfferOrderDTO acceptOfferForOrderDTO) {
+		System.out.println("Aaaaaaaaaaaaa");
+		try {
+			if(offerService.acceptOfferForOrder(acceptOfferForOrderDTO))
+				return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+			else
+				return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+		}catch (IllegalArgumentException e) {
+			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+
 
 }
