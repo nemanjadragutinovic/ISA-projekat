@@ -24,6 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 
 import show.isaBack.DTO.drugDTO.AllergenDTO;
+import show.isaBack.DTO.drugDTO.DrugWithPriceDTO;
 import show.isaBack.DTO.pharmacyDTO.PharmacyDTO;
 import show.isaBack.DTO.userDTO.ChangePasswordDTO;
 import show.isaBack.DTO.userDTO.EmployeeGradeDTO;
@@ -492,6 +493,21 @@ public class UserController {
 		
 		
 	}
+	
+	@CrossOrigin
+	@GetMapping("/dermatologistsSearch") 
+	public ResponseEntity<List<UnspecifiedDTO<EmployeeGradeDTO>>> searchDrugsInPharmacy(@RequestParam String name,@RequestParam String surname, @RequestParam double gradeFrom, @RequestParam double gradeTo, @RequestParam UUID pharmacyId) {
+		System.out.println("usao u pretragu");
+		return new ResponseEntity<>(userService.searchDermatologists(name, surname, gradeFrom, gradeTo,pharmacyId) ,HttpStatus.CREATED);
+	}
+	
+	@CrossOrigin
+	@GetMapping("/pharmacistsSearch") 
+	public ResponseEntity<List<UnspecifiedDTO<EmployeeGradeDTO>>> searchPharmacist(@RequestParam String name,@RequestParam String surname, @RequestParam double gradeFrom, @RequestParam double gradeTo, @RequestParam UUID pharmacyId) {
+		System.out.println("usao u pretragu");
+		return new ResponseEntity<>(userService.searchPharmacists(name, surname, gradeFrom, gradeTo,pharmacyId) ,HttpStatus.CREATED);
+	}
+	
 	
 	@PutMapping("/addDermatologistInPharmacy") 
 	@PreAuthorize("hasRole('PHARMACYADMIN')")

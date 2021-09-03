@@ -65,8 +65,12 @@ class Header extends React.Component{
               
                 <ReactBootStrap.Nav className="ml-auto" >
             
-            
-            
+                <Link to="/dermatologistsForPhAdmin">
+                <ReactBootStrap.Nav.Link href="#deets" hidden={!this.hasRole("ROLE_PATIENT")}>Dermatologist</ReactBootStrap.Nav.Link>
+                </Link>
+                <Link to="/pharmacistsForPhAdmin">
+                <ReactBootStrap.Nav.Link href="#deets" hidden={!this.hasRole("ROLE_PATIENT")}>Pharmacist</ReactBootStrap.Nav.Link>
+                </Link>
                 <Link to="/drugs">
                 <ReactBootStrap.Nav.Link href="#deets" hidden={this.hasRole("ROLE_PHARMACYADMIN")}>Drugs</ReactBootStrap.Nav.Link>
                 </Link>
@@ -88,7 +92,7 @@ class Header extends React.Component{
                 </Link>
 
                 <Link to="/pharmacistsForPhAdmin">
-                <ReactBootStrap.Nav.Link href="#deets" hidden={!this.hasRole("ROLE_PHARMACYADMIN")}>Pharmacist</ReactBootStrap.Nav.Link>
+                <ReactBootStrap.Nav.Link href="#deets" hidden={!this.hasRole("ROLE_PHARMACYADMIN") }>Pharmacist</ReactBootStrap.Nav.Link>
                 </Link>
 
               

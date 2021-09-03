@@ -12,7 +12,10 @@ class DermatologistsForPhAdmin extends Component {
     state = {
         dermatologists: [],
         dermatologists1: [],
-
+        searchName:'',
+        searchSurname:'',
+        searchGradeFrom:'',
+        searchGradeTo:'',
 
         workTimes: [],
         forStaff: '',
@@ -84,11 +87,110 @@ class DermatologistsForPhAdmin extends Component {
 
 
     handleFormShow = () => {
-        this.setState({ showSearchForm: !this.state.showSearchForm ,});
+        this.setState({ showSearchForm: !this.state.showSearchForm });
     };
 
 
+    handleNameChange = (event) => {
+		this.setState({ searchName: event.target.value });
+    };
+    
+    handleSurnameChange = (event) => {
+		this.setState({ searchSurname: event.target.value });
+    };
+    
+    handleGradeFromChange = (event) => {
+		this.setState({ searchGradeFrom: event.target.value });
+	};
 
+	handleGradeToChange = (event) => {
+		this.setState({ searchGradeTo: event.target.value });
+    };
+
+    handleSortByGradeAscending = () =>{
+
+    }
+
+    handleSortByGradeDescending = () =>{
+
+    }
+    
+    handleSearch = () =>{
+    
+			if (
+				!(
+					this.state.searchGradeFrom === "" &&
+					this.state.searchGradeTo === "" &&
+					this.state.searchName === "" &&
+					this.state.searchSurname === ""
+				)
+			) {
+                let name = this.state.searchName;
+				let surname = this.state.searchSurname;
+				let gradeFrom = this.state.searchGradeFrom;
+				let gradeTo = this.state.searchGradeTo;
+				
+
+				if (gradeFrom === "") gradeFrom = -1;
+				if (gradeTo === "") gradeTo = -1;
+				if (name === "") name = '';
+				if (surname === "") surname = '';
+
+                console.log(name);
+                console.log(surname);
+                console.log(gradeFrom);
+                console.log(gradeTo);
+				Axios.get(API_URL + "/users/dermatologistsSearch", {
+                    params: {
+                        name: name,
+                        surname: surname,
+                        gradeFrom: gradeFrom,
+                        gradeTo: gradeTo,
+                        pharmacyId: localStorage.getItem("keyPharmacyId")
+                    },
+                    validateStatus: () => true,
+                    headers: { Authorization: GetAuthorisation() },
+                })
+					.then((res) => {
+						this.setState({
+							dermatologists: res.data,
+							formShowed: false,
+							showingSearched: true,
+						});
+						console.log(res.data);
+					})
+					.catch((err) => {
+						console.log(err);
+					});
+			}
+        }   
+    
+
+     handleResetSearch = () => {
+
+        Axios.get(API_URL + "/users/dermatologistsInPharmacy/" + localStorage.getItem("keyPharmacyId"), {
+            headers: { Authorization: GetAuthorisation() },
+        })
+			.then((res) => {
+				this.setState({ 
+                    dermatologists: res.data ,
+                    formShowed: false,
+					showingSearched: false,
+					searchName: "",
+                    searchSurname: "",
+                    searchGradeFrom: "",
+					searchGradeTo: "",
+
+                });
+                console.log(res.data);
+            
+			})
+			.catch((err) => {
+				console.log(err);
+            });
+        
+	
+    };
     handleAddDermatologistClose = () => {
         Axios.get(API_URL + "/users/dermatologistsInPharmacy/" + localStorage.getItem("keyPharmacyId"), {
             headers: { Authorization: GetAuthorisation() },
@@ -137,7 +239,7 @@ class DermatologistsForPhAdmin extends Component {
                         {this.state.showSearchForm ? "Close search" : "Open search"}
                     </button>
 
-                    <button hidden={!this.state.showSearchForm} type="button" class="btn btn-outline-primary btn-xl ml-2" onClick={this.resetSearch}>
+                    <button hidden={!this.state.showSearchForm} type="button" class="btn btn-outline-primary btn-xl ml-2" onClick={this.handleResetSearch}>
 
                         Reset search
 
@@ -153,44 +255,49 @@ class DermatologistsForPhAdmin extends Component {
 
                         <div className="form-group" width="100%">
 
-                            <input
-                                placeholder="Name"
-                                className="form-control mr-2"
-                                style={{ width: "10em" }}
-                                type="text"
+                        <div className="form-group mb-2" width="100%">
+                                <input
+                                    placeholder="Name"
+                                    className="form-control mr-2"
+                                    style={{ width: "10em" }}
+                                    type="text"
+                                    onChange={this.handleNameChange}
+                                    value={this.state.searchName}
+                                />
 
-                            />
+                                <input
+                                    placeholder="LastName"
+                                    className="form-control mr-2"
+                                    style={{ width: "10em" }}
+                                    type="text"
+                                    onChange={this.handleSurnameChange}
+                                    value={this.state.searchSurname}
+                                />
 
-                            <input
-                                placeholder="LastName"
-                                className="form-control mr-2"
-                                style={{ width: "10em" }}
-                                type="text"
-
-                            />
-
-                            <input
-                                placeholder="Grade from"
-                                className="form-control mr-2"
-                                style={{ width: "10em" }}
-                                type="number"
-                                min="1"
-                                max="5"
-
-                            />
-                            <input
-                                placeholder="Grade to"
-                                className="form-control mr-2"
-                                style={{ width: "10em" }}
-                                type="number"
-                                min="1"
-                                max="5"
-
-                            />
+                                <input
+                                    placeholder="Grade from"
+                                    className="form-control mr-2"
+                                    style={{ width: "10em" }}
+                                    type="number"
+                                    min="1"
+                                    max="5"
+                                    onChange={this.handleGradeFromChange}
+                                    value={this.state.searchGradeFrom}
+                                />
+                                <input
+                                    placeholder="Grade to"
+                                    className="form-control"
+                                    style={{ width: "10em" }}
+                                    type="number"
+                                    min="1"
+                                    max="5"
+                                    onChange={this.handleGradeToChange}
+                                    value={this.state.searchGradeTo}
+                                />
 
                             <button
-
-                                className="btn btn-outline-primary btn-xl "
+                                onClick={this.handleSearch}
+                                className="btn btn-outline-primary btn-xl ml-2"
                                 type="button"
 
                             >
@@ -198,7 +305,7 @@ class DermatologistsForPhAdmin extends Component {
                             </button>
                         </div>
 
-
+                    </div>
 
                     </form>
                 

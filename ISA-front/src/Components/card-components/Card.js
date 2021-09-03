@@ -22,7 +22,7 @@ class Card extends Component {
 
   
   handleUpdateScheduleModal = () => {
-        
+    if (this.hasRole("ROLE_PHARMACYADMIN")) {   
     console.log("aaaaaaaaaaaaaa");
     
     Axios.get(API_URL + "/users/scheduleForEmployee/" + this.props.dermatologist.Id, {
@@ -38,10 +38,23 @@ class Card extends Component {
     .catch((err) => {
         console.log(err);
     });
+   }
     };
+    hasRole = (requestRole) => {
+		let currentRoles = JSON.parse(localStorage.getItem("keyRole"));
+	
+		if (currentRoles === null) return false;
+	
+	
+		for (let currentRole of currentRoles) {
+		  if (currentRole === requestRole) return true;
+		}
+		return false;
+	  };
 
     handleScheduleModal = (id) => {
-        
+        if (this.hasRole("ROLE_PHARMACYADMIN")) {
+       
         console.log("aaaaaaaaaaaaaa");
         console.log(id);
         Axios.get(API_URL + "/users/scheduleForEmployee/" + id, {
@@ -58,6 +71,7 @@ class Card extends Component {
         this.setState({
             openScheduleModal: true
         });
+    }
         };
 
         handleModalClose = () => {
@@ -75,7 +89,7 @@ class Card extends Component {
 		return (
       
       <React.Fragment>
-        <button className="card-style" onClick={() => this.handleScheduleModal(this.props.dermatologist.Id)}>
+        <button className="card-style"  onClick={() => this.handleScheduleModal(this.props.dermatologist.Id)}>
         <img className="img-fluid" src={Picture}  />
         <h2>{this.props.dermatologist.EntityDTO.name} {this.props.dermatologist.EntityDTO.surname}</h2>
         <p>Email: {this.props.dermatologist.EntityDTO.email}</p>
