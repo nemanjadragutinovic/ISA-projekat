@@ -44,6 +44,8 @@ import DermatologistCreateAndScheduleAppointment from './Pages/Appointment/Derma
 import ActionPromotionPageForPhAdmin from './Components/Pharmacies/ActionPromotionPageForPhAdmin';
 import DermatologistSchedule from './Pages/Appointment/DermatologistSchedule';
 import Absence from './Pages/Appointment/Absence';
+import ReservedDrug from './Pages/Appointment/ReservedDrug';
+
 
 import {
   BrowserRouter as Router,
@@ -111,6 +113,7 @@ function App() {
         <Route  to ="/actions" path ="/actions"  component={ActionPromotionPageForPhAdmin}/>
         <Route to = "/absence" path="/absence" component ={Absence}/>
         <Route to = "/absencePhAdmin" path="/absencePhAdmin" component ={AbsenceForPhAdmin}/>
+        <Route to = "/reserved-drug" path="/reserved-drug" component ={ReservedDrug}/>
 
         </Switch>
     </Router>

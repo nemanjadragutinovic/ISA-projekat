@@ -3,7 +3,8 @@ package show.isaBack.Mappers.Drugs;
 import java.util.ArrayList;
 import java.util.List;
 
-
+import show.isaBack.DTO.drugDTO.DrugReservation2DTO;
+import show.isaBack.DTO.drugDTO.DrugReservationDTO;
 import show.isaBack.DTO.drugDTO.DrugReservationResponseDTO;
 import show.isaBack.Mappers.Pharmacy.PharmacyMapper;
 import show.isaBack.model.drugs.DrugReservation;
@@ -31,5 +32,6 @@ public class DrugReservationMapper {
 				   drugReservation.getCount(), drugReservation.getStartDate(), drugReservation.getEndDate(),
 				   drugReservation.getPriceForOneDrug(), drugReservation.getDrugReservationStatus()));
 	}
+	
 	
 }
