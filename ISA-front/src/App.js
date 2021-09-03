@@ -53,6 +53,8 @@ import {
   Link,
   Switch
 } from "react-router-dom";
+import PharmacyPage from './Components/Pharmacies/PharmacyPage';
+import AbsenceForPhAdmin from './Components/Pharmacies/AbsenceForPhAdmin';
 
 
 
@@ -99,7 +101,7 @@ function App() {
         <Route to="/activeAccount/:id" path ="/activeAccount/:id"  component={activateAccount}/>
         <Route to="/patients" path ="/patients"  component={PatientsPage}/>
 
-
+        <Route path="/pharmacy/:id" children={<PharmacyPage />} />
         <Route to="/dermatologistsForPhAdmin" path ="/dermatologistsForPhAdmin"  component={dermatologistsForPhAdmin}/>
         <Route to="/calendar" path ="/calendar" component={CalendarForAppointments}/>
         <Route to="/appointment-report/:id" path ="/appointment-report/:id" component={AppointmentReport}/>
@@ -110,6 +112,7 @@ function App() {
         <Route to="/new-appointment/:id" path ="/new-appointment/:id" component={PharmacistScheduleAppointment}/>
         <Route  to ="/actions" path ="/actions"  component={ActionPromotionPageForPhAdmin}/>
         <Route to = "/absence" path="/absence" component ={Absence}/>
+        <Route to = "/absencePhAdmin" path="/absencePhAdmin" component ={AbsenceForPhAdmin}/>
         <Route to = "/reserved-drug" path="/reserved-drug" component ={ReservedDrug}/>
 
         </Switch>
