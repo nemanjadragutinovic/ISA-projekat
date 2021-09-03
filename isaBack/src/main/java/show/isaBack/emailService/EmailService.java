@@ -2,6 +2,7 @@ package show.isaBack.emailService;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 import javax.mail.MessagingException;
@@ -268,6 +269,31 @@ public class EmailService {
 		System.out.println("Budjenje");
 		javaMailSender.send(mimeMessage);
 		System.out.println("Poslatoooooooo");
+	}
+	
+	@Async
+	public void sendDrugReservationProcessedNotificaitionAsync(DrugReservation drugReservation)
+			throws MailException, InterruptedException, MessagingException {
+		System.out.println("Slanje emaila...");
+
+		MimeMessage mimeMessage = javaMailSender.createMimeMessage();
+		MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, "utf-8");
+		String htmlMsg = "<p>Hello " + drugReservation.getPatient().getName() + ",</p>" +
+					"<p>Your drug reservation " + drugReservation.getId() + " for " + drugReservation.getDrugInstance().getDrugInstanceName() + " was processed.</p>"
+				  + " Drugs have been picked up at "
+				  + drugReservation.getPharmacy().getName() + " pharmacy at "+ drugReservation.getPharmacy().getAddress().getStreet() + ", "
+				  + drugReservation.getPharmacy().getAddress().getCity() + ", " 
+				  + drugReservation.getPharmacy().getAddress().getCountry()
+				  + " address" + " at " + new SimpleDateFormat("yyyy-MM-dd HH:mm").format(new Date()) + ".</p>"
+				  + "<p>Kind Regards, PQuince</p>"; 
+		
+		helper.setText(htmlMsg, true);
+		helper.setTo(drugReservation.getPatient().getEmail());
+		helper.setSubject("Activate account");
+		helper.setFrom(env.getProperty("spring.mail.username"));
+		javaMailSender.send(mimeMessage);
+
+		System.out.println("Email poslat!");
 	}
 	
 }

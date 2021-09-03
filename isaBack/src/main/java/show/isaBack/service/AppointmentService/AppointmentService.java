@@ -65,7 +65,7 @@ import show.isaBack.repository.pharmacyRepository.PharmacyRepository;
 
 import show.isaBack.repository.drugsRepository.DrugReservationRepository;
 import show.isaBack.repository.drugsRepository.EReceiptRepository;
-
+import show.isaBack.repository.userRepository.AbsenceRepository;
 import show.isaBack.repository.userRepository.DermatologistRepository;
 import show.isaBack.repository.userRepository.PatientRepository;
 import show.isaBack.repository.userRepository.PharmacistRepository;
@@ -84,6 +84,9 @@ public class AppointmentService implements IAppointmentService{
 
 	@Autowired
 	private AppointmentRepository appointmentRepository;
+	
+	@Autowired
+	private AbsenceRepository absenceRepository;
 	
 	@Autowired
 	private ActionPromotionRepository actionPromotionRepository;
@@ -1145,21 +1148,21 @@ private void CanCreateConsultationAllRestrictions(Appointment appointment) throw
 		if (!(appointment.getStartDateTime().after(new Date())))
 				throw new IllegalArgumentException("Bad request");
 		
-		//if(isAbsent(appointment))
-			//throw new IllegalArgumentException("Cannot reserve appointment at date dermatologist is absent");
+		if(isAbsent(appointment))
+			throw new IllegalArgumentException("Cannot reserve appointment at date dermatologist is absent");
 	}
 	
 private boolean doesPatientHaveAppointmentInDesiredTime(Appointment appointment, Patient patient) {
 	return appointmentRepository.findAllAppointmentsByAppointmentTimeAndPatient(appointment.getStartDateTime(), appointment.getEndDateTime(), patient.getId()).size() > 0;
 }
 
-/*private boolean isAbsent(Appointment appointment) {
+private boolean isAbsent(Appointment appointment) {
 	User user = appointment.getEmployee();
 	if (user.getUserType() == UserType.DERMATOLOGIST)
-		return absenceRepository.getAbsenceForDermatologistForDateForPharmacy(staff.getId(), appointment.getStartDateTime(), appointment.getPharmacy().getId()).size() > 0;
+		return absenceRepository.getAbsenceForDermatologistForDateForPharmacy(user.getId(), appointment.getStartDateTime(), appointment.getPharmacy().getId()).size() > 0;
 	else
-		return absenceRepository.findPharmacistAbsenceByStaffIdAndDate(staff.getId(), appointment.getStartDateTime()).size() > 0;
-}*/
+		return absenceRepository.findPharmacistAbsenceByStaffIdAndDate(user.getId(), appointment.getStartDateTime()).size() > 0;
+}
 
 private boolean doesStaffHasAppointmentInDesiredTime(Appointment appointment, User user) {
 	return appointmentRepository.findAllAppointmentsByAppointmentTimeAndEmployee(appointment.getStartDateTime(), appointment.getEndDateTime(), user.getId()).size() > 0;
