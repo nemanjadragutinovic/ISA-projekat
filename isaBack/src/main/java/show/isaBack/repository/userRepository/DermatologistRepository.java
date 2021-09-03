@@ -1,5 +1,6 @@
 package show.isaBack.repository.userRepository;
 
+import java.util.List;
 import java.util.UUID;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -10,7 +11,7 @@ import show.isaBack.model.Pharmacy;
 
 public interface DermatologistRepository extends JpaRepository<Dermatologist, UUID> {
 	
-	//@Query(value = "SELECT p.pharmacy FROM Dermatologist p WHERE p.id = ?1")
-	//Pharmacy findPharmacyWhereWorksDermatologist(UUID dermatologistId);
 
+	@Query(value = "SELECT d from Dermatologist d WHERE LOWER(d.name) LIKE %?1% AND LOWER(d.surname) LIKE %?2%")
+	List<Dermatologist> findByNameAndSurname(String name, String surname);
 }

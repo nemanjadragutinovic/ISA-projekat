@@ -40,7 +40,7 @@ class EditOrderModal extends Component {
             drug.amount= this.state.selectedCount
 
            
-            this.props.addToAddedDrugs(drug);
+            this.props.addToList(drug);
     
             this.setState({
                 page:1,
@@ -55,7 +55,7 @@ class EditOrderModal extends Component {
             console.log(drugRemove)
     
 
-            this.props.removeFromDrugToAdd(drugRemove);
+            this.props.removeFromList(drugRemove);
             this.setState({
                 page:1,
                 selectedCount:'',

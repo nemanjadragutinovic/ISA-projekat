@@ -24,6 +24,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PathVariable;
 
 import show.isaBack.DTO.drugDTO.AllergenDTO;
+import show.isaBack.DTO.drugDTO.DrugWithPriceDTO;
 import show.isaBack.DTO.pharmacyDTO.PharmacyDTO;
 import show.isaBack.DTO.pharmacyDTO.PharmacyWithGradeAndPriceDTO;
 import show.isaBack.DTO.userDTO.AuthorityDTO;
@@ -40,6 +41,7 @@ import show.isaBack.DTO.userDTO.PharmacistForAppointmentPharmacyGadeDTO;
 import show.isaBack.DTO.userDTO.UserChangeInfoDTO;
 import show.isaBack.DTO.userDTO.UserDTO;
 import show.isaBack.DTO.userDTO.UserRegistrationDTO;
+import show.isaBack.Mappers.Pharmacy.DrugsWithGradesMapper;
 import show.isaBack.Mappers.Pharmacy.PharmacyMapper;
 import show.isaBack.Mappers.Pharmacy.UserMapper;
 
@@ -49,6 +51,7 @@ import show.isaBack.Mappers.Appointmets.AppointmentsMapper;
 import show.isaBack.emailService.EmailService;
 import show.isaBack.model.Authority;
 import show.isaBack.model.Dermatologist;
+import show.isaBack.model.DrugInstance;
 import show.isaBack.model.Pharmacist;
 import show.isaBack.model.Patient;
 import show.isaBack.model.Pharmacist;
@@ -60,6 +63,7 @@ import show.isaBack.model.User;
 import show.isaBack.model.UserCharacteristics.UserType;
 import show.isaBack.model.UserCharacteristics.WorkTime;
 import show.isaBack.model.drugs.Allergen;
+import show.isaBack.model.drugs.DrugInPharmacy;
 import show.isaBack.repository.drugsRepository.AllergenRepository;
 import show.isaBack.repository.pharmacyRepository.PharmacyRepository;
 import show.isaBack.repository.userRepository.DermatologistRepository;
@@ -1030,5 +1034,82 @@ public class UserService implements IUserInterface{
 	} 
 	
 	
-
+	public List<UnspecifiedDTO<EmployeeGradeDTO>> searchDermatologists(String name,String surname,double gradeFrom, double gradeTo,UUID pharmacyId) {
+		List<Dermatologist> dermatologists = new ArrayList<Dermatologist>();
+		List<UnspecifiedDTO<EmployeeGradeDTO>> dermatologistsForPharmacy= new ArrayList<UnspecifiedDTO<EmployeeGradeDTO>>();
+		System.out.println("eja alooooooooooooooo");
+		if(!name.equals("")|| !surname.equals("")) {
+			dermatologists = dermatologistRepository.findByNameAndSurname(name.toLowerCase(),surname.toLowerCase());
+		}else
+			dermatologists = dermathologistRepository.findAll();
+		
+		for (Dermatologist dermatologist : dermatologists) {
+			System.out.println("petlja");
+			if(isDermatologistInPharmacy(dermatologist,pharmacyId)) {
+			double avgGrade = getAvgGradeForEmployee(dermatologist.getId());
+			
+			dermatologistsForPharmacy.add(appointmentsMapper.MapDermatologistToEmployeeDTO(dermatologist,avgGrade));
+			}
+			}
+		
+			
+			
+		List<UnspecifiedDTO<EmployeeGradeDTO>> retVal = checkDrugGrades1(dermatologistsForPharmacy, gradeFrom, gradeTo,pharmacyId);
+		
+		return retVal;
+	
+	}
+	
+	public List<UnspecifiedDTO<EmployeeGradeDTO>> searchPharmacists(String name,String surname,double gradeFrom, double gradeTo,UUID pharmacyId) {
+		List<Pharmacist> pharmacists = new ArrayList<Pharmacist>();
+		List<UnspecifiedDTO<EmployeeGradeDTO>> dermatologistsForPharmacy= new ArrayList<UnspecifiedDTO<EmployeeGradeDTO>>();
+		System.out.println("eja alooooooooooooooo");
+		if(!name.equals("")|| !surname.equals("")) {
+			pharmacists = pharmacistRepository.findByNameAndSurname(name.toLowerCase(),surname.toLowerCase());
+		}else
+			pharmacists = pharmacistRepository.findAll();
+		
+		for (Pharmacist pharmacist : pharmacists) {
+			System.out.println("petlja");
+			if(pharmacist.getPharmacy().getId().equals(pharmacyId)) {
+			double avgGrade = getAvgGradeForEmployee(pharmacist.getId());
+			
+			dermatologistsForPharmacy.add(appointmentsMapper.MapPharmacistsToEmployeeDTO(pharmacist,avgGrade));
+			}
+			}
+		
+			
+			
+		List<UnspecifiedDTO<EmployeeGradeDTO>> retVal = checkDrugGrades1(dermatologistsForPharmacy, gradeFrom, gradeTo,pharmacyId);
+		
+		return retVal;
+	
+	}
+	
+	private List<UnspecifiedDTO<EmployeeGradeDTO>> checkDrugGrades1(List<UnspecifiedDTO<EmployeeGradeDTO>> list, double gradeFrom, double gradeTo,UUID pharmacyId){
+		List<UnspecifiedDTO<EmployeeGradeDTO>>  retVal = new ArrayList<UnspecifiedDTO<EmployeeGradeDTO>> ();
+		
+		for (UnspecifiedDTO<EmployeeGradeDTO> var : list) 
+		{ 
+		 double grade=var.EntityDTO.getGrade();
+			if(!(gradeFrom == -1.0 || gradeTo == -1.0)) {
+				if(grade >= gradeFrom && grade <= gradeTo) {
+					retVal.add(var);
+				}
+			}else {
+				if(gradeFrom == -1.0 & gradeTo != -1.0) {
+					if(grade <= gradeTo)
+						retVal.add(var);
+				}else if (gradeTo == -1.0 & gradeFrom != -1.0){
+					if(grade >= gradeFrom)
+						retVal.add(var);
+				}else {
+					retVal.add(var);
+				}
+			}
+			
+		}
+		
+		return retVal;
+	}
 }
