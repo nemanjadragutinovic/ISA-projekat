@@ -40,6 +40,7 @@ import show.isaBack.DTO.drugDTO.EmployeeReservationDrugDTO;
 import show.isaBack.DTO.drugDTO.EreceiptDTO;
 import show.isaBack.DTO.drugDTO.IngredientDTO;
 import show.isaBack.DTO.drugDTO.ManufacturerDTO;
+import show.isaBack.DTO.drugDTO.RemoveDrugDTO;
 import show.isaBack.DTO.drugDTO.ReplaceDrugIdDTO;
 import show.isaBack.model.drugs.DrugStorageQuantityException;
 import show.isaBack.model.drugs.EReceiptStatus;
@@ -394,8 +395,13 @@ public class DrugController {
 	//@PreAuthorize("hasRole('PHARMACYADMIN')")
 	public ResponseEntity<?> editPharmacyStorage(@RequestBody EditStorageDTO editStorageDTO) {
 		try {
-			
-			return new ResponseEntity<>(HttpStatus.CREATED);
+			if(drugService.editCountDrug(editStorageDTO))
+				return new ResponseEntity<>(HttpStatus.OK);
+			else {
+				return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+			}
+		
+	
 		} catch (IllegalArgumentException e) {
 			return new ResponseEntity<>(e.getMessage(),HttpStatus.BAD_REQUEST);
 		} catch (Exception e) {
@@ -419,6 +425,7 @@ public class DrugController {
 		}
 	}
 	
+
 	@GetMapping("/available/{drugId}/{amount}")
 	@PreAuthorize("hasRole('DERMATHOLOGIST') or hasRole('PHARMACIST')")
 	public ResponseEntity<?> isDrugAvailableInPharamcy(@PathVariable UUID drugId, @PathVariable int amount) {
@@ -448,5 +455,29 @@ public class DrugController {
 		}
 		
 	}
+
+	@PutMapping("/removeDrugFromPharmacy")
+	@CrossOrigin
+	//@PreAuthorize("hasRole('PHARMACYADMIN')")
+	public ResponseEntity<?> removeDrugFromPharmacy(@RequestBody RemoveDrugDTO removeDrugDTO) {
+		try {
+			System.out.println(removeDrugDTO.getDrugId());
+			System.out.println(removeDrugDTO.getPharmacyId());
+			
+			if(drugService.removeDrugFromPharmacy(removeDrugDTO))
+				return new ResponseEntity<>(HttpStatus.OK);
+			else {
+				return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+			}
+			
+				
+		} catch (IllegalArgumentException e) {
+			return new ResponseEntity<>(e.getMessage(),HttpStatus.BAD_REQUEST);
+		} catch (Exception e) {
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+	
+
 
 }

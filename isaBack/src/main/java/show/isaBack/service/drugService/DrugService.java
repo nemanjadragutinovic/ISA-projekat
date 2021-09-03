@@ -33,11 +33,16 @@ import show.isaBack.DTO.drugDTO.DrugWithEreceiptsDTO;
 import show.isaBack.DTO.drugDTO.DrugWithPriceDTO;
 import show.isaBack.DTO.drugDTO.DrugsWithGradesDTO;
 import show.isaBack.DTO.drugDTO.EditDrugPriceDTO;
+
 import show.isaBack.DTO.drugDTO.EmployeeReservationDrugDTO;
+
+import show.isaBack.DTO.drugDTO.EditStorageDTO;
+
 import show.isaBack.DTO.drugDTO.EreceiptDTO;
 import show.isaBack.DTO.drugDTO.EreceiptWithPharmacyDTO;
 import show.isaBack.DTO.drugDTO.IngredientDTO;
 import show.isaBack.DTO.drugDTO.ManufacturerDTO;
+import show.isaBack.DTO.drugDTO.RemoveDrugDTO;
 import show.isaBack.DTO.pharmacyDTO.PharmacyDTO;
 import show.isaBack.DTO.pharmacyDTO.UnspecifiedPharmacyWithDrugAndPrice;
 import show.isaBack.DTO.userDTO.AuthorityDTO;
@@ -995,7 +1000,44 @@ public class DrugService implements IDrugService{
         return new Date(c.getTimeInMillis());
     }
 
+	@Override
+	public boolean removeDrugFromPharmacy(RemoveDrugDTO removeDrugDTO) {
+		
+		if(!isDrugReserved(removeDrugDTO)) {
+		DrugInPharmacy drug = drugInPharmacyRepository.getDrugInPharmacy(removeDrugDTO.getDrugId(),removeDrugDTO.getPharmacyId());
+		DrugPriceList drugPrice = drugPriceListRepository.getCDrugPriceInPharmacy(removeDrugDTO.getDrugId(), removeDrugDTO.getPharmacyId());
+		drugInPharmacyRepository.delete(drug);
+		drugPriceListRepository.delete(drugPrice);
+		
+		return true;
+		}
+		
+        return false;
+	}
 
+	private boolean isDrugReserved(RemoveDrugDTO removeDrugDTO) {
+		List<DrugReservation>  drugs = drugReservationRepository.findAllFutureDrugsReservation(removeDrugDTO.getDrugId(),removeDrugDTO.getPharmacyId());
+		
+		if(drugs.size()>0)
+			return true;
+		
+		return false;
+	}
+
+
+	@Transactional
+	@Override
+	public boolean editCountDrug(EditStorageDTO editStorageDTO) {
+		System.out.println(editStorageDTO.getDrugInstanceId());
+		System.out.println(editStorageDTO.getPharmacyId());
+		System.out.println(editStorageDTO.getCount());
+		DrugInPharmacy drug = drugInPharmacyRepository.getDrugInPharmacy(editStorageDTO.getDrugInstanceId(), editStorageDTO.getPharmacyId());
+		
+		drug.setCount(editStorageDTO.getCount());
+				
+		drugInPharmacyRepository.save(drug);
+		return true;
+	}
 	
 	@Override
 	public List<UnspecifiedDTO<AuthorityDTO>> findAll() {

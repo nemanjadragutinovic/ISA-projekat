@@ -100,6 +100,10 @@ class Header extends React.Component{
                 <ReactBootStrap.Nav.Link href="#deets" hidden={!this.hasRole("ROLE_PHARMACYADMIN")}>Actions</ReactBootStrap.Nav.Link>
                 </Link>
                 
+                <Link to="/ordersForPhAdmin">
+                <ReactBootStrap.Nav.Link href="#deets" hidden={!this.hasRole("ROLE_PHARMACYADMIN")}>Orders</ReactBootStrap.Nav.Link>
+                </Link>
+                
                 <ReactBootStrap.NavDropdown alignRight title="My reports" id="collasible-nav-dropdown" hidden={!this.hasRole("ROLE_PATIENT")} >
 
                     <ReactBootStrap.NavDropdown.Item href="/futureDermatologistAppointmentsForPatient">Dermatologist</ReactBootStrap.NavDropdown.Item>

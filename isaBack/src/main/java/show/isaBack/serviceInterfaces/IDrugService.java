@@ -13,10 +13,15 @@ import show.isaBack.DTO.drugDTO.DrugWithEreceiptsDTO;
 import show.isaBack.DTO.drugDTO.DrugWithPriceDTO;
 import show.isaBack.DTO.drugDTO.DrugsWithGradesDTO;
 import show.isaBack.DTO.drugDTO.EditDrugPriceDTO;
+
 import show.isaBack.DTO.drugDTO.EmployeeReservationDrugDTO;
+
+import show.isaBack.DTO.drugDTO.EditStorageDTO;
+
 import show.isaBack.DTO.drugDTO.EreceiptDTO;
 import show.isaBack.DTO.drugDTO.IngredientDTO;
 import show.isaBack.DTO.drugDTO.ManufacturerDTO;
+import show.isaBack.DTO.drugDTO.RemoveDrugDTO;
 import show.isaBack.DTO.pharmacyDTO.UnspecifiedPharmacyWithDrugAndPrice;
 import show.isaBack.model.drugs.DrugStorageQuantityException;
 import show.isaBack.model.drugs.EReceiptStatus;
@@ -61,10 +66,15 @@ public interface IDrugService extends IService<DrugInstanceDTO, UnspecifiedDTO<D
 	List<UnspecifiedDTO<DrugDTO>> findDrugsWhichArentInPharmacy(UUID pharmacyId);
 	void addDrug(AddDrugDTO addDTO);
 	boolean editDrugPrice(EditDrugPriceDTO editPriceDTO);
+
 	void isDrugAvailableInPharamcy(UUID drugId, int amount) throws DrugStorageQuantityException;
 //	void reduceAmountOfReservedDrug(UUID drugId, UUID pharmacyId, int count);
 	
 
+
+
+	boolean removeDrugFromPharmacy(RemoveDrugDTO removeDrugDTO);
+	boolean editCountDrug(EditStorageDTO editStorageDTO);
 
 	
 

@@ -316,4 +316,4 @@ class AppointmentReport extends Component {
 	}
 }
 
-export default withRouter(AppointmentReport);
+export default AppointmentReport;

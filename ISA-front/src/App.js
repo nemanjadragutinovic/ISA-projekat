@@ -105,7 +105,7 @@ function App() {
         <Route to="/dermathologist-schedule-appointment/:id" path="/dermathologist-schedule-appointment/:id" component={DermatologistSchedule}/>
         <Route to="/new-appointment/:id" path ="/new-appointment/:id" component={PharmacistScheduleAppointment}/>
         <Route  to ="/actions" path ="/actions"  component={ActionPromotionPageForPhAdmin}/>
-        <Route to="/create-and-schedule-appointment/:id" path="/create-and-schedule-appointment/:id" component={DermatologistCreateAndScheduleAppointment}/>
+        
 
         </Switch>
     </Router>

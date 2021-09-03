@@ -47,7 +47,7 @@ insert into users (id, email, password, name, surname, phone_Number,first_Login,
 
 
 --pharmacyAdmin-users
-insert into users (id, email, password, name, surname, phone_Number,first_Login, active, address,user_type) values ('17a2c302-b584-11eb-8529-0242ac130003','pharmacyadmin@gmail.com', '$2a$10$TyNl6ipLWyDE/TfFM3uRse0SVPP4Rz7.mdZdDK3zqjKZqtKtJ3pf2','Marija','Jovanovic','064555787',false ,true,'Partizanska 11','PHARMACYADMIN');
+insert into users (id, email, password, name, surname, phone_Number,first_Login, active, address,user_type) values ('17a2c302-b584-11eb-8529-0242ac130003','pharmacyadmin@gmail.com', '$2a$10$TyNl6ipLWyDE/TfFM3uRse0SVPP4Rz7.mdZdDK3zqjKZqtKtJ3pf2','Milena','Jovanovic','064555787',false ,true,'Partizanska 11','PHARMACYADMIN');
 
 --supplier-users
 insert into users (id, email, password, name, surname, phone_Number,first_Login, active, address,user_type) values ('54444d47-1a8a-4ae1-b109-af7b56e94788','supp1@gmail.com', '$2a$10$TyNl6ipLWyDE/TfFM3uRse0SVPP4Rz7.mdZdDK3zqjKZqtKtJ3pf2','Njekez','Pekez','064555787',false ,true,'Partizanska 221','SUPPLIER');
@@ -306,7 +306,7 @@ insert into drug_reservation(id, count, price_for_one_drug, end_date,start_date,
 --insert into drug_reservation(id, count, price_for_one_drug, end_date,start_date, drug_reservation_status,  drug_instance_id, patient_id, pharmacy_id) values ('bc3198f0-c2e2-11eb-8529-0242ac130003', 2, 280, '2021-02-18 17:04:03', '2021-01-16 17:04:03',  'PROCESSED', 'dac2b818-5838-11eb-ae93-0242ac130002', '22793162-52d3-11eb-ae93-0242ac130002','775d8e36-9859-11eb-a8b3-0242ac130003');
 
 insert into drug_reservation(id, count, price_for_one_drug, end_date,start_date, drug_reservation_status,  drug_instance_id, patient_id, pharmacy_id) values ('bc3198f0-c2e2-11eb-8529-0242ac130003', 2, 280, '2021-04-18 17:04:03', '2021-04-16 17:04:03',  'PROCESSED', 'dac2b818-5838-11eb-ae93-0242ac130002', '22793162-52d3-11eb-ae93-0242ac130002','775d9322-9859-11eb-a8b3-0242ac130003');
-insert into drug_reservation(id, count, price_for_one_drug, end_date,start_date, drug_reservation_status,  drug_instance_id, patient_id, pharmacy_id) values ('71a394d4-c6e6-11eb-b8bc-0242ac130003', 8, 280, '2021-03-18 17:04:03', '2021-03-16 17:04:03',  'ACTIVE', '2fe1cd8e-5839-11eb-ae93-0242ac130002', '22793162-52d3-11eb-ae93-0242ac130002','775d8e36-9859-11eb-a8b3-0242ac130003');
+insert into drug_reservation(id, count, price_for_one_drug, end_date,start_date, drug_reservation_status,  drug_instance_id, patient_id, pharmacy_id) values ('71a394d4-c6e6-11eb-b8bc-0242ac130003', 8, 280, '2021-09-18 17:04:03', '2021-03-16 17:04:03',  'ACTIVE', '2c797174-5839-11eb-ae93-0242ac130002', '22793162-52d3-11eb-ae93-0242ac130002','775d8e36-9859-11eb-a8b3-0242ac130003');
  
 --ACTION
 
