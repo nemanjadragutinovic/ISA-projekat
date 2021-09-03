@@ -315,6 +315,8 @@ insert into action_promotion(id,type,date_from,date_to,discount,pharmacy_id) val
 
 --APPOINTMENT REPORT
 
-
 insert into appointment_report (id, anamnesis, diagnosis, therapy,appointment_id) values ('115c7fb3-df04-4c0c-8ebe-411717961cac', 'Upala pluca', 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa', 'Respirator','802a3992-be1a-11eb-8529-0242ac130003');
 
+--ABSENCE
+insert into free_days(id, end_date, free_days_status, reject_reason, start_date, pharmacy_id, user_id) values ('0509da8e-a9ec-4a64-9d11-b91d7ba8ed41','2021-09-17 00:00:00','WAITING', '',
+'2021-09-16 00:00:00','775d8e36-9859-11eb-a8b3-0242ac130003','80c86094-ba60-11eb-8529-0242ac130003');
