@@ -290,7 +290,7 @@ public class PharmacyController {
 	
 	@CrossOrigin
 	@GetMapping("/pharmacyInfo/{phId}")
-	@PreAuthorize("hasRole('PHARMACYADMIN')")
+	//@PreAuthorize("hasRole('PHARMACYADMIN')")
 	public ResponseEntity<UnspecifiedDTO<PharmacyWithGradeAndPriceDTO>> getPharmacyInfo(@PathVariable UUID phId) {
 		try {
 			

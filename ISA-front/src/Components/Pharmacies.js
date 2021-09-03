@@ -8,7 +8,8 @@ import SuccessfulAlert from "../Components/Alerts/SuccessfulAlert";
 import FirstGradeModal from "../Components/Modal/FirstGradeModal";
 import CreateComplaintModal from "../Components/CreateComplaintModal";
 import ModalDialog from './ModalDialog';
-
+import { Redirect } from "react-router-dom";
+import "../App.js";
 const API_URL="http://localhost:8080";
 
 class Pharmacies extends Component {
@@ -34,7 +35,8 @@ class Pharmacies extends Component {
         openModal:false,
         
       
-		
+        redirect: false,
+        redirectUrl: "",
         selectedPharmacy : [],
         pharmacyId : "",
         pharmacyGrade : 0,
@@ -671,6 +673,13 @@ class Pharmacies extends Component {
 
     }
 
+    handleClickOnPharmacy = (id) => {
+      this.setState({
+        redirect: true,
+        redirectUrl: "/pharmacy/" + id,
+      });
+     
+    };
 
     handleSortByGradeAscending = () => {
     
@@ -715,7 +724,7 @@ class Pharmacies extends Component {
 
 
 	render() {
-	
+    if (this.state.redirect) return <Redirect push to={this.state.redirectUrl} />;
 
 		return (
       
@@ -853,13 +862,13 @@ class Pharmacies extends Component {
 
         <div className="container">
                     <h1 >All pharmacies</h1>
-                    <table className="table" style={{ width: "100%", marginTop: "5em", marginLeft: "auto",marginRight: "auto" }}>
+                    <table className="table table-hover" style={{ width: "100%", marginTop: "5em", marginLeft: "auto",marginRight: "auto" }}>
                         
                         <tbody>
                             {
                                 this.state.allPharmacies.map((pharmacy) => (
                                   
-                                    <tr key={pharmacy.Id} id={pharmacy.Id} >
+                                    <tr key={pharmacy.Id} id={pharmacy.Id}  onClick={() => this.handleClickOnPharmacy(pharmacy.Id)}>
 
                                       
                                        
