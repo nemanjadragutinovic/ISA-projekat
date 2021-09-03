@@ -15,6 +15,7 @@ import AddActionPromotionModal from "./Modal/AddActionPromotionModal";
 import 'react-confirm-alert/src/react-confirm-alert.css'; 
 import { confirmAlert } from 'react-confirm-alert';
 import EditStorage from "./Modal/EditStorageModal";
+import AddOrderModal from "./Modal/AddOrder";
 const API_URL = "http://localhost:8080";
 
 class DrugsForPharmacyAdmin extends Component {
@@ -63,8 +64,6 @@ class DrugsForPharmacyAdmin extends Component {
             pharmacyId: pharmacyId
         })
 		Axios.get(API_URL + "/drug/drugsInPharmacy/" + localStorage.getItem("keyPharmacyId"), {
-
-			validateStatus: () => true,
 			headers: { Authorization: GetAuthorisation() },
 		})
 
@@ -83,7 +82,7 @@ class DrugsForPharmacyAdmin extends Component {
 		this.setState({ searchMan: event.target.value });
 	};
 
-	hangleFormToogle = () => {
+	handleFormToogle = () => {
 		this.setState({ formShowed: !this.state.formShowed });
 	};
 
@@ -169,7 +168,9 @@ class DrugsForPharmacyAdmin extends Component {
 	};
 
 
-
+	handleOpenAddOrder = () => {
+		this.setState({ showAddOrder: true });
+	};
 
 	handleOpenEditStorage = (id) => {
 		this.setState({ showEditStorage: true , drugId:id});
@@ -228,7 +229,7 @@ class DrugsForPharmacyAdmin extends Component {
             .catch((err) => {
                 console.log(err);
             });
-        this.setState({ showEditDrugPrice: false ,showEditStorage:false});
+        this.setState({ showEditDrugPrice: false ,showEditStorage:false,showAddOrder:false});
     }
 
 	handleUpdateDrugsWhicharentInPharmacy = () => {
@@ -331,7 +332,7 @@ class DrugsForPharmacyAdmin extends Component {
 					<div style={{ width: "70%", marginTop: "3em", marginLeft: "auto", marginRight: "auto" }} width="100%">
 
 
-						<button className="btn btn-outline-primary btn-xl" type="button" onClick={this.hangleFormToogle}>
+						<button className="btn btn-outline-primary btn-xl" type="button" onClick={this.handleFormToogle}>
 
 							Search drugs
 						</button>
@@ -341,7 +342,7 @@ class DrugsForPharmacyAdmin extends Component {
 							Add drug
 						</button>
 
-						<button className="btn btn-primary btn-xl" type="button" onClick={this.hangleFormToogle} style={{ marginLeft: "2%" }}>
+						<button className="btn btn-primary btn-xl" type="button" onClick={this.handleOpenAddOrder} style={{ marginLeft: "2%" }}>
 
 							Create order
 						</button>
@@ -488,6 +489,7 @@ class DrugsForPharmacyAdmin extends Component {
 					<AddDrugModal show={this.state.showAddDrug} closeModal={this.handleAddDrugClose} drugs={this.state.drugs1} pharmacyId={this.state.pharmacyId} updateDrugsWhicharentInPharmacy={this.handleUpdateDrugsWhicharentInPharmacy} />
 					<EditDrugPriceModal show={this.state.showEditDrugPrice}  closeModal={this.handleEditPriceClose} drugId={this.state.drugId} pharmacyId={this.state.pharmacyId}/> 
 					<EditStorage show={this.state.showEditStorage} closeModal={this.handleEditPriceClose} drugId={this.state.drugId} pharmacyId={this.state.pharmacyId}/>
+					<AddOrderModal show={this.state.showAddOrder} pharmacyId={this.state.pharmacyId } closeModal={this.handleEditPriceClose}/>
 				</div>
 
 			</React.Fragment>

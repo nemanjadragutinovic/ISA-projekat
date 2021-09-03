@@ -44,6 +44,7 @@ import {
   Link,
   Switch
 } from "react-router-dom";
+import OrdersPageForPhAdmin from './Components/SupplierPages/OrdersPageForPhAdmin';
 
 
 
@@ -98,7 +99,7 @@ function App() {
         <Route to="/pharmacistsForPhAdmin" path ="/pharmacistsForPhAdmin"  component={pharmacistsForPhAdmin}/>
         <Route  to ="/drugsForPhAdmin" path ="/drugsForPhAdmin"  component={DrugsForPharmacyAdmin}/>
         <Route  to ="/actions" path ="/actions"  component={ActionPromotionPageForPhAdmin}/>
-
+        <Route  to ="/ordersForPhAdmin" path ="/ordersForPhAdmin"  component={OrdersPageForPhAdmin}/>
 
         </Switch>
     </Router>
